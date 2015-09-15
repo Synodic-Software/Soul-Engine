@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Engine Backend">
+      <UniqueIdentifier>{24618c11-9dd2-4f1d-b957-37c78a938998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Frontend">
+      <UniqueIdentifier>{d3153d67-4448-43fe-973d-b9947956ec89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms">
+      <UniqueIdentifier>{58c749a9-1860-46de-a593-e8998c7e7197}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms">
+      <UniqueIdentifier>{fe552dae-c229-45e9-9c8c-224aa3858a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Quicksort">
+      <UniqueIdentifier>{6e015e6b-cd04-40db-8ee2-cac7fb930bc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core">
+      <UniqueIdentifier>{b1cc8635-7429-4fa8-9d93-24788c28bc85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA">
+      <UniqueIdentifier>{0ffe0620-3e5a-44bb-9414-54167b39b786}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Sound">
+      <UniqueIdentifier>{a32a3c77-3bdc-463e-81f0-b1e41ac61e21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Object">
+      <UniqueIdentifier>{ad590c37-6f78-45fc-ad10-3410cfbfa4a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera">
+      <UniqueIdentifier>{f689deb8-e1ee-41a0-8059-657282da72dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Material">
+      <UniqueIdentifier>{1782d4a1-97aa-41c8-b2c8-b616a6c3a138}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Input">
+      <UniqueIdentifier>{39130906-2bc9-4c2e-ac37-e4560f8e6557}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Material\Texture">
+      <UniqueIdentifier>{7942c304-6b49-4b59-a407-cda85722c32d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Object\Character">
+      <UniqueIdentifier>{788210d7-a11e-4d14-b251-eb1cd37dbb05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Utility">
+      <UniqueIdentifier>{8c91be5c-c035-43f5-92d4-65f18a6fbdad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Utility\CUDA">
+      <UniqueIdentifier>{b6828cc2-5889-494f-823c-846694d63b55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Utility\OpenGL">
+      <UniqueIdentifier>{211ab684-d9b4-41c1-9229-68507c40058a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Resources">
+      <UniqueIdentifier>{5c12db69-88ac-48db-916a-889519665f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Resources\Textures">
+      <UniqueIdentifier>{1c993365-900c-4d6f-b6c3-9e0658cc249c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Resources\Models">
+      <UniqueIdentifier>{15bc74d5-64bc-4138-bf8f-c3cc58c68e1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Renderer">
+      <UniqueIdentifier>{1ce2842a-1809-4937-b9bc-08963762038d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Renderer\Bidirectional Path Tracer">
+      <UniqueIdentifier>{b255cec2-14f4-4956-be30-46c08b72546d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Renderer\Bidirectional Path Tracer\CUDA">
+      <UniqueIdentifier>{48cf4495-c423-443e-bbac-ad566455f988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Renderer\Path Tracer">
+      <UniqueIdentifier>{848b3b87-09e8-4617-b6bf-da0bda8bc0ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Renderer\Path Tracer\CUDA">
+      <UniqueIdentifier>{3c2da4c2-be0b-4476-9ea1-6886ea9a1dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Renderer\Ray Tracer">
+      <UniqueIdentifier>{d0d0e19d-5a14-42a9-8c53-0cc436a040f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Renderer\Ray Tracer\CUDA">
+      <UniqueIdentifier>{cd16140a-b116-4c09-91fd-f775d9446e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Frame">
+      <UniqueIdentifier>{30e8428f-8300-43b7-b577-1a2ea8ac3315}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Ray Engine">
+      <UniqueIdentifier>{b9e8701d-7297-477f-b4c6-9ae4bf787848}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Bounding Volume Heirarchy">
+      <UniqueIdentifier>{62681ce9-26fc-4808-adb2-3c2f1ac5d741}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Multithreading">
+      <UniqueIdentifier>{b13949b0-ddff-4dba-8b65-d92e8e9da186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Networking">
+      <UniqueIdentifier>{0820b5bb-03a1-47e2-b6da-f8b262bba77a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Bounding Volume Heirarchy\CUDA">
+      <UniqueIdentifier>{c5294c1b-e4b7-432b-869b-46cf2a8e0bad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Library Files">
+      <UniqueIdentifier>{9e5263ce-ea28-494b-9a9b-c1a417b7c911}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
+      <Filter>Engine Backend\Engine Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h">
+      <Filter>Engine Backend\Utility\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\OpenGL\GLError.h">
+      <Filter>Engine Backend\Utility\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\OpenGL\Shader.h">
+      <Filter>Engine Backend\Utility\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Input\InputHelper.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Input\Input.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Settings.h">
+      <Filter>Engine Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Object\Object.h">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Object\Character\Character.h">
+      <Filter>Engine Backend\Engine Core\Object\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\Material.h">
+      <Filter>Engine Backend\Engine Core\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\Texture\Texture.h">
+      <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\Texture\Bitmap.h">
+      <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Camera\Camera.h">
+      <Filter>Engine Backend\Engine Core\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.h">
+      <Filter>Engine Backend\Renderer\Ray Tracer\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Renderer\Path Tracer\CUDA\PTracer.h">
+      <Filter>Engine Backend\Renderer\Path Tracer\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Renderer\Bidirectional Path Tracer\CUDA\BDPTracer.h">
+      <Filter>Engine Backend\Renderer\Bidirectional Path Tracer\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Renderer\Renderer.h">
+      <Filter>Engine Backend\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Include Files\Metrics.h">
+      <Filter>Engine Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Frame\Frame.h">
+      <Filter>Engine Backend\Engine Core\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Bounding Volume Heirarchy\BVH.h">
+      <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Ray Engine\RayEngine.h">
+      <Filter>Engine Backend\Ray Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Object\ObjectProperties.h">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Object\Vertex.h">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Object\Face.h">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Library Files\blockingconcurrentqueue.h">
+      <Filter>Engine Backend\Library Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Library Files\concurrentqueue.h">
+      <Filter>Engine Backend\Library Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include Files\SoulCore.h">
+      <Filter>Engine Frontend</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
+      <Filter>Engine Backend\Utility\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Utility\OpenGL\Shader.cpp">
+      <Filter>Engine Backend\Utility\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Utility\OpenGL\ShaderSupport.cpp">
+      <Filter>Engine Backend\Utility\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Input\Input.cpp">
+      <Filter>Engine Backend\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Input\InputHelper.cpp">
+      <Filter>Engine Backend\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Settings.cpp">
+      <Filter>Engine Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Object\Object.cpp">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp">
+      <Filter>Engine Backend\Engine Core\Object\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Material\Material.cpp">
+      <Filter>Engine Backend\Engine Core\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Material\Texture\Bitmap.cpp">
+      <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Material\Texture\Texture.cpp">
+      <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Camera\Camera.cpp">
+      <Filter>Engine Backend\Engine Core\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.cpp">
+      <Filter>Engine Backend\Renderer\Ray Tracer\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Renderer\Path Tracer\CUDA\PTracer.cpp">
+      <Filter>Engine Backend\Renderer\Path Tracer\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Renderer\Bidirectional Path Tracer\CUDA\BDPtracer.cpp">
+      <Filter>Engine Backend\Renderer\Bidirectional Path Tracer\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Renderer\Renderer.cpp">
+      <Filter>Engine Backend\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp">
+      <Filter>Engine Backend\Engine Core\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp">
+      <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Ray Engine\RayEngine.cpp">
+      <Filter>Engine Backend\Ray Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Object\ObjectProperties.cpp">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Object\Vertex.cpp">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Object\Face.cpp">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\SoulCore.cpp">
+      <Filter>Engine Backend\Engine Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Source Files\Resources\Textures\PhasmaDefault.png">
+      <Filter>Engine Backend\Resources\Textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Quicksort.cu">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA</Filter>
+    </CudaCompile>
+  </ItemGroup>
+</Project>
