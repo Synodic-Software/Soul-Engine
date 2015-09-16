@@ -174,8 +174,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Engine Core\Settings.h" />
     <ClInclude Include="Source Files\Input\Input.h" />
     <ClInclude Include="Source Files\Input\InputHelper.h" />
-    <ClInclude Include="Source Files\Library Files\blockingconcurrentqueue.h" />
-    <ClInclude Include="Source Files\Library Files\concurrentqueue.h" />
     <ClInclude Include="Source Files\Ray Engine\RayEngine.h" />
     <ClInclude Include="Source Files\Renderer\Bidirectional Path Tracer\CUDA\BDPTracer.h" />
     <ClInclude Include="Source Files\Renderer\Path Tracer\CUDA\PTracer.h" />
