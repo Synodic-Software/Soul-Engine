@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glu32.lib;glew32.lib;N:\Work\Libraries\Assimp-3.1\assimp-3.1.1-win-binaries\lib64\assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(VC_LibraryPath);$(WindowsSDK_LibraryPath);N:\Work\Libraries\glfw-3.0.4.bin.WIN64\lib-msvc120;N:\Work\Libraries\glew-1.10.0\lib\Release\x64;N:\Work\Libraries\Assimp-3.1\assimp-3.1.1-win-binaries\lib64;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ClCompile>
