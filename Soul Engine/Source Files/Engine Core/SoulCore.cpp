@@ -9,7 +9,6 @@
 #include "Engine Core/Material/Texture/Texture.h"
 #include "Engine Core/Camera/Camera.h"
 #include "Input/Input.h"
-#include "Multithreading/Scheduler.h"
 #include "Ray Engine/RayEngine.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 
@@ -160,12 +159,8 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	glfwWindowHint( GLFW_VISIBLE, GL_FALSE );
 	loopThread = glfwCreateWindow(1, 1, "Thread Window", NULL, NULL);
 
-	if (renderer==RASTER){
-		glfwWindowHint(GLFW_SAMPLES, MSAASamples);
-	}
-	else{
-		glfwWindowHint(GLFW_SAMPLES, 0);
-	}
+
+	glfwWindowHint(GLFW_SAMPLES, 0);
 	glfwWindowHint(GLFW_VISIBLE, GL_TRUE );
 
 	if (window==FULLSCREEN){
@@ -399,12 +394,8 @@ void Run(void)
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (renderer == RASTER){
-			hub->Draw(camera);
-		}
-		else{
-			rayEngine->Render(SCREEN_SIZE, hub, camera, deltaTime / 2.0f);
-		}
+		
+		rayEngine->Render(SCREEN_SIZE, hub, camera, deltaTime / 2.0f);
 
 		glfwSwapBuffers(mainThread);
 	}
@@ -432,34 +423,22 @@ void togglePhysics(){
 }
 void nextRenderer(){
 	if (renderSwitchTimer <= 0){
-		if (renderer == RASTER){
+		if (renderer == PATH){
 			renderer = SPECTRAL;
 		}
 		else if (renderer == SPECTRAL){
 			renderer = PATH;
-		}
-		else if (renderer == PATH){
-			renderer = RAY;
-		}
-		else if (renderer == RAY){
-			renderer = RASTER;
 		}
 		renderSwitchTimer = 0.5f;
 	}
 }
 void previousRenderer(){
 	if (renderSwitchTimer <= 0){
-		if (renderer == RASTER){
-			renderer = RAY;
-		}
-		else if (renderer == SPECTRAL){
-			renderer = RASTER;
+        if (renderer == SPECTRAL){
+			renderer = PATH;
 		}
 		else if (renderer == PATH){
 			renderer = SPECTRAL;
-		}
-		else if (renderer == RAY){
-			renderer = PATH;
 		}
 		renderSwitchTimer = 0.5f;
 	}
