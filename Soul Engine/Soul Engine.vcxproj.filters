@@ -180,6 +180,9 @@
     <ClInclude Include="Include Files\SoulCore.h">
       <Filter>Engine Frontend</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Ray Engine\RayJob.h">
+      <Filter>Engine Backend\Ray Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -253,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\SoulCore.cpp">
       <Filter>Engine Backend\Engine Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Ray Engine\RayJob.cpp">
+      <Filter>Engine Backend\Ray Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,15 +6,18 @@
 #include "Engine Core/Material/Texture/Texture.h"
 #include "Renderer/Renderer.h"
 
+enum castType{COLOUR, DEPTH, OBJECT_ID};
+
 class RayEngine{
 public:
 	typedef struct Job{
-		int type;
+		castType type;
+		uint rayAmount;
 	}Job;
 
 	RayEngine(glm::uvec2);
 	void Render(glm::uvec2, BVH*, Camera&, double);
-
+	void AddJob(); 
 private:
 
 	GLuint displayTexture;
