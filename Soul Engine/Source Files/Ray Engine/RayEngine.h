@@ -5,54 +5,22 @@
 #include "Utility/OpenGL/Shader.h"
 #include "Engine Core/Material/Texture/Texture.h"
 #include "Renderer/Renderer.h"
+#include "RayJob.h"
 
-enum castType{COLOUR, DEPTH, OBJECT_ID};
-
-class RayEngine{
+class RayEngine {
 public:
-	typedef struct Job{
-		castType type;
-		uint rayAmount;
-	}Job;
 
 	RayEngine(glm::uvec2);
 	void Render(glm::uvec2, BVH*, Camera&, double);
 	void AddJob(); 
+	void AddRecurringJob();
 private:
 
-	GLuint displayTexture;
-	CUarray cudaDisplay;
-	CUgraphicsResource graphicsResource;
 
 
-
-
-
-	double prevTime;
-	GLuint calcPass;
-	float changeCutoff;
-	GLuint samplesMax;
-	GLuint samplesMin;
-	GLuint samples;
-
-
-	GLuint vao;
-	GLuint vbo;
-	GLuint ibo;
-
-	GLuint Indices[6];
-
-	float Vertices[6 * 4];
-	GLint texUniform;
-	GLint screenUniform;
-	GLint cameraUniform;
-	GLint modelUniform;
 
 	Renderer* mainTracer;
 
-	std::vector<Job> jobs;
-	shading::ShaderSupport* CUDAtoScreen;
-	//shading::ShaderSupport* generateRays;
-	//shading::ShaderSupport* sendRays;
+	std::vector<RayJobs> jobs;
 
 };
