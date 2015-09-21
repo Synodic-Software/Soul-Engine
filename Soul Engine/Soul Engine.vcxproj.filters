@@ -276,5 +276,8 @@
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Quicksort.cu">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA</Filter>
     </CudaCompile>
+    <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu">
+      <Filter>Engine Backend\Ray Engine</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>

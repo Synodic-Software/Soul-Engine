@@ -1,10 +1,6 @@
 #pragma once
 
 #include "Engine Core/BasicDependencies.h"
-#include "Utility/OpenGL/ShaderSupport.h"
-#include "Utility/OpenGL/Shader.h"
-#include "Engine Core/Material/Texture/Texture.h"
-#include "Renderer/Renderer.h"
 #include "RayJob.h"
 
 
