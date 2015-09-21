@@ -1,0 +1,321 @@
+[/
+  (C) Copyright 2007-8 Anthony Williams.
+  (C) Copyright 2013 Oliver Kowalke.
+  Distributed under the Boost Software License, Version 1.0.
+  (See accompanying file LICENSE_1_0.txt or copy at
+  http://www.boost.org/LICENSE_1_0.txt).
+]
+
+[section:conditions Condition Variables]
+
+[heading Synopsis]
+
+        enum class cv_status; {
+            no_timeout,
+            timeout
+        };
+
+        class condition_variable;
+        class condition_variable_any;
+
+The class `condition_variable` provides a mechanism for a fiber to wait for
+notification from another fiber. When the fiber awakens from the wait, then
+it checks to see if the appropriate condition is now true, and continues if so.
+If the condition is not true, then the fiber calls `wait` again to resume
+waiting. In the simplest case, this condition is just a boolean variable:
+
+    boost::fibers::condition_variable cond;
+    boost::fibers::mutex mtx;
+    bool data_ready = false;
+
+    void process_data();
+
+    void wait_for_data_to_process() {
+        {
+            std::unique_lock< boost::fibers::mutex > lk( mtx);
+            while ( ! data_ready) {
+                cond.wait( lk);
+            }
+        }   // release lk
+        process_data();
+    }
+
+Notice that the `lk` is passed to `wait`: `wait` will atomically add the fiber
+to the set of fibers waiting on the condition variable, and unlock the mutex.
+When the fiber is awakened, the mutex will be locked again before the call to
+`wait` returns. This allows other fibers to acquire the mutex in order to
+update the shared data, and ensures that the data associated with the condition
+is correctly synchronized.
+
+In the meantime, another fiber sets `data_ready` to `true`, and then calls
+either `notify_one` or `notify_all` on the condition variable `cond` to wake
+one waiting fiber or all the waiting fibers respectively.
+
+    void retrieve_data();
+    void prepare_data();
+
+    void prepare_data_for_processing() {
+        retrieve_data();
+        prepare_data();
+        {
+            std::unique_lock< boost::fibers::mutex > lk( mtx);
+            data_ready = true;
+        }
+        cond.notify_one();
+    }
+
+Note that the same mutex is locked before the shared data is updated, but that
+the mutex does not have to be locked across the call to `notify_one`.
+
+Locking is important because the synchronization objects provided by
+__boost_fiber__ can be used to synchronize fibers running on different
+threads.
+
+__boost_fiber__ provides both `condition_variable` and
+`condition_variable_any` because __boost_thread__ provides both.
+(__boost_fiber__ also provides the name `condition`, which has been deprecated
+in __boost_thread__.) However, `boost::fiber::condition_variable` and
+`boost::fiber::condition_variable_any` are the same class; like
+`boost::thread::condition_variable_any`, its wait() method will accept any
+form of lock. `boost::fiber::condition_variable_any` has no need to further
+optimize as described for `boost::thread::condition_variable`.
+
+[class_heading condition_variable]
+
+    #include <boost/fiber/condition.hpp>
+
+    enum cv_status {
+        no_timeout,
+        timeout
+    };
+
+    class condition_variable {
+    public:
+        condition_variable();
+        ~condition_variable();
+
+        condition_variable( condition_variable const&) = delete;
+        condition_variable & operator=( condition_variable const&) = delete;
+
+        void notify_one();
+        void notify_all();
+
+        template< typename LockType >
+        void wait( LockType & lk);
+
+        template< typename LockType, typename Pred >
+        void wait( LockType & lk, Pred predicate);
+
+        template< typename LockType, typename Clock, typename Duration >
+        cv_status wait_until( LockType & lk,
+                              std::chrono::time_point< Clock, Duration > const& timeout_time);
+
+        template< typename LockType, typename Clock, typename Duration, typename Pred >
+        bool wait_until( LockType & lk,
+                         std::chrono::time_point< Clock, Duration > const& timeout_time,
+                         Pred pred);
+
+        template< typename LockType, typename Rep, typename Period >
+        cv_status wait_for( LockType & lk,
+                            std::chrono::duration< Rep, Period > const& timeout_duration);
+
+        template< typename LockType, typename Rep, typename Period, typename Pred >
+        bool wait_for( LockType & lk,
+                       std::chrono::duration< Rep, Period > const& timeout_duration,
+                       Pred pred);
+    };
+
+    typedef condition_variable condition_variable_any;
+
+[heading Constructor]
+
+        condition_variable()
+
+[variablelist
+[[Effects:] [Creates the object.]]
+[[Throws:] [Nothing.]]
+]
+
+[heading Destructor]
+
+        ~condition_variable()
+
+[variablelist
+[[Precondition:] [All fibers waiting on `*this` have been notified by a call to
+`notify_one` or `notify_all` (though the respective calls to `wait`, `wait_for` or
+`wait_until` need not have returned).]]
+[[Effects:] [Destroys the object.]]
+[[Throws:] [Nothing.]]
+]
+
+[member_heading condition_variable..notify_one]
+
+        void notify_one();
+
+[variablelist
+[[Effects:] [If any fibers are currently __blocked__ waiting on `*this` in a
+call to `wait`, `wait_for` or `wait_until`, unblocks one of those fibers.]]
+[[Throws:] [Nothing.]]
+[[Note:] [It is arbitrary which waiting fiber is resumed.]]
+]
+
+[member_heading condition_variable..notify_all]
+
+        void notify_all();
+
+[variablelist
+[[Effects:] [If any fibers are currently __blocked__ waiting on `*this` in a
+call to `wait`, `wait_for` or `wait_until`, unblocks all of those fibers.]]
+[[Throws:] [Nothing.]]
+[[Note:] [This is why a waiting fiber must ['also] check for the desired
+program state using a mechanism external to the `condition_variable`, and
+retry the wait until that state is reached. A fiber waiting on a
+`condition_variable` might well wake up a number of times before the desired
+state is reached.]]
+]
+
+[template_member_heading condition_variable..wait]
+
+        template< typename LockType >
+        void wait( LockType & lk);
+
+        template< typename LockType, typename Pred >
+        void wait( LockType & lk, Pred pred);
+
+[variablelist
+[[Precondition:] [`lk` is locked by the current fiber, and either no other
+fiber is currently waiting on `*this`, or the execution of the `mutex()`
+member function on the `lk` objects supplied in the calls to `wait` in all the
+fibers currently waiting on `*this` would return the same value as
+`lk->mutex()` for this call to `wait`.]]
+[[Effects:] [Atomically call `lk.unlock()` and blocks the current fiber. The
+fiber will unblock when notified by a call to `this->notify_one()` or
+`this->notify_all()`, or spuriously. When the fiber is unblocked (for whatever
+reason), the lock is reacquired by invoking `lk.lock()` before the call to
+`wait` returns. The lock is also reacquired by invoking `lk.lock()` if the
+function exits with an exception.
+The member function accepting `pred` is shorthand for: ``
+
+while ( ! pred() ) {
+    wait( lk);
+}
+``]]
+[[Postcondition:] [`lk` is locked by the current fiber.]]
+[[Throws:] [__fiber_exception__ if an error
+occurs. __fiber_interrupted__ if the wait was interrupted by a call to
+__interrupt__ on the __fiber__ object associated with the current fiber of
+execution.]]
+[[Note:] [The Precondition is a bit dense. It merely states that all the
+fibers calling `wait` on `*this` must wait on `lk` objects governing the
+['same] `mutex`. Three distinct objects are involved in any
+`condition_variable::wait()` call: the `condition_variable` itself, the
+`mutex` coordinating access between fibers and a lock object (e.g.
+`std::unique_lock`). In some sense it would be nice if the
+`condition_variable`'s constructor could accept the related `mutex` object,
+enforcing agreement across all `wait()` calls; but the existing APIs prevent
+that. Instead we must require the `wait()` call to accept a reference to the
+local lock object. It is an error to reuse a given `condition_variable`
+instance with lock objects that reference ['different] underlying `mutex`
+objects. It would be like a road intersection with traffic lights independent
+of one another: sooner or later a collision will result.]]
+]
+
+[template_member_heading condition_variable..wait_until]
+
+        template< typename LockType, typename Clock, typename Duration >
+        cv_status wait_until( LockType & lk,
+                              std::chrono::time_point< Clock, Duration > const& timeout_time);
+
+        template< typename LockType, typename Clock, typename Duration, typename Pred >
+        bool wait_until( LockType & lk,
+                         std::chrono::time_point< Clock, Duration > const& timeout_time,
+                         Pred pred);
+
+[variablelist
+[[Precondition:] [`lk` is locked by the current fiber, and either no other
+fiber is currently waiting on `*this`, or the execution of the `mutex()` member
+function on the `lk` objects supplied in the calls to `wait`, `wait_for` or
+`wait_until` in all the fibers currently waiting on `*this` would return the
+same value as `lk.mutex()` for this call to `wait_until`.]]
+[[Effects:] [Atomically call `lk.unlock()` and blocks the current fiber. The
+fiber will unblock when notified by a call to `this->notify_one()` or
+`this->notify_all()`, when the system time
+would be equal to or later than the specified `timeout_time`, or spuriously.
+When the fiber is unblocked (for whatever reason), the lock is reacquired by
+invoking `lk.lock()` before the call to `wait_until` returns. The lock is also
+reacquired by invoking `lk.lock()` if the function exits with an exception.
+The member function accepting `pred` is shorthand for: ``
+
+while ( ! pred() ) {
+    if ( cv_status::timeout == wait_until( lk, timeout_time) )
+        return pred();
+}
+return true;
+
+`` That is, even if `wait_until()` times out, it can still return `true` if
+`pred()` returns `true` at that time.]]
+[[Postcondition:] [`lk` is locked by the current fiber.]]
+[[Throws:] [__fiber_exception__ if an error
+occurs. __fiber_interrupted__ if the wait was interrupted by a call to
+__interrupt__ on the __fiber__ object associated with the current fiber of
+execution.]]
+[[Returns:] [The overload without `pred` returns `cv_status::no_timeout` if
+awakened by `notify_one()` or `notify_all()`, or `cv_status::timeout` if
+awakened because the system time is past `timeout_time`.]]
+[[Returns:] [The overload accepting `pred` returns `false` if the call is
+returning because the time specified by `timeout_time` was reached and the
+predicate returns `false`, `true` otherwise.]]
+[[Note:] [See [*Note] for [member_link condition_variable..wait].]]
+]
+
+[template_member_heading condition_variable..wait_for]
+
+        template< typename LockType, typename Rep, typename Period >
+        cv_status wait_for( LockType & lk,
+                            std::chrono::duration< Rep, Period > const& timeout_duration);
+
+        template< typename LockType, typename Rep, typename Period, typename Pred >
+        bool wait_for( LockType & lk,
+                       std::chrono::duration< Rep, Period > const& timeout_duration,
+                       Pred pred);
+
+[variablelist
+[[Precondition:] [`lk` is locked by the current fiber, and either no other
+fiber is currently waiting on `*this`, or the execution of the `mutex()` member
+function on the `lk` objects supplied in the calls to `wait`, `wait_for` or
+`wait_until` in all the fibers currently waiting on `*this` would return the
+same value as `lk.mutex()` for this call to `wait_for`.]]
+[[Effects:] [Atomically call `lk.unlock()` and blocks the current fiber. The
+fiber will unblock when notified by a call to `this->notify_one()` or
+`this->notify_all()`, when a time interval equal to or greater than the
+specified `timeout_duration` has elapsed, or spuriously. When the fiber is
+unblocked (for whatever reason), the lock is reacquired by invoking
+`lk.lock()` before the call to `wait` returns. The lock is also reacquired by
+invoking `lk.lock()` if the function exits with an exception.
+The `wait_for()` member function accepting `pred` is shorthand for: ``
+
+while ( ! pred() ) {
+    if ( cv_status::timeout == wait_for( lk, timeout_duration) ) {
+        return pred();
+    }
+}
+return true;
+
+`` (except of course that `timeout_duration` is adjusted for each iteration).
+The point is that, even if `wait_for()` times out, it can still return `true`
+if `pred()` returns `true` at that time.]]
+[[Postcondition:] [`lk` is locked by the current fiber.]]
+[[Throws:] [__fiber_exception__ if an error
+occurs. __fiber_interrupted__ if the wait was interrupted by a call to
+__interrupt__ on the __fiber__ object associated with the current fiber of
+execution.]]
+[[Returns:] [The overload without `pred` returns `cv_status::no_timeout` if
+awakened by `notify_one()` or `notify_all()`, or `cv_status::timeout` if
+awakened because at least `timeout_duration` has elapsed.]]
+[[Returns:] [The overload accepting `pred` returns `false` if the call is
+returning because at least `timeout_duration` has elapsed and the predicate
+returns `false`, `true` otherwise.]]
+[[Note:] [See [*Note] for [member_link condition_variable..wait].]]
+]
+
+[endsect]
