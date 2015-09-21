@@ -6,7 +6,7 @@
 
 class Renderer{
 public:
-	void Draw(glm::uvec2, BVH*, Camera, uint);
+	void Render(glm::uvec2, BVH*, Camera&, uint);
 	Renderer();
 private:
 

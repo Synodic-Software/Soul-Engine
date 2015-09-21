@@ -113,7 +113,7 @@ void Renderer::Render(glm::uvec2 screen, BVH* bvh, Camera& camera, double timeTa
 		}*/
 
 		glm::uvec2 modifiedScreen = glm::vec2(screen) / glm::vec2(1);
-		GLuint renderBuffer = mainTracer->Draw(modifiedScreen, bvh, camera, samples);
+		GLuint renderBuffer = mainTracer->Render(modifiedScreen, bvh, camera);
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBuffer);
 

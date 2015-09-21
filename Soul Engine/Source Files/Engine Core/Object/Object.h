@@ -49,6 +49,7 @@ class Object{
 
 
 	virtual void Update(double) = 0;
+	virtual void UpdateLate(double) = 0;
 	virtual void Load() = 0;
 	//std::vector<instance> instances;
 

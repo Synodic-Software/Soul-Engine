@@ -1,8 +1,5 @@
 #include "RayJob.h"
 
-RayJob::RayJob(){
-
-}
-RayJob::RayJob(castType, uint){
+RayJob::RayJob(castType[], uint, ,uint){
 
 }

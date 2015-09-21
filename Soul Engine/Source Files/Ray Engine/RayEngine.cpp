@@ -1,5 +1,8 @@
 #include "RayEngine.h"
 
-RayEngine::RayEngine(glm::uvec2 resolution){
-	mainTracer = new Renderer();
+RayEngine::RayEngine(){
+
+}
+void RayEngine::Process(){
+
 }
