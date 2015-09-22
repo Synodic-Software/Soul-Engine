@@ -12,6 +12,9 @@ public:
 	//Takes an array of desired outputs, its size, the function that decides the ray generation, and the number of rays to shoot. 
 	//The last parameter is the speed of the ray
 	RayJob(castType[], uint, ,uint, float);
+
+	//excludes speed for light and visual calculations.
+	RayJob(castType[], uint, , uint);
 private:
 
 	castType* type;
