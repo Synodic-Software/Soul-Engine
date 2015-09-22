@@ -158,6 +158,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="Include Files\Metrics.h" />
     <ClInclude Include="Include Files\SoulCore.h" />
+    <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h" />
@@ -174,6 +175,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Engine Core\Settings.h" />
     <ClInclude Include="Source Files\Input\Input.h" />
     <ClInclude Include="Source Files\Input\InputHelper.h" />
+    <ClInclude Include="Source Files\Multithreading\Scheduler.h" />
     <ClInclude Include="Source Files\Ray Engine\RayEngine.h" />
     <ClInclude Include="Source Files\Ray Engine\RayJob.h" />
     <ClInclude Include="Source Files\Renderer\Bidirectional Path Tracer\CUDA\BDPTracer.h" />
@@ -185,6 +187,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="Source Files\Engine Core\Camera\Camera.cpp" />
@@ -201,6 +204,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Engine Core\SoulCore.cpp" />
     <ClCompile Include="Source Files\Input\Input.cpp" />
     <ClCompile Include="Source Files\Input\InputHelper.cpp" />
+    <ClCompile Include="Source Files\Multithreading\Scheduler.cpp" />
     <ClCompile Include="Source Files\Ray Engine\RayEngine.cpp" />
     <ClCompile Include="Source Files\Ray Engine\RayJob.cpp" />
     <ClCompile Include="Source Files\Renderer\Bidirectional Path Tracer\CUDA\BDPtracer.cpp" />
