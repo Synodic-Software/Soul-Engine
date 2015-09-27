@@ -158,7 +158,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="Include Files\Metrics.h" />
     <ClInclude Include="Include Files\SoulCore.h" />
-    <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h" />
@@ -187,7 +186,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="Source Files\Engine Core\Camera\Camera.cpp" />

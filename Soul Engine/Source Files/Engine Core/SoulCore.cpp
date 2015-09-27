@@ -25,7 +25,7 @@ glm::uvec2 SCREEN_SIZE;
 
 Settings* settings;
 unsigned int MSAASamples;
-BVH* hub;
+//BVH* hub;
 RayEngine* rayEngine;
 Camera camera;
 
@@ -134,7 +134,7 @@ else{
 //Call to deconstuct both the engine and its dependencies
 void SoulTerminate(){
 
-	delete hub;
+	//delete hub;
 	delete rayEngine;
 	delete settings;
 	glfwTerminate();
@@ -142,7 +142,7 @@ void SoulTerminate(){
 	exit(0);
 }
 void AddObject(Object* object){
-	hub->Add(object);
+	//hub->Add(object);
 
 }
 void RemoveObject(Object* object){
@@ -227,8 +227,8 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	//unsigned concurentThreadsSupported = std::thread::hardware_concurrency();
 	//threads = new ThreadPool(concurentThreadsSupported);
 
-	hub = new BVH();
-	rayEngine = new RayEngine(SCREEN_SIZE);
+	//hub = new BVH();
+	rayEngine = new RayEngine();
 
 	Material::SetDefaultTexture("N:\\Documents\\Dropbox\\Phasma\\Phasma-1.0\\Phasma-1.0\\Resource Files\\Textures\\PhasmaDefault.png");
 
@@ -267,7 +267,7 @@ void Run(void)
 	double accumulator = 0.0f;
 
 	glfwPollEvents();
-	hub->UpdateObjects(deltaTime);
+	//hub->UpdateObjects(deltaTime);
 	//stop loop when glfw exit is called
 	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
 	while (!glfwWindowShouldClose(mainThread)){
@@ -342,7 +342,7 @@ void Run(void)
 			}
 			double timeSet = glfwGetTime();
 
-			hub->SetupObjects();
+			//hub->SetupObjects();
 
 			currentTime = glfwGetTime() - currentTime;
 
@@ -352,7 +352,7 @@ void Run(void)
 
 			timeSet = glfwGetTime();
 
-			hub->Physics(deltaTime);
+			//hub->Physics(deltaTime);
 
 			currentTime = glfwGetTime() - currentTime;
 
@@ -361,7 +361,7 @@ void Run(void)
 			//}
 			timeSet = glfwGetTime();
 
-			hub->UpdateObjects(deltaTime);
+			//hub->UpdateObjects(deltaTime);
 
 			currentTime = glfwGetTime() - currentTime;
 
@@ -378,7 +378,7 @@ void Run(void)
 
 			timeSet = glfwGetTime();
 
-			hub->CreateHeirarchy(false, deltaTime);
+			//hub->CreateHeirarchy(false, deltaTime);
 
 			currentTime = glfwGetTime() - currentTime;
 
@@ -395,7 +395,7 @@ void Run(void)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		
-		rayEngine->Render(SCREEN_SIZE, hub, camera, deltaTime / 2.0f);
+		//rayEngine->Render(SCREEN_SIZE, hub, camera, deltaTime / 2.0f);
 
 		glfwSwapBuffers(mainThread);
 	}
@@ -418,7 +418,7 @@ void SetClearColor(float r, float g, float b, float a){
 void togglePhysics(){
 	if (physicsTimer <= 0){
 		runPhysics = !runPhysics;
-		physicsTimer = 0.35;
+		physicsTimer = 0.35f;
 	}
 }
 void nextRenderer(){
@@ -442,4 +442,10 @@ void previousRenderer(){
 		}
 		renderSwitchTimer = 0.5f;
 	}
+}
+
+int main(){
+	Run();
+	SoulTerminate();
+	return 0;
 }

@@ -183,7 +183,6 @@
     <ClInclude Include="Source Files\Ray Engine\RayJob.h">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Source Files\Multithreading\Scheduler.h">
       <Filter>Engine Backend\Multithreading</Filter>
     </ClInclude>
@@ -264,7 +263,6 @@
     <ClCompile Include="Source Files\Ray Engine\RayJob.cpp">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Source Files\Multithreading\Scheduler.cpp">
       <Filter>Engine Backend\Multithreading</Filter>
     </ClCompile>

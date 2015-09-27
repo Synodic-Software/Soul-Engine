@@ -93,31 +93,7 @@ namespace shading {
 
 }
 
-shading::ShaderSupport*  LoadShaders(const char* vertFilename, const char* controlFilename, const char* evaluationFilename, const char* geometryFilename, const char* fragFilename) {
-	std::vector<shading::Shader> shaders;
-	shaders.push_back(shading::Shader::shaderFromFile(vertFilename, GL_VERTEX_SHADER));
-	shaders.push_back(shading::Shader::shaderFromFile(controlFilename, GL_TESS_CONTROL_SHADER));
-	shaders.push_back(shading::Shader::shaderFromFile(evaluationFilename, GL_TESS_EVALUATION_SHADER));
-	shaders.push_back(shading::Shader::shaderFromFile(geometryFilename, GL_GEOMETRY_SHADER));
-	shaders.push_back(shading::Shader::shaderFromFile(fragFilename, GL_FRAGMENT_SHADER));
-	return new shading::ShaderSupport(shaders);
-}
-
-shading::ShaderSupport*  LoadShaders(const char* vertFilename, const char* fragFilename) {
-	std::vector<shading::Shader> shaders;
-	shaders.push_back(shading::Shader::shaderFromFile(vertFilename, GL_VERTEX_SHADER));
-	shaders.push_back(shading::Shader::shaderFromFile(fragFilename, GL_FRAGMENT_SHADER));
-	return new shading::ShaderSupport(shaders);
-}
-shading::ShaderSupport*  LoadShaders(const char* compFilename) {
-	std::vector<shading::Shader> shaders;
-	shaders.push_back(shading::Shader::shaderFromFile(compFilename, GL_COMPUTE_SHADER));
-	return new shading::ShaderSupport(shaders);
-}
-shading::ShaderSupport*  LoadShaders(const char* vertFilename, const char* geometryFilename, const char* fragFilename) {
-	std::vector<shading::Shader> shaders;
-	shaders.push_back(shading::Shader::shaderFromFile(vertFilename, GL_VERTEX_SHADER));
-	shaders.push_back(shading::Shader::shaderFromFile(geometryFilename, GL_GEOMETRY_SHADER));
-	shaders.push_back(shading::Shader::shaderFromFile(fragFilename, GL_FRAGMENT_SHADER));
-	return new shading::ShaderSupport(shaders);
-}
+shading::ShaderSupport*  LoadShaders(const char* vertFilename, const char* controlFilename, const char* evaluationFilename, const char* geometryFilename, const char* fragFilename);
+shading::ShaderSupport*  LoadShaders(const char* vertFilename, const char* fragFilename);
+shading::ShaderSupport*  LoadShaders(const char* compFilename);
+shading::ShaderSupport*  LoadShaders(const char* vertFilename, const char* geometryFilename, const char* fragFilename);
