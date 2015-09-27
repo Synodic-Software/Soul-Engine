@@ -230,7 +230,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	//hub = new BVH();
 	rayEngine = new RayEngine();
 
-	Material::SetDefaultTexture("N:\\Documents\\Dropbox\\Phasma\\Phasma-1.0\\Phasma-1.0\\Resource Files\\Textures\\PhasmaDefault.png");
+	Material::SetDefaultTexture("N:\Documents\Soul Engine\Soul Engine\Soul Engine\Resources\Textures\SoulDefault.png");
 
 	glfwSetKeyCallback(mainThread, InputKeyboardCallback);
 	SetInputWindow(mainThread);
@@ -257,6 +257,9 @@ void SetSetting(std::string rName, std::string rValue){
 
 void Run(void)
 {
+	SoulInit();
+	SoulCreateWindow(WINDOWED, SPECTRAL);
+
 	SetKey(GLFW_KEY_SPACE, std::bind(&togglePhysics));
 	SetKey(GLFW_KEY_Q, std::bind(&previousRenderer));
 	SetKey(GLFW_KEY_E, std::bind(&nextRenderer));

@@ -100,6 +100,12 @@
     <Filter Include="Engine Backend\Bounding Volume Heirarchy\CUDA">
       <UniqueIdentifier>{c5294c1b-e4b7-432b-869b-46cf2a8e0bad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{fbf4ced6-05ea-4f3c-90c5-f7c50bc66365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{b9ff9fc1-7b62-4755-a64d-d50251a93121}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">

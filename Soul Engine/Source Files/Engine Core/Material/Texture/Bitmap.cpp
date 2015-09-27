@@ -167,7 +167,9 @@ Bitmap Bitmap::bitmapFromFile(std::string filePath) {
 		std::cerr << stbi_failure_reason() << std::endl;
 	}
 	
-    if(!pixels) throw std::runtime_error(stbi_failure_reason());
+	if (!pixels){
+		throw std::runtime_error(stbi_failure_reason());
+	}
     
     Bitmap bmp(width, height, (Format)channels, pixels);
     stbi_image_free(pixels);
