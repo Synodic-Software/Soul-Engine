@@ -176,7 +176,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Input\InputHelper.h" />
     <ClInclude Include="Source Files\Multithreading\Scheduler.h" />
     <ClInclude Include="Source Files\Ray Engine\RayEngine.h" />
-    <ClInclude Include="Source Files\Ray Engine\RayJob.h" />
+    <ClInclude Include="Source Files\Ray Engine\RayJob.cuh" />
     <ClInclude Include="Source Files\Renderer\Bidirectional Path Tracer\CUDA\BDPTracer.h" />
     <ClInclude Include="Source Files\Renderer\Path Tracer\CUDA\PTracer.h" />
     <ClInclude Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.h" />
@@ -204,7 +204,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Input\InputHelper.cpp" />
     <ClCompile Include="Source Files\Multithreading\Scheduler.cpp" />
     <ClCompile Include="Source Files\Ray Engine\RayEngine.cpp" />
-    <ClCompile Include="Source Files\Ray Engine\RayJob.cpp" />
+    <ClCompile Include="Source Files\Ray Engine\RayJob.cu" />
     <ClCompile Include="Source Files\Renderer\Bidirectional Path Tracer\CUDA\BDPtracer.cpp" />
     <ClCompile Include="Source Files\Renderer\Path Tracer\CUDA\PTracer.cpp" />
     <ClCompile Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.cpp" />
@@ -214,13 +214,13 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Utility\OpenGL\ShaderSupport.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Source Files\Resources\Textures\PhasmaDefault.png" />
-  </ItemGroup>
-  <ItemGroup>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu" />
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Quicksort.cu" />
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Source Files\Resources\Textures\SoulDefault.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

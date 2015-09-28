@@ -4,6 +4,7 @@
 #include "Engine Core/BasicDependencies.h"
 #include "SoulCore.h"
 #include "Settings.h"
+#include "Multithreading\Scheduler.h"
 #include "Engine Core/Frame/Frame.h"
 #include "Utility/OpenGL/ShaderSupport.h"
 #include "Engine Core/Material/Texture/Texture.h"
@@ -129,6 +130,9 @@ else{
 	MSAASamples = 16;
 }
 
+
+Scheduler::Pool((std::thread::hardware_concurrency()-1));
+
 }
 
 //Call to deconstuct both the engine and its dependencies
@@ -230,7 +234,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	//hub = new BVH();
 	rayEngine = new RayEngine();
 
-	Material::SetDefaultTexture("N:\Documents\Soul Engine\Soul Engine\Soul Engine\Resources\Textures\SoulDefault.png");
+	//Material::SetDefaultTexture("N:\Documents\Soul Engine\Soul Engine\Soul Engine\Source Files\Resources\Textures\SoulDefault.png");
 
 	glfwSetKeyCallback(mainThread, InputKeyboardCallback);
 	SetInputWindow(mainThread);
