@@ -175,6 +175,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Input\Input.h" />
     <ClInclude Include="Source Files\Input\InputHelper.h" />
     <ClInclude Include="Source Files\Multithreading\Scheduler.h" />
+    <ClInclude Include="Source Files\Ray Engine\Ray.cuh" />
+    <ClInclude Include="Source Files\Ray Engine\RayEngine.cuh" />
     <ClInclude Include="Source Files\Ray Engine\RayEngine.h" />
     <ClInclude Include="Source Files\Ray Engine\RayJob.cuh" />
     <ClInclude Include="Source Files\Renderer\Bidirectional Path Tracer\CUDA\BDPTracer.h" />
@@ -217,6 +219,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu" />
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Quicksort.cu" />
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu" />
+    <CudaCompile Include="Source Files\Ray Engine\Ray.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu" />
   </ItemGroup>
   <ItemGroup>

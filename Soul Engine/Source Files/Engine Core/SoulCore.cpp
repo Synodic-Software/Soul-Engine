@@ -27,7 +27,6 @@ glm::uvec2 SCREEN_SIZE;
 Settings* settings;
 unsigned int MSAASamples;
 //BVH* hub;
-RayEngine* rayEngine;
 Camera camera;
 
 
@@ -139,7 +138,6 @@ Scheduler::Pool((std::thread::hardware_concurrency()-1));
 void SoulTerminate(){
 
 	//delete hub;
-	delete rayEngine;
 	delete settings;
 	glfwTerminate();
 
@@ -232,7 +230,6 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	//threads = new ThreadPool(concurentThreadsSupported);
 
 	//hub = new BVH();
-	rayEngine = new RayEngine();
 
 	//Material::SetDefaultTexture("N:\Documents\Soul Engine\Soul Engine\Soul Engine\Source Files\Resources\Textures\SoulDefault.png");
 
@@ -390,6 +387,14 @@ void Run(void)
 			currentTime = glfwGetTime() - currentTime;
 
 			std::cout << "CreateHeirarchy(ms): " << (float)currentTime * 1000 << std::endl;
+
+
+
+
+
+			RayEngine::Process();
+
+
 
 
 			t += deltaTime;

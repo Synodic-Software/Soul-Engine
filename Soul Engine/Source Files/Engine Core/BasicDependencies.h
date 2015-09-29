@@ -33,3 +33,4 @@
 #include "Utility\OpenGL\GLError.h"
 #include <cuda.h>
 #include <cudaGL.h>
+#include <curand.h>

@@ -186,6 +186,12 @@
     <ClInclude Include="Source Files\Ray Engine\RayJob.cuh">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Ray Engine\RayEngine.cuh">
+      <Filter>Engine Backend\Ray Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Ray Engine\Ray.cuh">
+      <Filter>Engine Backend\Ray Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -278,6 +284,9 @@
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA</Filter>
     </CudaCompile>
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu">
+      <Filter>Engine Backend\Ray Engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Ray Engine\Ray.cu">
       <Filter>Engine Backend\Ray Engine</Filter>
     </CudaCompile>
   </ItemGroup>
