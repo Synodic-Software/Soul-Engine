@@ -231,7 +231,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
 	//hub = new BVH();
 
-	//Material::SetDefaultTexture("N:\Documents\Soul Engine\Soul Engine\Soul Engine\Source Files\Resources\Textures\SoulDefault.png");
+	//Material::SetDefaultTexture("N:\\Documents\\Soul Engine\\Soul Engine\\Soul Engine\\Source Files\\Resources\\Textures\\SoulDefault.png");
 
 	glfwSetKeyCallback(mainThread, InputKeyboardCallback);
 	SetInputWindow(mainThread);
