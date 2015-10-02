@@ -133,6 +133,8 @@ void Renderer::RenderRequest(glm::uvec2 screen, Camera& camera, double timeTarge
 
 void Renderer::Render(){
 
+
+		Renderjob
 		
 		GLuint renderBuffer = mainTracer->Render(modifiedScreen, bvh, camera);
 
