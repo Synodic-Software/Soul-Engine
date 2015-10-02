@@ -5,10 +5,14 @@
 #include "Ray Engine\Ray.cuh"
 enum castType{ RayCOLOUR, RayDISTANCE, RayOBJECT_ID, RayNORMAL, RayUV };
 
+class RayJob;
+
 //forward,right, origin, distance from camera, fov, index
 typedef Ray(*RayFunction)(RayJob&, uint);
 
 #define RAY_FUNCTION __device__ RayFunction
+
+#define RAY_FUNC_PREFIX __device__ Ray
 
 class RayJob : public Managed{
 public:

@@ -63,7 +63,7 @@ __host__ void ProcessJobs(RayJob* jobs){
 
 
 	//execute engine
-	EngineExecute << <GridDim, BlockDim >> >(n,*jobs,);
+	EngineExecute << <GridDim, BlockDim >> >(n,*jobs);
 
 
 	}

@@ -1,8 +1,22 @@
 #include "Renderer.h"
 
+RAY_FUNC_PREFIX cameraSetup(RayJob& job, uint index){
+
+
+
+}
+
 Renderer::Renderer(Camera& camera){
 
-	RenderJob = RayEngine::AddRecurringRayJob();
+
+
+
+	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR, cameraSetup,
+		0, 0, make_float3(camera.forward().x, camera.forward().y, camera.forward().z), 
+		make_float3(camera.right().x, camera.right().y, camera.right().z), 
+		make_float3(camera.position().x, camera.position().y, camera.position().z),
+		1.0f*METER, make_float2(camera.fieldOfView().x, camera.fieldOfView().y));
+
 
 	prevTime = 0.0f;
 	changeCutoff = 0.1f;
@@ -10,8 +24,8 @@ Renderer::Renderer(Camera& camera){
 	samplesMax = 4;
 	samplesMin = 1;
 	samples = samplesMin;
-	CUDAtoScreen = LoadShaders("N:\\Documents\\Dropbox\\Phasma\\Phasma-1.0\\Phasma-1.0\\Resource Files\\vertex-shader[RayEngine].txt",
-		"N:\\Documents\\Dropbox\\Phasma\\Phasma-1.0\\Phasma-1.0\\Resource Files\\fragment-shader[RayEngine].txt");
+	CUDAtoScreen = LoadShaders("vertex-shader[RayEngine].txt",
+							   "fragment-shader[RayEngine].txt");
 	cameraUniform = CUDAtoScreen->uniform("camera");
 	modelUniform = CUDAtoScreen->uniform("model");
 	screenUniform = CUDAtoScreen->uniform("screen");
@@ -20,7 +34,7 @@ Renderer::Renderer(Camera& camera){
 
 	cuGraphicsGLRegisterImage(&graphicsResource
 		, displayTexture
-		, GL_TEXTURE_3D
+		, GL_TEXTURE_2D
 		, CU_GRAPHICS_REGISTER_FLAGS_SURFACE_LDST);
 
 	cuGraphicsMapResources(1, &graphicsResource, 0);
