@@ -4,6 +4,14 @@
 #include <IOstream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "cuda_runtime.h"
+#include <cuda.h>
+#include <cudaGL.h>
+#include <curand.h>
+
+#define GLM_FORCE_CUDA
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/noise.hpp>
@@ -28,9 +36,6 @@
 #include <future>
 #include <functional>
 #include "Metrics.h"
-#include "cuda_runtime.h"
+
 #include "device_launch_parameters.h"
 #include "Utility\OpenGL\GLError.h"
-#include <cuda.h>
-#include <cudaGL.h>
-#include <curand.h>

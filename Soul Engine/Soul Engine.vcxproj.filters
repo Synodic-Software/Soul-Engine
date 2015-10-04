@@ -100,6 +100,9 @@
     <Filter Include="Engine Backend\Bounding Volume Heirarchy\CUDA">
       <UniqueIdentifier>{c5294c1b-e4b7-432b-869b-46cf2a8e0bad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera\CUDA">
+      <UniqueIdentifier>{c202798d-1fc2-49c9-83f0-52a2549fb6a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -137,9 +140,6 @@
     </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Bitmap.h">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Camera\Camera.h">
-      <Filter>Engine Backend\Engine Core\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.h">
       <Filter>Engine Backend\Renderer\Ray Tracer\CUDA</Filter>
@@ -192,6 +192,12 @@
     <ClInclude Include="Source Files\Ray Engine\Ray.cuh">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Utility\CUDA\HelperClasses.cuh">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh">
+      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -226,9 +232,6 @@
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Material\Texture\Texture.cpp">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Camera\Camera.cpp">
-      <Filter>Engine Backend\Engine Core\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.cpp">
       <Filter>Engine Backend\Renderer\Ray Tracer\CUDA</Filter>
@@ -272,6 +275,9 @@
     <ClCompile Include="Source Files\Ray Engine\RayJob.cu">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu">
+      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu">
@@ -288,6 +294,9 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Ray Engine\Ray.cu">
       <Filter>Engine Backend\Ray Engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Utility\CUDA\HelperClasses.cu">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

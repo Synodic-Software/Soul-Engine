@@ -8,38 +8,37 @@ void RayEngine::Process(){
 	ProcessJobs(jobs);
 }
 
-RayJob* RayEngine::AddRayJob(castType whatToGet, RayFunction setupFunction, uint rayAmount,
-	uint samples, float3 forward, float3 right, float3 ori, float dist, float2 fov){
+RayJob* RayEngine::AddRayJob(castType whatToGet, uint rayAmount,
+	uint samples, Camera* camera){
 
 	RayJob* temp = jobs;
-	RayJob* newHead = new RayJob(whatToGet, setupFunction, rayAmount, samples, false, forward, right, ori, dist, fov);
+	RayJob* newHead = new RayJob(whatToGet, rayAmount, samples, camera, false);
 	newHead->nextRay = temp;
 	jobSize++;
 
+	return newHead;
 }
 
-RayJob* RayEngine::AddRecurringRayJob(castType whatToGet, RayFunction setupFunction, 
-	uint rayAmount, uint samples, float3 forward, float3 right, float3 ori, float dist, float2 fov){
+RayJob* RayEngine::AddRecurringRayJob(castType whatToGet, 
+	uint rayAmount, uint samples, Camera* camera){
 
 	RayJob* temp = jobs;
-	RayJob* newHead = new RayJob(whatToGet, setupFunction, rayAmount, samples, true, forward, right, ori, dist, fov);
+	RayJob* newHead = new RayJob(whatToGet, rayAmount, samples, camera, true);
 	newHead->nextRay = temp;
 	jobSize++;
 
+	return newHead;
 }
 
-bool RayEngine::ChangeJob(RayJob* job, RayFunction setupFunction, uint rayAmount, 
-	uint samples, float3 forward, float3 right, float3 ori, float dist, float2 fov){
+bool RayEngine::ChangeJob(RayJob* job, uint rayAmount, 
+	uint samples, Camera* camera){
 
-	if (job->IsReaccuring() && rayAmount<=job->rayBaseAmount){
-		job->raySetup = setupFunction;
+	if (job->IsRecurring() && rayAmount<=job->rayBaseAmount){
 		job->rayAmount = rayAmount;
 		job->samples = samples;
-		job->forward = forward;
-		job->right = right;
-		job->origin = ori;
-		job->distanceFromO = dist;
-		job->fov = fov;
+		job->camera = camera;
+
+		return true;
 	}
 	else{
 		return false;

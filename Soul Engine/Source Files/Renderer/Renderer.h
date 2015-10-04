@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine Core/Camera/Camera.h"
+#include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Engine Core/BasicDependencies.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Utility/OpenGL/ShaderSupport.h"
@@ -11,15 +11,12 @@
 class Renderer{
 public:
 
-	Renderer(Camera&);
+	Renderer(Camera&, glm::uvec2);
 
 
-	void RenderRequest(glm::uvec2, Camera&, double);
+	void RenderRequestChange(glm::uvec2, Camera&, double);
 	void Render();
 
-protected:
-
-	RAY_FUNCTION setupFunction;
 
 private:
 	RayJob* RenderJob;
@@ -29,7 +26,7 @@ private:
 	GLuint samplesMax;
 	GLuint samplesMin;
 	GLuint samples;
-
+	glm::uvec2 modifiedScreen;
 
 	GLuint vao;
 	GLuint vbo;
@@ -46,7 +43,6 @@ private:
 
 	shading::ShaderSupport* CUDAtoScreen;
 
-	GLuint displayTexture;
-	CUarray cudaDisplay;
+	GLuint renderBuffer;
 	CUgraphicsResource graphicsResource;
 };

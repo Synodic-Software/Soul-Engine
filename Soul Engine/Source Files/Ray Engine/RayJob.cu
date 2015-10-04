@@ -1,26 +1,30 @@
 #include "RayJob.cuh"
 
-RayJob::RayJob(castType whatToGet, RayFunction setupFunction, uint rayAmount, uint newSamples, bool isR, float3 forwardN, float3 rightN, float3 oriN, float distN, float2 fovN){
+RayJob::RayJob(castType whatToGet, uint rayAmount, uint newSamples, Camera* cameraN, bool isRecurringN){
 
-	isReaccuring = isR;
 	type = whatToGet;
 	rayAmount = rayAmount;
 	rayBaseAmount = rayAmount;
-	raySetup = setupFunction;
 	samples = newSamples;
-	forward = forwardN;
-	right = rightN;
-	origin = oriN;
-	distanceFromO = distN;
-	fov = fovN;
+	camera = cameraN;
+	isRecurring = isRecurringN;
+	nextRay = NULL;
 
-
-	if (whatToGet!=RayOBJECT_ID){
+	if (whatToGet != RayOBJECT_ID&&!RayCOLOUR_TO_TEXTURE){
 		cudaMallocManaged(&resultsF, rayBaseAmount);
 		resultsI = NULL;
+		resultsT = NULL;
+	}
+	else if (RayCOLOUR_TO_TEXTURE){
+
+		
+
+		resultsI = NULL;
+		resultsF = NULL;
 	}
 	else{
 		cudaMallocManaged(&resultsI, rayBaseAmount);
 		resultsF = NULL;
+		resultsT = NULL;
 	}
 }

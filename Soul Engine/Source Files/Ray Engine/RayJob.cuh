@@ -3,16 +3,9 @@
 #include "Engine Core\BasicDependencies.h"
 #include "Utility\CUDA\CUDAManaged.cu"
 #include "Ray Engine\Ray.cuh"
-enum castType{ RayCOLOUR, RayDISTANCE, RayOBJECT_ID, RayNORMAL, RayUV };
+#include "Engine Core\Camera\CUDA\Camera.cuh"
 
-class RayJob;
-
-//forward,right, origin, distance from camera, fov, index
-typedef Ray(*RayFunction)(RayJob&, uint);
-
-#define RAY_FUNCTION __device__ RayFunction
-
-#define RAY_FUNC_PREFIX __device__ Ray
+enum castType{ RayCOLOUR, RayCOLOUR_TO_TEXTURE, RayDISTANCE, RayOBJECT_ID, RayNORMAL, RayUV };
 
 class RayJob : public Managed{
 public:
@@ -22,28 +15,45 @@ public:
 
 	//some device function to be pointed to
 
-	RayJob(castType, RayFunction, uint, uint, bool, float3, float3, float3, float, float2);
-	bool IsReaccuring() const{
-		return isReaccuring;
+	RayJob(castType, uint, uint, Camera* camera, bool isRecurring);
+
+	RayJob* nextRay;	
+
+	Camera* camera;
+
+	CUDA_FUNCTION bool IsRecurring() const{
+		return isRecurring;
 	}
-	RayJob* nextRay=NULL;	
-
-	float3 forward;
-	float3 right;
-	float3 origin;
-	float distanceFromO;
-	float2 fov;
-
-	float3* resultsF;
-	uint1* resultsI;
-
+	CUDA_FUNCTION glm::vec4* GetResultBuffer(){
+		return resultsT;
+	}
+	CUDA_FUNCTION glm::vec3* GetResultFloat(){
+		return resultsF;
+	}
+	CUDA_FUNCTION uint* GetResultInt(){
+		return resultsI;
+	}
 
 	uint samples;
 	castType type;
 	uint rayAmount;
 	uint rayBaseAmount;
-	RayFunction raySetup;
-private:
-	bool isReaccuring;
 
+private:
+
+	bool isRecurring;
+
+	//result containers
+
+	//for texture setup
+	
+
+	//for texture setup
+	glm::vec4* resultsT;
+
+	//for float values
+	glm::vec3* resultsF;
+
+	//for int values
+	uint* resultsI;
 };

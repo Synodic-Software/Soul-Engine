@@ -1,12 +1,13 @@
 #include "Ray Engine\RayEngine.cuh"
 
+uint seed=0;
 
 __device__ uint getGlobalIdx_1D_1D()
 {
 	return blockIdx.x *blockDim.x + threadIdx.x;
 }
 
-__global__ void EngineExecute(uint n, RayJob& jobs){
+__global__ void EngineExecute(uint n, RayJob& jobs,uint seed){
 	uint index = getGlobalIdx_1D_1D();
 
 	if (index < n){
@@ -20,23 +21,32 @@ __global__ void EngineExecute(uint n, RayJob& jobs){
 
 		uint localIndex = index - n;
 
-		Ray ray = (*job.raySetup)(job, index);
+		Ray ray = job.camera->SetupRay(index,n,seed);
 
+		glm::vec2 fov= job.camera->FieldOfView();
+		float aspectRatio = fov.x / fov.y;
+		int screenX = (n*aspectRatio) / (aspectRatio + 1);
+		int screenY = n / screenX;
+		uint i = localIndex % screenX;
+		uint j = localIndex / screenX;
 
 		//calculate something
 
 
-		if (job.type != RayOBJECT_ID){
-			job.resultsF[localIndex] = make_float3(0.5f, 0.5f, 0.5f);
+		if (job.type != RayOBJECT_ID&&!RayCOLOUR_TO_TEXTURE){
+			job.GetResultFloat()[localIndex] = glm::vec3(0.5f, 0.5f, 0.5f);
+		}
+		else if (RayCOLOUR_TO_TEXTURE){
+			job.GetResultBuffer()[localIndex] = glm::vec4(0.5f, 0.5f, 0.5f,1.0f);
 		}
 		else{
-			job.resultsI[localIndex] = make_uint1(1);
+			job.GetResultInt()[localIndex] = 1;
 		}
 	}
 }
 
 __host__ void ProcessJobs(RayJob* jobs){
-
+	seed++;
 
 	if (jobs!=NULL){
 	uint n = 0;
@@ -47,25 +57,28 @@ __host__ void ProcessJobs(RayJob* jobs){
 		temp = temp->nextRay;
 		n += temp->rayAmount*temp->samples;
 	}
-	const int warpSize = 32;
-	const int maxGridSize = 112; // this is 8 blocks per MP for a Telsa C2050
 
-	int warpCount = (n / warpSize) + (((n % warpSize) == 0) ? 0 : 1);
-	int warpPerBlock = glm::max(1, glm::min(4, warpCount));
+	if (n!=0){
 
-	// For the cdiv kernel, the block size is allowed to grow to
-	// four warps per block, and the block count becomes the warp count over four
-	// or the GPU "fill" whichever is smaller
-	int threadCount = warpSize * warpPerBlock;
-	int blockCount = glm::min(maxGridSize, glm::max(1, warpCount / warpPerBlock));
-	dim3 BlockDim = dim3(threadCount, 1, 1);
-	dim3 GridDim = dim3(blockCount, 1, 1);
+		const int warpSize = 32;
+		const int maxGridSize = 112; // this is 8 blocks per MP for a Telsa C2050
+
+		int warpCount = (n / warpSize) + (((n % warpSize) == 0) ? 0 : 1);
+		int warpPerBlock = glm::max(1, glm::min(4, warpCount));
+
+		// For the cdiv kernel, the block size is allowed to grow to
+		// four warps per block, and the block count becomes the warp count over four
+		// or the GPU "fill" whichever is smaller
+		int threadCount = warpSize * warpPerBlock;
+		int blockCount = glm::min(maxGridSize, glm::max(1, warpCount / warpPerBlock));
+		dim3 BlockDim = dim3(threadCount, 1, 1);
+		dim3 GridDim = dim3(blockCount, 1, 1);
 
 
-	//execute engine
-	EngineExecute << <GridDim, BlockDim >> >(n,*jobs);
+		//execute engine
+		EngineExecute << <GridDim, BlockDim >> >(n, *jobs,seed);
 
-
+	}
 	}
 
 

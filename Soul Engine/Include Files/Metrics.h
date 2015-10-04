@@ -13,6 +13,7 @@ const float MINUTE = 60;
 const float SECOND = 1;
 const float MILLISECOND = 0.001f;
 const float PI = 3.14159265358979323846264338327950288f;
+const float TWO_PI = PI * 2;
 const float EPSILON = 0.00000001f;
 const float GRAVITY = -9.80665f;
 const float NOON = HOUR * 6;

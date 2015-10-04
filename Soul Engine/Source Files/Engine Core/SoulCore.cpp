@@ -8,7 +8,7 @@
 #include "Engine Core/Frame/Frame.h"
 #include "Utility/OpenGL/ShaderSupport.h"
 #include "Engine Core/Material/Texture/Texture.h"
-#include "Engine Core/Camera/Camera.h"
+#include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/Input.h"
 #include "Ray Engine/RayEngine.h"
 #include "Bounding Volume Heirarchy/BVH.h"
@@ -27,7 +27,7 @@ glm::uvec2 SCREEN_SIZE;
 Settings* settings;
 unsigned int MSAASamples;
 //BVH* hub;
-Camera camera;
+Camera* camera= new Camera();
 
 
 bool freeCam;
@@ -49,9 +49,7 @@ glm::vec2 mouseChangeDegrees;
 void SoulInit(){
 seed = GLuint(time(NULL));
 srand(seed);
-
 settings = new Settings("Settings.ini");
-
 physicsTimer = 0;
 renderSwitchTimer = 0;
 
@@ -221,7 +219,6 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
 	// setup camera 
 	freeCam = true;
-	camera.setViewportAspectRatio(SCREEN_SIZE.x / (float)SCREEN_SIZE.y);
 
 	camera.setPosition(glm::vec3(-(DECAMETER * 5), DECAMETER * 5, -(DECAMETER * 5)));
 	camera.offsetOrientation(135, 45);
@@ -416,12 +413,12 @@ glm::vec2* GetMouseChange(){
 	return &mouseChangeDegrees;
 }
 void AttachCamera(Character& character){
-	freeCam = false;
-	camera.AttachCamera(&(character.camera));
+	/*freeCam = false;
+	camera.AttachCamera(&(character.camera));*/
 }
 void DetachCamera(){
-	freeCam = true;
-	camera.DetachCamera();
+	/*freeCam = true;
+	camera.DetachCamera();*/
 }
 
 void SetClearColor(float r, float g, float b, float a){

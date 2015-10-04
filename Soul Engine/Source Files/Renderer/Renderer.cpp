@@ -1,21 +1,11 @@
 #include "Renderer.h"
 
-RAY_FUNC_PREFIX cameraSetup(RayJob& job, uint index){
-
-
-
-}
-
-Renderer::Renderer(Camera& camera){
+Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 
 
 
-	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR, cameraSetup,
-		0, 0, make_float3(camera.forward().x, camera.forward().y, camera.forward().z), 
-		make_float3(camera.right().x, camera.right().y, camera.right().z), 
-		make_float3(camera.position().x, camera.position().y, camera.position().z),
-		1.0f*METER, make_float2(camera.fieldOfView().x, camera.fieldOfView().y));
+	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR, screen.x*screen.y, 1,&camera);
 
 
 	prevTime = 0.0f;
@@ -30,20 +20,20 @@ Renderer::Renderer(Camera& camera){
 	modelUniform = CUDAtoScreen->uniform("model");
 	screenUniform = CUDAtoScreen->uniform("screen");
 
+	glGenBuffers(1, &renderBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBuffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER,
+		screen.x*screen.y*sizeof(glm::vec4),
+		NULL, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	cuGraphicsGLRegisterBuffer(&graphicsResource
+		, renderBuffer
+		, cudaGraphicsRegisterFlagsWriteDiscard);
 
 
-	cuGraphicsGLRegisterImage(&graphicsResource
-		, displayTexture
-		, GL_TEXTURE_2D
-		, CU_GRAPHICS_REGISTER_FLAGS_SURFACE_LDST);
-
-	cuGraphicsMapResources(1, &graphicsResource, 0);
-
-	cuGraphicsSubResourceGetMappedArray(&cudaDisplay
-		, graphicsResource
-		, 0, 0);
-
-	cuGraphicsUnmapResources(1, &graphicsResource, 0);
+	cuGLRegisterBufferObject(renderBuffer);
 
 
 
@@ -102,7 +92,7 @@ Renderer::Renderer(Camera& camera){
 	glBindVertexArray(0);
 }
 
-void Renderer::RenderRequest(glm::uvec2 screen, Camera& camera, double timeTarget){
+void Renderer::RenderRequestChange(glm::uvec2 screen, Camera& camera, double timeTarget){
 	//float avgTime = 0;
 	//for (std::list<float>::iterator itr = previousFrames.begin(); itr != previousFrames.end(); itr++){
 	//	avgTime += *itr;
@@ -127,18 +117,14 @@ void Renderer::RenderRequest(glm::uvec2 screen, Camera& camera, double timeTarge
 	calcPass--;
 	}*/
 	prevTime = glfwGetTime() - newTime;
-	glm::uvec2 modifiedScreen = glm::vec2(screen) / glm::vec2(1);
+	modifiedScreen = glm::vec2(screen) / glm::vec2(1);
 }
 
 
 void Renderer::Render(){
 
 
-		Renderjob
-		
-		GLuint renderBuffer = mainTracer->Render(modifiedScreen, bvh, camera);
-
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBuffer);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, displayTexture);
 
 		CUDAtoScreen->use();
 		glBindVertexArray(vao);

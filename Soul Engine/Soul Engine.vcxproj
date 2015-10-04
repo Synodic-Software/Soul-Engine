@@ -92,6 +92,9 @@
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
 copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <CudaCompile>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -110,6 +113,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -131,6 +135,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
 copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <CudaCompile>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -153,6 +160,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -161,7 +169,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h" />
-    <ClInclude Include="Source Files\Engine Core\Camera\Camera.h" />
+    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh" />
     <ClInclude Include="Source Files\Engine Core\Frame\Frame.h" />
     <ClInclude Include="Source Files\Engine Core\Material\Material.h" />
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Bitmap.h" />
@@ -183,6 +191,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Renderer\Path Tracer\CUDA\PTracer.h" />
     <ClInclude Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.h" />
     <ClInclude Include="Source Files\Renderer\Renderer.h" />
+    <ClInclude Include="Source Files\Utility\CUDA\HelperClasses.cuh" />
     <ClInclude Include="Source Files\Utility\OpenGL\GLError.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\Shader.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h" />
@@ -190,7 +199,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
-    <ClCompile Include="Source Files\Engine Core\Camera\Camera.cpp" />
+    <ClCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />
     <ClCompile Include="Source Files\Engine Core\Material\Material.cpp" />
     <ClCompile Include="Source Files\Engine Core\Material\Texture\Bitmap.cpp" />
@@ -221,6 +230,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu" />
     <CudaCompile Include="Source Files\Ray Engine\Ray.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu" />
+    <CudaCompile Include="Source Files\Utility\CUDA\HelperClasses.cu" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source Files\Resources\Textures\SoulDefault.png" />

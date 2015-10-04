@@ -1,7 +1,7 @@
-#ifndef Managed_H 
-#define Managed_H
+#pragma once
 
 #include "Engine Core\BasicDependencies.h"
+#include "Utility\CUDA\HelperClasses.cuh"
 
 class Managed
 {
@@ -13,10 +13,8 @@ public:
 		return ptr;
 	}
 
-		void operator delete(void *ptr) {
+	void operator delete(void *ptr) {
 		cudaDeviceSynchronize();
 		cudaFree(ptr);
 	}
 };
-
-#endif
