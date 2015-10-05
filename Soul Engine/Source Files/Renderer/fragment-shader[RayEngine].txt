@@ -1,0 +1,24 @@
+﻿#version 430
+
+	layout( std430, binding=0 ) buffer texB 
+	{
+		vec4 tex[];
+	};
+
+	//layout(origin_upper_left,pixel_center_integer) in vec4 gl_FragCoord;
+
+	in vec2 texCoord_FS_in;
+    out vec4 fragment;
+
+	uniform vec2 screen;
+
+    void main(){
+		vec2 pos= texCoord_FS_in.xy*screen;
+
+		vec4 interp2=mix(tex[uint(ceil(pos.y)*uint(screen.x)+floor(pos.x))],tex[uint(ceil(pos.y)*uint(screen.x)+ceil(pos.x))],pos.x-uint(pos.x));
+		vec4 interp1=mix(tex[uint(floor(pos.y)*uint(screen.x)+floor(pos.x))],tex[uint(floor(pos.y)*uint(screen.x)+ceil(pos.x))],pos.x-uint(pos.x));
+
+		vec4 Color=mix(interp1,interp2,pos.y-uint(pos.y));
+
+		fragment = vec4(Color.x,Color.y,Color.z,1.0f);
+	}

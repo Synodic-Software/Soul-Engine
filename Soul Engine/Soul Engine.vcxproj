@@ -169,7 +169,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h" />
-    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh" />
+    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.h" />
     <ClInclude Include="Source Files\Engine Core\Frame\Frame.h" />
     <ClInclude Include="Source Files\Engine Core\Material\Material.h" />
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Bitmap.h" />
@@ -234,6 +234,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source Files\Resources\Textures\SoulDefault.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Source Files\Renderer\fragment-shader[RayEngine].txt" />
+    <Text Include="Source Files\Renderer\vertex-shader[RayEngine].txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

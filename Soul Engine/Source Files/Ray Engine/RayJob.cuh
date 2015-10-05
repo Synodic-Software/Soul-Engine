@@ -3,7 +3,7 @@
 #include "Engine Core\BasicDependencies.h"
 #include "Utility\CUDA\CUDAManaged.cu"
 #include "Ray Engine\Ray.cuh"
-#include "Engine Core\Camera\CUDA\Camera.cuh"
+#include "Engine Core\Camera\CUDA\Camera.h"
 
 enum castType{ RayCOLOUR, RayCOLOUR_TO_TEXTURE, RayDISTANCE, RayOBJECT_ID, RayNORMAL, RayUV };
 

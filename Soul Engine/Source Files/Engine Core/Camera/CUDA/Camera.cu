@@ -1,9 +1,9 @@
 
-#include "Camera.cuh"
+#include "Camera.h"
 #include "thrust\random.h"
 
 
-Camera::Camera() :
+CUDA_FUNCTION Camera::Camera() :
     position(0.0f,0.0f,0.0f),
 	forward(0.0f,0.0f,1.0f),
 	right(1.0f, 0.0f, 0.0f),
@@ -36,14 +36,14 @@ CUDA_FUNCTION void Camera::SetFieldOfView(glm::vec2 fieldOfView) {
 
 
 
-glm::vec3 Camera::Forward() const {
+CUDA_FUNCTION glm::vec3 Camera::Forward() const {
     return forward;
 }
 CUDA_FUNCTION void Camera::SetForward(glm::vec3& forN){
 	forward = forN;
 }
 
-glm::vec3 Camera::Right() const {
+CUDA_FUNCTION glm::vec3 Camera::Right() const {
     return right;
 }
 CUDA_FUNCTION void Camera::SetRight(glm::vec3& rightn) {
@@ -107,4 +107,24 @@ CUDA_FUNCTION Ray Camera::SetupRay(uint index, uint n,uint seed){
 	Ray ray=Ray(aperturePoint, normalize(apertureToImagePlane));
 
 	return ray;
+}
+
+CUDA_FUNCTION bool Camera::IsViewable() const{
+	return !circularDistribution;
+}
+CUDA_FUNCTION void Camera::SetCircle(bool cir){
+	circularDistribution = cir;
+}
+CUDA_FUNCTION void Camera::SetResolution(glm::uvec2 res){
+	resolution = res;
+}
+CUDA_FUNCTION glm::uvec2 Camera::GetResolution(){
+	return resolution;
+}
+CUDA_FUNCTION void Camera::OffsetOrientation(float x, float y){
+	right = glm::rotateX(right, glm::radians(x));
+	forward = glm::rotateX(forward, glm::radians(x));
+
+	right = glm::rotateY(right, glm::radians(y));
+	forward = glm::rotateY(forward, glm::radians(y));
 }

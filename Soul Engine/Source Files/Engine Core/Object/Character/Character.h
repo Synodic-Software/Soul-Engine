@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine Core/Object/Object.h"
-#include "Engine Core/Camera/Camera.h"
+#include "Engine Core/Camera/CUDA/Camera.h"
 void IncrementTime(float);
 
 class Character : public Object{

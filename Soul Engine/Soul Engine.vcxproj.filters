@@ -195,7 +195,7 @@
     <ClInclude Include="Source Files\Utility\CUDA\HelperClasses.cuh">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh">
+    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.h">
       <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </ClInclude>
   </ItemGroup>
@@ -303,5 +303,13 @@
     <Image Include="Source Files\Resources\Textures\SoulDefault.png">
       <Filter>Engine Backend\Resources\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Source Files\Renderer\vertex-shader[RayEngine].txt">
+      <Filter>Engine Backend\Renderer</Filter>
+    </Text>
+    <Text Include="Source Files\Renderer\fragment-shader[RayEngine].txt">
+      <Filter>Engine Backend\Renderer</Filter>
+    </Text>
   </ItemGroup>
 </Project>

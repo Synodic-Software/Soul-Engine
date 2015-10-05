@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine Core/Camera/CUDA/Camera.cuh"
+#include "Engine Core/Camera/CUDA/Camera.h"
 #include "Engine Core/BasicDependencies.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Utility/OpenGL/ShaderSupport.h"
