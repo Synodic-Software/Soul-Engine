@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Engine Core\BasicDependencies.h"
-#include "Utility\CUDA\CUDAManaged.cu"
 #include "Ray Engine\Ray.cuh"
 
     class Camera : public Managed {
     public:
 		CUDA_FUNCTION Camera();
-        
+		CUDA_FUNCTION ~Camera();
          //The position of the camera.
         
         CUDA_FUNCTION glm::vec3 Position() const;

@@ -4,7 +4,7 @@
 //#include "Utility/OpenGL/ShaderSupport.h"
 //#include "Utility/OpenGL/Shader.h"
 //#include "Engine Core/Material/Texture/Texture.h"
-//#include "Engine Core/Camera/Camera.h"
+//#include "Engine Core/Camera/Camera.cuh"
 //#include "Engine Core/Material/Texture/Bitmap.h"
 ////#include "Algorithms/Data Algorithms/GPU Quicksort/CUDA/QuickSort.h"
 //#include "Engine Core/Material/Material.h"

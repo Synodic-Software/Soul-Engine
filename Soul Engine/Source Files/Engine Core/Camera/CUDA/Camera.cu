@@ -1,7 +1,4 @@
-
-#include "Camera.h"
-#include "thrust\random.h"
-
+#include "Engine Core/Camera/CUDA/Camera.cuh"
 
 CUDA_FUNCTION Camera::Camera() :
     position(0.0f,0.0f,0.0f),
@@ -12,6 +9,10 @@ CUDA_FUNCTION Camera::Camera() :
 	focalDistance(17*MILLIMETER),
 	circularDistribution(false)
 {	
+}
+
+CUDA_FUNCTION  Camera::~Camera(){
+
 }
 
 
@@ -27,7 +28,7 @@ CUDA_FUNCTION void Camera::OffsetPosition(const glm::vec3& offset) {
     position += offset;
 }
 
-CUDA_FUNCTION glm::vec2 Camera::FieldOfView() const {
+CUDA_FUNCTION glm::vec2 Camera::FieldOfView() const{
     return fieldOfView;
 }
 CUDA_FUNCTION void Camera::SetFieldOfView(glm::vec2 fieldOfView) {
@@ -104,7 +105,7 @@ CUDA_FUNCTION Ray Camera::SetupRay(uint index, uint n,uint seed){
 	//aperturePoint = renderCamera.position;
 	glm::vec3 apertureToImagePlane = pointOnImagePlane - aperturePoint;
 
-	Ray ray=Ray(aperturePoint, normalize(apertureToImagePlane));
+	Ray ray=Ray(aperturePoint, glm::normalize(apertureToImagePlane));
 
 	return ray;
 }

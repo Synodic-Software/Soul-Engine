@@ -5,8 +5,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "cuda_runtime.h"
+
 #include <cuda.h>
+#include "cuda_runtime.h"
 #include <cudaGL.h>
 #include <curand.h>
 
@@ -40,3 +41,6 @@
 
 #include "device_launch_parameters.h"
 #include "Utility\OpenGL\GLError.h"
+#include "thrust\random.h"
+
+#include "Utility\CUDA\CUDAManaged.cuh"

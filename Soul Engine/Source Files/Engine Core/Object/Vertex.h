@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine Core\BasicDependencies.h"
-#include "Utility\CUDA\CUDAManaged.cu"
+#include "Utility\CUDA\CUDAManaged.cuh"
 
 class Vertex : public Managed
 {

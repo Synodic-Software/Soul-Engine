@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine Core\BasicDependencies.h"
-#include "Utility\CUDA\CUDAManaged.cu"
+#include "Utility\CUDA\CUDAManaged.cuh"
 #include "Engine Core\Object\Vertex.h"
 #include "Engine Core\Object\Face.h"
 

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Engine Core/Camera/CUDA/Camera.h"
+#include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Engine Core/BasicDependencies.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Utility/OpenGL/ShaderSupport.h"
 #include "Utility/OpenGL/Shader.h"
 #include "Engine Core/Material/Texture/Texture.h"
-#include "Ray Engine\RayEngine.h"
+#include "Ray Engine/RayEngine.h"
 
 class Renderer{
 public:

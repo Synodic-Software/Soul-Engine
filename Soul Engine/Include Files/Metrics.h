@@ -1,22 +1,22 @@
 #pragma once
 
-const float KILOMETER= 100;
-const float HECTOMETER= 10;
-const float DECAMETER= 1;
-const float METER =0.1f;
-const float DECIMETER= 0.01f;
-const float CENTIMETER= 0.001f;
-const float MILLIMETER= 0.0001f;
-const float DAY = 86400;
-const float HOUR = 3600;
-const float MINUTE = 60;
-const float SECOND = 1;
-const float MILLISECOND = 0.001f;
-const float PI = 3.14159265358979323846264338327950288f;
-const float TWO_PI = PI * 2;
-const float EPSILON = 0.00000001f;
-const float GRAVITY = -9.80665f;
-const float NOON = HOUR * 6;
+#define KILOMETER 100
+#define HECTOMETER 10
+#define DECAMETER 1
+#define METER 0.1f
+#define DECIMETER 0.01f
+#define CENTIMETER 0.001f
+#define MILLIMETER 0.0001f
+#define DAY 86400.0f
+#define HOUR 3600.0f
+#define MINUTE 60.0f
+#define SECOND 1.0f
+#define MILLISECOND 0.001f
+#define PI 3.14159265358979323846264338327950288f
+#define TWO_PI PI * 2
+#define EPSILON 0.00000001f
+#define GRAVITY -9.80665f
+#define NOON HOUR * 12
 
 typedef unsigned char byte;
 typedef unsigned char uint8;

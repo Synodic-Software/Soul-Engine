@@ -1,13 +1,13 @@
 #include "Ray Engine\RayEngine.cuh"
 
-uint seed=0;
+uint raySeed=0;
 
 __device__ uint getGlobalIdx_1D_1D()
 {
 	return blockIdx.x *blockDim.x + threadIdx.x;
 }
 
-__global__ void EngineExecute(uint n, RayJob& jobs,uint seed){
+__global__ void EngineExecute(uint n, RayJob& jobs, uint raySeed){
 	uint index = getGlobalIdx_1D_1D();
 
 	if (index < n){
@@ -21,7 +21,7 @@ __global__ void EngineExecute(uint n, RayJob& jobs,uint seed){
 
 		uint localIndex = index - n;
 
-		Ray ray = job.camera->SetupRay(index,n,seed);
+		Ray ray = job.camera->SetupRay(index, n, raySeed);
 
 		glm::vec2 fov= job.camera->FieldOfView();
 		float aspectRatio = fov.x / fov.y;
@@ -46,7 +46,7 @@ __global__ void EngineExecute(uint n, RayJob& jobs,uint seed){
 }
 
 __host__ void ProcessJobs(RayJob* jobs){
-	seed++;
+	raySeed++;
 
 	if (jobs!=NULL){
 	uint n = 0;
@@ -76,7 +76,7 @@ __host__ void ProcessJobs(RayJob* jobs){
 
 
 		//execute engine
-		EngineExecute << <GridDim, BlockDim >> >(n, *jobs,seed);
+		EngineExecute << <GridDim, BlockDim >> >(n, *jobs, raySeed);
 
 	}
 	}

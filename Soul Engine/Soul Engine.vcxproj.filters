@@ -195,7 +195,10 @@
     <ClInclude Include="Source Files\Utility\CUDA\HelperClasses.cuh">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.h">
+    <ClInclude Include="Source Files\Utility\CUDA\CUDAManaged.cuh">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh">
       <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </ClInclude>
   </ItemGroup>
@@ -275,14 +278,8 @@
     <ClCompile Include="Source Files\Ray Engine\RayJob.cu">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu">
-      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu">
-      <Filter>Engine Backend\Utility\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA</Filter>
     </CudaCompile>
@@ -297,6 +294,12 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Utility\CUDA\HelperClasses.cu">
       <Filter>Engine Backend\Utility\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu">
+      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

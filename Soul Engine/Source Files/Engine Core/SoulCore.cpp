@@ -8,7 +8,7 @@
 #include "Engine Core/Frame/Frame.h"
 #include "Utility/OpenGL/ShaderSupport.h"
 #include "Engine Core/Material/Texture/Texture.h"
-#include "Engine Core/Camera/CUDA/Camera.h"
+#include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/Input.h"
 #include "Ray Engine/RayEngine.h"
 #include "Bounding Volume Heirarchy/BVH.h"
