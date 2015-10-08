@@ -220,8 +220,8 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	// setup camera 
 	freeCam = true;
 
-	camera.setPosition(glm::vec3(-(DECAMETER * 5), DECAMETER * 5, -(DECAMETER * 5)));
-	camera.offsetOrientation(135, 45);
+	camera->SetPosition(glm::vec3(-(DECAMETER * 5), DECAMETER * 5, -(DECAMETER * 5)));
+	camera->OffsetOrientation(135, 45);
 
 	//unsigned concurentThreadsSupported = std::thread::hardware_concurrency();
 	//threads = new ThreadPool(concurentThreadsSupported);
@@ -296,12 +296,12 @@ void Run(void)
 			xPos -= (SCREEN_SIZE.x / 2.0);
 			yPos -= (SCREEN_SIZE.y / 2.0);
 
-			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x *camera.fieldOfView().x);
-			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y *camera.fieldOfView().y);
+			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x *camera->FieldOfView().x);
+			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y *camera->FieldOfView().y);
 			
 			if (freeCam){
 				//set camera for each update
-				camera.offsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
+				camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 			}
 				glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
 			
@@ -323,22 +323,22 @@ void Run(void)
 
 			if (freeCam){
 				if (glfwGetKey(mainThread, GLFW_KEY_S) == GLFW_PRESS){
-					camera.offsetPosition(float(moveSpeed) * -camera.forward());
+					camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
 				}
 				else if (glfwGetKey(mainThread, GLFW_KEY_W) == GLFW_PRESS){
-					camera.offsetPosition(float(moveSpeed) * camera.forward());
+					camera->OffsetPosition(float(moveSpeed) * camera->Forward());
 				}
 				if (glfwGetKey(mainThread, GLFW_KEY_A) == GLFW_PRESS){
-					camera.offsetPosition(float(moveSpeed) * -camera.right());
+					camera->OffsetPosition(float(moveSpeed) * -camera->Right());
 				}
 				else if (glfwGetKey(mainThread, GLFW_KEY_D) == GLFW_PRESS){
-					camera.offsetPosition(float(moveSpeed) * camera.right());
+					camera->OffsetPosition(float(moveSpeed) * camera->Right());
 				}
 				if (glfwGetKey(mainThread, GLFW_KEY_Z) == GLFW_PRESS){
-					camera.offsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
+					camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
 				}
 				else if (glfwGetKey(mainThread, GLFW_KEY_X) == GLFW_PRESS){
-					camera.offsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
+					camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
 				}
 			}
 			double timeSet = glfwGetTime();
