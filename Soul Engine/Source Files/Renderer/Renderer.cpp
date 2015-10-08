@@ -124,7 +124,7 @@ void Renderer::RenderRequestChange(glm::uvec2 screen, Camera& camera, double tim
 void Renderer::Render(){
 
 
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBuffer);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, displayTexture);
 
 		CUDAtoScreen->use();
 		glBindVertexArray(vao);

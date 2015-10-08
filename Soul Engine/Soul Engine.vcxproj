@@ -236,10 +236,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <Image Include="Source Files\Resources\Textures\SoulDefault.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="Source Files\Renderer\fragment-shader[RayEngine].txt" />
-    <Text Include="Source Files\Renderer\vertex-shader[RayEngine].txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 7.5.targets" />
