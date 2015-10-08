@@ -39,8 +39,7 @@
 #include <functional>
 #include "Metrics.h"
 
+#include "thrust\random.h"
 #include "device_launch_parameters.h"
 #include "Utility\OpenGL\GLError.h"
-#include "thrust\random.h"
-
 #include "Utility\CUDA\CUDAManaged.cuh"
