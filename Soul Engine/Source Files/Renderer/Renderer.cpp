@@ -5,7 +5,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 
 
-	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR, screen.x*screen.y, 1,&camera);
+	
 
 
 	prevTime = 0.0f;
@@ -28,14 +28,19 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	cuGraphicsGLRegisterBuffer(&graphicsResource
+	cudaGraphicsGLRegisterBuffer(&cudaBuffer
 		, renderBuffer
 		, cudaGraphicsRegisterFlagsWriteDiscard);
 
 
-	cuGLRegisterBufferObject(renderBuffer);
+	cudaGraphicsMapResources(1, &cudaBuffer, 0);
+	size_t num_bytes;
+	cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
+		cudaBuffer);
 
+	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR, screen.x*screen.y, 1,&camera);
 
+	RenderJob->resultsT = bufferData;
 
 	Vertices[0] = 0.0f;
 	Vertices[1] = 0.0f;

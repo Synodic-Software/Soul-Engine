@@ -44,5 +44,6 @@ private:
 	shading::ShaderSupport* CUDAtoScreen;
 
 	GLuint renderBuffer;
-	CUgraphicsResource graphicsResource;
+	struct cudaGraphicsResource *cudaBuffer;
+	float4 *bufferData;
 };

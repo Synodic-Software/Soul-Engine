@@ -23,21 +23,21 @@ public:
 	CUDA_FUNCTION bool IsRecurring() const{
 		return isRecurring;
 	}
-	CUDA_FUNCTION glm::vec4* GetResultBuffer(){
-		return resultsT;
-	}
-	CUDA_FUNCTION glm::vec3* GetResultFloat(){
-		return resultsF;
-	}
-	CUDA_FUNCTION uint* GetResultInt(){
-		return resultsI;
-	}
 
 	uint samples;
 	castType type;
 	uint rayAmount;
 	uint rayBaseAmount;
 
+
+//for texture setup
+	float4* resultsT;
+
+	//for float values
+	glm::vec3* resultsF;
+
+	//for int values
+	uint* resultsI;
 private:
 
 	bool isRecurring;
@@ -47,12 +47,5 @@ private:
 	//for texture setup
 	
 
-	//for texture setup
-	glm::vec4* resultsT;
-
-	//for float values
-	glm::vec3* resultsF;
-
-	//for int values
-	uint* resultsI;
+	
 };

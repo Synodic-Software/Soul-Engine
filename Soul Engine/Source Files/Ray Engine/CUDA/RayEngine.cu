@@ -34,13 +34,13 @@ __global__ void EngineExecute(uint n, RayJob& jobs, uint raySeed){
 
 
 		if (job.type != RayOBJECT_ID&&!RayCOLOUR_TO_TEXTURE){
-			job.GetResultFloat()[localIndex] = glm::vec3(0.5f, 0.5f, 0.5f);
+			job.resultsF[localIndex] = glm::vec3(0.5f, 0.5f, 0.5f);
 		}
 		else if (RayCOLOUR_TO_TEXTURE){
-			job.GetResultBuffer()[localIndex] = glm::vec4(0.5f, 0.5f, 0.5f,1.0f);
+			job.resultsT[localIndex] = make_float4(0.5f, 0.5f, 0.5f,1.0f);
 		}
 		else{
-			job.GetResultInt()[localIndex] = 1;
+			job.resultsI[localIndex] = 1;
 		}
 	}
 }

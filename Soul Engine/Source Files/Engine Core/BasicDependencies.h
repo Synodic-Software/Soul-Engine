@@ -7,9 +7,10 @@
 
 
 #include <cuda.h>
-#include "cuda_runtime.h"
-#include <cudaGL.h>
+#include <cuda_runtime.h>
+#include <cuda_gl_interop.h>
 #include <curand.h>
+
 
 #define GLM_FORCE_CUDA
 
