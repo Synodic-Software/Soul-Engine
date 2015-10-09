@@ -11,6 +11,7 @@
 #include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/Input.h"
 #include "Ray Engine/RayEngine.h"
+#include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 
 /////////////////////////Variables///////////////////////////////
@@ -228,7 +229,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
 	//hub = new BVH();
 
-	//Material::SetDefaultTexture("N:\\Documents\\Soul Engine\\Soul Engine\\Soul Engine\\Source Files\\Resources\\Textures\\SoulDefault.png");
+	Material::SetDefaultTexture("SoulDefault.png");
 
 	glfwSetKeyCallback(mainThread, InputKeyboardCallback);
 	SetInputWindow(mainThread);
@@ -255,9 +256,17 @@ void SetSetting(std::string rName, std::string rValue){
 
 void Run(void)
 {
+	
+	
 	SoulInit();
 	SoulCreateWindow(WINDOWED, SPECTRAL);
 
+
+
+
+	Renderer rend(*camera,SCREEN_SIZE);
+
+	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
 	SetKey(GLFW_KEY_SPACE, std::bind(&togglePhysics));
 	SetKey(GLFW_KEY_Q, std::bind(&previousRenderer));
 	SetKey(GLFW_KEY_E, std::bind(&nextRenderer));
@@ -390,7 +399,8 @@ void Run(void)
 
 
 			RayEngine::Process();
-
+			cudaDeviceSynchronize();
+			rend.Render();
 
 
 

@@ -14,6 +14,7 @@ RayJob* RayEngine::AddRayJob(castType whatToGet, uint rayAmount,
 	RayJob* temp = jobs;
 	RayJob* newHead = new RayJob(whatToGet, rayAmount, samples, camera, false);
 	newHead->nextRay = temp;
+	jobs = newHead;
 	jobSize++;
 
 	return newHead;
@@ -25,6 +26,7 @@ RayJob* RayEngine::AddRecurringRayJob(castType whatToGet,
 	RayJob* temp = jobs;
 	RayJob* newHead = new RayJob(whatToGet, rayAmount, samples, camera, true);
 	newHead->nextRay = temp;
+	jobs = newHead;
 	jobSize++;
 
 	return newHead;

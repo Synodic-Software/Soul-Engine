@@ -24,7 +24,7 @@ class Object{
 		bool hasPhysics;
 
 
-		boolean needLoad;
+		bool needLoad;
 
 			bool isStatic;
 			glm::vec3 xyzPosition;

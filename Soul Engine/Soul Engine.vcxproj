@@ -233,9 +233,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\HelperClasses.cu" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="Source Files\Resources\Textures\SoulDefault.png" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 7.5.targets" />

@@ -34,7 +34,7 @@ __global__ void EngineExecute(uint n, RayJob& jobs, uint raySeed){
 
 
 		if (job.type != RayOBJECT_ID&&!RayCOLOUR_TO_TEXTURE){
-			job.resultsF[localIndex] = glm::vec3(0.5f, 0.5f, 0.5f);
+			job.resultsF[localIndex] = glm::vec3(0.0f, 0.0f, 0.0f);
 		}
 		else if (RayCOLOUR_TO_TEXTURE){
 			job.resultsT[localIndex] = make_float4(0.5f, 0.5f, 0.5f,1.0f);

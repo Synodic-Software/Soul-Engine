@@ -1,9 +1,9 @@
 #include "RayJob.cuh"
 
-RayJob::RayJob(castType whatToGet, uint rayAmount, uint newSamples, Camera* cameraN, bool isRecurringN){
+RayJob::RayJob(castType whatToGet, uint rayAmountN, uint newSamples, Camera* cameraN, bool isRecurringN){
 
 	type = whatToGet;
-	rayAmount = rayAmount;
+	rayAmount = rayAmountN;
 	rayBaseAmount = rayAmount;
 	samples = newSamples;
 	camera = cameraN;

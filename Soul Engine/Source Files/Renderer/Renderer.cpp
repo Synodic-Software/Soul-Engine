@@ -14,8 +14,8 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	samplesMax = 4;
 	samplesMin = 1;
 	samples = samplesMin;
-	CUDAtoScreen = LoadShaders("vertex-shader[RayEngine].txt",
-							   "fragment-shader[RayEngine].txt");
+	CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
+							   "fragment-shader[Renderer].txt");
 	cameraUniform = CUDAtoScreen->uniform("camera");
 	modelUniform = CUDAtoScreen->uniform("model");
 	screenUniform = CUDAtoScreen->uniform("screen");
@@ -28,15 +28,15 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	cudaGraphicsGLRegisterBuffer(&cudaBuffer
+	CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
 		, renderBuffer
-		, cudaGraphicsRegisterFlagsWriteDiscard);
+		, cudaGraphicsRegisterFlagsWriteDiscard));
 
 
-	cudaGraphicsMapResources(1, &cudaBuffer, 0);
+	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
 	size_t num_bytes;
-	cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
-		cudaBuffer);
+	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
+		cudaBuffer));
 
 	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR, screen.x*screen.y, 1,&camera);
 

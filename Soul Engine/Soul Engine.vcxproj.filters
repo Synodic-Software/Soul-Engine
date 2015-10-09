@@ -302,17 +302,4 @@
       <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="Source Files\Resources\Textures\SoulDefault.png">
-      <Filter>Engine Backend\Resources\Textures</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Source Files\Renderer\vertex-shader[RayEngine].txt">
-      <Filter>Engine Backend\Renderer</Filter>
-    </Text>
-    <Text Include="Source Files\Renderer\fragment-shader[RayEngine].txt">
-      <Filter>Engine Backend\Renderer</Filter>
-    </Text>
-  </ItemGroup>
 </Project>
