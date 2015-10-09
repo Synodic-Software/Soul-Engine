@@ -21,15 +21,33 @@
 int px = floor(pos.x); // floor of x
 int py = floor(pos.y); // floor of y
 
+int pyN;
+int pxN;
+
 // load the four neighboring pixels
+
+if(py+1>=screen.y){
+pyN=py;
+}
+else{
+pyN=py+1;
+}
+
+if(px+1>=screen.x){
+pxN=px;
+}
+else{
+pxN=px+1;
+}
+
 vec4 p1 = tex[py*screenMod.x+px];
-vec4 p2 = tex[(py+1)*screenMod.x+px];
-vec4 p3 = tex[py*screenMod.x+(px+1)];
-vec4 p4 = tex[(py+1)*screenMod.x+(px+1)];
+vec4 p2 = tex[pyN*screenMod.x+px];
+vec4 p3 = tex[py*screenMod.x+pxN];
+vec4 p4 = tex[pyN*screenMod.x+pxN];
 
 // Calculate the weights for each pixel
-float fx = x - px;
-float fy = y - py;
+float fx = pos.x - px;
+float fy = pos.y - py;
 float fx1 = 1.0f - fx;
 float fy1 = 1.0f - fy;
 
@@ -39,12 +57,12 @@ float w3 = fx1 * fy ;
 float w4 = fx  * fy ;
 
 // Calculate the weighted sum of pixels (for each color channel)
-int outr = p1.r * w1 + p2.r * w2 + p3.r * w3 + p4.r * w4;
-int outg = p1.g * w1 + p2.g * w2 + p3.g * w3 + p4.g * w4;
-int outb = p1.b * w1 + p2.b * w2 + p3.b * w3 + p4.b * w4;
-int outa = p1.a * w1 + p2.a * w2 + p3.a * w3 + p4.a * w4;
+float outr = p1.r * w1 + p2.r * w2 + p3.r * w3 + p4.r * w4;
+float outg = p1.g * w1 + p2.g * w2 + p3.g * w3 + p4.g * w4;
+float outb = p1.b * w1 + p2.b * w2 + p3.b * w3 + p4.b * w4;
+float outa = p1.a * w1 + p2.a * w2 + p3.a * w3 + p4.a * w4;
 
-
+fragment=vec4(outr,outg,outb,outa);
 
 
 
