@@ -304,9 +304,9 @@ void Run(void)
 			glfwGetCursorPos(mainThread, &xPos, &yPos);
 			xPos -= (SCREEN_SIZE.x / 2.0);
 			yPos -= (SCREEN_SIZE.y / 2.0);
-
-			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x *camera->FieldOfView().x);
-			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y *camera->FieldOfView().y);
+			CudaCheck(cudaDeviceSynchronize());
+			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
+			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
 			
 			if (freeCam){
 				//set camera for each update
@@ -399,8 +399,8 @@ void Run(void)
 
 
 			RayEngine::Process();
-			cudaDeviceSynchronize();
-			rend.Render();
+			
+			
 
 
 
@@ -413,7 +413,8 @@ void Run(void)
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
+		cudaDeviceSynchronize();
+		rend.Render();
 		//rayEngine->Render(SCREEN_SIZE, hub, camera, deltaTime / 2.0f);
 
 		glfwSwapBuffers(mainThread);

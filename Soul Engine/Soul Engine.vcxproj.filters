@@ -103,6 +103,9 @@
     <Filter Include="Engine Backend\Engine Core\Camera\CUDA">
       <UniqueIdentifier>{c202798d-1fc2-49c9-83f0-52a2549fb6a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Resources\Shaders">
+      <UniqueIdentifier>{f0ff9397-db0b-4e92-b4a1-82cce5ddc33e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -301,5 +304,13 @@
     <CudaCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu">
       <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="vertex-shader[Renderer].txt">
+      <Filter>Engine Backend\Resources\Shaders</Filter>
+    </Text>
+    <Text Include="fragment-shader[Renderer].txt">
+      <Filter>Engine Backend\Resources\Shaders</Filter>
+    </Text>
   </ItemGroup>
 </Project>

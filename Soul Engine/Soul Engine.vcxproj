@@ -233,6 +233,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\HelperClasses.cu" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="fragment-shader[Renderer].txt" />
+    <Text Include="vertex-shader[Renderer].txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 7.5.targets" />

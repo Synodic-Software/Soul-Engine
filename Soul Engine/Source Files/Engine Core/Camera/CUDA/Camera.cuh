@@ -25,7 +25,7 @@
 		CUDA_FUNCTION void SetRight(glm::vec3&);
 		CUDA_FUNCTION glm::vec3 Right() const;
 
-		CUDA_FUNCTION Ray SetupRay(uint, uint,uint);
+		CUDA_FUNCTION Ray SetupRay(uint, uint, thrust::default_random_engine);
 
 		CUDA_FUNCTION bool IsViewable() const;
 

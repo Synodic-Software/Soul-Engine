@@ -4,7 +4,7 @@
 #include "Ray Engine\Ray.cuh"
 #include "Engine Core\Camera\CUDA\Camera.cuh"
 
-enum castType{ RayCOLOUR, RayCOLOUR_TO_TEXTURE, RayDISTANCE, RayOBJECT_ID, RayNORMAL, RayUV };
+enum castType{ RayCOLOUR, RayCOLOUR_TO_BUFFER, RayDISTANCE, RayOBJECT_ID, RayNORMAL, RayUV };
 
 class RayJob : public Managed{
 public:

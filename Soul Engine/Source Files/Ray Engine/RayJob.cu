@@ -10,12 +10,12 @@ RayJob::RayJob(castType whatToGet, uint rayAmountN, uint newSamples, Camera* cam
 	isRecurring = isRecurringN;
 	nextRay = NULL;
 
-	if (whatToGet != RayOBJECT_ID&&!RayCOLOUR_TO_TEXTURE){
+	if (whatToGet != RayOBJECT_ID&&whatToGet!=RayCOLOUR_TO_BUFFER){
 		cudaMallocManaged(&resultsF, rayBaseAmount);
 		resultsI = NULL;
 		resultsT = NULL;
 	}
-	else if (RayCOLOUR_TO_TEXTURE){
+	else if (whatToGet==RayCOLOUR_TO_BUFFER){
 
 		
 

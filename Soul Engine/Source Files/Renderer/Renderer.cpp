@@ -5,7 +5,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 
 
-	
+	modifiedScreen = glm::vec2(screen) / glm::vec2(1);
 
 
 	prevTime = 0.0f;
@@ -23,7 +23,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	glGenBuffers(1, &renderBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER,
-		screen.x*screen.y*sizeof(glm::vec4),
+		screen.x*screen.y*sizeof(float4),
 		NULL, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -38,7 +38,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
 		cudaBuffer));
 
-	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR, screen.x*screen.y, 1,&camera);
+	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR_TO_BUFFER, screen.x*screen.y, 1, &camera);
 
 	RenderJob->resultsT = bufferData;
 
@@ -46,24 +46,37 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	Vertices[1] = 0.0f;
 	Vertices[2] = 0.0f;
 	Vertices[3] = 1.0f;
+
 	Vertices[4] = 0.0f;
 	Vertices[5] = 1.0f;
+
+
+
 	Vertices[6] = 1.0f;
 	Vertices[7] = 1.0f;
 	Vertices[8] = 0.0f;
 	Vertices[9] = 1.0f;
+
 	Vertices[10] = 1.0f;
 	Vertices[11] = 0.0f;
+
+
+
 	Vertices[12] = 0.0f;
 	Vertices[13] = 1.0f;
 	Vertices[14] = 0.0f;
 	Vertices[15] = 1.0f;
+
 	Vertices[16] = 0.0f;
 	Vertices[17] = 0.0f;
+
+
+
 	Vertices[18] = 1.0f;
 	Vertices[19] = 0.0f;
 	Vertices[20] = 0.0f;
 	Vertices[21] = 1.0f;
+
 	Vertices[22] = 1.0f;
 	Vertices[23] = 1.0f;
 
@@ -133,7 +146,7 @@ void Renderer::Render(){
 
 		CUDAtoScreen->use();
 		glBindVertexArray(vao);
-		CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, -2.0f, 2.0f));
+		CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
 		CUDAtoScreen->setUniform(modelUniform, glm::mat4());
 		CUDAtoScreen->setUniform(screenUniform, (float)modifiedScreen.x, (float)modifiedScreen.y);
 
