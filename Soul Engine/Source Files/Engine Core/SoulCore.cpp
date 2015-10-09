@@ -28,7 +28,7 @@ glm::uvec2 SCREEN_SIZE;
 Settings* settings;
 unsigned int MSAASamples;
 //BVH* hub;
-Camera* camera= new Camera();
+Camera* camera;
 
 
 bool freeCam;
@@ -259,8 +259,10 @@ void Run(void)
 	
 	
 	SoulInit();
-	SoulCreateWindow(WINDOWED, SPECTRAL);
 
+	camera = new Camera();
+
+	SoulCreateWindow(WINDOWED, SPECTRAL);
 
 
 

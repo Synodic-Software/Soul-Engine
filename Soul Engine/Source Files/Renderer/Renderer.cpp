@@ -150,7 +150,7 @@ void Renderer::Render(){
 		CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
 		CUDAtoScreen->setUniform(modelUniform, glm::mat4());
 		CUDAtoScreen->setUniform(screenUniform, modifiedScreen.x, modifiedScreen.y);
-		CUDAtoScreen->setUniform(screenModUniform, (float)modifiedScreen.x / originalScreen.x, (float)modifiedScreen.y / originalScreen.x);
+		CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
 
 		glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
 		glBindVertexArray(0);
