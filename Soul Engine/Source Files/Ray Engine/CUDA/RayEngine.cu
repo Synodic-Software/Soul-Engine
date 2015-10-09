@@ -42,7 +42,13 @@ __global__ void EngineExecute(uint n, RayJob& jobs, uint raySeed){
 		else if (job.type==RayCOLOUR_TO_BUFFER){
 			
 			float jitterValueX = uniformDistribution(rng);
-			job.resultsT[localIndex] = make_float4(jitterValueX, jitterValueX, jitterValueX, 1.0f);
+			if (jitterValueX>0.6f){
+				job.resultsT[localIndex] = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
+			}
+			else{
+				job.resultsT[localIndex] = make_float4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+			
 		}
 		else if (job.resultsI!=NULL){
 			job.resultsI[localIndex] = 1;

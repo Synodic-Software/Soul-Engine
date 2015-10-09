@@ -26,6 +26,7 @@ private:
 	GLuint samplesMax;
 	GLuint samplesMin;
 	GLuint samples;
+	glm::uvec2 originalScreen;
 	glm::uvec2 modifiedScreen;
 
 	GLuint vao;
@@ -39,6 +40,7 @@ private:
 	GLint screenUniform;
 	GLint cameraUniform;
 	GLint modelUniform;
+	GLint screenModUniform;
 
 
 	shading::ShaderSupport* CUDAtoScreen;

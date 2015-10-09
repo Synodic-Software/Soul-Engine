@@ -6,7 +6,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 
 	modifiedScreen = glm::vec2(screen) / glm::vec2(1);
-
+	originalScreen = glm::vec2(screen);
 
 	prevTime = 0.0f;
 	changeCutoff = 0.1f;
@@ -19,6 +19,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	cameraUniform = CUDAtoScreen->uniform("camera");
 	modelUniform = CUDAtoScreen->uniform("model");
 	screenUniform = CUDAtoScreen->uniform("screen");
+	screenModUniform = CUDAtoScreen->uniform("screenMod");
 
 	glGenBuffers(1, &renderBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBuffer);
@@ -100,8 +101,8 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 	glEnableVertexAttribArray(CUDAtoScreen->attrib("vert_VS_in"));
 	glVertexAttribPointer(CUDAtoScreen->attrib("vert_VS_in"), 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), NULL);
-	glEnableVertexAttribArray(CUDAtoScreen->attrib("texCoord_VS_in"));
-	glVertexAttribPointer(CUDAtoScreen->attrib("texCoord_VS_in"), 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid*)(4 * sizeof(GLfloat)));
+	//glEnableVertexAttribArray(CUDAtoScreen->attrib("texCoord_VS_in"));
+	//glVertexAttribPointer(CUDAtoScreen->attrib("texCoord_VS_in"), 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid*)(4 * sizeof(GLfloat)));
 
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -148,7 +149,8 @@ void Renderer::Render(){
 		glBindVertexArray(vao);
 		CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
 		CUDAtoScreen->setUniform(modelUniform, glm::mat4());
-		CUDAtoScreen->setUniform(screenUniform, (float)modifiedScreen.x, (float)modifiedScreen.y);
+		CUDAtoScreen->setUniform(screenUniform, modifiedScreen.x, modifiedScreen.y);
+		CUDAtoScreen->setUniform(screenModUniform, (float)modifiedScreen.x / originalScreen.x, (float)modifiedScreen.y / originalScreen.x);
 
 		glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
 		glBindVertexArray(0);

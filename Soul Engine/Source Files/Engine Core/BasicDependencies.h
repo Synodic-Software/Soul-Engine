@@ -22,7 +22,6 @@
 #include <device_functions.h>
 #include <curand.h>
 
-
 #include <stdlib.h>
 #include <IOstream>
 #include <vector>

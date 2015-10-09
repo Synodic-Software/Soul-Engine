@@ -6,9 +6,9 @@ uniform mat4 camera;
 uniform mat4 model;
 
 
-out vec2 texCoord_FS_in;
+//out vec2 texCoord_FS_in;
 void main()
 {
-    texCoord_FS_in = texCoord_VS_in;
+   // texCoord_FS_in = texCoord_VS_in;
 	gl_Position=(camera*model)*vert_VS_in;
 }

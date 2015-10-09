@@ -305,12 +305,12 @@ void Run(void)
 			xPos -= (SCREEN_SIZE.x / 2.0);
 			yPos -= (SCREEN_SIZE.y / 2.0);
 			CudaCheck(cudaDeviceSynchronize());
-			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
-			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
+			//mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
+			//mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
 			
 			if (freeCam){
 				//set camera for each update
-				camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
+				//camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 			}
 				glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
 			
@@ -350,32 +350,32 @@ void Run(void)
 					camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
 				}
 			}
-			double timeSet = glfwGetTime();
+			//double timeSet = glfwGetTime();
 
-			//hub->SetupObjects();
+			////hub->SetupObjects();
 
-			currentTime = glfwGetTime() - currentTime;
+			//currentTime = glfwGetTime() - currentTime;
 
-			std::cout << "Setup Objects(ms): " << (float)currentTime * 1000 << std::endl;
+			//std::cout << "Setup Objects(ms): " << (float)currentTime * 1000 << std::endl;
 
 			//if (runPhysics){
 
-			timeSet = glfwGetTime();
+			//timeSet = glfwGetTime();
 
-			//hub->Physics(deltaTime);
+			////hub->Physics(deltaTime);
 
-			currentTime = glfwGetTime() - currentTime;
+			//currentTime = glfwGetTime() - currentTime;
 
-			std::cout << "Physics(ms): " << (float)currentTime * 1000 << std::endl;
-				
-			//}
-			timeSet = glfwGetTime();
+			//std::cout << "Physics(ms): " << (float)currentTime * 1000 << std::endl;
+			//	
+			////}
+			//timeSet = glfwGetTime();
 
-			//hub->UpdateObjects(deltaTime);
+			////hub->UpdateObjects(deltaTime);
 
-			currentTime = glfwGetTime() - currentTime;
+			//currentTime = glfwGetTime() - currentTime;
 
-			std::cout << "UpdateObjects(ms): " << (float)currentTime * 1000 << std::endl;
+			//std::cout << "UpdateObjects(ms): " << (float)currentTime * 1000 << std::endl;
 
 			if (physicsTimer>0){
 				physicsTimer = physicsTimer - deltaTime;
@@ -386,13 +386,13 @@ void Run(void)
 
 			}
 
-			timeSet = glfwGetTime();
+			//timeSet = glfwGetTime();
 
-			//hub->CreateHeirarchy(false, deltaTime);
+			////hub->CreateHeirarchy(false, deltaTime);
 
-			currentTime = glfwGetTime() - currentTime;
+			//currentTime = glfwGetTime() - currentTime;
 
-			std::cout << "CreateHeirarchy(ms): " << (float)currentTime * 1000 << std::endl;
+			//std::cout << "CreateHeirarchy(ms): " << (float)currentTime * 1000 << std::endl;
 
 
 
