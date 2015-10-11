@@ -5,9 +5,10 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 
 
-	modifiedScreen = glm::vec2(screen) / glm::vec2(1);
-	originalScreen = glm::vec2(screen);
-
+	modifiedScreen = screen;
+	originalScreen = screen;
+	camera.SetAspect((float)(screen.x) / (float)(screen.y));
+	camera.SetResolution(screen);
 	prevTime = 0.0f;
 	changeCutoff = 0.1f;
 	calcPass = 1;
@@ -136,7 +137,14 @@ void Renderer::RenderRequestChange(glm::uvec2 screen, Camera& camera, double tim
 	calcPass--;
 	}*/
 	prevTime = glfwGetTime() - newTime;
-	modifiedScreen = glm::vec2(screen) / glm::vec2(1);
+
+	float aspectRatio = camera.GetAspect();
+	uint newWidth = glm::ceil(originalScreen.x);
+	uint newHeight = glm::ceil(newWidth / aspectRatio);
+	modifiedScreen = glm::uvec2(newWidth, newHeight);
+	camera.SetResolution(modifiedScreen);
+	RayEngine::ChangeJob(RenderJob, modifiedScreen.x*modifiedScreen.y,
+		1, &camera);
 }
 
 
@@ -149,7 +157,7 @@ void Renderer::Render(){
 		glBindVertexArray(vao);
 		CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
 		CUDAtoScreen->setUniform(modelUniform, glm::mat4());
-		CUDAtoScreen->setUniform(screenUniform, modifiedScreen.x, modifiedScreen.y);
+		CUDAtoScreen->setUniform(screenUniform, originalScreen.x, originalScreen.y);
 		CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
 
 		glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);

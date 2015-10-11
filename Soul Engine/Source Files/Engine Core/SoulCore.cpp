@@ -259,7 +259,7 @@ void Run(void)
 	
 	
 	SoulInit();
-
+	cudaDeviceSynchronize();
 	camera = new Camera();
 
 	SoulCreateWindow(WINDOWED, SPECTRAL);
@@ -397,13 +397,10 @@ void Run(void)
 			//std::cout << "CreateHeirarchy(ms): " << (float)currentTime * 1000 << std::endl;
 
 
+			rend.RenderRequestChange(SCREEN_SIZE, *camera,1.0f);
 
 
-
-			RayEngine::Process();
 			
-			
-
 
 
 			t += deltaTime;
@@ -411,12 +408,16 @@ void Run(void)
 		}
 
 
+
+		RayEngine::Process();
+
 		//draw
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		cudaDeviceSynchronize();
 		rend.Render();
+		cudaDeviceSynchronize();
 		//rayEngine->Render(SCREEN_SIZE, hub, camera, deltaTime / 2.0f);
 
 		glfwSwapBuffers(mainThread);

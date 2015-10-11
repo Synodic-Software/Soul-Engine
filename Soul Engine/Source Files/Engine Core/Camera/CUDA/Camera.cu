@@ -15,6 +15,12 @@ CUDA_FUNCTION  Camera::~Camera(){
 
 }
 
+CUDA_FUNCTION void Camera::SetAspect(float newA){
+	aspectRatio = newA;
+}
+CUDA_FUNCTION float Camera::GetAspect(){
+	return aspectRatio;
+}
 
 CUDA_FUNCTION glm::vec3 Camera::Position() const {
     return position;
@@ -51,7 +57,7 @@ CUDA_FUNCTION void Camera::SetRight(glm::vec3& rightn) {
 	right = rightn;
 }
 
-CUDA_FUNCTION Ray Camera::SetupRay(uint index, uint n, thrust::default_random_engine rng){
+CUDA_FUNCTION Ray Camera::SetupRay(uint& index, uint& n, thrust::default_random_engine& rng){
 
 	int y = int(index / resolution.y);
 	int x = index - (y*resolution.y);
@@ -62,7 +68,7 @@ CUDA_FUNCTION Ray Camera::SetupRay(uint index, uint n, thrust::default_random_en
 	float jitterValueY = uniformDistribution(rng) - 0.5f;
 
 	// compute important values
-	forward = glm::normalize(forward); // view is already supposed to be normalized, but normalize it explicitly just in case.
+	forward = normalize(forward); // view is already supposed to be normalized, but normalize it explicitly just in case.
 	glm::vec3 horizontalAxis = right;
 	horizontalAxis = normalize(horizontalAxis); // Important!
 	glm::vec3 verticalAxis = glm::cross(horizontalAxis, forward);
@@ -84,7 +90,6 @@ CUDA_FUNCTION Ray Camera::SetupRay(uint index, uint n, thrust::default_random_en
 
 	// now compute the point on the aperture (or lens)
 	glm::vec3 aperturePoint;
-	if (aperture > 0.00001) { // The small number is an epsilon value.
 		// generate random numbers for sampling a point on the aperture
 		float random1 = uniformDistribution(rng);
 		float random2 = uniformDistribution(rng);
@@ -97,14 +102,11 @@ CUDA_FUNCTION Ray Camera::SetupRay(uint index, uint n, thrust::default_random_en
 		float apertureY = sin(angle) * distance;
 
 		aperturePoint = position + (apertureX * horizontalAxis) + (apertureY * verticalAxis);
-	}
-	else {
-		aperturePoint = position;
-	}
+
 	//aperturePoint = renderCamera.position;
 	glm::vec3 apertureToImagePlane = pointOnImagePlane - aperturePoint;
 
-	Ray ray=Ray(aperturePoint, glm::normalize(apertureToImagePlane));
+	Ray ray = Ray(aperturePoint, normalize(apertureToImagePlane));
 
 	return ray;
 }

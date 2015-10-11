@@ -77,13 +77,31 @@ __host__ void ProcessJobs(RayJob* jobs){
 		int gridSize;    // The actual grid size needed, based on input size 
 
 		cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize,
-			EngineExecute, 0, n);
+			EngineExecute, 0, 0);
 		// Round up according to array size 
 		gridSize = (n + blockSize - 1) / blockSize;
 
 
 		//execute engine
+
+
+
+		cudaEvent_t start, stop; 
+		float time; 
+		cudaEventCreate(&start); 
+		cudaEventCreate(&stop); 
+		cudaEventRecord(start, 0);
+
+	
 		EngineExecute << <gridSize, blockSize >> >(n, *jobs, raySeedGl);
+		cudaEventRecord(stop, 0); 
+		cudaEventSynchronize(stop); 
+		cudaEventElapsedTime(&time, start, stop); 
+		cudaEventDestroy(start); 
+		cudaEventDestroy(stop);
+
+		std::cout << "RayEngine Execution: " << time << "ms"<< std::endl;
+
 		CudaCheck(cudaDeviceSynchronize());
 	}
 	}
