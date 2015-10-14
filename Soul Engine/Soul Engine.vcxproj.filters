@@ -189,9 +189,6 @@
     <ClInclude Include="Source Files\Multithreading\Scheduler.h">
       <Filter>Engine Backend\Multithreading</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Ray Engine\RayJob.cuh">
-      <Filter>Engine Backend\Ray Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Ray Engine\RayEngine.cuh">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
@@ -207,23 +204,8 @@
     <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh">
       <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\imgui\imconfig.h">
-      <Filter>Engine Backend\Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\imgui\imgui.h">
-      <Filter>Engine Backend\Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\imgui\imgui_internal.h">
-      <Filter>Engine Backend\Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\imgui\stb_rect_pack.h">
-      <Filter>Engine Backend\Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\imgui\stb_textedit.h">
-      <Filter>Engine Backend\Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\imgui\stb_truetype.h">
-      <Filter>Engine Backend\Libraries</Filter>
+    <ClInclude Include="Source Files\Ray Engine\RayJob.cuh">
+      <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -299,18 +281,6 @@
     <ClCompile Include="Source Files\Multithreading\Scheduler.cpp">
       <Filter>Engine Backend\Multithreading</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Ray Engine\RayJob.cu">
-      <Filter>Engine Backend\Ray Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\imgui\imgui.cpp">
-      <Filter>Engine Backend\Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\imgui\imgui_demo.cpp">
-      <Filter>Engine Backend\Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\imgui\imgui_draw.cpp">
-      <Filter>Engine Backend\Libraries</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu">
@@ -333,6 +303,9 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu">
       <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Ray Engine\RayJob.cu">
+      <Filter>Engine Backend\Ray Engine</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

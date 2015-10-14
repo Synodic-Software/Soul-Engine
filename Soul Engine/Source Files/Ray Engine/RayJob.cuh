@@ -14,8 +14,8 @@ public:
 
 	//some device function to be pointed to
 
-	RayJob(castType, uint, uint, Camera* camera, bool isRecurring);
-
+	__host__ RayJob(castType, uint, uint, Camera* camera, bool isRecurring);
+	__host__ ~RayJob();
 	RayJob* nextRay;	
 
 	Camera* camera;

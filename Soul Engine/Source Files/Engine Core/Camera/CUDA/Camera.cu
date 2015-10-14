@@ -57,13 +57,12 @@ CUDA_FUNCTION void Camera::SetRight(glm::vec3& rightn) {
 	right = rightn;
 }
 
-CUDA_FUNCTION Ray Camera::SetupRay(uint& index, uint& n, thrust::default_random_engine& rng){
+CUDA_FUNCTION Ray Camera::SetupRay(uint& index, uint& n, thrust::default_random_engine& rng, thrust::uniform_real_distribution<float>& uniformDistribution){
 
 	int y = int(index / resolution.y);
 	int x = index - (y*resolution.y);
 
 	// generate random jitter offsets for supersampled antialiasing
-	thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f); // Changed to 0.0 and 1.0 so I could reuse it for aperture sampling below.
 	float jitterValueX = uniformDistribution(rng) - 0.5f;
 	float jitterValueY = uniformDistribution(rng) - 0.5f;
 

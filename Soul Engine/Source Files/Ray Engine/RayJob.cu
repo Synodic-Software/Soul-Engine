@@ -1,6 +1,6 @@
 #include "RayJob.cuh"
 
-RayJob::RayJob(castType whatToGet, uint rayAmountN, uint newSamples, Camera* cameraN, bool isRecurringN){
+__host__ RayJob::RayJob(castType whatToGet, uint rayAmountN, uint newSamples, Camera* cameraN, bool isRecurringN){
 
 	type = whatToGet;
 	rayAmount = rayAmountN;
@@ -26,5 +26,17 @@ RayJob::RayJob(castType whatToGet, uint rayAmountN, uint newSamples, Camera* cam
 		cudaMallocManaged(&resultsI, rayBaseAmount);
 		resultsF = NULL;
 		resultsT = NULL;
+	}
+}
+
+__host__ RayJob::~RayJob(){
+	if (resultsF!=NULL){
+		delete resultsF;
+	}
+	if (resultsI != NULL){
+		delete resultsI;
+	}
+	if (resultsT != NULL){
+		delete resultsT;
 	}
 }

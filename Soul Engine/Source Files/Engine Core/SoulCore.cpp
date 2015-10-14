@@ -36,6 +36,7 @@ bool freeCam;
 float timeModifier = 1.0f;
 const float deltaTime = (1.0f / 60.0f);
 bool runPhysics;
+bool freeMouse;
 void togglePhysics();
 void previousRenderer();
 void nextRenderer();
@@ -152,6 +153,8 @@ void RemoveObject(Object* object){
 }
 void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
+	freeMouse = false;
+
 	window = windowT;
 	SetSetting("Window", "WINDOWED");
 	renderer = rendererT;
@@ -167,6 +170,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	if (window==FULLSCREEN){
 
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
 		mainThread = glfwCreateWindow(SCREEN_SIZE.x, SCREEN_SIZE.y, "Soul Engine", glfwGetPrimaryMonitor(), loopThread);
 
 	}
@@ -179,13 +183,9 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	else if (BORDERLESS){
 
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
 
-		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-		mainThread = glfwCreateWindow(mode->width, mode->height, "Soul Engine", glfwGetPrimaryMonitor(), loopThread);
+		mainThread = glfwCreateWindow(SCREEN_SIZE.x, SCREEN_SIZE.y, "Soul Engine", NULL, loopThread);
 
 	}
 	
@@ -262,11 +262,10 @@ void Run(void)
 	cudaDeviceSynchronize();
 	camera = new Camera();
 
-	SoulCreateWindow(WINDOWED, SPECTRAL);
-
-
+	SoulCreateWindow(BORDERLESS, SPECTRAL);
 
 	Renderer rend(*camera,SCREEN_SIZE);
+	
 
 	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
 	SetKey(GLFW_KEY_SPACE, std::bind(&togglePhysics));
@@ -307,18 +306,22 @@ void Run(void)
 			xPos -= (SCREEN_SIZE.x / 2.0);
 			yPos -= (SCREEN_SIZE.y / 2.0);
 			CudaCheck(cudaDeviceSynchronize());
-			//mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
-			//mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
+			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
+			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
 			
-			if (freeCam){
-				//set camera for each update
-				//camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-			}
+			if (freeMouse){
+				if (freeCam){
+					//set camera for each update
+					camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
+				}
+
+
 				glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
-			
+			}
 
 
 			glfwPollEvents();
+
 
 			double moveSpeed;
 			if (glfwGetKey(mainThread, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
@@ -352,6 +355,9 @@ void Run(void)
 					camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
 				}
 			}
+
+
+
 			//double timeSet = glfwGetTime();
 
 			////hub->SetupObjects();
