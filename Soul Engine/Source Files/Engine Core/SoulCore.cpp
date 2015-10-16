@@ -13,7 +13,8 @@
 #include "Ray Engine/RayEngine.h"
 #include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
-
+#include "fiber_tasking_lib/task_scheduler.h"
+#include "fiber_tasking_lib/global_args.h"
 /////////////////////////Variables///////////////////////////////
 
 GLuint seed;
