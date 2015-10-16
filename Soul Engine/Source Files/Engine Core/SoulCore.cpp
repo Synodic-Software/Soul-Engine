@@ -151,6 +151,12 @@ void RemoveObject(Object* object){
 
 	
 }
+
+void SoulSynch(){
+
+	cudaDeviceSynchronize();
+}
+
 void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
 	freeMouse = false;

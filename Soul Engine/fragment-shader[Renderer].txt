@@ -75,14 +75,4 @@ return vec4(outr,outg,outb,outa);
 
 		fragment=bilinear(pos);
 
-
-
-		//*(screenMod-1.0f)+0.5f;
-
-	//	vec4 interp2=mix(tex[uint(ceil(pos.y)*screen.x+floor(pos.x))],tex[uint(ceil(pos.y)*screen.x+ceil(pos.x))],pos.x-uint(pos.x));
-	//	vec4 interp1=mix(tex[uint(floor(pos.y)*screen.x+floor(pos.x))],tex[uint(floor(pos.y)*screen.x+ceil(pos.x))],pos.x-uint(pos.x));
-
-	//	vec4 Color=mix(interp1,interp2,pos.y-floor(pos.y));
-
-	//	fragment = vec4(Color.x,Color.y,Color.z,1.0f);
 	}
