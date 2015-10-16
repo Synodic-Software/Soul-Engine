@@ -171,7 +171,12 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
-		mainThread = glfwCreateWindow(SCREEN_SIZE.x, SCREEN_SIZE.y, "Soul Engine", glfwGetPrimaryMonitor(), loopThread);
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+		mainThread = glfwCreateWindow(mode->width, mode->height, "Soul Engine", glfwGetPrimaryMonitor(), loopThread);
 
 	}
 	else if (window == WINDOWED){
@@ -185,7 +190,12 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
 
-		mainThread = glfwCreateWindow(SCREEN_SIZE.x, SCREEN_SIZE.y, "Soul Engine", NULL, loopThread);
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+		mainThread = glfwCreateWindow(mode->width, mode->height, "Soul Engine", NULL, loopThread);
 
 	}
 	

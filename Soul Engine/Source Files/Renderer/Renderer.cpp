@@ -8,7 +8,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	modifiedScreen = screen;
 	originalScreen = screen;
 	camera.SetAspect((float)(screen.x) / (float)(screen.y));
-	camera.SetResolution(screen);
+	camera.resolution=screen;
 	prevTime = 0.0f;
 	changeCutoff = 0.1f;
 	calcPass = 1;
@@ -142,7 +142,7 @@ void Renderer::RenderRequestChange(glm::uvec2 screen, Camera& camera, double tim
 	uint newWidth = glm::ceil(originalScreen.x);
 	uint newHeight = glm::ceil(newWidth / aspectRatio);
 	modifiedScreen = glm::uvec2(newWidth, newHeight);
-	camera.SetResolution(modifiedScreen);
+	camera.resolution=modifiedScreen;
 	RayEngine::ChangeJob(RenderJob, modifiedScreen.x*modifiedScreen.y,
 		1, &camera);
 }

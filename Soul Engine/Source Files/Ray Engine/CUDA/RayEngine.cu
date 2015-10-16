@@ -2,19 +2,22 @@
 
 uint raySeedGl=0;
 
+
 inline __device__ int getGlobalIdx_1D_1D()
 {
 	return blockIdx.x *blockDim.x + threadIdx.x;
 }
 
 __global__ void EngineExecute(uint n, RayJob* jobs, uint raySeed){
+
 	uint index = getGlobalIdx_1D_1D();
 
-
-	thrust::default_random_engine rng(randHash(raySeed) * randHash(index) * randHash(raySeed));
-	thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f); // Changed to 0.0 and 1.0 so I could reuse it for aperture sampling below.
-
 	if (index < n){
+
+	thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
+	thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f);
+
+
 		RayJob* job = jobs;
 		uint startIndex = 0;
 
@@ -25,34 +28,23 @@ __global__ void EngineExecute(uint n, RayJob* jobs, uint raySeed){
 
 		uint localIndex = index - startIndex;
 
-		Ray ray = job->camera->SetupRay(localIndex, job->rayAmount, rng, uniformDistribution);
+		Ray ray;
+		job->camera->SetupRay(localIndex, ray, rng, uniformDistribution);
 
-		glm::vec2 fov = job->camera->FieldOfView();
-		float aspectRatio = fov.x / fov.y;
-		glm::uvec2 screen = job->camera->GetResolution();
-		uint i = localIndex / screen.x;
-		uint j = localIndex % screen.y;
+		//uint x = localIndex / job->camera->resolution.x;
+		//uint y = localIndex % job->camera->resolution.y;
 
 		//calculate something
 
 
-		if (job->type != RayOBJECT_ID&&job->type != RayCOLOUR_TO_BUFFER){
-			job->resultsF[localIndex] = glm::vec3(0.5f, 0.5f, 0.5f);
-		}
-		else if (job->type == RayCOLOUR_TO_BUFFER){
 			
-			float jitterValueX = uniformDistribution(rng);
+			/*float jitterValueX = uniformDistribution(rng);
 			if (jitterValueX>0.6f){
 				job->resultsT[localIndex] = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
 			}
-			else{
+			else{*/
 				job->resultsT[localIndex] = make_float4(1.0f, 1.0f, 1.0f, 1.0f);
-			}
-			
-		}
-		else if (job->resultsI != NULL){
-			job->resultsI[localIndex] = 1;
-		}
+			//}
 	}
 }
 
@@ -85,15 +77,14 @@ __host__ void ProcessJobs(RayJob* jobs){
 		//execute engine
 
 
-
 		cudaEvent_t start, stop; 
 		float time; 
 		cudaEventCreate(&start); 
 		cudaEventCreate(&stop); 
 		cudaEventRecord(start, 0);
 
-	
 		EngineExecute << <gridSize, blockSize >> >(n, jobs, raySeedGl);
+
 		cudaEventRecord(stop, 0); 
 		cudaEventSynchronize(stop); 
 		cudaEventElapsedTime(&time, start, stop); 

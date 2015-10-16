@@ -201,11 +201,11 @@
     <ClInclude Include="Source Files\Utility\CUDA\CUDAManaged.cuh">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh">
-      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Ray Engine\RayJob.cuh">
       <Filter>Engine Backend\Ray Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh">
+      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -301,11 +301,11 @@
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu">
-      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="Source Files\Ray Engine\RayJob.cu">
       <Filter>Engine Backend\Ray Engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu">
+      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
