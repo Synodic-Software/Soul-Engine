@@ -10,11 +10,11 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	camera.SetAspect((float)(screen.x) / (float)(screen.y));
 	camera.resolution=screen;
 	frameTime = 0.0f;
-	changeCutoff = 0.1f;
-	calcPass = 1;
-	samplesMax = 4;
-	samplesMin = 1;
-	samples = samplesMin;
+	changeCutoff = 0.05f;
+
+	samples = 1;
+
+
 	CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
 							   "fragment-shader[Renderer].txt");
 	cameraUniform = CUDAtoScreen->uniform("camera");
@@ -128,26 +128,16 @@ void Renderer::RenderRequestChange(glm::uvec2 screen, Camera& camera, double tim
 
 
 	if (frameTime > timeTarget * (1.0f + changeCutoff)){
-	if (samples > samplesMin){
-	samples--;
-	}
-	else{
-		newWidth = newWidth - (frameTime / timeTarget);
+		newWidth = newWidth * (timeTarget / frameTime);
 		if (newWidth<4){
 			newWidth = 4;
 		}
 	}
-	}
 	else if (frameTime < timeTarget* (1.0f - changeCutoff)){
-	if (samples < samplesMax){
-	samples++;
-	}
-	else{
-		newWidth = newWidth + (frameTime / timeTarget);
+		newWidth = newWidth * (timeTarget/frameTime );
 		if (newWidth>originalScreen.x){
 			newWidth = originalScreen.x;
 		}
-	}
 	}
 
 	

@@ -21,7 +21,7 @@ public:
 private:
 	RayJob* RenderJob;
 	double frameTime;
-	GLuint calcPass;
+
 	float changeCutoff;
 	GLuint samplesMax;
 	GLuint samplesMin;
