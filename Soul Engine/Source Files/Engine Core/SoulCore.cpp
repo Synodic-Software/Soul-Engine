@@ -413,17 +413,12 @@ void Run(void)
 			//std::cout << "CreateHeirarchy(ms): " << (float)currentTime * 1000 << std::endl;
 
 
-			rend.RenderRequestChange(SCREEN_SIZE, *camera,1.0f);
-
-
-			
-
-
 			t += deltaTime;
 			accumulator -= deltaTime;
 		}
 
 
+		rend.RenderRequestChange(SCREEN_SIZE, *camera, 1.0f);
 
 		RayEngine::Process();
 
