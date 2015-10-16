@@ -20,7 +20,7 @@ public:
 
 private:
 	RayJob* RenderJob;
-	double prevTime;
+	double frameTime;
 	GLuint calcPass;
 	float changeCutoff;
 	GLuint samplesMax;
@@ -48,4 +48,5 @@ private:
 	GLuint renderBuffer;
 	struct cudaGraphicsResource *cudaBuffer;
 	float4 *bufferData;
+	double newTime;
 };

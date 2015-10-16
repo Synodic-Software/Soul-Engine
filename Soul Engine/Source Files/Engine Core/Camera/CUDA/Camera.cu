@@ -1,6 +1,8 @@
 #include "Engine Core/Camera/CUDA/Camera.cuh"
 
 CUDA_FUNCTION Camera::Camera() :
+	resolution(0,0),
+	aspectRatio(0),
     position(0.0f,0.0f,0.0f),
 	forward(0.0f,0.0f,1.0f),
 	right(1.0f, 0.0f, 0.0f),

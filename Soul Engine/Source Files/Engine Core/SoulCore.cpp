@@ -417,8 +417,8 @@ void Run(void)
 			accumulator -= deltaTime;
 		}
 
-
-		rend.RenderRequestChange(SCREEN_SIZE, *camera, 1.0f);
+		CudaCheck(cudaDeviceSynchronize());
+		rend.RenderRequestChange(SCREEN_SIZE, *camera, deltaTime);
 
 		RayEngine::Process();
 

@@ -9,7 +9,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	originalScreen = screen;
 	camera.SetAspect((float)(screen.x) / (float)(screen.y));
 	camera.resolution=screen;
-	prevTime = 0.0f;
+	frameTime = 0.0f;
 	changeCutoff = 0.1f;
 	calcPass = 1;
 	samplesMax = 4;
@@ -110,41 +110,54 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
+	newTime = glfwGetTime();
 }
 
 void Renderer::RenderRequestChange(glm::uvec2 screen, Camera& camera, double timeTarget){
-	//float avgTime = 0;
-	//for (std::list<float>::iterator itr = previousFrames.begin(); itr != previousFrames.end(); itr++){
-	//	avgTime += *itr;
-	//}
-	//avgTime /= previousFrames.size();
 
-	double newTime = glfwGetTime();
-	/*if (calcPass==0){
 
-	if (prevTime > timeTarget * (1.0f + changeCutoff)){
+	double oldTime = newTime;
+	newTime = glfwGetTime();
+	frameTime = newTime - oldTime;
+
+
+
+	float aspectRatio = camera.GetAspect();
+	uint newWidth = modifiedScreen.x;
+	
+
+
+	if (frameTime > timeTarget * (1.0f + changeCutoff)){
 	if (samples > samplesMin){
 	samples--;
 	}
+	else{
+		newWidth = newWidth - (frameTime / timeTarget);
+		if (newWidth<4){
+			newWidth = 4;
+		}
 	}
-	else if (prevTime < timeTarget){
+	}
+	else if (frameTime < timeTarget* (1.0f - changeCutoff)){
 	if (samples < samplesMax){
 	samples++;
 	}
-	}
-	}
 	else{
-	calcPass--;
-	}*/
-	prevTime = glfwGetTime() - newTime;
+		newWidth = newWidth + (frameTime / timeTarget);
+		if (newWidth>originalScreen.x){
+			newWidth = originalScreen.x;
+		}
+	}
+	}
 
-	float aspectRatio = camera.GetAspect();
-	uint newWidth = glm::ceil(originalScreen.x);
+	
 	uint newHeight = glm::ceil(newWidth / aspectRatio);
 	modifiedScreen = glm::uvec2(newWidth, newHeight);
 	camera.resolution=modifiedScreen;
 	RayEngine::ChangeJob(RenderJob, modifiedScreen.x*modifiedScreen.y,
-		1, &camera);
+		samples, &camera);
+
+	
 }
 
 

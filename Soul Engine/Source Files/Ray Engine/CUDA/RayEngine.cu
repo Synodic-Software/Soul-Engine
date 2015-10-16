@@ -21,12 +21,14 @@ __global__ void EngineExecute(uint n, RayJob* jobs, uint raySeed){
 		RayJob* job = jobs;
 		uint startIndex = 0;
 
-		while (jobs->nextRay != NULL && !(index < startIndex + jobs->rayAmount)){
+		while (jobs->nextRay != NULL && !(index < startIndex + job->rayAmount*job->samples)){
 			startIndex += job->rayAmount*job->samples;
 			job = job->nextRay;
 		}
 
-		uint localIndex = index - startIndex;
+		uint localJob = index - startIndex;
+
+		uint localIndex = localJob / job->samples;
 
 		Ray ray;
 		job->camera->SetupRay(localIndex, ray, rng, uniformDistribution);
@@ -38,13 +40,13 @@ __global__ void EngineExecute(uint n, RayJob* jobs, uint raySeed){
 
 
 			
-			/*float jitterValueX = uniformDistribution(rng);
+			float jitterValueX = uniformDistribution(rng);
 			if (jitterValueX>0.6f){
 				job->resultsT[localIndex] = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
 			}
-			else{*/
+			else{
 				job->resultsT[localIndex] = make_float4(1.0f, 1.0f, 1.0f, 1.0f);
-			//}
+			}
 	}
 }
 
@@ -55,7 +57,7 @@ __host__ void ProcessJobs(RayJob* jobs){
 	uint n = 0;
 
 	RayJob* temp = jobs;
-	n += temp->rayAmount;
+	n += temp->rayAmount*temp->samples;
 	while (temp->nextRay != NULL){
 		temp = temp->nextRay;
 		n += temp->rayAmount*temp->samples;
