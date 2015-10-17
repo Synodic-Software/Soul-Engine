@@ -45,11 +45,17 @@ float physicsTimer;
 float renderSwitchTimer;
 glm::vec2 mouseChangeDegrees;
 
+FiberTaskingLib::GlobalArgs *globalArgs;
 /////////////////////////User Interface///////////////////////////
 
 //Initializes Soul. This must be called before using variables or 
 //any other functions relating to the engine.
 void SoulInit(){
+
+	globalArgs = new FiberTaskingLib::GlobalArgs();
+	globalArgs->g_taskScheduler.Initialize(25, globalArgs);
+	globalArgs->g_allocator.init(&globalArgs->g_heap, 1234);
+
 seed = GLuint(time(NULL));
 srand(seed);
 settings = new Settings("Settings.ini");
