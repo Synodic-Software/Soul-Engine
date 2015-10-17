@@ -18,7 +18,7 @@
     </Lib>
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>N:\Documents\Soul Engine\Soul Engine\Soul Engine\Libraries\fiber\src;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\fiber\src;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -27,7 +27,7 @@
       <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>N:\Documents\Soul Engine\Soul Engine\Soul Engine\Libraries\fiber\lib;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\lib-vc2013;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\fiber\lib;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\lib-vc2013;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;FiberTaskingLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
