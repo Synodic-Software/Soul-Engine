@@ -14,7 +14,7 @@ void SoulTerminate();
 void AttachCamera(Character&);
 void DetachCamera();
 glm::vec2* GetMouseChange();
-void Run();
+//void Run();
 
 bool RequestRenderSwitch(RenderType);
 bool RequestWindowSwitch(WindowType);

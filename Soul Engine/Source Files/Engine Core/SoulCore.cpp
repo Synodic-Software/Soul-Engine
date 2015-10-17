@@ -13,8 +13,6 @@
 #include "Ray Engine/RayEngine.h"
 #include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
-#include "fiber_tasking_lib/task_scheduler.h"
-#include "fiber_tasking_lib/global_args.h"
 /////////////////////////Variables///////////////////////////////
 
 GLuint seed;
@@ -45,16 +43,11 @@ float physicsTimer;
 float renderSwitchTimer;
 glm::vec2 mouseChangeDegrees;
 
-FiberTaskingLib::GlobalArgs *globalArgs;
 /////////////////////////User Interface///////////////////////////
 
 //Initializes Soul. This must be called before using variables or 
 //any other functions relating to the engine.
 void SoulInit(){
-
-	globalArgs = new FiberTaskingLib::GlobalArgs();
-	globalArgs->g_taskScheduler.Initialize(25, globalArgs);
-	globalArgs->g_allocator.init(&globalArgs->g_heap, 1234);
 
 seed = GLuint(time(NULL));
 srand(seed);
@@ -136,13 +129,12 @@ else{
 	MSAASamples = 16;
 }
 
-
-Scheduler::Pool((std::thread::hardware_concurrency()-1));
-
 }
 
 //Call to deconstuct both the engine and its dependencies
 void SoulTerminate(){
+
+	Scheduler::Terminate();
 
 	//delete hub;
 	delete settings;
@@ -277,7 +269,7 @@ void SetSetting(std::string rName, std::string rValue){
 	settings->Set(rName, rValue);
 }
 
-void Run(void)
+TASK_FUNCTION(Run)
 {
 	
 	
@@ -492,7 +484,8 @@ void previousRenderer(){
 }
 
 int main(){
-	Run();
+
+	Scheduler::Start({ Run, nullptr });
 	SoulTerminate();
 	return 0;
 }
