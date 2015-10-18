@@ -25,7 +25,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	glGenBuffers(1, &renderBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER,
-		screen.x*screen.y*sizeof(float4),
+		originalScreen.x*originalScreen.y*sizeof(float4),
 		NULL, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -49,38 +49,26 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	Vertices[2] = 0.0f;
 	Vertices[3] = 1.0f;
 
-	Vertices[4] = 0.0f;
+
+
+	Vertices[4] = 1.0f;
 	Vertices[5] = 1.0f;
-
-
-
-	Vertices[6] = 1.0f;
+	Vertices[6] = 0.0f;
 	Vertices[7] = 1.0f;
+
+
+
 	Vertices[8] = 0.0f;
 	Vertices[9] = 1.0f;
-
-	Vertices[10] = 1.0f;
-	Vertices[11] = 0.0f;
-
+	Vertices[10] = 0.0f;
+	Vertices[11] = 1.0f;
 
 
-	Vertices[12] = 0.0f;
-	Vertices[13] = 1.0f;
+
+	Vertices[12] = 1.0f;
+	Vertices[13] = 0.0f;
 	Vertices[14] = 0.0f;
 	Vertices[15] = 1.0f;
-
-	Vertices[16] = 0.0f;
-	Vertices[17] = 0.0f;
-
-
-
-	Vertices[18] = 1.0f;
-	Vertices[19] = 0.0f;
-	Vertices[20] = 0.0f;
-	Vertices[21] = 1.0f;
-
-	Vertices[22] = 1.0f;
-	Vertices[23] = 1.0f;
 
 
 	Indices[0] = 0;
@@ -91,7 +79,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	Indices[5] = 3;
 
 	const size_t BufferSize = sizeof(Vertices);
-	const size_t VertexSize = sizeof(float) * 6;
+	const size_t VertexSize = sizeof(GLfloat) * 4;
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -101,9 +89,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	glBufferData(GL_ARRAY_BUFFER, BufferSize, Vertices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(CUDAtoScreen->attrib("vert_VS_in"));
-	glVertexAttribPointer(CUDAtoScreen->attrib("vert_VS_in"), 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), NULL);
-	//glEnableVertexAttribArray(CUDAtoScreen->attrib("texCoord_VS_in"));
-	//glVertexAttribPointer(CUDAtoScreen->attrib("texCoord_VS_in"), 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid*)(4 * sizeof(GLfloat)));
+	glVertexAttribPointer(CUDAtoScreen->attrib("vert_VS_in"), 4, GL_FLOAT, GL_FALSE, VertexSize, NULL);
 
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -113,40 +99,48 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	newTime = glfwGetTime();
 }
 
-void Renderer::RenderRequestChange(glm::uvec2 screen, Camera& camera, double timeTarget){
+void Renderer::RenderRequestChange(glm::uvec2 screen, Camera* camera, double timeTarget,float scroll){
 
 
 	double oldTime = newTime;
 	newTime = glfwGetTime();
 	frameTime = newTime - oldTime;
 
+	/*fiveFrame.push_front(frameTime);
 
+	while (fiveFrame.size()>5){
+		fiveFrame.pop_back();
+	}
+	double avg = 0;
+	for (std::list<double>::iterator itr = fiveFrame.begin(); itr != fiveFrame.end();itr++){
+		avg += *itr;
+	}
+	avg = avg / fiveFrame.size();*/
 
-	float aspectRatio = camera.GetAspect();
-	uint newWidth = modifiedScreen.x;
+	float aspectRatio = camera->GetAspect();
+	uint newWidth = originalScreen.x*scroll;
 	
 
 
-	if (frameTime > timeTarget * (1.0f + changeCutoff)){
-		newWidth = newWidth * (timeTarget / frameTime);
-		if (newWidth<4){
-			newWidth = 4;
-		}
+	/*if (frameTime > timeTarget * (1.0f + changeCutoff)){
+		newWidth = glm::ceil(newWidth * (timeTarget / frameTime));
 	}
 	else if (frameTime < timeTarget* (1.0f - changeCutoff)){
-		newWidth = newWidth * (timeTarget/frameTime );
-		if (newWidth>originalScreen.x){
+		newWidth = glm::ceil(newWidth * (timeTarget / frameTime));
+	}*/
+
+	if (newWidth<48){
+		newWidth = 48;
+	}
+	else if (newWidth>originalScreen.x){
 			newWidth = originalScreen.x;
-		}
 	}
 
-	
 	uint newHeight = glm::ceil(newWidth / aspectRatio);
 	modifiedScreen = glm::uvec2(newWidth, newHeight);
-	camera.resolution=modifiedScreen;
-	RayEngine::ChangeJob(RenderJob, modifiedScreen.x*modifiedScreen.y,
-		samples, &camera);
-
+	camera->resolution=modifiedScreen;
+	RayEngine::ChangeJob(RenderJob, (modifiedScreen.x*modifiedScreen.y),
+		samples, camera);
 	
 }
 

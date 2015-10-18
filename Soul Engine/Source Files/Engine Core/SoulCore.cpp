@@ -29,6 +29,7 @@ unsigned int MSAASamples;
 //BVH* hub;
 Camera* camera;
 
+float scrollUniform;
 
 bool freeCam;
 
@@ -48,7 +49,7 @@ glm::vec2 mouseChangeDegrees;
 //Initializes Soul. This must be called before using variables or 
 //any other functions relating to the engine.
 void SoulInit(){
-
+	scrollUniform = 1.0f;
 seed = GLuint(time(NULL));
 srand(seed);
 settings = new Settings("Settings.ini");
@@ -135,7 +136,7 @@ else{
 void SoulTerminate(){
 
 	Scheduler::Terminate();
-
+	cudaDeviceReset();
 	//delete hub;
 	delete settings;
 	glfwTerminate();
@@ -151,14 +152,23 @@ void RemoveObject(Object* object){
 	
 }
 
-void SoulSynch(){
-
+void SoulSynchCPU(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint& size){
+	for (uint i = 0; i < size; i++){
+		sched->WaitForCounter(counter[i], 0);
+	}
+}
+void SoulSynchGPU(){
 	cudaDeviceSynchronize();
 }
+void SoulSynch(FiberTaskingLib::TaskScheduler* sched,COUNTER* counter,uint& size){
+	SoulSynchCPU(sched, counter, size);
+	SoulSynchGPU();
+}
+
 
 void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
-	freeMouse = false;
+	freeMouse = true;
 
 	window = windowT;
 	SetSetting("Window", "WINDOWED");
@@ -235,9 +245,9 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
 	// setup camera 
 	freeCam = true;
-
+	//camera->SetPosition(glm::vec3(-5.0f*METER, 2.0f*METER, 5.0f*METER));
 	camera->SetPosition(glm::vec3(-(DECAMETER * 5), DECAMETER * 5, -(DECAMETER * 5)));
-	camera->OffsetOrientation(135, 45);
+	camera->OffsetOrientation(45, 45);
 
 	//unsigned concurentThreadsSupported = std::thread::hardware_concurrency();
 	//threads = new ThreadPool(concurentThreadsSupported);
@@ -269,16 +279,84 @@ void SetSetting(std::string rName, std::string rValue){
 	settings->Set(rName, rValue);
 }
 
+
+void UpdateMouse(){
+	double xPos;
+	double yPos;
+	glfwGetCursorPos(mainThread, &xPos, &yPos);
+	xPos -= (SCREEN_SIZE.x / 2.0);
+	yPos -= (SCREEN_SIZE.y / 2.0);
+	mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
+	mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
+
+	if (freeMouse){
+		if (freeCam){
+			//set camera for each update
+			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
+		}
+
+
+		glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
+	}
+}
+
+void UpdateKeys(){
+	double moveSpeed;
+	if (glfwGetKey(mainThread, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+		moveSpeed = 9 * METER * deltaTime;
+	}
+	else if (glfwGetKey(mainThread, GLFW_KEY_LEFT_ALT) == GLFW_PRESS){
+		moveSpeed = 1 * METER * deltaTime;
+	}
+	else{
+		moveSpeed = 4.5 * METER * deltaTime;
+	}
+
+
+	if (freeCam){
+		if (glfwGetKey(mainThread, GLFW_KEY_S) == GLFW_PRESS){
+			camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
+		}
+		else if (glfwGetKey(mainThread, GLFW_KEY_W) == GLFW_PRESS){
+			camera->OffsetPosition(float(moveSpeed) * camera->Forward());
+		}
+		if (glfwGetKey(mainThread, GLFW_KEY_A) == GLFW_PRESS){
+			camera->OffsetPosition(float(moveSpeed) * -camera->Right());
+		}
+		else if (glfwGetKey(mainThread, GLFW_KEY_D) == GLFW_PRESS){
+			camera->OffsetPosition(float(moveSpeed) * camera->Right());
+		}
+		if (glfwGetKey(mainThread, GLFW_KEY_Z) == GLFW_PRESS){
+			camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
+		}
+		else if (glfwGetKey(mainThread, GLFW_KEY_X) == GLFW_PRESS){
+			camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
+		}
+	}
+
+}
+
+
+void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+
+	scrollUniform += yoffset/50.0f;
+	if (scrollUniform>1.0f){
+		scrollUniform = 1.0f;
+	}
+	else if (scrollUniform<0.0f){
+		scrollUniform = 0.0f;
+	}
+}
+
 TASK_FUNCTION(Run)
 {
 	
-	
+	SoulSynchGPU();
 	SoulInit();
-	cudaDeviceSynchronize();
 	camera = new Camera();
-
 	SoulCreateWindow(BORDERLESS, SPECTRAL);
-
+	
 	Renderer rend(*camera,SCREEN_SIZE);
 	
 
@@ -286,6 +364,8 @@ TASK_FUNCTION(Run)
 	SetKey(GLFW_KEY_SPACE, std::bind(&togglePhysics));
 	SetKey(GLFW_KEY_Q, std::bind(&previousRenderer));
 	SetKey(GLFW_KEY_E, std::bind(&nextRenderer));
+
+	glfwSetScrollCallback(mainThread, ScrollCallback);
 
 	//timer info for loop
 	double t = 0.0f;
@@ -296,6 +376,8 @@ TASK_FUNCTION(Run)
 	//hub->UpdateObjects(deltaTime);
 	//stop loop when glfw exit is called
 	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
+
+
 	while (!glfwWindowShouldClose(mainThread)){
 		double newTime = glfwGetTime();
 		double frameTime = newTime - currentTime;
@@ -315,63 +397,12 @@ TASK_FUNCTION(Run)
 			//loading and updates for multithreading
 
 			//set cursor in center
-			double xPos;
-			double yPos;
-			glfwGetCursorPos(mainThread, &xPos, &yPos);
-			xPos -= (SCREEN_SIZE.x / 2.0);
-			yPos -= (SCREEN_SIZE.y / 2.0);
-			CudaCheck(cudaDeviceSynchronize());
-			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
-			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
-			
-			if (freeMouse){
-				if (freeCam){
-					//set camera for each update
-					camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-				}
-
-
-				glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
-			}
-
+			SoulSynchGPU();
+			UpdateMouse();
 
 			glfwPollEvents();
 
-
-			double moveSpeed;
-			if (glfwGetKey(mainThread, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
-				moveSpeed = 9 * METER * deltaTime;
-			}
-			else if (glfwGetKey(mainThread, GLFW_KEY_LEFT_ALT) == GLFW_PRESS){
-				moveSpeed = 1 * METER * deltaTime;
-			}
-			else{
-				moveSpeed = 4.5 * METER * deltaTime;
-			}
-
-
-			if (freeCam){
-				if (glfwGetKey(mainThread, GLFW_KEY_S) == GLFW_PRESS){
-					camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
-				}
-				else if (glfwGetKey(mainThread, GLFW_KEY_W) == GLFW_PRESS){
-					camera->OffsetPosition(float(moveSpeed) * camera->Forward());
-				}
-				if (glfwGetKey(mainThread, GLFW_KEY_A) == GLFW_PRESS){
-					camera->OffsetPosition(float(moveSpeed) * -camera->Right());
-				}
-				else if (glfwGetKey(mainThread, GLFW_KEY_D) == GLFW_PRESS){
-					camera->OffsetPosition(float(moveSpeed) * camera->Right());
-				}
-				if (glfwGetKey(mainThread, GLFW_KEY_Z) == GLFW_PRESS){
-					camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
-				}
-				else if (glfwGetKey(mainThread, GLFW_KEY_X) == GLFW_PRESS){
-					camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
-				}
-			}
-
-
+			UpdateKeys();
 
 			//double timeSet = glfwGetTime();
 
@@ -420,21 +451,21 @@ TASK_FUNCTION(Run)
 
 			t += deltaTime;
 			accumulator -= deltaTime;
+			//SoulSynch();
 		}
 
-		CudaCheck(cudaDeviceSynchronize());
-		rend.RenderRequestChange(SCREEN_SIZE, *camera, deltaTime);
-
+		SoulSynchGPU();
+		rend.RenderRequestChange(SCREEN_SIZE, camera, deltaTime, scrollUniform);
+		SoulSynchGPU();
 		RayEngine::Process();
 
 		//draw
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		cudaDeviceSynchronize();
+		SoulSynchGPU();
 		rend.Render();
-		cudaDeviceSynchronize();
-		//rayEngine->Render(SCREEN_SIZE, hub, camera, deltaTime / 2.0f);
+		SoulSynchGPU();
 
 		glfwSwapBuffers(mainThread);
 	}

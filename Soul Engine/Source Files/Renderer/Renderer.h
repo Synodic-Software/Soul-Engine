@@ -14,7 +14,7 @@ public:
 	Renderer(Camera&, glm::uvec2);
 
 
-	void RenderRequestChange(glm::uvec2, Camera&, double);
+	void RenderRequestChange(glm::uvec2, Camera*, double,float);
 	void Render();
 
 
@@ -49,4 +49,5 @@ private:
 	struct cudaGraphicsResource *cudaBuffer;
 	float4 *bufferData;
 	double newTime;
+	std::list<double> fiveFrame;
 };

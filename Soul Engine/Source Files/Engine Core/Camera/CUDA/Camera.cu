@@ -101,17 +101,19 @@ CUDA_FUNCTION void Camera::SetupRay(uint& index, Ray& ray,thrust::default_random
 	//	(right * tan(glm::radians(fieldOfView.x * 0.5f)))) + (((2 * sy) - 1) *
 	//	(verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f)))))) - position) * focalDistance)) - aperturePoint;
 
-	int y = int(index / resolution.y);
+	uint y = uint(index / resolution.x);
 
 	glm::vec3 verticalAxis = normalize(cross(right, forward));
 
-	float sx = ((uniformDistribution(rng) - 0.5f) + (index - (y*resolution.y))) / (resolution.x - 1);
+	float sx = ((uniformDistribution(rng) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
 	float sy = ((uniformDistribution(rng) - 0.5f) + y) / (resolution.y - 1);
 
 	float angle = TWO_PI * uniformDistribution(rng);
 	float distance = aperture * sqrt(uniformDistribution(rng));
-	
-	glm::vec3 aperturePoint = position + ((cos(angle) * distance) * right) + ((sin(angle) * distance) * verticalAxis);
+
+	//+ ((cos(angle) * distance) * right) + ((sin(angle) * distance) * verticalAxis)
+
+	glm::vec3 aperturePoint = position ;
 	
 	ray.origin = aperturePoint;
 
@@ -131,9 +133,8 @@ CUDA_FUNCTION void Camera::SetCircle(bool cir){
 	circularDistribution = cir;
 }
 CUDA_FUNCTION void Camera::OffsetOrientation(float x, float y){
-	right = glm::rotateX(right, glm::radians(x));
-	forward = glm::rotateX(forward, glm::radians(x));
+	right = normalize(glm::rotateY(right, glm::radians(x)));
+	forward = normalize(glm::rotateY(forward, glm::radians(x)));
 
-	right = glm::rotateY(right, glm::radians(y));
-	forward = glm::rotateY(forward, glm::radians(y));
+	forward = normalize(glm::rotate(forward, glm::radians(y),right));
 }

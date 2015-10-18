@@ -1,14 +1,10 @@
 #version 440 core
 in vec4 vert_VS_in;
-in vec2 texCoord_VS_in;
 
 uniform mat4 camera;
 uniform mat4 model;
 
-
-//out vec2 texCoord_FS_in;
 void main()
 {
-   // texCoord_FS_in = texCoord_VS_in;
 	gl_Position=(camera*model)*vert_VS_in;
 }
