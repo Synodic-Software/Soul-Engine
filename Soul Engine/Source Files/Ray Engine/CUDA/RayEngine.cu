@@ -132,7 +132,7 @@ __host__ void ProcessJobs(RayJob* jobs){
 
 
 		cudaEvent_t start, stop; 
-		float time; 
+		float time;
 		cudaEventCreate(&start); 
 		cudaEventCreate(&stop); 
 		cudaEventRecord(start, 0);
