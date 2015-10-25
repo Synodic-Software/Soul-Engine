@@ -132,9 +132,6 @@
     <ClInclude Include="Source Files\Engine Core\Settings.h">
       <Filter>Engine Backend</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Object\Object.h">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Object\Character\Character.h">
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
     </ClInclude>
@@ -171,9 +168,6 @@
     <ClInclude Include="Source Files\Ray Engine\RayEngine.h">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Object\ObjectProperties.h">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Object\Vertex.h">
       <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClInclude>
@@ -207,6 +201,18 @@
     <ClInclude Include="Source Files\Multithreading\Scheduler.h">
       <Filter>Engine Backend\Multithreading</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Object\Object.cuh">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Object\ObjLoader.h">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -226,9 +232,6 @@
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Settings.cpp">
       <Filter>Engine Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Object\Object.cpp">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp">
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
@@ -263,9 +266,6 @@
     <ClCompile Include="Source Files\Ray Engine\RayEngine.cpp">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Object\ObjectProperties.cpp">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Object\Vertex.cpp">
       <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClCompile>
@@ -280,6 +280,12 @@
     </ClCompile>
     <ClCompile Include="Source Files\Multithreading\Scheduler.cpp">
       <Filter>Engine Backend\Multithreading</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Object\Object.cu">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Object\ObjLoader.cpp">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +312,12 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu">
       <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cu">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

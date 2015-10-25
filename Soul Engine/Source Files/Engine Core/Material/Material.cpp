@@ -2,8 +2,7 @@
 
 Material::Material(){
 	hasTexture = true;
-	texture = defaultTexture;
-	isResident = false;
+	//texture = defaultTexture;
 	textureIsLoaded = false;
 }
 Material::~Material(){
@@ -18,23 +17,14 @@ Material::~Material(){
 	//}
 }
 void Material::SetTexture(std::string name ){
-	Bitmap bmp = Bitmap::bitmapFromFile(name);
-		bmp.flipVertically();
-		texture=new Texture(bmp);
+	//Bitmap bmp = Bitmap::bitmapFromFile(name);
+		//bmp.flipVertically();
+		//texture=new Texture(bmp);
 		//textureHandle = glGetTextureHandleARB(texture->object());
-	textureIsLoaded = true;
+	//textureIsLoaded = true;
 }
 void Material::SetDefaultTexture(std::string name){
-	Bitmap bmp = Bitmap::bitmapFromFile(name);
-	bmp.flipVertically(); 
-	defaultTexture = new Texture(bmp);
-}
-GLuint64 Material::GetHandle(){
-	
-	if (!isResident){
-		textureHandle = glGetTextureHandleARB(texture->object());
-		glMakeTextureHandleResidentARB(textureHandle);
-		isResident = true;
-	}
-	return textureHandle;
+	//Bitmap bmp = Bitmap::bitmapFromFile(name);
+	//bmp.flipVertically(); 
+	//defaultTexture = new Texture(bmp);
 }

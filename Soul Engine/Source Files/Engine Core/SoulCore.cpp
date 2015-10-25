@@ -21,7 +21,7 @@ WindowType window;
 
 GLFWwindow* mainThread;
 GLFWwindow* loopThread;
-
+Renderer* rend;
 glm::uvec2 SCREEN_SIZE;
 
 Settings* settings;
@@ -37,11 +37,10 @@ float timeModifier = 1.0f;
 const float deltaTime = (1.0f / 60.0f);
 bool runPhysics;
 bool freeMouse;
-void togglePhysics();
-void previousRenderer();
-void nextRenderer();
+void TogglePhysics();
+void UpdateTimers();
+void ClearColor(float,float,float,float);
 float physicsTimer;
-float renderSwitchTimer;
 glm::vec2 mouseChangeDegrees;
 
 /////////////////////////User Interface///////////////////////////
@@ -54,7 +53,6 @@ seed = GLuint(time(NULL));
 srand(seed);
 settings = new Settings("Settings.ini");
 physicsTimer = 0;
-renderSwitchTimer = 0;
 
 runPhysics = false;
 
@@ -340,7 +338,7 @@ void UpdateKeys(){
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 
-	scrollUniform += yoffset/50.0f;
+	scrollUniform += (float)(yoffset / 50.0);
 	if (scrollUniform>1.0f){
 		scrollUniform = 1.0f;
 	}
@@ -355,15 +353,14 @@ TASK_FUNCTION(Run)
 	SoulSynchGPU();
 	SoulInit();
 	camera = new Camera();
+	SoulSynchGPU();
 	SoulCreateWindow(BORDERLESS, SPECTRAL);
 	
-	Renderer rend(*camera,SCREEN_SIZE);
+	rend= new Renderer(*camera,SCREEN_SIZE);
 	
 
 	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
-	SetKey(GLFW_KEY_SPACE, std::bind(&togglePhysics));
-	SetKey(GLFW_KEY_Q, std::bind(&previousRenderer));
-	SetKey(GLFW_KEY_E, std::bind(&nextRenderer));
+	SetKey(GLFW_KEY_SPACE, std::bind(&TogglePhysics));
 
 	glfwSetScrollCallback(mainThread, ScrollCallback);
 
@@ -397,123 +394,56 @@ TASK_FUNCTION(Run)
 			//loading and updates for multithreading
 
 			//set cursor in center
-			SoulSynchGPU();
 			UpdateMouse();
 
 			glfwPollEvents();
 
 			UpdateKeys();
 
-			//double timeSet = glfwGetTime();
+			//Update();
 
-			////hub->SetupObjects();
+			//RunPhysics();
 
-			//currentTime = glfwGetTime() - currentTime;
-
-			//std::cout << "Setup Objects(ms): " << (float)currentTime * 1000 << std::endl;
-
-			//if (runPhysics){
-
-			//timeSet = glfwGetTime();
-
-			////hub->Physics(deltaTime);
-
-			//currentTime = glfwGetTime() - currentTime;
-
-			//std::cout << "Physics(ms): " << (float)currentTime * 1000 << std::endl;
-			//	
-			////}
-			//timeSet = glfwGetTime();
-
-			////hub->UpdateObjects(deltaTime);
-
-			//currentTime = glfwGetTime() - currentTime;
-
-			//std::cout << "UpdateObjects(ms): " << (float)currentTime * 1000 << std::endl;
-
-			if (physicsTimer>0){
-				physicsTimer = physicsTimer - deltaTime;
-			
-			}
-			if (renderSwitchTimer>0){
-				renderSwitchTimer = renderSwitchTimer - deltaTime;
-
-			}
-
-			//timeSet = glfwGetTime();
-
-			////hub->CreateHeirarchy(false, deltaTime);
-
-			//currentTime = glfwGetTime() - currentTime;
-
-			//std::cout << "CreateHeirarchy(ms): " << (float)currentTime * 1000 << std::endl;
-
+			UpdateTimers();
 
 			t += deltaTime;
 			accumulator -= deltaTime;
 			//SoulSynch();
 		}
 
-		SoulSynchGPU();
-		rend.RenderRequestChange(SCREEN_SIZE, camera, deltaTime, scrollUniform);
-		SoulSynchGPU();
+		rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
+		camera->UpdateVariables();
 		RayEngine::Process();
 
 		//draw
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		SoulSynchGPU();
-		rend.Render();
+		rend->Render();
 		SoulSynchGPU();
-
 		glfwSwapBuffers(mainThread);
 	}
 }
 glm::vec2* GetMouseChange(){
 	return &mouseChangeDegrees;
 }
-void AttachCamera(Character& character){
-	/*freeCam = false;
-	camera.AttachCamera(&(character.camera));*/
-}
-void DetachCamera(){
-	/*freeCam = true;
-	camera.DetachCamera();*/
+
+void UpdateTimers(){
+	if (physicsTimer>0){
+		physicsTimer = physicsTimer - deltaTime;
+	}
 }
 
-void SetClearColor(float r, float g, float b, float a){
+void ClearColor(float r, float g, float b, float a){
 	glClearColor(r, g, b, a);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-void togglePhysics(){
-	if (physicsTimer <= 0){
+void TogglePhysics(){
+	if (physicsTimer <= 0.0f){
 		runPhysics = !runPhysics;
 		physicsTimer = 0.35f;
 	}
 }
-void nextRenderer(){
-	if (renderSwitchTimer <= 0){
-		if (renderer == PATH){
-			renderer = SPECTRAL;
-		}
-		else if (renderer == SPECTRAL){
-			renderer = PATH;
-		}
-		renderSwitchTimer = 0.5f;
-	}
-}
-void previousRenderer(){
-	if (renderSwitchTimer <= 0){
-        if (renderer == SPECTRAL){
-			renderer = PATH;
-		}
-		else if (renderer == PATH){
-			renderer = SPECTRAL;
-		}
-		renderSwitchTimer = 0.5f;
-	}
-}
-
 int main(){
 
 	Scheduler::Start({ Run, nullptr });

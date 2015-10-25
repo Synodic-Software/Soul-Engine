@@ -13,10 +13,12 @@
 	uniform uvec2 screen;
 
 
-vec4 bilinear( vec2 texcoord){
+vec4 Bilinear( vec2 texcoord){
 
 uint px = uint(floor(texcoord.x)); // floor of x
 uint py = uint(floor(texcoord.y)); // floor of y
+
+
 
 uint pyN=py+1;
 uint pxN=px+1;
@@ -34,8 +36,47 @@ vec4 p4 = tex[pyN*screenMod.x+pxN];
  return mix (r1, r2, fract(texcoord.y));
 }
 
+vec4 Cubic(float x)
+{
+    float x2 = x * x;
+    float x3 = x2 * x;
+    vec4 w;
+    w.x =   -x3 + 3*x2 - 3*x + 1;
+    w.y =  3*x3 - 6*x2       + 4;
+    w.z = -3*x3 + 3*x2 + 3*x + 1;
+    w.w =  x3;
+    return w / 6.f;
+}
 
+vec4 Bicubic(vec2 texcoord)
+{
+    float fx = fract(texcoord.x);
+    float fy = fract(texcoord.y);
+    texcoord.x = uint(floor(texcoord.x)); // floor of x
+	texcoord.y = uint(floor(texcoord.y)); // floor of y
 
+    vec4 xcubic = Cubic(fx);
+    vec4 ycubic = Cubic(fy);
+
+    vec4 c = vec4(texcoord.x-1.0f, texcoord.x + 1.0f, texcoord.y-1.0f, texcoord.y + 1.0f);
+    vec4 s = vec4(xcubic.x + xcubic.y, xcubic.z + xcubic.w, ycubic.x +
+ycubic.y, ycubic.z + ycubic.w);
+
+    vec4 offset = c + vec4(xcubic.y, xcubic.w, ycubic.y, ycubic.w) /
+s;
+
+    vec4 sample0 = Bilinear( vec2(offset.x, offset.z));
+    vec4 sample1 = Bilinear( vec2(offset.y, offset.z));
+    vec4 sample2 = Bilinear( vec2(offset.x, offset.w));
+    vec4 sample3 = Bilinear( vec2(offset.y, offset.w));
+
+    float sx = s.x / (s.x + s.y);
+    float sy = s.z / (s.z + s.w);
+
+    return mix(
+        mix(sample3, sample2, sx),
+        mix(sample1, sample0, sx), sy);
+}
 
 
 
@@ -43,6 +84,6 @@ vec4 p4 = tex[pyN*screenMod.x+pxN];
 
 		vec2 pos= gl_FragCoord.xy*(vec2(screenMod-vec2(1))/vec2(screen));
 
-		fragment=bilinear(pos);
+		fragment=Bilinear(pos);
 
 	}

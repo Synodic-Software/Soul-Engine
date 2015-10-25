@@ -40,6 +40,7 @@
 
 		CUDA_FUNCTION void OffsetOrientation(float x, float y);
 
+		CUDA_FUNCTION void UpdateVariables();
 
 		glm::uvec2 resolution;
 
@@ -53,4 +54,9 @@
         glm::vec2 fieldOfView;
 		float aperture;
 		float focalDistance;
+
+		//VARIABLE PRECALC
+		glm::vec3 verticalAxis;
+		glm::vec3 yHelper;
+		glm::vec3 xHelper;
     };

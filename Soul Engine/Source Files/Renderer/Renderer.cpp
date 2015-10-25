@@ -2,9 +2,6 @@
 
 Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
-
-
-
 	modifiedScreen = screen;
 	originalScreen = screen;
 	camera.SetAspect((float)(screen.x) / (float)(screen.y));
@@ -25,7 +22,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	glGenBuffers(1, &renderBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER,
-		originalScreen.x*originalScreen.y*sizeof(float4),
+		originalScreen.x*originalScreen.y*sizeof(glm::vec4),
 		NULL, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -40,6 +37,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
 		cudaBuffer));
 
+	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR_TO_BUFFER, screen.x*screen.y, 1, &camera);
 
 	RenderJob->resultsT = bufferData;
@@ -99,7 +97,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	newTime = glfwGetTime();
 }
 
-void Renderer::RenderRequestChange(glm::uvec2 screen, Camera* camera, double timeTarget,float scroll){
+void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget, float scroll){
 
 
 	double oldTime = newTime;
@@ -118,48 +116,53 @@ void Renderer::RenderRequestChange(glm::uvec2 screen, Camera* camera, double tim
 	avg = avg / fiveFrame.size();*/
 
 	float aspectRatio = camera->GetAspect();
-	uint newWidth = originalScreen.x*scroll;
+	uint newWidth = (uint)glm::ceil(originalScreen.x*scroll);
 	
+	/*uint newWidth = modifiedScreen.x;
 
-
-	/*if (frameTime > timeTarget * (1.0f + changeCutoff)){
-		newWidth = glm::ceil(newWidth * (timeTarget / frameTime));
+	if (frameTime > timeTarget * (1.0f + changeCutoff)){
+		newWidth = glm::ceil(newWidth * ((timeTarget * (1.0f + changeCutoff)) / frameTime));
 	}
 	else if (frameTime < timeTarget* (1.0f - changeCutoff)){
-		newWidth = glm::ceil(newWidth * (timeTarget / frameTime));
+		newWidth = glm::ceil(newWidth * ((timeTarget* (1.0f - changeCutoff)) / frameTime));
 	}*/
 
 	if (newWidth<48){
 		newWidth = 48;
 	}
 	else if (newWidth>originalScreen.x){
-			newWidth = originalScreen.x;
+		newWidth = originalScreen.x;
 	}
 
-	uint newHeight = glm::ceil(newWidth / aspectRatio);
+	uint newHeight = (uint) glm::ceil(newWidth / aspectRatio);
 	modifiedScreen = glm::uvec2(newWidth, newHeight);
 	camera->resolution=modifiedScreen;
 	RayEngine::ChangeJob(RenderJob, (modifiedScreen.x*modifiedScreen.y),
 		samples, camera);
 	
-}
+	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
+	size_t num_bytes;
+	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
+		cudaBuffer));
 
+}
 
 void Renderer::Render(){
 
+	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBuffer);
 
-		CUDAtoScreen->use();
-		glBindVertexArray(vao);
-		CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
-		CUDAtoScreen->setUniform(modelUniform, glm::mat4());
-		CUDAtoScreen->setUniform(screenUniform, originalScreen.x, originalScreen.y);
-		CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
+	CUDAtoScreen->use();
+	glBindVertexArray(vao);
+	CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
+	CUDAtoScreen->setUniform(modelUniform, glm::mat4());
+	CUDAtoScreen->setUniform(screenUniform, originalScreen.x, originalScreen.y);
+	CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
 
-		glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
-		glBindVertexArray(0);
-		CUDAtoScreen->stopUsing();
+	glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
+	glBindVertexArray(0);
+	CUDAtoScreen->stopUsing();
 
 		
 }

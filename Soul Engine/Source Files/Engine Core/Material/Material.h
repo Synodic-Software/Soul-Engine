@@ -6,28 +6,28 @@
 
 static Texture* defaultTexture;
 
-class Material{
+class Material : public Managed{
 public:
 
 	Material();
 	~Material();
 
-	GLuint64 GetHandle();
+
 	void SetTexture(std::string);
 	static void SetDefaultTexture(std::string);
 
 private:
 	//helper
-	
+	static cudaTextureObject_t defaultTex;
 
-
+	cudaTextureObject_t tex;
 
 
 
 
 	//general information
 	std::string name;
-	GLuint ID;
+	uint ID;
 
 
 	//texture/mapping information
@@ -35,10 +35,7 @@ private:
 
 	glm::vec4 diffuse;
 	std::string textureLocation;
-	Texture* texture;
-	GLuint64 textureHandle;
 	bool textureIsLoaded;
-	bool isResident;
 
 	bool hasDisplacement;
 

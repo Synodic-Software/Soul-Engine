@@ -8,7 +8,42 @@ inline __device__ int getGlobalIdx_1D_1D()
 	return blockIdx.x *blockDim.x + threadIdx.x;
 }
 
-inline __device__ bool AABBIntersect(glm::vec3& origin, glm::vec3& extent, glm::vec3& o, glm::vec3& dInv, float t0, float t1){
+
+inline __device__ glm::vec3 positionAlongRay(const Ray& ray, const float& t) {
+	return ray.origin + t * ray.direction;
+}
+inline __device__ glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
+	float position = (dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2;
+	glm::vec3 interpolatedColor = (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) +position * glm::vec3(1.0f, 1.0f, 1.0f);
+	return interpolatedColor * 1.0f;
+}
+
+inline __device__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
+	const glm::vec3& o, const glm::vec3& d,
+	float& lambda, float& bary1, float& bary2)
+{
+	glm::vec3 edge1 = b - a;
+	glm::vec3 edge2 = c - a;
+
+	glm::vec3 pvec = cross(d, edge2);
+	float det = dot(edge1, pvec);
+	if (det == 0.0f){
+		return false;
+	}
+	float inv_det = 1.0f / det;
+
+	glm::vec3 tvec = o - a;
+	bary1 = dot(tvec, pvec) * inv_det;
+
+	glm::vec3 qvec = cross(tvec, edge1);
+	bary2 = dot(d, qvec) * inv_det;
+	lambda = dot(edge2, qvec) * inv_det;
+
+	bool hit = (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
+	return hit;
+}
+
+inline __device__ bool AABBIntersect(const glm::vec3& origin, const glm::vec3& extent, const glm::vec3& o, const glm::vec3& dInv, const float& t0, const float& t1){
 
 	glm::vec3 boxMax = origin + extent;
 	glm::vec3 boxMin = origin - extent;
@@ -35,76 +70,85 @@ inline __device__ bool AABBIntersect(glm::vec3& origin, glm::vec3& extent, glm::
 
 }
 
-inline __device__ float4 Intersect(Ray& ray){
+inline __device__ float4 Intersect(const Ray& ray, RayJob *&job){
 
 
 
 	if (AABBIntersect(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), ray.origin, 1.0f / ray.direction, 0.0f, 4294967295.0f)){
-		return make_float4(1.0f, 1.0f, 1.0f, 1.0f);
+		return make_float4(1.0f , 1.0f , 1.0f , 1.0f);
 	}
 	else{
-		return make_float4(0.0f, 0.0f, 0.0f,1.0f);
+		glm::vec3 backColor=computeBackgroundColor(ray.direction);
+		return make_float4(backColor.x , backColor.y , backColor.z , 1.0f);
 	}
 }
-__global__ void EngineResultClear(uint n, RayJob* jobs){
-	uint index = getGlobalIdx_1D_1D();
 
-	RayJob* job = jobs;
-	uint startIndex = 0;
+inline __device__ void GetCurrentJob(RayJob *&job, const uint& index, uint& startIndex){
 
-	while (jobs->nextRay != NULL && !(index < startIndex + job->rayAmount*job->samples)){
+	while (job->nextRay != NULL && !(index < startIndex + job->rayAmount*job->samples)){
 		startIndex += job->rayAmount*job->samples;
 		job = job->nextRay;
 	}
 
-	uint localJob = index - startIndex;
-
-	uint localIndex = localJob / job->samples;
-
-	job->resultsT[localIndex] = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
 }
-__global__ void EngineExecute(uint n, RayJob* jobs, uint raySeed){
+
+__global__ void EngineResultClear(const uint n, RayJob* job){
+
 
 	uint index = getGlobalIdx_1D_1D();
 
 	if (index < n){
 
-	thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
-	thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f);
-
-
-		RayJob* job = jobs;
 		uint startIndex = 0;
 
-		while (jobs->nextRay != NULL && !(index < startIndex + job->rayAmount*job->samples)){
-			startIndex += job->rayAmount*job->samples;
-			job = job->nextRay;
-		}
+		GetCurrentJob(job, index, startIndex);
 
-		uint localJob = index - startIndex;
+		job->resultsT[(index - startIndex) / job->samples] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	}
+}
 
-		uint localIndex = localJob / job->samples;
+__global__ void EngineExecute(const uint n, RayJob* job, const uint raySeed){
+
+	uint index = getGlobalIdx_1D_1D();
+
+	if (index < n){
+
+		thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
+		thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f);
+
+
+		uint index = getGlobalIdx_1D_1D();
+		uint startIndex = 0;
+
+		GetCurrentJob(job, index, startIndex);
+
+		uint localIndex = index - startIndex / job->samples;
 
 		Ray ray;
 		job->camera->SetupRay(localIndex, ray, rng, uniformDistribution);
 
-		//uint x = localIndex / job->camera->resolution.x;
-		//uint y = localIndex % job->camera->resolution.y;
+		uint x = localIndex / job->camera->resolution.x;
+		uint y = localIndex % job->camera->resolution.y;
 
 		//calculate something
 
 
-			
-		float4 col = Intersect(ray);
-		float4 accum = job->resultsT[localIndex];
-		job->resultsT[localIndex] = make_float4(accum.x + col.x, accum.y + col.y, accum.z + col.z, 1.0f);
+
+		float4 col = Intersect(ray, job);
+		
+		atomicAdd(&(job->resultsT[localIndex].x), col.x / job->samples);
+
+		atomicAdd(&(job->resultsT[localIndex].y), col.y / job->samples);
+
+		atomicAdd(&(job->resultsT[localIndex].z), col.z / job->samples);
 
 	}
 }
 
+
 __host__ void ProcessJobs(RayJob* jobs){
 	raySeedGl++;
-
+	CudaCheck(cudaDeviceSynchronize());
 	if (jobs!=NULL){
 	uint n = 0;
 
@@ -117,15 +161,8 @@ __host__ void ProcessJobs(RayJob* jobs){
 
 	if (n!=0){
 
-		int blockSize;   // The launch configurator returned block size 
-		int minGridSize; // The minimum grid size needed to achieve the 
-		// maximum occupancy for a full device launch 
-		int gridSize;    // The actual grid size needed, based on input size 
-
-		cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize,
-			EngineExecute, 0, 0);
-		// Round up according to array size 
-		gridSize = (n + blockSize - 1) / blockSize;
+		uint blockSize = 32;
+		uint gridSize = (n + blockSize - 1) / blockSize;
 
 
 		//execute engine
@@ -137,8 +174,10 @@ __host__ void ProcessJobs(RayJob* jobs){
 		cudaEventCreate(&stop); 
 		cudaEventRecord(start, 0);
 
+
 		EngineResultClear << <gridSize, blockSize >> >(n, jobs);
-		EngineExecute << <gridSize, blockSize >> >(n, jobs, raySeedGl);
+
+		EngineExecute     << <gridSize, blockSize >> >(n, jobs, raySeedGl);
 
 		cudaEventRecord(stop, 0); 
 		cudaEventSynchronize(stop); 

@@ -29,9 +29,8 @@ public:
 	uint rayAmount;
 	uint rayBaseAmount;
 
-
 //for texture setup
-	float4* resultsT;
+	glm::vec4* resultsT;
 
 	//for float values
 	glm::vec3* resultsF;

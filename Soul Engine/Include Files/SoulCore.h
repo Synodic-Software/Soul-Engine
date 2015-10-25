@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine Core/Object/Object.h"
+#include "Engine Core/Object/Object.cuh"
 #include "Engine Core/Object/Character/Character.h"
 
 typedef enum RenderType {SPECTRAL, PATH};
@@ -11,8 +11,6 @@ void SoulInit();
 //WindowType, RenderType
 void SoulCreateWindow(WindowType, RenderType);
 void SoulTerminate();
-void AttachCamera(Character&);
-void DetachCamera();
 glm::vec2* GetMouseChange();
 //void Run();
 

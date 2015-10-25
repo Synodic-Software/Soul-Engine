@@ -103,8 +103,6 @@ CUDA_FUNCTION void Camera::SetupRay(uint& index, Ray& ray,thrust::default_random
 
 	uint y = uint(index / resolution.x);
 
-	glm::vec3 verticalAxis = normalize(cross(right, forward));
-
 	float sx = ((uniformDistribution(rng) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
 	float sy = ((uniformDistribution(rng) - 0.5f) + y) / (resolution.y - 1);
 
@@ -118,12 +116,17 @@ CUDA_FUNCTION void Camera::SetupRay(uint& index, Ray& ray,thrust::default_random
 	ray.origin = aperturePoint;
 
 	glm::vec3 pointOnPlaneOneUnitAwayFromEye = 
-		(position + forward) + (((2 * sx) - 1) * 
-		(right * tan(glm::radians(fieldOfView.x * 0.5f)))) + (((2 * sy) - 1) * 
-		(verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f)))));
+		(position + forward) + (((2 * sx) - 1) * xHelper) + (((2 * sy) - 1) * yHelper);
 
 	ray.direction = (position + ((pointOnPlaneOneUnitAwayFromEye-position) * focalDistance)) - aperturePoint;
 
+}
+
+CUDA_FUNCTION void Camera::UpdateVariables(){
+	verticalAxis = normalize(cross(right, forward));
+	
+	yHelper=verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f)));
+	xHelper= right * tan(glm::radians(fieldOfView.x * 0.5f));
 }
 
 CUDA_FUNCTION bool Camera::IsViewable() const{
