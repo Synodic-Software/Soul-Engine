@@ -34,6 +34,7 @@ class Object: Managed{
 
 		void AddVertices(Vertex*,uint);
 		void AddFaces(Face*, uint);
+		void ExtractFromFile(const char*);
 
 		uint verticeAmount;
 		uint indiceAmount;

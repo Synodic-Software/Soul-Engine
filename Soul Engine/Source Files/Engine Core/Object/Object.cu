@@ -5,7 +5,7 @@ Object::Object(){
 
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
-	std::string err = tinyobj::LoadObj(shapes, materials, filename, basepath);
+	std::string err = tinyobj::LoadObj(shapes, materials, "Rebellion.obj", NULL);
 
 	if (!err.empty()) {
 		std::cerr << err << std::endl;
@@ -18,7 +18,20 @@ void Object::AddVertices(Vertex* vertices, uint vSize){
 void Object::AddFaces(Face* vertices, uint fSize){
 
 }
+void ExtractFromFile(const char* name){
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string err = tinyobj::LoadObj(shapes, materials, name, NULL);
 
+	if (!err.empty()) {
+		std::cerr << err << std::endl;
+	}
+	
+	for (int i = 0; i < shapes.size();i++){
+		shapes[i].mesh.;
+	}
+
+}
 //std::string Object::ResourcePath(std::string fileName) {
 //		return  fileName;
 //}
