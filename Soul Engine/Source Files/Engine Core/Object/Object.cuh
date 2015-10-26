@@ -12,7 +12,7 @@
 #include "Face.h"
 #include "ObjLoader.h"
 
-class Object: Managed{
+class Object: public Managed{
 	public:
 
 		Object();
@@ -37,8 +37,10 @@ class Object: Managed{
 		void ExtractFromFile(const char*);
 
 		uint verticeAmount;
-		uint indiceAmount;
+		uint faceAmount;
 
+		Vertex* vertices;
+		Face* faces;
 
 	virtual void Update(double) = 0;
 	virtual void UpdateLate(double) = 0;

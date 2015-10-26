@@ -7,10 +7,12 @@ class Vertex : public Managed
 {
 public:
 	Vertex();
-	Vertex(float3, float2, float3);
+	Vertex(glm::vec3, glm::vec2, glm::vec3);
 	~Vertex();
+
+	glm::vec3 position;
+	glm::vec2 textureCoord;
+	glm::vec3 normal;
 private:
-	float3* position;
-	float2* textureCoord;
-	float3* normal;
+	
 };
