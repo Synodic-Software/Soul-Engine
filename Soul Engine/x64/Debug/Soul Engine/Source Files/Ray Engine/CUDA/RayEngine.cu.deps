@@ -378,7 +378,7 @@ c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\host_defines.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\vector_functions.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\device_launch_parameters.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\vector_types.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Ray Engine\RayEngine.cuh
+n:\documents\soul engine\soul engine\soul engine\source files\ray engine\cuda\RayEngine.cuh
 N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core/BasicDependencies.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime_api.h
@@ -718,3 +718,15 @@ N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\Help
 N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Ray Engine/RayJob.cuh
 N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Ray Engine\Ray.cuh
 N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core\Camera\CUDA\Camera.cuh
+N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core\Scene\Scene.cuh
+N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core\Object\Object.cuh
+N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility/OpenGL/ShaderSupport.h
+n:\documents\soul engine\soul engine\soul engine\source files\utility\opengl\Shader.h
+N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core/Material/Texture/Texture.h
+n:\documents\soul engine\soul engine\soul engine\source files\engine core\material\texture\Bitmap.h
+N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Input/Input.h
+N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core/Material/Material.h
+n:\documents\soul engine\soul engine\soul engine\source files\engine core\object\Vertex.h
+n:\documents\soul engine\soul engine\soul engine\source files\engine core\object\Face.h
+n:\documents\soul engine\soul engine\soul engine\source files\engine core\object\ObjLoader.h
+n:\documents\soul engine\soul engine\soul engine\source files\engine core\scene\ObjectSceneAbstraction.cuh

@@ -1,11 +1,11 @@
 #include "RayEngine.h"
-#include "RayEngine.cuh"
+#include "CUDA/RayEngine.cuh"
 
 RayJob* jobs=NULL;
 uint jobSize=0;
 
-void RayEngine::Process(){
-	ProcessJobs(jobs);
+void RayEngine::Process(const Scene* scene){
+	ProcessJobs(jobs,scene);
 }
 
 RayJob* RayEngine::AddRayJob(castType whatToGet, uint rayAmount,

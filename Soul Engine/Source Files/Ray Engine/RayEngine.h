@@ -2,7 +2,7 @@
 
 #include "Engine Core/BasicDependencies.h"
 #include "RayJob.cuh"
-
+#include "Engine Core\Scene\Scene.cuh"
 
 //The main engine that processes RayJobs
 namespace RayEngine {
@@ -19,7 +19,7 @@ namespace RayEngine {
 	//return false if it wasn't changed
 	bool ChangeJob(RayJob*, uint, uint, Camera*);
 
-	void Process();
+	void Process(const Scene*);
 
 
 }

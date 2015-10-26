@@ -13,6 +13,8 @@
 #include "Ray Engine/RayEngine.h"
 #include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
+#include "Engine Core\Scene\Scene.cuh"
+#include "Resources\Objects\Hand.h"
 /////////////////////////Variables///////////////////////////////
 
 GLuint seed;
@@ -26,7 +28,7 @@ glm::uvec2 SCREEN_SIZE;
 
 Settings* settings;
 unsigned int MSAASamples;
-//BVH* hub;
+Scene* scene;
 Camera* camera;
 
 float scrollUniform;
@@ -353,11 +355,20 @@ TASK_FUNCTION(Run)
 	SoulSynchGPU();
 	SoulInit();
 	camera = new Camera();
+	
+
+	
+
 	SoulSynchGPU();
 	SoulCreateWindow(BORDERLESS, SPECTRAL);
-	
+
+
+	scene = new Scene();
 	rend= new Renderer(*camera,SCREEN_SIZE);
-	
+
+	Hand* hand = new Hand();
+	Object* handObj = hand;
+	scene->AddObject(handObj);
 
 	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
 	SetKey(GLFW_KEY_SPACE, std::bind(&TogglePhysics));
@@ -413,7 +424,7 @@ TASK_FUNCTION(Run)
 
 		rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
 		camera->UpdateVariables();
-		RayEngine::Process();
+		RayEngine::Process(scene);
 
 		//draw
 		ClearColor(1.0f, 1.0f, 1.0f, 1.0f);

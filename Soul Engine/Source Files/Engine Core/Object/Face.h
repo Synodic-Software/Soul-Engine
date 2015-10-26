@@ -7,5 +7,11 @@ class Face : public Managed
 {
 public:
 	Face();
+	Face(glm::uvec3, uint);
 	~Face();
+
+	glm::uvec3 indices;
+	uint materialID;
+private:
+	
 };
