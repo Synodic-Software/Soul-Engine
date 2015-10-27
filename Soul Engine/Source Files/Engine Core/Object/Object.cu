@@ -3,13 +3,13 @@
 
 Object::Object(){
 
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string err = tinyobj::LoadObj(shapes, materials, "Rebellion.obj", NULL);
+	verticeAmount=0;
+	faceAmount=0;
+	materialSize = 0;
 
-	if (!err.empty()) {
-		std::cerr << err << std::endl;
-	}
+	vertices=NULL;
+	faces = NULL;
+	materials = NULL;
 }
 
 void Object::AddVertices(Vertex* vertices, uint vSize){
@@ -29,36 +29,44 @@ void Object::ExtractFromFile(const char* name){
 	
 	uint overallSize = 0;
 	uint faceOverallSize = 0;
-	for (int i = 0; i < shapes.size(); i++){
+	for (uint i = 0; i < shapes.size(); i++){
 		overallSize += shapes[i].mesh.positions.size();
 		faceOverallSize += shapes[i].mesh.indices.size();
 	}
 
-	vertices = new Vertex[overallSize];
-	faces = new Face[faceOverallSize];
 
 	verticeAmount = overallSize;
 	faceAmount = faceOverallSize;
+	cudaDeviceSynchronize();
+
+	cudaMallocManaged(&vertices,
+		verticeAmount*sizeof(Vertex));
+
+	cudaMallocManaged(&faces,
+		faceAmount*sizeof(Face));
+
+	cudaDeviceSynchronize();
 
 	uint overallOffset = 0;
 	uint faceOffset = 0;
 
-	for (size_t i = 0; i < shapes.size(); i++){
-		for (size_t v = 0; v < shapes[i].mesh.positions.size() / 3; v++){
-			vertices[overallOffset + v] = Vertex(
+	for (uint i = 0; i < shapes.size(); i++){
+		for (uint v = 0; v < verticeAmount / 3; v++){
+			vertices[overallOffset + v].SetData(
 				glm::vec3(shapes[i].mesh.positions[3 * v + 0], shapes[i].mesh.positions[3 * v + 1], shapes[i].mesh.positions[3 * v + 2]),
 				glm::vec2(shapes[i].mesh.texcoords[2 * v + 0], shapes[i].mesh.texcoords[2 * v + 1]),
 				glm::vec3(shapes[i].mesh.normals[3 * v + 0], shapes[i].mesh.normals[3 * v + 1], shapes[i].mesh.normals[3 * v + 2]));
 		}
 		overallOffset += shapes[i].mesh.positions.size();
 
-		for (size_t f = 0; f < shapes[i].mesh.indices.size() / 3; f++){
-			faces[faceOffset + f] = Face(
+		for (uint f = 0; f < faceAmount / 3; f++){
+			faces[faceOffset + f].SetData(
 				glm::uvec3(shapes[i].mesh.indices[3 * f + 0], shapes[i].mesh.indices[3 * f + 1], shapes[i].mesh.indices[3 * f + 2]),
 				shapes[i].mesh.material_ids[f]);
 		}
-		faceOffset += shapes[i].mesh.positions.size();
+		faceOffset += shapes[i].mesh.indices.size();
 	}
+	cudaDeviceSynchronize();
 }
 //std::string Object::ResourcePath(std::string fileName) {
 //		return  fileName;

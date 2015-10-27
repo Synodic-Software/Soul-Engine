@@ -68,7 +68,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, const uint raySeed, con
 }
 
 
-__host__ void ProcessJobs(RayJob* jobs,const Scene* scene){
+__host__ void ProcessJobs(RayJob* jobs, const Scene* scene){
 	raySeedGl++;
 	CudaCheck(cudaDeviceSynchronize());
 	if (jobs!=NULL){

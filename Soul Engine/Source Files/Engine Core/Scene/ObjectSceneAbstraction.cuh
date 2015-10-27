@@ -2,7 +2,7 @@
 
 #include "Engine Core\Object\Object.cuh"
 
-class ObjectSceneAbstraction
+class ObjectSceneAbstraction : public Managed
 {
 public:
 	__host__ ObjectSceneAbstraction(Object*);

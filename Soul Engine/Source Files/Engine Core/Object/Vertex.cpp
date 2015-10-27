@@ -13,7 +13,12 @@ Vertex::Vertex(glm::vec3 posTemp, glm::vec2 uvTemp, glm::vec3 normTemp)
 	textureCoord = uvTemp;
 	normal = normTemp;
 }
-
+void Vertex::SetData(glm::vec3 posTemp, glm::vec2 uvTemp, glm::vec3 normTemp)
+{
+	position = posTemp;
+	textureCoord = uvTemp;
+	normal = normTemp;
+}
 Vertex::~Vertex()
 {
 }

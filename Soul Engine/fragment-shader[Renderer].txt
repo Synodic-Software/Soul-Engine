@@ -18,11 +18,22 @@ vec4 Bilinear( vec2 texcoord){
 uint px = uint(floor(texcoord.x)); // floor of x
 uint py = uint(floor(texcoord.y)); // floor of y
 
-
+float tx=abs(fract(texcoord.x));
+float ty=abs(fract(texcoord.y));
 
 uint pyN=py+1;
 uint pxN=px+1;
 
+if(px<0){
+	px=0;
+	pxN=px;
+	tx=0.0f;
+}
+if(py<0){
+	py=0;
+	pyN=py;
+	ty=0.0f;
+}
 
 vec4 p1 = tex[py*screenMod.x+px];
 vec4 p2 = tex[py*screenMod.x+pxN];
@@ -30,10 +41,10 @@ vec4 p3 = tex[pyN*screenMod.x+px];
 vec4 p4 = tex[pyN*screenMod.x+pxN];
 
 // Calculate the weights for each pixel
- vec4 r1 = mix(p1, p2, fract(texcoord.x));
- vec4 r2 = mix(p3, p4, fract(texcoord.x));
+ vec4 r1 = mix(p1, p2, tx);
+ vec4 r2 = mix(p3, p4, tx);
  
- return mix (r1, r2, fract(texcoord.y));
+ return mix (r1, r2, ty);
 }
 
 vec4 Cubic(float x)
@@ -84,6 +95,6 @@ s;
 
 		vec2 pos= gl_FragCoord.xy*(vec2(screenMod-vec2(1))/vec2(screen));
 
-		fragment=Bilinear(pos);
+		fragment=Bicubic(pos);
 
 	}
