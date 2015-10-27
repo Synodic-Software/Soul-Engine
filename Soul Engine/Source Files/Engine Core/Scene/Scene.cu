@@ -11,16 +11,16 @@ Scene::~Scene()
 }
 
 
-inline CUDA_FUNCTION glm::vec3 positionAlongRay(const Ray& ray, const float& t) {
+CUDA_FUNCTION glm::vec3 positionAlongRay(const Ray& ray, const float& t) {
 	return ray.origin + t * ray.direction;
 }
-inline CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
+CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
 	float position = (dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2;
 	glm::vec3 interpolatedColor = (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(1.0f, 1.0f, 1.0f);
 	return interpolatedColor * 1.0f;
 }
 
-inline CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
+CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
 	const glm::vec3& o, const glm::vec3& d,
 	float& lambda, float& bary1, float& bary2)
 {
@@ -45,7 +45,7 @@ inline CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::v
 	return hit;
 }
 
-inline CUDA_FUNCTION bool AABBIntersect(const glm::vec3& origin, const glm::vec3& extent, const glm::vec3& o, const glm::vec3& dInv, const float& t0, const float& t1){
+CUDA_FUNCTION bool AABBIntersect(const glm::vec3& origin, const glm::vec3& extent, const glm::vec3& o, const glm::vec3& dInv, const float& t0, const float& t1){
 
 	glm::vec3 boxMax = origin + extent;
 	glm::vec3 boxMin = origin - extent;
@@ -84,17 +84,15 @@ CUDA_FUNCTION glm::vec3 Scene::IntersectColour(const Ray& ray)const{
 			float bary1 = 0;
 			float bary2 = 0;
 			float lambda = 0;
-			bool touched = FindTriangleIntersect(
-				current->vertices[current->faces[i].indices.x].position,
-				current->vertices[current->faces[i].indices.y].position,
-				current->vertices[current->faces[i].indices.z].position,
+			glm::uvec3 face = current->faces[i].indices;
+			bool touched = FindTriangleIntersect(current->vertices[face.x].position, current->vertices[face.y].position, current->vertices[face.z].position,
 				ray.origin, ray.direction,
 				lambda, bary1, bary2);
 			if (touched){
 				intersected = true;
+				break;
 			}
 		}
-
 	}
 
 

@@ -46,8 +46,8 @@ class Object: public Managed{
 	virtual void UpdateLate(double) = 0;
 	virtual void Load() = 0;
 
-	Material* materials;
-	uint meterialSize;
+	Material** materials;
+	uint materialSize;
 
 protected:
 	
