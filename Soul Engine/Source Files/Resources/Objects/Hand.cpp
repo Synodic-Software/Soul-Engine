@@ -18,5 +18,5 @@ void Hand::UpdateLate(double){
 
 }
 void Hand::Load(){
-	ExtractFromFile("Rebellion.obj");
+	ExtractFromFile("Box.obj");
 }
