@@ -50,7 +50,7 @@ glm::vec2 mouseChangeDegrees;
 //Initializes Soul. This must be called before using variables or 
 //any other functions relating to the engine.
 void SoulInit(){
-	scrollUniform = 0.0f;
+	scrollUniform = 0.5f;
 seed = GLuint(time(NULL));
 srand(seed);
 settings = new Settings("Settings.ini");
