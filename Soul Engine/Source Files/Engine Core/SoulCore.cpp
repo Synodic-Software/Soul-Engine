@@ -98,6 +98,9 @@ else{
 }
 
 
+int count;
+GLFWmonitor** monitors = glfwGetMonitors(&count);
+
 	//set screen size
 const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
