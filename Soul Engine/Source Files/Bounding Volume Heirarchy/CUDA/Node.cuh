@@ -13,4 +13,7 @@ private:
 	float systemMax = 8192.0f;
 	BoundingBox* box;
 
+	Node* childLeft;
+	Node* childRight;
+
 };
