@@ -12,16 +12,19 @@ public:
 	__host__ ~Scene();
 
 	CUDA_FUNCTION glm::vec3 IntersectColour(const Ray& ray)const;
-	__host__ void AddObject(Object*);
+	__host__ void AddObject(Object&);
 
 private:
 
+	uint* mortonCodes;
+	uint* objectPointers;
+
+	uint indicesSize;
 
 
-	ObjectSceneAbstraction* objectList;
+	Object* objectList;
 	uint objectsSize;
-
-
+	uint maxObjects;
 
 };
 

@@ -371,7 +371,7 @@ TASK_FUNCTION(Run)
 
 	Hand* hand = new Hand();
 	Object* handObj = hand;
-	scene->AddObject(handObj);
+	scene->AddObject(*handObj);
 
 	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
 	SetKey(GLFW_KEY_SPACE, std::bind(&TogglePhysics));
