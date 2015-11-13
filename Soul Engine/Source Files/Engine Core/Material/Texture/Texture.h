@@ -2,8 +2,26 @@
 
 #include <GL/glew.h>
 #include "Bitmap.h"
-
+#include "Engine Core\BasicDependencies.h"
     
+#pragma pack(push,4)
+struct Image
+{
+	void                   *h_data;
+	cudaExtent              size;
+	cudaResourceType        type;
+	cudaArray_t             dataArray;
+	cudaMipmappedArray_t    mipmapArray;
+	cudaTextureObject_t     textureObject;
+
+	Image()
+	{
+		memset(this, 0, sizeof(Image));
+	}
+};
+#pragma pack(pop)
+
+
     /**
      Represents an OpenGL texture
      */

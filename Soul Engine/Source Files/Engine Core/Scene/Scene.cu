@@ -3,6 +3,11 @@
 
 Scene::Scene()
 {
+	objectsSize = 0;
+	maxObjects = 100;
+
+	cudaMallocManaged(&objectList,
+		maxObjects*sizeof(Object));
 }
 
 
@@ -76,9 +81,9 @@ CUDA_FUNCTION glm::vec3 Scene::IntersectColour(const Ray& ray)const{
 
 	bool intersected=false;
 
-	for (ObjectSceneAbstraction* currentObj = objectList; currentObj != NULL; currentObj = currentObj->nextObject){
+	for (uint i = 0; i < objectsSize;i++){
 
-		Object* current = currentObj->object;
+		Object* current = &objectList[i];
 
 		for (uint i = 0; i <current->faceAmount; i++){
 			float bary1 = 0;
@@ -105,15 +110,11 @@ CUDA_FUNCTION glm::vec3 Scene::IntersectColour(const Ray& ray)const{
 	}
 }
 
-__host__ void Scene::AddObject(Object* obj){
-	if (objectList == NULL){
-		objectList = new ObjectSceneAbstraction(obj);
+__host__ void Scene::AddObject(Object& obj){
+	if (maxObjects - 1 == objectsSize){
+		std::cout << "ObjectMax reached" << std::endl;
 		return;
 	}
-	ObjectSceneAbstraction* current = objectList;
-	while (objectList->nextObject != NULL){
-		current = objectList->nextObject;
-	}
-	current->nextObject = new ObjectSceneAbstraction(obj);
+	objectList[objectsSize] = obj;
 	objectsSize++;
 }
