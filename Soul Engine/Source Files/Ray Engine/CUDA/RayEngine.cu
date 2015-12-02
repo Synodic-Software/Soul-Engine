@@ -3,6 +3,16 @@
 uint raySeedGl=0;
 
 
+inline CUDA_FUNCTION uint WangHash(uint a) {
+	a = (a ^ 61) ^ (a >> 16);
+	a = a + (a << 3);
+	a = a ^ (a >> 4);
+	a = a * 0x27d4eb2d;
+	a = a ^ (a >> 15);
+	return a;
+}
+
+
 inline __device__ int getGlobalIdx_1D_1D()
 {
 	return blockIdx.x *blockDim.x + threadIdx.x;
@@ -99,7 +109,7 @@ __host__ void ProcessJobs(RayJob* jobs, const Scene* scene){
 
 		EngineResultClear << <gridSize, blockSize >> >(n, jobs);
 
-		EngineExecute << <gridSize, blockSize >> >(n, jobs, raySeedGl, scene);
+		EngineExecute << <gridSize, blockSize >> >(n, jobs, WangHash(raySeedGl), scene);
 
 		cudaEventRecord(stop, 0); 
 		cudaEventSynchronize(stop); 
