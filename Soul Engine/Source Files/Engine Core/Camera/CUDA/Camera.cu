@@ -101,6 +101,9 @@ CUDA_FUNCTION void Camera::SetupRay(uint& index, Ray& ray,thrust::default_random
 	//	(right * tan(glm::radians(fieldOfView.x * 0.5f)))) + (((2 * sy) - 1) *
 	//	(verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f)))))) - position) * focalDistance)) - aperturePoint;
 
+
+
+
 	uint y = uint(index / resolution.x);
 
 	float sx = ((uniformDistribution(rng) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
