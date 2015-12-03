@@ -13,8 +13,8 @@ public:
 	CUDA_FUNCTION void TransformRay(Ray&);
 
 private:
-	float systemMin = 0.0f;
-	float systemMax = 8192.0f;
+	uint systemMin;
+	uint systemMax;
 
 	BoundingBox* box;
 
