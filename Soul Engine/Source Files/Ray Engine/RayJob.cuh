@@ -23,6 +23,8 @@ public:
 	CUDA_FUNCTION bool IsRecurring() const{
 		return isRecurring;
 	}
+	CUDA_FUNCTION void ChangeProbability(float);
+	CUDA_FUNCTION float GetProbability();
 
 	uint samples;
 	castType type;
@@ -40,7 +42,7 @@ public:
 private:
 
 	bool isRecurring;
-
+	float probability;
 	//result containers
 
 	//for texture setup

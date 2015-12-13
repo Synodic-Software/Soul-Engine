@@ -47,16 +47,17 @@ __global__ void EngineExecute(const uint n, RayJob* job, const uint raySeed, con
 
 	uint index = getGlobalIdx_1D_1D();
 
-	if (index < n){
-
-		thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
-		thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f);
+	uint startIndex = 0;
+	GetCurrentJob(job, index, startIndex);
 
 
-		uint index = getGlobalIdx_1D_1D();
-		uint startIndex = 0;
+	thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
+	thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f);
 
-		GetCurrentJob(job, index, startIndex);
+	float prob = uniformDistribution(rng);
+
+	if (prob<job->GetProbability() && index < n){
+
 
 		uint localIndex = index - startIndex / job->samples;
 
