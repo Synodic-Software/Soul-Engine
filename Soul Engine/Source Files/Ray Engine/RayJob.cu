@@ -2,6 +2,8 @@
 
 __host__ RayJob::RayJob(castType whatToGet, uint rayAmountN, uint newSamples, Camera* cameraN, bool isRecurringN){
 
+	probability = 1.0f;
+
 	type = whatToGet;
 	rayAmount = rayAmountN;
 	rayBaseAmount = rayAmount;
@@ -39,4 +41,16 @@ __host__ RayJob::~RayJob(){
 	if (resultsT != NULL){
 		delete resultsT;
 	}
+}
+
+CUDA_FUNCTION void RayJob::ChangeProbability(float newProb){
+
+	probability = newProb;
+
+}
+
+CUDA_FUNCTION float RayJob::GetProbability(){
+
+	return probability;
+
 }
