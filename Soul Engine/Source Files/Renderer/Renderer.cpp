@@ -139,7 +139,7 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	camera->resolution=modifiedScreen;
 	RayEngine::ChangeJob(RenderJob, (modifiedScreen.x*modifiedScreen.y),
 		samples, camera);
-	
+	RenderJob->ChangeProbability(0.1f);
 	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
 	size_t num_bytes;
 	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
