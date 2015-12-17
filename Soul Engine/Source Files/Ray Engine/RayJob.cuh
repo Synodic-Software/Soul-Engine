@@ -5,7 +5,7 @@
 #include "Engine Core\Camera\CUDA\Camera.cuh"
 
 
-enum castType{ 
+enum rayType{ 
 	  RayCOLOUR				//RayCOLOUR: A vec3 of RGB values to be displayed
 	, RayCOLOUR_SPECTRAL	//RayCOLOUR_SPECTRAL: Uses additional processing time to perform spectral operations and returns the result in vec3 RGB space.
 	, RayDISTANCE			//RayDISTANCE: A float of the specific ray's distance travelled.
@@ -20,34 +20,33 @@ public:
 
 	//@param The information to be retreiving from the job.
 	//@param The number of rays/data-points to be cast into the scene.
-	//@param The number of samples per ray or point that will be averaged into the result
+	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
 	//@param Boolean inquiring whether or not to use memory optimizations if a job is per-frame.
-	__host__ RayJob(castType, uint, uint, Camera* camera, bool isRecurring);
+	__host__ RayJob(rayType, uint, float, Camera* camera, bool isRecurring);
 	__host__ ~RayJob();
 
 
-	CUDA_FUNCTION Camera* GetCamera(){
-		return camera;
-	}
+	//Returns a reference to a camera pointer. All the ray shooting information is stored here.
+	CUDA_FUNCTION Camera*& GetCamera();
 		
-	CUDA_FUNCTION bool IsRecurring() const{
-		return isRecurring;
-	}
+	//Returns a boolean of the jobs storage flag.
+	CUDA_FUNCTION bool IsRecurring() const;
+
+	//Returns the rayType of the job.
+	CUDA_FUNCTION rayType RayType() const;
+
+	//Returns the Ray max of the job as per its initialization params.
+	CUDA_FUNCTION uint RayAmountMax() const;
+
+	//Returns the current rayAmount (modifiable)
+	CUDA_FUNCTION uint& GetRayAmount();
+
+	//Returns the current sample per ray (modifiable)
+	CUDA_FUNCTION float& GetSampleAmount();
 
 
-
-
-
-	CUDA_FUNCTION void ChangeProbability(float);
-	CUDA_FUNCTION float SampleProbability();
-
-
-	uint samples;
-	castType type;
-	uint rayAmount;
-	uint rayBaseAmount;
-
+	
 //for texture setup
 	glm::vec4* resultsT;
 
@@ -61,14 +60,14 @@ protected:
 
 private:
 
+	//basic variables
 	bool isRecurring;
-	float probability;
 	Camera* camera;
+    rayType type;
+	uint rayAmount;
+	uint rayBaseAmount;
+	float samples;
 
-	//result containers
+	//result variables
 
-	//for texture setup
-	
-
-	
 };
