@@ -56,25 +56,33 @@ __global__ void EngineExecute(const uint n, RayJob* job, const uint raySeed, con
 
 	float prob = uniformDistribution(rng);
 
-	if (prob<job->GetProbability() && index < n){
-
-
+	if (index < n){
+		
 		uint localIndex = index - startIndex / job->samples;
 
-		Ray ray;
-		job->camera->SetupRay(localIndex, ray, rng, uniformDistribution);
+		if (prob<job->GetProbability()){
+
+			Ray ray;
+			job->camera->SetupRay(localIndex, ray, rng, uniformDistribution);
 
 
-		//calculate something
-		glm::vec3 col =scene->IntersectColour(ray);
+			//calculate something
+			glm::vec3 col = scene->IntersectColour(ray);
 
-		
-		atomicAdd(&(job->resultsT[localIndex].x), col.x / job->samples);
 
-		atomicAdd(&(job->resultsT[localIndex].y), col.y / job->samples);
+			atomicAdd(&(job->resultsT[localIndex].x), col.x / job->samples);
 
-		atomicAdd(&(job->resultsT[localIndex].z), col.z / job->samples);
+			atomicAdd(&(job->resultsT[localIndex].y), col.y / job->samples);
 
+			atomicAdd(&(job->resultsT[localIndex].z), col.z / job->samples);
+		}
+		else{
+			atomicAdd(&(job->resultsT[localIndex].x), 0.0f / job->samples);
+
+			atomicAdd(&(job->resultsT[localIndex].y), 0.0f / job->samples);
+
+			atomicAdd(&(job->resultsT[localIndex].z), 0.0f / job->samples);
+		}
 	}
 }
 
