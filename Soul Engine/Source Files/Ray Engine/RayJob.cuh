@@ -4,27 +4,44 @@
 #include "Ray Engine\Ray.cuh"
 #include "Engine Core\Camera\CUDA\Camera.cuh"
 
-enum castType{ RayCOLOUR, RayCOLOUR_TO_BUFFER, RayDISTANCE, RayOBJECT_ID, RayNORMAL, RayUV };
+
+enum castType{ 
+	  RayCOLOUR				//RayCOLOUR: A vec3 of RGB values to be displayed
+	, RayCOLOUR_SPECTRAL	//RayCOLOUR_SPECTRAL: Uses additional processing time to perform spectral operations and returns the result in vec3 RGB space.
+	, RayDISTANCE			//RayDISTANCE: A float of the specific ray's distance travelled.
+	, RayOBJECT_ID			//RayOBJECT_ID: A unique ID of the first Object hit in a uint.
+	, RayNORMAL				//RayNORMAL: The normal at the first point hit in a vec3.
+	, RayUV					//RayUV: The UV at the first point hit in a vec2.
+};
+
 
 class RayJob : public Managed{
 public:
 
-	//Takes an array of desired outputs, its size, the function that decides the ray generation, and the number of rays to shoot. 
-	//The last parameter is the speed of the ray
-
-	//some device function to be pointed to
-
+	//@param The information to be retreiving from the job.
+	//@param The number of rays/data-points to be cast into the scene.
+	//@param The number of samples per ray or point that will be averaged into the result
+	//@param A camera that contains all the information to shoot a ray.
+	//@param Boolean inquiring whether or not to use memory optimizations if a job is per-frame.
 	__host__ RayJob(castType, uint, uint, Camera* camera, bool isRecurring);
 	__host__ ~RayJob();
-	RayJob* nextRay;	
 
-	Camera* camera;
 
+	CUDA_FUNCTION Camera* GetCamera(){
+		return camera;
+	}
+		
 	CUDA_FUNCTION bool IsRecurring() const{
 		return isRecurring;
 	}
+
+
+
+
+
 	CUDA_FUNCTION void ChangeProbability(float);
-	CUDA_FUNCTION float GetProbability();
+	CUDA_FUNCTION float SampleProbability();
+
 
 	uint samples;
 	castType type;
@@ -39,10 +56,15 @@ public:
 
 	//for int values
 	uint* resultsI;
+
+protected:
+
 private:
 
 	bool isRecurring;
 	float probability;
+	Camera* camera;
+
 	//result containers
 
 	//for texture setup
