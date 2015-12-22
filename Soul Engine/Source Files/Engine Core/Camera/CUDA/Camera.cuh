@@ -28,6 +28,8 @@
 		CUDA_FUNCTION void SetRight(glm::vec3&);
 		CUDA_FUNCTION glm::vec3 Right() const;
 
+
+		//Given a positive integer, this function fills in the given ray's values based on the camera's position orientation and lens.
 		CUDA_FUNCTION void SetupRay(uint&, Ray&, thrust::default_random_engine&, thrust::uniform_real_distribution<float>&);
 
 		CUDA_FUNCTION bool IsViewable() const;

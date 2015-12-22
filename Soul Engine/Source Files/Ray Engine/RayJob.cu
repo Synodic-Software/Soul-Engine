@@ -9,12 +9,12 @@ __host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, float newSamples, Ca
 	camera = cameraN;
 	isRecurring = isRecurringN;
 
-	if (whatToGet != RayOBJECT_ID&&whatToGet!=RayCOLOUR_TO_BUFFER){
+	if (whatToGet != RayOBJECT_ID&&whatToGet!=RayCOLOUR){
 		cudaMallocManaged(&resultsF, rayBaseAmount);
 		resultsI = NULL;
 		resultsT = NULL;
 	}
-	else if (whatToGet==RayCOLOUR_TO_BUFFER){
+	else if (whatToGet==RayCOLOUR){
 
 		
 
