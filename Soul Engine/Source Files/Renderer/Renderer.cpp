@@ -38,7 +38,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 		cudaBuffer));
 
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
-	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR_TO_BUFFER, screen.x*screen.y, 1, &camera);
+	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR, screen.x*screen.y, 1, &camera);
 
 	RenderJob->resultsT = bufferData;
 

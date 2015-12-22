@@ -60,7 +60,7 @@ protected:
 
 private:
 
-	//basic variables
+	//common variables
 	bool isRecurring;
 	Camera* camera;
     rayType type;

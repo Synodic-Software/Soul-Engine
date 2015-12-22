@@ -8,7 +8,7 @@ void RayEngine::Process(const Scene* scene){
 	ProcessJobs(jobs,scene);
 }
 
-RayJob* RayEngine::AddRayJob(castType whatToGet, uint rayAmount,
+RayJob* RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
 	uint samples, Camera* camera){
 
 	RayJob* temp = jobs;
@@ -20,7 +20,7 @@ RayJob* RayEngine::AddRayJob(castType whatToGet, uint rayAmount,
 	return newHead;
 }
 
-RayJob* RayEngine::AddRecurringRayJob(castType whatToGet, 
+RayJob* RayEngine::AddRecurringRayJob(rayType whatToGet, 
 	uint rayAmount, uint samples, Camera* camera){
 
 	RayJob* temp = jobs;
