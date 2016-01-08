@@ -51,3 +51,6 @@
 
 #include "Utility\OpenGL\GLError.h"
 #include "Utility\CUDA\CUDAManaged.cuh"
+
+#include <utility>
+#include <CL/cl.hpp>

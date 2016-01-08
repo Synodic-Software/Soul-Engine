@@ -378,12 +378,12 @@ c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\host_defines.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\vector_functions.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\device_launch_parameters.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\vector_types.h
-n:\documents\soul engine\soul engine\soul engine\source files\ray engine\RayJob.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core\BasicDependencies.h
+c:\users\asher\documents\soul engine\soul engine\source files\ray engine\RayJob.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core\BasicDependencies.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime_api.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glm\glm/glm.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/_fixes.hpp
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/glm.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/_fixes.hpp
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\climits
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cfloat
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\float.h
@@ -402,101 +402,101 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\initializer_list
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cassert
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\fwd.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_int.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\setup.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\fwd.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_int.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\setup.hpp
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cassert
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_float.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_vec.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\precision.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\vec2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_vec2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec2.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\vec3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_vec3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec3.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\vec4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_vec4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec4.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat2x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x2.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat2x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x3.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat2x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x4.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat3x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x2.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat3x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x3.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat3x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x4.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat4x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x2.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat4x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x3.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat4x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x4.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\trigonometric.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_trigonometric.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_trigonometric.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\_vectorize.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec1.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec1.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\exponential.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_exponential.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_exponential.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_vector_relational.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_vector_relational.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_float.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_vec.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\precision.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\vec2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_vec2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec2.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\vec3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_vec3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec3.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\vec4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_vec4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec4.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat2x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x2.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat2x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x3.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat2x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x4.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat3x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x2.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat3x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x3.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat3x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x4.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat4x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x2.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat4x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x3.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat4x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x4.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\trigonometric.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_trigonometric.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_trigonometric.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\_vectorize.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec1.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec1.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\exponential.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_exponential.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_exponential.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_vector_relational.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_vector_relational.inl
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cassert
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\common.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_common.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\_fixes.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_common.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\packing.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_packing.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_packing.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_half.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_half.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\geometric.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_geometric.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_geometric.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\matrix.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_matrix.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_matrix.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\vector_relational.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\integer.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_integer.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_integer.inl
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glm\glm/gtc/matrix_transform.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\../gtc/constants.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\constants.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\matrix_transform.inl
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glm\glm/gtc/noise.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\../detail/_noise.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\noise.inl
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glm\glm/gtx/rotate_vector.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtx\../gtx/transform.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtx\transform.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtx\rotate_vector.inl
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glew-1.12.0\include\GL/glew.h
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\common.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_common.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\_fixes.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_common.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\packing.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_packing.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_packing.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_half.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_half.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\geometric.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_geometric.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_geometric.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\matrix.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_matrix.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_matrix.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\vector_relational.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\integer.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_integer.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_integer.inl
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/gtc/matrix_transform.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\../gtc/constants.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\constants.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\matrix_transform.inl
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/gtc/noise.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\../detail/_noise.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\noise.inl
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/gtx/rotate_vector.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\../gtx/transform.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\transform.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\rotate_vector.inl
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glew-1.12.0\include\GL/glew.h
 C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/glu.h
 C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winapifamily.h
 C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glfw-3.1.1.bin.WIN64\include\GLFW/glfw3.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glfw-3.1.1.bin.WIN64\include\GLFW/glfw3.h
 C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_gl_interop.h
@@ -667,7 +667,7 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\iterator
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\fstream
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\sstream
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\string
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Include Files\Metrics.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Include Files\Metrics.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust\random.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/config.h
@@ -679,7 +679,7 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/co
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/debug.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/compiler_fence.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/forceinline.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/exec_check_disable.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/hd_warning_disable.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/global_workarounds.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/cstdint.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/discard_block_engine.h
@@ -712,8 +712,15 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/no
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/normal_distribution_base.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/normal_distribution.inl
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\math_constants.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility\OpenGL\GLError.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\CUDAManaged.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\HelperClasses.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Ray Engine\Ray.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core\Camera\CUDA\Camera.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\OpenGL\GLError.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\CUDAManaged.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\HelperClasses.cuh
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\CL/cl.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\CL/opencl.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\CL/cl.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\CL/cl_platform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\CL/cl_gl.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\CL/cl_gl_ext.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\CL/cl_ext.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Ray Engine\Ray.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core\Camera\CUDA\Camera.cuh

@@ -4,6 +4,7 @@
 #include "RayJob.cuh"
 #include "Engine Core\Scene\Scene.cuh"
 
+
 //The main engine that processes RayJobs
 namespace RayEngine {
 

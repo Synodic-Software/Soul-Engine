@@ -9,34 +9,13 @@ __host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, float newSamples, Ca
 	camera = cameraN;
 	isRecurring = isRecurringN;
 
-	if (whatToGet != RayOBJECT_ID&&whatToGet!=RayCOLOUR){
-		cudaMallocManaged(&resultsF, rayBaseAmount);
-		resultsI = NULL;
-		resultsT = NULL;
-	}
-	else if (whatToGet==RayCOLOUR){
+	cudaMallocManaged(&results, rayBaseAmount);
 
-		
-
-		resultsI = NULL;
-		resultsF = NULL;
-	}
-	else{
-		cudaMallocManaged(&resultsI, rayBaseAmount);
-		resultsF = NULL;
-		resultsT = NULL;
-	}
 }
 
 __host__ RayJob::~RayJob(){
-	if (resultsF!=NULL){
-		delete resultsF;
-	}
-	if (resultsI != NULL){
-		delete resultsI;
-	}
-	if (resultsT != NULL){
-		delete resultsT;
+	if (results!=NULL){
+		delete results;
 	}
 }
 
@@ -68,4 +47,9 @@ CUDA_FUNCTION uint& RayJob::GetRayAmount() {
 //Returns the current sample per ray (modifiable)
 CUDA_FUNCTION float& RayJob::GetSampleAmount() {
 	return samples;
+}
+
+//Returns the pointer to the results (modifiable)
+CUDA_FUNCTION void*& RayJob::GetResultPointer(){
+	return results;
 }
