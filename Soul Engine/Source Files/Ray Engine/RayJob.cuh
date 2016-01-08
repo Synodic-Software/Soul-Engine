@@ -14,7 +14,6 @@ enum rayType{
 	, RayUV					//RayUV: The UV at the first point hit in a vec2.
 };
 
-
 class RayJob : public Managed{
 public:
 
@@ -46,19 +45,16 @@ public:
 	CUDA_FUNCTION float& GetSampleAmount();
 
 
+	//Returns the pointer to the results (modifiable)
+	CUDA_FUNCTION void*& GetResultPointer();
 	
-//for texture setup
-	glm::vec4* resultsT;
-
-	//for float values
-	glm::vec3* resultsF;
-
-	//for int values
-	uint* resultsI;
 
 protected:
 
 private:
+
+	//counting variables
+	uint startIndex;
 
 	//common variables
 	bool isRecurring;
@@ -69,5 +65,5 @@ private:
 	float samples;
 
 	//result variables
-
+	void* results;
 };
