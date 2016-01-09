@@ -121,6 +121,15 @@
     <Filter Include="Engine Backend\Utility\OpenCL">
       <UniqueIdentifier>{3dbfc2b1-da51-4160-a70c-e684ce58d8b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera\OpenCL">
+      <UniqueIdentifier>{0b3e3f96-ff35-4e58-8095-59e525988260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Scene\CUDA">
+      <UniqueIdentifier>{b8677bcf-f38c-4219-890f-e3bcf51f6ce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Scene\OpenCL">
+      <UniqueIdentifier>{c470a225-3d46-4427-8354-eaeb6003877d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -219,23 +228,38 @@
     <ClInclude Include="Source Files\Resources\Objects\Hand.h">
       <Filter>Engine Backend\Resources\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Scene\ObjectSceneAbstraction.cuh">
-      <Filter>Engine Backend\Engine Core\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Scene\Scene.cuh">
-      <Filter>Engine Backend\Engine Core\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Ray Engine\RayEngine.h">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Ray Engine\CUDA\RayEngine.cuh">
       <Filter>Engine Backend\Ray Engine\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Utility\CUDA\CudaHelper.cuh">
-      <Filter>Engine Backend\Utility\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Utility\OpenCL\OpenCLHelper.h">
       <Filter>Engine Backend\Utility\OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\GPUUtility.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\CUDA\CUDAHelper.cuh">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Camera\Camera.h">
+      <Filter>Engine Backend\Engine Core\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Camera\OpenCL\CLCamera.h">
+      <Filter>Engine Backend\Engine Core\Camera\OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cuh">
+      <Filter>Engine Backend\Engine Core\Scene\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Scene\CUDA\Scene.cuh">
+      <Filter>Engine Backend\Engine Core\Scene\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Scene\Scene.h">
+      <Filter>Engine Backend\Engine Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Scene\OpenCL\CLScene.h">
+      <Filter>Engine Backend\Engine Core\Scene\OpenCL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -340,20 +364,20 @@
     <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="Source Files\Engine Core\Scene\ObjectSceneAbstraction.cu">
-      <Filter>Engine Backend\Engine Core\Scene</Filter>
-    </CudaCompile>
-    <CudaCompile Include="Source Files\Engine Core\Scene\Scene.cu">
-      <Filter>Engine Backend\Engine Core\Scene</Filter>
-    </CudaCompile>
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu">
       <Filter>Engine Backend\Ray Engine\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="Source Files\Utility\CUDA\CudaHelper.cu">
-      <Filter>Engine Backend\Utility\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="Source Files\Utility\OpenCL\OpenCLHelper.cl">
       <Filter>Engine Backend\Utility\OpenCL</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Utility\CUDA\CUDAHelper.cu">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cu">
+      <Filter>Engine Backend\Engine Core\Scene\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Engine Core\Scene\CUDA\Scene.cu">
+      <Filter>Engine Backend\Engine Core\Scene\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
