@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Engine Core/BasicDependencies.h"
-#include "RayJob.cuh"
-#include "Engine Core\Scene\Scene.cuh"
+#include "Engine Core\Scene\Scene.h"
+#include "RayJob.h"
 
 
 //The main engine that processes RayJobs
