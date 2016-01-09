@@ -47,6 +47,7 @@
       <CudaRuntime>Static</CudaRuntime>
       <CodeGeneration>compute_35,sm_35</CodeGeneration>
       <FastMath>true</FastMath>
+      <UseHostInclude>true</UseHostInclude>
     </CudaCompile>
     <CudaLink>
       <Optimization>O3</Optimization>

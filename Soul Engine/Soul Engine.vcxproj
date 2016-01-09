@@ -171,7 +171,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h" />
+    <ClInclude Include="Source Files\Engine Core\Camera\Camera.h" />
     <ClInclude Include="Source Files\Engine Core\Camera\CUDA\Camera.cuh" />
+    <ClInclude Include="Source Files\Engine Core\Camera\OpenCL\CLCamera.h" />
     <ClInclude Include="Source Files\Engine Core\Frame\Frame.h" />
     <ClInclude Include="Source Files\Engine Core\Material\Material.h" />
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Bitmap.h" />
@@ -181,8 +183,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Engine Core\Object\Object.cuh" />
     <ClInclude Include="Source Files\Engine Core\Object\ObjLoader.h" />
     <ClInclude Include="Source Files\Engine Core\Object\Vertex.h" />
-    <ClInclude Include="Source Files\Engine Core\Scene\ObjectSceneAbstraction.cuh" />
-    <ClInclude Include="Source Files\Engine Core\Scene\Scene.cuh" />
+    <ClInclude Include="Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cuh" />
+    <ClInclude Include="Source Files\Engine Core\Scene\CUDA\Scene.cuh" />
+    <ClInclude Include="Source Files\Engine Core\Scene\OpenCL\CLScene.h" />
+    <ClInclude Include="Source Files\Engine Core\Scene\Scene.h" />
     <ClInclude Include="Source Files\Engine Core\Settings.h" />
     <ClInclude Include="Source Files\Input\Input.h" />
     <ClInclude Include="Source Files\Input\InputHelper.h" />
@@ -196,12 +200,13 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.h" />
     <ClInclude Include="Source Files\Renderer\Renderer.h" />
     <ClInclude Include="Source Files\Resources\Objects\Hand.h" />
+    <ClInclude Include="Source Files\Utility\CUDA\CUDAHelper.cuh" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAManaged.cuh" />
-    <ClInclude Include="Source Files\Utility\CUDA\CudaHelper.cuh" />
     <ClInclude Include="Source Files\Utility\OpenCL\OpenCLHelper.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\GLError.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\Shader.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h" />
+    <ClInclude Include="Source Files\Utility\GPUUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />
@@ -236,13 +241,13 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
     <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cu" />
     <CudaCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu" />
-    <CudaCompile Include="Source Files\Engine Core\Scene\ObjectSceneAbstraction.cu" />
-    <CudaCompile Include="Source Files\Engine Core\Scene\Scene.cu" />
+    <CudaCompile Include="Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cu" />
+    <CudaCompile Include="Source Files\Engine Core\Scene\CUDA\Scene.cu" />
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu" />
     <CudaCompile Include="Source Files\Ray Engine\Ray.cu" />
     <CudaCompile Include="Source Files\Ray Engine\RayJob.cu" />
+    <CudaCompile Include="Source Files\Utility\CUDA\CUDAHelper.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu" />
-    <CudaCompile Include="Source Files\Utility\CUDA\CudaHelper.cu" />
     <CudaCompile Include="Source Files\Utility\OpenCL\OpenCLHelper.cl" />
   </ItemGroup>
   <ItemGroup>

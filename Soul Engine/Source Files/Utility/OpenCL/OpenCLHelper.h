@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Engine Core\BasicDependencies.h"
 
 inline void checkErr(cl_int err, const char * name) {
