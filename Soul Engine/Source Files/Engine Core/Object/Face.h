@@ -1,19 +1,11 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
-#include "Utility\CUDA\CUDAManaged.cuh"
+#   if defined(__CUDACC__)
 
-class Face : public Managed
-{
-public:
-	Face();
-	Face(glm::uvec3, uint);
-	~Face();
+#include "CUDA/Face.cuh"
 
-	void SetData(glm::uvec3, uint);
+#	else
 
-	glm::uvec3 indices;
-	uint materialID;
-private:
-	
-};
+#include "OpenCL\CLFace.h"
+
+#endif
