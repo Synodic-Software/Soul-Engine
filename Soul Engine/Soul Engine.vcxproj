@@ -197,7 +197,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Renderer\Renderer.h" />
     <ClInclude Include="Source Files\Resources\Objects\Hand.h" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAManaged.cuh" />
-    <ClInclude Include="Source Files\Utility\CUDA\HelperClasses.cuh" />
+    <ClInclude Include="Source Files\Utility\CUDA\CudaHelper.cuh" />
+    <ClInclude Include="Source Files\Utility\OpenCL\OpenCLHelper.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\GLError.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\Shader.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h" />
@@ -241,7 +242,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Ray Engine\Ray.cu" />
     <CudaCompile Include="Source Files\Ray Engine\RayJob.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu" />
-    <CudaCompile Include="Source Files\Utility\CUDA\HelperClasses.cu" />
+    <CudaCompile Include="Source Files\Utility\CUDA\CudaHelper.cu" />
+    <CudaCompile Include="Source Files\Utility\OpenCL\OpenCLHelper.cl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="fragment-shader[Renderer].txt" />

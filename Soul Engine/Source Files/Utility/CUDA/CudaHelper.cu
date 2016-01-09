@@ -1,4 +1,4 @@
-#include "HelperClasses.cuh"
+#include "CudaHelper.cuh"
 
 CUDA_FUNCTION uint randHash(uint a) {
 	a = (a + 0x7ed55d16) + (a << 12);
