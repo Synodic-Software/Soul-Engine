@@ -1,5 +1,6 @@
 #pragma once
-#include "Engine Core\BasicDependencies.h"
+#include "Utility\CUDAIncludes.h"
+#include <iostream>
 
 #define CUDA_FUNCTION __host__ __device__
 

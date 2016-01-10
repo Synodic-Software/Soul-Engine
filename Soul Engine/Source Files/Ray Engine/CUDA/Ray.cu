@@ -1,1 +1,1 @@
-#include "Ray Engine\Ray.cuh"
+#include "Ray Engine\CUDA/Ray.cuh"

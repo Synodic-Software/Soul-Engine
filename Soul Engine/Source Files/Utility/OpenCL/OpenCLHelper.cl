@@ -1,1 +1,1 @@
-#include "OpenCLHelper.cuh"
+#include "OpenCLHelper.h"

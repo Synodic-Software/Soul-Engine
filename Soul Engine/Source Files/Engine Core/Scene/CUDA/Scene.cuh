@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
-#include "Engine Core\Object\Object.cuh"
+#include "Utility\CUDAIncludes.h"
+#include "Engine Core\Object\CUDA/Object.cuh"
 #include "ObjectSceneAbstraction.cuh"
-#include "Ray Engine\Ray.cuh"
+#include "Ray Engine\CUDA/Ray.cuh"
 
 class Scene : public Managed
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine Core/BasicDependencies.h"
-#include "Ray Engine/RayJob.cuh"
-#include "Engine Core\Scene\Scene.cuh"
+#include "Utility\CUDAIncludes.h"
+#include "Ray Engine/CUDA/RayJob.cuh"
+#include "Engine Core\Scene\CUDA/Scene.cuh"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 

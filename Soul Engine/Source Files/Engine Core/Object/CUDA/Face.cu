@@ -1,4 +1,4 @@
-#include "Face.h"
+#include "Face.cuh"
 
 
 Face::Face()

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine Core\BasicDependencies.h"
-#include "Engine Core\Object\Object.cuh"
+#include "Engine Core\Object\Object.h"
 
 class Hand: public Object
 {

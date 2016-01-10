@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Engine Core\Object\Object.cuh"
+#include "Utility\CUDAIncludes.h"
+#include "Engine Core\Object\CUDA/Object.cuh"
 
 class ObjectSceneAbstraction : public Managed
 {
