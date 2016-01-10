@@ -306,6 +306,18 @@
     <ClInclude Include="Source Files\Ray Engine\Ray.h">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Utility\GPUIncludes.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\CUDAIncludes.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\OpenCLIncludes.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\GLMIncludes.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -374,6 +386,9 @@
     <ClCompile Include="Source Files\Ray Engine\RayEngine.cpp">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Utility\OpenCL\OpenCLHelper.cl">
+      <Filter>Engine Backend\Utility\OpenCL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu">
@@ -396,9 +411,6 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu">
       <Filter>Engine Backend\Ray Engine\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="Source Files\Utility\OpenCL\OpenCLHelper.cl">
-      <Filter>Engine Backend\Utility\OpenCL</Filter>
     </CudaCompile>
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAHelper.cu">
       <Filter>Engine Backend\Utility\CUDA</Filter>

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
-#include "Ray Engine\Ray.cuh"
-#include "Engine Core\Camera\CUDA\Camera.cuh"
+#include "Utility\CUDAIncludes.h"
+#include "Ray Engine\CUDA/Ray.cuh"
+#include "Engine Core\Camera\CUDA/Camera.cuh"
 
 
 enum rayType{ 

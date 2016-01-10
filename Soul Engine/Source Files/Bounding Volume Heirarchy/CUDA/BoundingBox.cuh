@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
+#include "Utility/CUDAIncludes.h"
 
 class BoundingBox : public Managed
 {

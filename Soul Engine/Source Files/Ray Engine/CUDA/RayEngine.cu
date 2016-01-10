@@ -125,7 +125,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 	uint n = 0;
 	hostJobList.clear();
 	for (int i = 0; i < jobs.size();i++ ){
-		n += jobs[i]->GetRayAmount()*jobs[i]->GetSampleAmount();
+		n += jobs[i]->GetRayAmount()* glm::ceil(jobs[i]->GetSampleAmount());
 		hostJobList.push_back(jobs[i]);
 	}
 

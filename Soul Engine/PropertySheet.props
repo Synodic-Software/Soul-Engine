@@ -48,9 +48,12 @@
       <CodeGeneration>compute_35,sm_35</CodeGeneration>
       <FastMath>true</FastMath>
       <UseHostInclude>true</UseHostInclude>
+      <Optimization>InheritFromHost</Optimization>
     </CudaCompile>
     <CudaLink>
       <Optimization>O3</Optimization>
+      <UseHostLibraryDependencies>true</UseHostLibraryDependencies>
+      <UseHostLibraryDirectories>true</UseHostLibraryDirectories>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup />

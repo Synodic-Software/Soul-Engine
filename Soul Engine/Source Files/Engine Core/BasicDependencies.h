@@ -1,27 +1,15 @@
 #pragma once
 
-#include <cuda.h>  
-#include <cuda_runtime_api.h>
 
 
-
+#  if defined(__CUDACC__)
 #define GLM_FORCE_CUDA
+#endif
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/noise.hpp>
-#include <glm/gtx/rotate_vector.hpp>
+#include "Utility\GLMIncludes.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
-#include <cuda.h>
-#include <cuda_runtime.h>
-#include <cuda_gl_interop.h>
-#include <device_launch_parameters.h>
-#include <device_functions.h>
-#include <curand.h>
-#include <curand_kernel.h>
 
 #include <stdlib.h>
 #include <IOstream>
@@ -47,10 +35,4 @@
 #include "Metrics.h"
 
 
-#include "thrust\random.h"
-
 #include "Utility\OpenGL\GLError.h"
-#include "Utility\GPUUtility.h"
-
-#include <utility>
-#include <CL/cl.hpp>

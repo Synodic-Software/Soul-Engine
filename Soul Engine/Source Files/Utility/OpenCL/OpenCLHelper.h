@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
+#include "Utility\OpenCLIncludes.h"
+#include <iostream>
 
 inline void checkErr(cl_int err, const char * name) {
 	if (err != CL_SUCCESS) {
