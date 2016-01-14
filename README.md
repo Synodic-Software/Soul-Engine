@@ -5,10 +5,15 @@ system with CUDA (primary) or OpenCL (secondary) support.
 #Features
 These include planned features for aid in the vision of the final application.
   -Spectral bidirectional path tracer
+  
   -GPU physics pipeline which includes an FEM solver for all objects
+  
   -A ray engine which handles ray requests and processes them in bulk.
+  
   -Sound path tracing with a multi-listener setup.
+  
   -Shader system allowing for immediate artist controlled changes.
+  
   -Fiber implementation for task based CPU processing.
   
 # Current Status
