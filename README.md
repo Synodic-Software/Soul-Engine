@@ -4,6 +4,7 @@ system with CUDA (primary) or OpenCL (secondary) support.
 
 #Features
 These include planned features for aid in the vision of the final application.
+
   -Spectral bidirectional path tracer
   
   -GPU physics pipeline which includes an FEM solver for all objects
