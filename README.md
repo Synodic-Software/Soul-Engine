@@ -3,7 +3,7 @@ Soul Engine is a physically based renderer and engine for real-time applications
 system with CUDA (primary) or OpenCL (secondary) support. 
 
 #Features
-These include planned features for aid in the vision of the final application.
+These are planned features (partial/incomplete implementations) for aid in the vision of the final application.
 
   -Spectral bidirectional path tracer
   
@@ -16,6 +16,8 @@ These include planned features for aid in the vision of the final application.
   -Shader system allowing for immediate artist controlled changes.
   
   -Fiber implementation for task based CPU processing.
+  
+  -Calculation determinism allowing for lockstep networking.
   
 # Current Status
 At the moment, the project is unrunnable due to massive shifts in pipeline reording and code management.
