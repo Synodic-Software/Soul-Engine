@@ -2,10 +2,10 @@
 
 #   if defined(__CUDACC__)
 
-#include "CUDA/Vertex.cuh"
+#include "CUDA/RayJob.cuh"
 
 #	else
 
-#include "OpenCL\CLVertex.h"
+#include "OpenCL\CLRayJob.h"
 
 #endif

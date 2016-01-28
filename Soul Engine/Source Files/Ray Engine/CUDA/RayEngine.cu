@@ -2,6 +2,33 @@
 
 uint raySeedGl=0;
 
+thrust::host_vector<RayJob*> hostJobList(0);
+thrust::device_vector<RayJob*> deviceJobList(0);
+
+// Template structure to pass to kernel
+template <typename T>
+struct KernelArray : public Managed
+{
+private:
+	T*  _array;
+	int _size;
+
+public:
+	__device__ int size(){
+		return _size;
+	}
+
+	__device__ T operator[](int i) {
+		return _array[i]; 
+	}
+
+	// constructor allows for implicit conversion
+	__host__ KernelArray(thrust::device_vector<T>& dVec) {
+		_array = thrust::raw_pointer_cast(&dVec[0]);
+		_size = (int)dVec.size();
+	}
+
+};
 
 inline CUDA_FUNCTION uint WangHash(uint a) {
 	a = (a ^ 61) ^ (a >> 16);
@@ -19,16 +46,23 @@ inline __device__ int getGlobalIdx_1D_1D()
 }
 
 
-inline __device__ void GetCurrentJob(RayJob *&job, const uint& index, uint& startIndex){
+inline __device__ int GetCurrentJob(KernelArray<RayJob*>& jobList, const uint& index, uint& startIndex){
 
-	while (job->nextRay != NULL && !(index < startIndex + job->rayAmount*job->samples)){
-		startIndex += job->rayAmount*job->samples;
-		job = job->nextRay;
+	int i = 0;
+	for (; 
+		i<jobList.size() && !(index < startIndex + jobList[i]->GetRayAmount()*jobList[i]->GetSampleAmount());
+		i++){
+
 	}
+	return i;
+	//while (job->nextRay != NULL && !(index < startIndex + job->rayAmount*job->samples)){
+	//	startIndex += job->rayAmount*job->samples;
+	//	job = job->nextRay;
+	//}
 
 }
 
-__global__ void EngineResultClear(const uint n, RayJob* job){
+__global__ void EngineResultClear(const uint n, KernelArray<RayJob*> job){
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -37,18 +71,19 @@ __global__ void EngineResultClear(const uint n, RayJob* job){
 
 		uint startIndex = 0;
 
-		GetCurrentJob(job, index, startIndex);
+		int cur=GetCurrentJob(job, index, startIndex);
 
-		job->resultsT[(index - startIndex) / job->samples] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		
+		((glm::vec4*)job[cur]->GetResultPointer())[(index - startIndex) / int(glm::ceil(job[cur]->GetSampleAmount()))] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 }
 
-__global__ void EngineExecute(const uint n, RayJob* job, const uint raySeed, const Scene* scene){
+__global__ void EngineExecute(const uint n, KernelArray<RayJob*> job, const uint raySeed, const Scene* scene){
 
 	uint index = getGlobalIdx_1D_1D();
 
 	uint startIndex = 0;
-	GetCurrentJob(job, index, startIndex);
+	int cur = GetCurrentJob(job, index, startIndex);
 
 
 	thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
@@ -58,49 +93,45 @@ __global__ void EngineExecute(const uint n, RayJob* job, const uint raySeed, con
 
 	if (index < n){
 		
-		uint localIndex = index - startIndex / job->samples;
+		uint localIndex = index - startIndex / glm::ceil(job[cur]->GetSampleAmount());
 
-		if (prob<job->GetProbability()){
 
 			Ray ray;
-			job->camera->SetupRay(localIndex, ray, rng, uniformDistribution);
+			job[cur]->GetCamera()->SetupRay(localIndex, ray, rng, uniformDistribution);
 
 
 			//calculate something
 			glm::vec3 col = scene->IntersectColour(ray);
 
 
-			atomicAdd(&(job->resultsT[localIndex].x), col.x / job->samples);
 
-			atomicAdd(&(job->resultsT[localIndex].y), col.y / job->samples);
+			glm::vec4* pt = ((glm::vec4*)job[cur]->GetResultPointer());
 
-			atomicAdd(&(job->resultsT[localIndex].z), col.z / job->samples);
-		}
-		else{
-			atomicAdd(&(job->resultsT[localIndex].x), 0.0f / job->samples);
+			atomicAdd(&pt[localIndex].x, col.x / glm::ceil(job[cur]->GetSampleAmount()));
 
-			atomicAdd(&(job->resultsT[localIndex].y), 0.0f / job->samples);
+			atomicAdd(&pt[localIndex].y, col.y / glm::ceil(job[cur]->GetSampleAmount()));
 
-			atomicAdd(&(job->resultsT[localIndex].z), 0.0f / job->samples);
-		}
+			atomicAdd(&pt[localIndex].z, col.z / glm::ceil(job[cur]->GetSampleAmount()));
+
 	}
 }
 
 
-__host__ void ProcessJobs(RayJob* jobs, const Scene* scene){
+__host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 	raySeedGl++;
 	CudaCheck(cudaDeviceSynchronize());
-	if (jobs!=NULL){
-	uint n = 0;
+	if (jobs.size()>0){
 
-	RayJob* temp = jobs;
-	n += temp->rayAmount*temp->samples;
-	while (temp->nextRay != NULL){
-		temp = temp->nextRay;
-		n += temp->rayAmount*temp->samples;
+	uint n = 0;
+	hostJobList.clear();
+	for (int i = 0; i < jobs.size();i++ ){
+		n += jobs[i]->GetRayAmount()* glm::ceil(jobs[i]->GetSampleAmount());
+		hostJobList.push_back(jobs[i]);
 	}
 
 	if (n!=0){
+
+		deviceJobList = hostJobList;
 
 		uint blockSize = 32;
 		uint gridSize = (n + blockSize - 1) / blockSize;
@@ -116,9 +147,11 @@ __host__ void ProcessJobs(RayJob* jobs, const Scene* scene){
 		cudaEventRecord(start, 0);
 
 
-		EngineResultClear << <gridSize, blockSize >> >(n, jobs);
+		KernelArray<RayJob*> jobL = KernelArray<RayJob*>(deviceJobList);
 
-		EngineExecute << <gridSize, blockSize >> >(n, jobs, WangHash(raySeedGl), scene);
+		EngineResultClear << <gridSize, blockSize >> >(n, jobL);
+
+		EngineExecute << <gridSize, blockSize >> >(n, jobL, WangHash(raySeedGl), scene);
 
 		cudaEventRecord(stop, 0); 
 		cudaEventSynchronize(stop); 

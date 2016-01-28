@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
-#include "Utility\CUDA\CUDAManaged.cuh"
-
-
+#include "Utility\CUDAIncludes.h"
 
 class Ray : public Managed{
 public:

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
+#include "Utility\CUDAIncludes.h"
 #include "BoundingBox.cuh"
-#include "Ray Engine\Ray.cuh"
-
+#include "Ray Engine\CUDA/Ray.cuh"
 class Node : public Managed
 {
 public:

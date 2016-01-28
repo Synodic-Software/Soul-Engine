@@ -2,10 +2,10 @@
 
 #   if defined(__CUDACC__)
 
-#include "CUDA/Vertex.cuh"
+#include "CUDA\Scene.cuh"
 
 #	else
 
-#include "OpenCL\CLVertex.h"
+#include "OpenCL\CLScene.h"
 
 #endif

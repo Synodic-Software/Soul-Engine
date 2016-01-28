@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
-#include "Ray Engine\Ray.cuh"
-#include "Engine Core\Camera\CUDA\Camera.cuh"
+#include "Utility\CUDAIncludes.h"
+#include "Ray Engine\CUDA/Ray.cuh"
+#include "Engine Core\Camera\CUDA/Camera.cuh"
 
 
 enum rayType{ 
@@ -13,7 +13,6 @@ enum rayType{
 	, RayNORMAL				//RayNORMAL: The normal at the first point hit in a vec3.
 	, RayUV					//RayUV: The UV at the first point hit in a vec2.
 };
-
 
 class RayJob : public Managed{
 public:
@@ -46,21 +45,18 @@ public:
 	CUDA_FUNCTION float& GetSampleAmount();
 
 
+	//Returns the pointer to the results (modifiable)
+	CUDA_FUNCTION void*& GetResultPointer();
 	
-//for texture setup
-	glm::vec4* resultsT;
-
-	//for float values
-	glm::vec3* resultsF;
-
-	//for int values
-	uint* resultsI;
 
 protected:
 
 private:
 
-	//basic variables
+	//counting variables
+	uint startIndex;
+
+	//common variables
 	bool isRecurring;
 	Camera* camera;
     rayType type;
@@ -69,5 +65,5 @@ private:
 	float samples;
 
 	//result variables
-
+	void* results;
 };
