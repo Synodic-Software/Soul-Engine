@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine Core/BasicDependencies.h"
+#include "Utility\CUDAIncludes.h"
 #include "Utility/OpenGL/ShaderSupport.h"
 #include "Utility/OpenGL/Shader.h"
 #include "Engine Core/Material/Texture/Texture.h"
@@ -8,9 +8,9 @@
 #include "Input/Input.h"
 #include "Engine Core/Material/Texture/Bitmap.h"
 #include "Engine Core/Material/Material.h"
-#include "Vertex.h"
-#include "Face.h"
-#include "ObjLoader.h"
+#include "Engine Core/Object/CUDA/Vertex.cuh"
+#include "Engine Core/Object/CUDA/Face.cuh"
+#include "Engine Core/Object/ObjLoader.h"
 
 class Object: public Managed{
 	public:

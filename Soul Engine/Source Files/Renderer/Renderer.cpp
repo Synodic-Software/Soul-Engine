@@ -38,9 +38,9 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 		cudaBuffer));
 
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
-	RenderJob = RayEngine::AddRecurringRayJob(RayCOLOUR_TO_BUFFER, screen.x*screen.y, 1, &camera);
+	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, 1, &camera);
 
-	RenderJob->resultsT = bufferData;
+	RenderJob->GetResultPointer() = bufferData;
 
 	Vertices[0] = 0.0f;
 	Vertices[1] = 0.0f;
@@ -139,7 +139,7 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	camera->resolution=modifiedScreen;
 	RayEngine::ChangeJob(RenderJob, (modifiedScreen.x*modifiedScreen.y),
 		samples, camera);
-	RenderJob->ChangeProbability(0.1f);
+	RenderJob->GetSampleAmount()=0.1f;
 	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
 	size_t num_bytes;
 	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,

@@ -257,6 +257,12 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
 	//hub = new BVH();
 
+
+
+	const GLubyte* renderer = glGetString(GL_VENDOR);
+
+
+
 	Material::SetDefaultTexture("SoulDefault.png");
 
 	glfwSetKeyCallback(mainThread, InputKeyboardCallback);

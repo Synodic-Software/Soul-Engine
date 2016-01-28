@@ -59,6 +59,7 @@ CUDA_FUNCTION void Camera::SetRight(glm::vec3& rightn) {
 	right = normalize(rightn);
 }
 
+
 CUDA_FUNCTION void Camera::SetupRay(uint& index, Ray& ray,thrust::default_random_engine& rng, thrust::uniform_real_distribution<float>& uniformDistribution){
 
 	//OPTIMIZED! int x = index - (y*resolution.y);
@@ -112,6 +113,8 @@ CUDA_FUNCTION void Camera::SetupRay(uint& index, Ray& ray,thrust::default_random
 	float angle = TWO_PI * uniformDistribution(rng);
 	float distance = aperture * sqrt(uniformDistribution(rng));
 
+
+	//ALTERNATE aperaturPoint
 	//+ ((cos(angle) * distance) * right) + ((sin(angle) * distance) * verticalAxis)
 
 	glm::vec3 aperturePoint = position ;

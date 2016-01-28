@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utility\CUDA\HelperClasses.cuh"
+#include "Utility\CUDA\CudaHelper.cuh"
 
 class Managed
 {

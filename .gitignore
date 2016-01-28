@@ -29,6 +29,7 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+*.deps
 *_i.c
 *_p.c
 *_i.h
@@ -186,3 +187,8 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+*.obj
+*.deps
+*.deps
+*.tlog
+*.deps

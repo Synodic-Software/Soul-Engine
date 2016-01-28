@@ -4,7 +4,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <IncludePath>$(ProjectDir)\Libraries\boostFiber\include;$(ProjectDir)\Libraries\boost;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(CUDA_INC_PATH);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\Libraries\boost;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\lib-vc2013;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\Libraries\boost;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\lib-vc2013;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);$(ExecutablePath)</ExecutablePath>
     <ReferencePath>$(VC_ReferencesPath);$(ReferencePath)</ReferencePath>
     <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
@@ -18,7 +18,7 @@
     </Lib>
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\fiber\src;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\fiber\src;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -27,8 +27,8 @@
       <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\fiber\lib;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\lib-vc2013;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(LibraryPath);$(ProjectDir)\Libraries\boost;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;FiberTaskingLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\fiber\lib;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\lib-vc2013;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(LibraryPath);$(ProjectDir)\Libraries\boost;%(AdditionalLibraryDirectories);$(AMDAPPSDKROOT)\lib\x86_64\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenCL.lib;opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;FiberTaskingLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
@@ -47,9 +47,13 @@
       <CudaRuntime>Static</CudaRuntime>
       <CodeGeneration>compute_35,sm_35</CodeGeneration>
       <FastMath>true</FastMath>
+      <UseHostInclude>true</UseHostInclude>
+      <Optimization>InheritFromHost</Optimization>
     </CudaCompile>
     <CudaLink>
       <Optimization>O3</Optimization>
+      <UseHostLibraryDependencies>true</UseHostLibraryDependencies>
+      <UseHostLibraryDirectories>true</UseHostLibraryDirectories>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup />
