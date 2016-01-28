@@ -29,6 +29,8 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+*.cu.deps
+*.idb
 *.deps
 *_i.c
 *_p.c
