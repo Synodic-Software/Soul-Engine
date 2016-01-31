@@ -13,7 +13,7 @@
 #include "Ray Engine/RayEngine.h"
 #include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
-#include "Engine Core\Scene\Scene.cuh"
+#include "Engine Core\Scene\Scene.h"
 #include "Resources\Objects\Hand.h"
 /////////////////////////Variables///////////////////////////////
 
