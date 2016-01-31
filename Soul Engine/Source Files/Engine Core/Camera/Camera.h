@@ -1,11 +1,11 @@
 #pragma once
 
-#   if defined(__CUDACC__)
+//#   if defined(__CUDACC__)
 
 #include "CUDA\Camera.cuh"
 
-#	else
-
-#include "OpenCL\CLCamera.h"
-
-#endif
+//#	else
+//
+//#include "OpenCL\CLCamera.h"
+//
+//#endif

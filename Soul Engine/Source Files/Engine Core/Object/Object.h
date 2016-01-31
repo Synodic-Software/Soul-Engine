@@ -1,11 +1,11 @@
 #pragma once
 
-#   if defined(__CUDACC__)
+//#   if defined(__CUDACC__)
 
 #include "CUDA/Object.cuh"
 
-#	else
-
-#include "OpenCL\CLObject.h"
-
-#endif
+//#	else
+//
+//#include "OpenCL\CLObject.h"
+//
+//#endif

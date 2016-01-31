@@ -2,9 +2,9 @@
 
 
 
-#  if defined(__CUDACC__)
+//#  if defined(__CUDACC__)
 #define GLM_FORCE_CUDA
-#endif
+//#endif
 
 #include "Utility\GLMIncludes.h"
 

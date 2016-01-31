@@ -378,12 +378,12 @@ c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\host_defines.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\vector_functions.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\device_launch_parameters.h
 c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\vector_types.h
-n:\documents\soul engine\soul engine\soul engine\source files\ray engine\cuda\RayEngine.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core/BasicDependencies.h
+c:\users\asher\documents\soul engine\soul engine\source files\ray engine\cuda\RayEngine.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\CUDAIncludes.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime_api.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glm\glm/glm.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/_fixes.hpp
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\GLMIncludes.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/glm.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/_fixes.hpp
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\climits
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cfloat
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\float.h
@@ -402,151 +402,101 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\initializer_list
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cassert
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\fwd.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_int.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\setup.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\fwd.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_int.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\setup.hpp
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cassert
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_float.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_vec.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\precision.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\vec2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_vec2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec2.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\vec3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_vec3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec3.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\vec4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_vec4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec4.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat2x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x2.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat2x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x3.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat2x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x4.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat3x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x2.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat3x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x3.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat3x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x4.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat4x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x2.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x2.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat4x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x3.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x3.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\mat4x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x4.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x4.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\trigonometric.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_trigonometric.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_trigonometric.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\_vectorize.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec1.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_vec1.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\exponential.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_exponential.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_exponential.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_vector_relational.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_vector_relational.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_float.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_vec.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\precision.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\vec2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_vec2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec2.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\vec3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_vec3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec3.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\vec4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_vec4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec4.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat2x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x2.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat2x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x3.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat2x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat2x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat2x4.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat3x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x2.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat3x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x3.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat3x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat3x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat3x4.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat4x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x2.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x2.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat4x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x3.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x3.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\mat4x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/type_mat4x4.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_mat4x4.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\trigonometric.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_trigonometric.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_trigonometric.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\_vectorize.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec1.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_vec1.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\exponential.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_exponential.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_exponential.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_vector_relational.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_vector_relational.inl
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cassert
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\common.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_common.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\_fixes.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_common.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\packing.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_packing.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_packing.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_half.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\type_half.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\geometric.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_geometric.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_geometric.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\matrix.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_matrix.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_matrix.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\vector_relational.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\integer.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail/func_integer.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\detail\func_integer.inl
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glm\glm/gtc/matrix_transform.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\../gtc/constants.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\constants.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\matrix_transform.inl
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glm\glm/gtc/noise.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\../detail/_noise.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtc\noise.inl
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glm\glm/gtx/rotate_vector.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtx\../gtx/transform.hpp
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtx\transform.inl
-n:\documents\soul engine\soul engine\soul engine\libraries\glm\glm\gtx\rotate_vector.inl
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glew-1.12.0\include\GL/glew.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/glu.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winapifamily.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Libraries\glfw-3.1.1.bin.WIN64\include\GLFW/glfw3.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\common.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_common.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\_fixes.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_common.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\packing.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_packing.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_packing.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_half.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\type_half.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\geometric.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_geometric.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_geometric.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\matrix.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_matrix.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_matrix.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\vector_relational.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\integer.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail/func_integer.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\detail\func_integer.inl
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/gtc/matrix_transform.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\../gtc/constants.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\constants.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\matrix_transform.inl
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/gtc/noise.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\../detail/_noise.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtc\noise.inl
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/gtx/rotate_vector.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\../gtx/transform.hpp
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\transform.inl
+c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\rotate_vector.inl
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_gl_interop.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\host_defines.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\device_launch_parameters.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\device_functions.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\curand.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\curand_kernel.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_discrete.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_precalc.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\memory.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_philox4x32_x.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_globals.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_uniform.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_normal.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_normal_static.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_lognormal.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_poisson.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_discrete2.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
-c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\IOstream
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Include Files\Metrics.h
+c:\users\asher\documents\soul engine\soul engine\source files\utility\CUDA/CUDAManaged.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\CudaHelper.cuh
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\iostream
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\istream
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\ostream
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\ios
@@ -605,7 +555,69 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cerrno
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\errno.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\share.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Ray Engine/CUDA/RayJob.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Ray Engine\CUDA/Ray.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core\Camera\CUDA/Camera.cuh
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust\random.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/config.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/simple_defines.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/compiler.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/host_system.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/device_system.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/host_device.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/debug.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/compiler_fence.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/forceinline.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/hd_warning_disable.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/global_workarounds.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/cstdint.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/discard_block_engine.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/random_core_access.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/discard_block_engine.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/linear_congruential_engine.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/linear_congruential_engine_discard.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/mod.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/linear_congruential_engine.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/linear_feedback_shift_engine.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/linear_feedback_shift_engine_wordmask.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/linear_feedback_shift_engine.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/subtract_with_carry_engine.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/subtract_with_carry_engine.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/xor_combine_engine.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/has_trivial_assign.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/xor_combine_engine_max.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/mpl/math.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/xor_combine_engine.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/uniform_int_distribution.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/pair.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/pair.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/swap.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/integer_traits.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/uniform_int_distribution.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/uniform_real_distribution.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/uniform_real_distribution.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/normal_distribution.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/normal_distribution_base.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/normal_distribution.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\math_constants.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core\Scene\CUDA/Scene.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core\Object\CUDA/Object.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility/OpenGL/ShaderSupport.h
+c:\users\asher\documents\soul engine\soul engine\source files\utility\opengl\Shader.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glew-1.12.0\include\GL/glew.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/glu.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winapifamily.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\string
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\iterator
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\vector
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core/Material/Texture/Texture.h
+c:\users\asher\documents\soul engine\soul engine\source files\engine core\material\texture\Bitmap.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core\BasicDependencies.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glfw-3.1.1.bin.WIN64\include\GLFW/glfw3.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\list
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\queue
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\algorithm
@@ -663,70 +675,389 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xxatomic
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\pplcancellation_token.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\ppl.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\iterator
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\fstream
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\sstream
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\string
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Include Files\Metrics.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust\random.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/config.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/simple_defines.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/compiler.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/host_system.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/device_system.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/host_device.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/debug.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/compiler_fence.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/forceinline.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/exec_check_disable.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/config/global_workarounds.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/cstdint.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/discard_block_engine.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/random_core_access.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/discard_block_engine.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/linear_congruential_engine.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/linear_congruential_engine_discard.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/mod.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/linear_congruential_engine.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/linear_feedback_shift_engine.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/linear_feedback_shift_engine_wordmask.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/linear_feedback_shift_engine.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/subtract_with_carry_engine.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/subtract_with_carry_engine.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/xor_combine_engine.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/has_trivial_assign.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/xor_combine_engine_max.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/mpl/math.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/xor_combine_engine.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/uniform_int_distribution.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/pair.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/pair.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/swap.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/integer_traits.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/uniform_int_distribution.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/uniform_real_distribution.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/uniform_real_distribution.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/normal_distribution.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/normal_distribution_base.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/random/detail/normal_distribution.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\math_constants.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility\OpenGL\GLError.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\CUDAManaged.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\HelperClasses.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Ray Engine/RayJob.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Ray Engine\Ray.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core\Camera\CUDA\Camera.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core\Scene\Scene.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core\Object\Object.cuh
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Utility/OpenGL/ShaderSupport.h
-n:\documents\soul engine\soul engine\soul engine\source files\utility\opengl\Shader.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core/Material/Texture/Texture.h
-n:\documents\soul engine\soul engine\soul engine\source files\engine core\material\texture\Bitmap.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Input/Input.h
-N:\Documents\Soul Engine\Soul Engine\Soul Engine\\Source Files\Engine Core/Material/Material.h
-n:\documents\soul engine\soul engine\soul engine\source files\engine core\object\Vertex.h
-n:\documents\soul engine\soul engine\soul engine\source files\engine core\object\Face.h
-n:\documents\soul engine\soul engine\soul engine\source files\engine core\object\ObjLoader.h
-n:\documents\soul engine\soul engine\soul engine\source files\engine core\scene\ObjectSceneAbstraction.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\OpenGL\GLError.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Input/Input.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core/Material/Material.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core/Object/CUDA/Vertex.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core/Object/CUDA/Face.cuh
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Engine Core/Object/ObjLoader.h
+c:\users\asher\documents\soul engine\soul engine\source files\engine core\scene\cuda\ObjectSceneAbstraction.cuh
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/host_vector.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/vector_base.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/normal_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/iterator_adaptor.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/iterator_facade.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/iterator_facade_category.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/host_system_tag.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/execution_policy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/execution_policy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/execution_policy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/device_system_tag.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/execution_policy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/any_system_tag.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/iterator_categories.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/iterator_category_with_system_and_traversal.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/iterator_traversal_tags.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/universal_categories.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/is_iterator_category.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/iterator_category_to_traversal.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/iterator_category_to_system.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/distance_from_result.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/use_default.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/iterator_adaptor_base.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/iterator_traits.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/iterator_traits.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/is_trivial_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/pointer_traits.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/is_metafunction_defined.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/has_nested_type.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/reverse_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/reverse_iterator_base.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/reverse_iterator.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/contiguous_storage.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/allocator_traits.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/has_member_function.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/allocator_traits.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/is_call_possible.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/contiguous_storage.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/copy_construct_range.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/copy_construct_range.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/copy.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/select_system.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/minimum_system.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/minimum_type.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/type_traits.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/tag.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/copy.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/functional.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/placeholder.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/actor.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/tuple.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/tuple.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/composite.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/operators/assignment_operator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/operators/operator_adaptors.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/result_of.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/function_traits.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/actor.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/argument.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/operators.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/operators/arithmetic_operators.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/operators/relational_operators.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/operators/logical_operators.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/operators/bitwise_operators.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/functional/operators/compound_assignment_operators.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/internal_functional.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/tuple_of_iterator_references.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/reference_forward_declaration.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/raw_reference_cast.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/raw_pointer_cast.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/tuple_transform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/tuple_meta_transform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/transform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/transform.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/transform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/transform.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/for_each.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/for_each.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/for_each.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/static_assert.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/for_each.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/for_each.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/function.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/for_each.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/for_each.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/for_each.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/distance.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/distance.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/advance.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/advance.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/advance.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/advance.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/distance.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/distance.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/bulk.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/config.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/version.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/execution_policy.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/future.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/guarded_cuda_runtime_api.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime_api.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/throw_on_error.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/terminate.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system_error.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/error_code.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/errno.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/error_category.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/error_code.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/error_condition.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/system_error.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/system_error.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/error.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/guarded_driver_types.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\driver_types.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/error.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/guarded_cuda_runtime_api.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime_api.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/cuda_launcher/runtime_introspection.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/cuda_launcher/cuda_launch_config.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/minmax.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/cuda_launcher/runtime_introspection.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/util/blocking.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/choose_sizes.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/choose_sizes.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/closure.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/apply_from_tuple.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/cuda_launcher/cuda_launcher.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/alignment.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/cuda_task.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/malloc.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/pointer_traits.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/uninitialized.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/tuple_transform.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/tuple_meta_transform.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/cuda_launcher/triple_chevron_launcher.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/cuda_launcher/parameter_ptr.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/synchronize.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/async.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/async.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/copy.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/is_contiguous_iterator.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/reduce.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/iterator/strided_iterator.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/scan.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/accumulate.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/iterator/is_output_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/any_assign.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/merge.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/gather.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/permutation_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/permutation_iterator_base.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/counting_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/counting_iterator.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/numeric_traits.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/join_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/scatter.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/adjacent_difference.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/reduce_by_key.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/head_flags.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/transform_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/transform_iterator.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/zip_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/zip_iterator_base.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/minimum_category.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/zip_iterator.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/detail/tail_flags.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/sort.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/algorithm/detail/stable_merge_sort.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/bulk/iterator.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/seq.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/execute_with_allocator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/execute_on_stream.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/transform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/transform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/transform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/transform.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/copy.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/dispatch/is_trivial_copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/general_copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/trivial_copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/copy.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/copy_device_to_device.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/copy_device_to_device.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/copy_cross_system.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/copy_cross_system.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/temporary_array.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/tagged_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/temporary_allocator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/tagged_allocator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/tagged_allocator.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/memory.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/pointer.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/pointer.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/reference.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/reference.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/memory.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/memory.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/malloc_and_free.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/malloc_and_free.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/malloc_and_free.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/malloc_and_free.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/bad_alloc.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/throw_on_error.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/terminate.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/malloc_and_free.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/get_value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/get_value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/get_value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/get_value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/assign_value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/assign_value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/assign_value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/assign_value.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/iter_swap.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/iter_swap.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/iter_swap.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/iter_swap.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/swap.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/swap.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/swap_ranges.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/swap_ranges.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/swap_ranges.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/swap_ranges.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/swap_ranges.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/swap_ranges.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/swap_ranges.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/temporary_buffer.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/temporary_buffer.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/temporary_buffer.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/temporary_buffer.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/temporary_buffer.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/temporary_buffer.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/temporary_buffer.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/temporary_allocator.inl
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cassert
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/no_throw_allocator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/temporary_array.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/trivial_copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/trivial_copy.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/trivial_copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/trivial_copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/default_construct_range.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/default_construct_range.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/uninitialized_fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/uninitialized_fill.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/uninitialized_fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/uninitialized_fill.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/fill.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/generate.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/generate.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/generate.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/generate.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/generate.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/generate.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/generate.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/generate.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/uninitialized_fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/uninitialized_fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/uninitialized_fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/uninitialized_fill.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/destroy_range.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/destroy_range.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/fill_construct_range.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/allocator/fill_construct_range.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/vector_base.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/overlapped_copy.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/equal.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/equal.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/equal.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/equal.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/mismatch.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/mismatch.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/mismatch.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/mismatch.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/find.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/find.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/find.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/find.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/reduce.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/reduce.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/reduce.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/reduce.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/reduce_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/reduce_by_key.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/scatter.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/scatter.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/scatter.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/scatter.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/scatter.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/scatter.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/scatter.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/scatter.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/scan.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/scan.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/scan.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/scan.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/scan_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/scan_by_key.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/replace.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/replace.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/replace.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/generic/replace.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/replace.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/replace.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/replace.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/replace.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/scan.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/scan.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/scan.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/scan.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/scan.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/decomposition.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/scan_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/scan_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/scan_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/scan_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/reduce.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/reduce.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/reduce.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/reduce.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/reduce.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/reduce_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/reduce_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/type_traits/algorithm/intermediate_type_from_function_and_iterators.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/reduce_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/reduce_by_key.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/reduce_by_key.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/constant_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/constant_iterator_base.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/discard_iterator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/iterator/detail/discard_iterator_base.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/range/head_flags.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/range/tail_flags.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/reduce_intervals.hpp
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/find.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/find.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/find.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/find.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/mismatch.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/mismatch.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/mismatch.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/mismatch.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/adl/equal.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/detail/sequential/equal.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cpp/detail/equal.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/system/cuda/detail/equal.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/host_vector.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/device_vector.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/device_malloc_allocator.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/device_ptr.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/memory.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/device_ptr.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/device_reference.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/device_reference.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/device_malloc.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/device_malloc.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/device_free.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/device_free.inl
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\thrust/detail/device_vector.inl
