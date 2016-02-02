@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include "Bitmap.h"
 #include "Engine Core\BasicDependencies.h"
+#include "Utility\GPUIncludes.h"
     
 #pragma pack(push,4)
 struct Image
