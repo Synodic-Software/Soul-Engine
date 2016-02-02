@@ -318,6 +318,9 @@
     <ClInclude Include="Source Files\Utility\GLMIncludes.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Utility\GLIncludes.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
