@@ -214,6 +214,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Utility\CUDAIncludes.h" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAHelper.cuh" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAManaged.cuh" />
+    <ClInclude Include="Source Files\Utility\GLIncludes.h" />
     <ClInclude Include="Source Files\Utility\GLMIncludes.h" />
     <ClInclude Include="Source Files\Utility\GPUIncludes.h" />
     <ClInclude Include="Source Files\Utility\OpenCLIncludes.h" />

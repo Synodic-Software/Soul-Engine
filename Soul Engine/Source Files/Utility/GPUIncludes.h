@@ -1,12 +1,12 @@
 #pragma once
 
-#   if defined(__CUDACC__)
+//#   if defined(__CUDACC__)
 
 #include "CUDAIncludes.h"
-#	else
-
-#include "OpenCLIncludes.h"
-
-#endif
+//#	else
+//
+//#include "OpenCLIncludes.h"
+//
+//#endif
 
 #include "GPUUtility.h"
