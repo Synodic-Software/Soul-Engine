@@ -3,6 +3,7 @@
 #include "Engine Core/BasicDependencies.h"
 #include "Utility/OpenGL/ShaderSupport.h"
 #include "Engine Core/Material/Texture/Texture.h"
+#include "Utility\GPUIncludes.h"
 
 static Texture* defaultTexture;
 

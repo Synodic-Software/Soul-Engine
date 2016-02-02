@@ -7,6 +7,7 @@
 #include "Utility/OpenGL/Shader.h"
 #include "Engine Core/Material/Texture/Texture.h"
 #include "Ray Engine/RayEngine.h"
+#include "Utility\GPUIncludes.h"
 
 class Renderer{
 public:

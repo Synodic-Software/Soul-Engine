@@ -492,7 +492,60 @@ C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glm\glm/gtx/rotate_v
 c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\../gtx/transform.hpp
 c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\transform.inl
 c:\users\asher\documents\soul engine\soul engine\libraries\glm\glm\gtx\rotate_vector.inl
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\GLIncludes.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glew-1.12.0\include\GL/glew.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/glu.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winapifamily.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
+C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Libraries\glfw-3.1.1.bin.WIN64\include\GLFW/glfw3.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_gl_interop.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\builtin_types.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\device_types.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\driver_types.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\surface_types.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\texture_types.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\vector_types.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\host_defines.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\device_launch_parameters.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\device_functions.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\curand.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\cuda_runtime.h
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include\curand_kernel.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_discrete.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_precalc.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\memory.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_philox4x32_x.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_globals.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_uniform.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_normal.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_normal_static.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_lognormal.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_poisson.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_discrete2.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mrg32k3a.h
+c:\program files\nvidia gpu computing toolkit\cuda\v7.5\include\curand_mtgp32_kernel.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h
 C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Include Files\Metrics.h
 c:\users\asher\documents\soul engine\soul engine\source files\utility\CUDA/CUDAManaged.cuh
 C:\Users\Asher\Documents\Soul Engine\Soul Engine\\Source Files\Utility\CUDA\CudaHelper.cuh

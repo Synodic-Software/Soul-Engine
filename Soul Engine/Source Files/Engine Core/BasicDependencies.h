@@ -1,15 +1,9 @@
 #pragma once
 
 
-
-//#  if defined(__CUDACC__)
-#define GLM_FORCE_CUDA
-//#endif
-
 #include "Utility\GLMIncludes.h"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "Utility\GLIncludes.h"
 
 #include <stdlib.h>
 #include <IOstream>
