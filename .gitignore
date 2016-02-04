@@ -8,6 +8,9 @@
 
 # Build results
 [Dd]ebugPublic/
+[Dd]ebug/
+Debug/
+debug/
 build/
 bld/
 [Bb]in/
@@ -189,8 +192,16 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-*.obj
+
 *.deps
-*.deps
+*.cu.deps
 *.tlog
-*.deps
+x64/Debug/cudart32_75.dll
+x64/Debug/cudart64_75.dll
+*.exe
+*.obj
+*.idb
+Soul Engine/x64/Debug/Soul Engine/Soul Engine.tlog/CL.read.1.tlog
+Soul Engine/x64/Debug/Soul Engine/Soul Engine.tlog/cl.command.1.tlog
+*.command.1.tlog
+*.cu.deps

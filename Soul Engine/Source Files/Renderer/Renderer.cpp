@@ -1,7 +1,7 @@
 #include "Renderer.h"
 
 Renderer::Renderer(Camera& camera, glm::uvec2 screen){
-
+	debug = false;
 	modifiedScreen = screen;
 	originalScreen = screen;
 	camera.SetAspect((float)(screen.x) / (float)(screen.y));

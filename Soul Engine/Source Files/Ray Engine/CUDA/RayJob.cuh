@@ -22,15 +22,12 @@ public:
 	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
 	//@param Boolean inquiring whether or not to use memory optimizations if a job is per-frame.
-	__host__ RayJob(rayType, uint, float, Camera* camera, bool isRecurring);
+	__host__ RayJob(rayType, uint, float, Camera* camera);
 	__host__ ~RayJob();
 
 
 	//Returns a reference to a camera pointer. All the ray shooting information is stored here.
 	CUDA_FUNCTION Camera*& GetCamera();
-		
-	//Returns a boolean of the jobs storage flag.
-	CUDA_FUNCTION bool IsRecurring() const;
 
 	//Returns the rayType of the job.
 	CUDA_FUNCTION rayType RayType() const;
@@ -57,7 +54,6 @@ private:
 	uint startIndex;
 
 	//common variables
-	bool isRecurring;
 	Camera* camera;
     rayType type;
 	uint rayAmount;

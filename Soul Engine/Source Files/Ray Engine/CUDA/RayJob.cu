@@ -1,13 +1,12 @@
 #include "RayJob.cuh"
 
-__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, float newSamples, Camera* cameraN, bool isRecurringN){
+__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, float newSamples, Camera* cameraN){
 
 	type = whatToGet;
 	rayAmount = rayAmountN;
 	rayBaseAmount = rayAmount;
 	samples = newSamples;
 	camera = cameraN;
-	isRecurring = isRecurringN;
 
 	cudaMallocManaged(&results, rayBaseAmount);
 
@@ -22,11 +21,6 @@ __host__ RayJob::~RayJob(){
 //Returns a reference to a camera pointer. All the ray shooting information is stored here.
 CUDA_FUNCTION Camera*& RayJob::GetCamera(){
 	return camera;
-}
-
-//Returns a boolean of the jobs storage flag.
-CUDA_FUNCTION bool RayJob::IsRecurring() const{
-	return isRecurring;
 }
 
 //Returns the rayType of the job.

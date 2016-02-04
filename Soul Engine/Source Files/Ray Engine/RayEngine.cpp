@@ -12,7 +12,7 @@ void RayEngine::Process(const Scene* scene){
 RayJob* RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
 	uint samples, Camera* camera){
 
-	RayJob* newJob = new RayJob(whatToGet, rayAmount, samples, camera, false);
+	RayJob* newJob = new RayJob(whatToGet, rayAmount, samples, camera);
 	jobList.push_back(newJob);
 
 	return newJob;
@@ -21,7 +21,7 @@ RayJob* RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
 bool RayEngine::ChangeJob(RayJob* job, uint rayAmount, 
 	uint samples, Camera* camera){
 
-	if (job->IsRecurring() && rayAmount<=job->RayAmountMax()){
+	if (rayAmount<=job->RayAmountMax()){
 		job->GetRayAmount() = rayAmount;
 		job->GetSampleAmount() = samples;
 		job->GetCamera() = camera;

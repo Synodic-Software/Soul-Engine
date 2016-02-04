@@ -14,7 +14,7 @@ private:
 	int _size;
 
 public:
-	__device__ int size(){
+	__device__ int Size(){
 		return _size;
 	}
 
@@ -22,13 +22,26 @@ public:
 		return _array[i]; 
 	}
 
+	__host__ KernelArray() {
+		_array = NULL;
+		_size = 0;
+
+	}
+
 	// constructor allows for implicit conversion
+
 	__host__ KernelArray(thrust::device_vector<T>& dVec) {
 		_array = thrust::raw_pointer_cast(&dVec[0]);
 		_size = (int)dVec.size();
 	}
 
+	__host__ ~KernelArray(){
+
+	}
+
 };
+
+KernelArray<RayJob*> jobL;
 
 inline CUDA_FUNCTION uint WangHash(uint a) {
 	a = (a ^ 61) ^ (a >> 16);
@@ -50,7 +63,7 @@ inline __device__ int GetCurrentJob(KernelArray<RayJob*>& jobList, const uint& i
 
 	int i = 0;
 	for (; 
-		i<jobList.size() && !(index < startIndex + jobList[i]->GetRayAmount()*jobList[i]->GetSampleAmount());
+		i<jobList.Size() && !(index < startIndex + jobList[i]->GetRayAmount()*int(glm::ceil(jobList[i]->GetSampleAmount())));
 		i++){
 
 	}
@@ -62,7 +75,7 @@ inline __device__ int GetCurrentJob(KernelArray<RayJob*>& jobList, const uint& i
 
 }
 
-__global__ void EngineResultClear(const uint n, KernelArray<RayJob*> job){
+__global__ void EngineResultClear(const uint n, KernelArray<RayJob*> jobs){
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -71,10 +84,10 @@ __global__ void EngineResultClear(const uint n, KernelArray<RayJob*> job){
 
 		uint startIndex = 0;
 
-		int cur=GetCurrentJob(job, index, startIndex);
+		int cur=GetCurrentJob(jobs, index, startIndex);
 
 		
-		((glm::vec4*)job[cur]->GetResultPointer())[(index - startIndex) / int(glm::ceil(job[cur]->GetSampleAmount()))] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		((glm::vec4*)jobs[cur]->GetResultPointer())[(index - startIndex) / int(glm::ceil(jobs[cur]->GetSampleAmount()))] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 }
 
@@ -147,7 +160,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 		cudaEventRecord(start, 0);
 
 
-		KernelArray<RayJob*> jobL = KernelArray<RayJob*>(deviceJobList);
+		jobL = KernelArray<RayJob*>(deviceJobList);
 
 		EngineResultClear << <gridSize, blockSize >> >(n, jobL);
 
