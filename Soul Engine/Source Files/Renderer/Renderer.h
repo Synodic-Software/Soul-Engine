@@ -43,7 +43,7 @@ private:
 	GLint modelUniform;
 	GLint screenModUniform;
 
-
+	bool debug;
 	shading::ShaderSupport* CUDAtoScreen;
 
 	GLuint renderBuffer;
