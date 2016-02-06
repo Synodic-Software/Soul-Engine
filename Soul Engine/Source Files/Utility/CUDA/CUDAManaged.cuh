@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility\CUDA\CudaHelper.cuh"
+#include "thrust/device_vector.h"
 
 class Managed
 {

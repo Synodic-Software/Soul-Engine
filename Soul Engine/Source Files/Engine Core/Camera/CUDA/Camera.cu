@@ -60,7 +60,7 @@ CUDA_FUNCTION void Camera::SetRight(glm::vec3& rightn) {
 }
 
 
-CUDA_FUNCTION void Camera::SetupRay(uint& index, Ray& ray,thrust::default_random_engine& rng, thrust::uniform_real_distribution<float>& uniformDistribution){
+__device__ void Camera::SetupRay(uint& index, Ray& ray, curandState& rng){
 
 	//OPTIMIZED! int x = index - (y*resolution.y);
 
@@ -105,13 +105,13 @@ CUDA_FUNCTION void Camera::SetupRay(uint& index, Ray& ray,thrust::default_random
 
 
 
-	uint y = uint(index / resolution.x);
+	uint y = index / resolution.x;
 
-	float sx = ((uniformDistribution(rng) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
-	float sy = ((uniformDistribution(rng) - 0.5f) + y) / (resolution.y - 1);
+	float sx = ((curand_uniform(&rng) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
+	float sy = ((curand_uniform(&rng) - 0.5f) + y) / (resolution.y - 1);
 
-	float angle = TWO_PI * uniformDistribution(rng);
-	float distance = aperture * sqrt(uniformDistribution(rng));
+	float angle = TWO_PI * curand_uniform(&rng);
+	float distance = aperture * sqrt(curand_uniform(&rng));
 
 
 	//ALTERNATE aperaturPoint

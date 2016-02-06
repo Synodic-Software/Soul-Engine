@@ -1,9 +1,7 @@
 #include "RayEngine.cuh"
 
-uint raySeedGl=0;
 
-thrust::host_vector<RayJob*> hostJobList(0);
-thrust::device_vector<RayJob*> deviceJobList(0);
+uint raySeedGl = 0;
 
 // Template structure to pass to kernel
 template <typename T>
@@ -99,59 +97,61 @@ __global__ void EngineExecute(const uint n, KernelArray<RayJob*> job, const uint
 	int cur = GetCurrentJob(job, index, startIndex);
 
 
-	thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
-	thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f);
+	//thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
+	//thrust::uniform_real_distribution<float> uniformDistribution(0.0f, 1.0f);
 
-	float prob = uniformDistribution(rng);
 
+	curandState randState;
+	curand_init(raySeed + index, 0, 0, &randState);
+
+
+	//float prob = uniformDistribution(rng);
+	float prob =  curand_uniform(&randState);
 	if (index < n){
 		
 		uint localIndex = index - startIndex / glm::ceil(job[cur]->GetSampleAmount());
 
 
 			Ray ray;
-			job[cur]->GetCamera()->SetupRay(localIndex, ray, rng, uniformDistribution);
+			job[cur]->GetCamera()->SetupRay(localIndex, ray, randState);
 
 
 			//calculate something
-			glm::vec3 col = scene->IntersectColour(ray);
+			glm::vec3 col = scene->IntersectColour(ray) / glm::ceil(job[cur]->GetSampleAmount());
 
 
 
-			glm::vec4* pt = ((glm::vec4*)job[cur]->GetResultPointer());
+			glm::vec4* pt = &((glm::vec4*)job[cur]->GetResultPointer())[localIndex];
 
-			atomicAdd(&pt[localIndex].x, col.x / glm::ceil(job[cur]->GetSampleAmount()));
+			atomicAdd(&(pt->x), col.x);
 
-			atomicAdd(&pt[localIndex].y, col.y / glm::ceil(job[cur]->GetSampleAmount()));
+			atomicAdd(&(pt->y), col.y);
 
-			atomicAdd(&pt[localIndex].z, col.z / glm::ceil(job[cur]->GetSampleAmount()));
+			atomicAdd(&(pt->z), col.z);
 
 	}
 }
 
 
 __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
-	raySeedGl++;
 	CudaCheck(cudaDeviceSynchronize());
 	if (jobs.size()>0){
 
 	uint n = 0;
-	hostJobList.clear();
 	for (int i = 0; i < jobs.size();i++ ){
 		n += jobs[i]->GetRayAmount()* glm::ceil(jobs[i]->GetSampleAmount());
-		hostJobList.push_back(jobs[i]);
 	}
 
 	if (n!=0){
 
-		deviceJobList = hostJobList;
+		thrust::device_vector<RayJob*> deviceJobList(jobs);
 
 		uint blockSize = 32;
 		uint gridSize = (n + blockSize - 1) / blockSize;
 
 
 		//execute engine
-
+		jobL = KernelArray<RayJob*>(deviceJobList);
 
 		cudaEvent_t start, stop; 
 		float time;
@@ -160,11 +160,9 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 		cudaEventRecord(start, 0);
 
 
-		jobL = KernelArray<RayJob*>(deviceJobList);
-
 		EngineResultClear << <gridSize, blockSize >> >(n, jobL);
 
-		EngineExecute << <gridSize, blockSize >> >(n, jobL, WangHash(raySeedGl), scene);
+		EngineExecute << <gridSize, blockSize >> >(n, jobL, WangHash(raySeedGl++), scene);
 
 		cudaEventRecord(stop, 0); 
 		cudaEventSynchronize(stop); 

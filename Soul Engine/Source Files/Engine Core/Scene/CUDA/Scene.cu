@@ -20,7 +20,7 @@ CUDA_FUNCTION glm::vec3 positionAlongRay(const Ray& ray, const float& t) {
 	return ray.origin + t * ray.direction;
 }
 CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
-	float position = (dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2;
+	float position = (dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
 	glm::vec3 interpolatedColor = (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(1.0f, 1.0f, 1.0f);
 	return interpolatedColor * 1.0f;
 }
@@ -81,11 +81,11 @@ CUDA_FUNCTION glm::vec3 Scene::IntersectColour(const Ray& ray)const{
 
 	bool intersected=false;
 
-	for (uint i = 0; i < objectsSize;i++){
+	for (int o = 0; o < objectsSize;o++){
 
-		Object* current = &objectList[i];
+		Object* current = &objectList[o];
 
-		for (uint i = 0; i <current->faceAmount; i++){
+		for (int i = 0; i <current->faceAmount; i++){
 			float bary1 = 0;
 			float bary2 = 0;
 			float lambda = 0;
@@ -102,8 +102,7 @@ CUDA_FUNCTION glm::vec3 Scene::IntersectColour(const Ray& ray)const{
 
 
 	if (!intersected){
-		glm::vec3 backColor = computeBackgroundColor(ray.direction);
-		return glm::vec3(backColor.x, backColor.y, backColor.z);
+		return  computeBackgroundColor(ray.direction);
 	}
 	else{
 		return glm::vec3(1.0f, 1.0f, 1.0f);
