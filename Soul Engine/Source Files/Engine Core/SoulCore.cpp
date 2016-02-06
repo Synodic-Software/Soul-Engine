@@ -139,7 +139,7 @@ else{
 void SoulTerminate(){
 
 	Scheduler::Terminate();
-	cudaDeviceReset();
+	CudaCheck(cudaDeviceReset());
 	//delete hub;
 	delete settings;
 	glfwTerminate();

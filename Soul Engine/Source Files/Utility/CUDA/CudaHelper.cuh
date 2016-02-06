@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Utility\CUDAIncludes.h"
 #include <iostream>
 

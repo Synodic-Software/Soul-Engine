@@ -2,7 +2,7 @@
 
 #include "Utility\CUDAIncludes.h"
 #include "Ray Engine\CUDA/Ray.cuh"
-#include "thrust\random.h"
+//#include "thrust\random.h"
 
 
 //forward and right must be normalized!
@@ -30,7 +30,8 @@
 
 
 		//Given a positive integer, this function fills in the given ray's values based on the camera's position orientation and lens.
-		CUDA_FUNCTION void SetupRay(uint&, Ray&, thrust::default_random_engine&, thrust::uniform_real_distribution<float>&);
+	//	CUDA_FUNCTION void SetupRay(uint&, Ray&, thrust::default_random_engine&, thrust::uniform_real_distribution<float>&);
+		__device__ void SetupRay(uint&, Ray&, curandState&);
 
 		CUDA_FUNCTION bool IsViewable() const;
 
