@@ -132,7 +132,45 @@ __global__ void EngineExecute(const uint n, KernelArray<RayJob*> job, const uint
 	}
 }
 
+__host__ void ClearResults(std::vector<RayJob*>& jobs){
+	CudaCheck(cudaDeviceSynchronize());
+	if (jobs.size() > 0){
 
+		uint n = 0;
+		for (int i = 0; i < jobs.size(); i++){
+			n += jobs[i]->GetRayAmount()* glm::ceil(jobs[i]->GetSampleAmount());
+		}
+
+		if (n != 0){
+
+			thrust::device_vector<RayJob*> deviceJobList(jobs);
+
+			uint blockSize = 64;
+			uint gridSize = (n + blockSize - 1) / blockSize;
+
+
+			//execute engine
+			jobL = KernelArray<RayJob*>(deviceJobList);
+
+			cudaEvent_t start, stop;
+			float time;
+			cudaEventCreate(&start);
+			cudaEventCreate(&stop);
+			cudaEventRecord(start, 0);
+
+			EngineResultClear << <gridSize, blockSize >> >(n, jobL);
+
+			cudaEventRecord(stop, 0);
+			cudaEventSynchronize(stop);
+			cudaEventElapsedTime(&time, start, stop);
+			cudaEventDestroy(start);
+			cudaEventDestroy(stop);
+
+			std::cout << "RayClear Execution: " << time << "ms" << std::endl;
+		}
+		CudaCheck(cudaDeviceSynchronize());
+	}
+}
 __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 	CudaCheck(cudaDeviceSynchronize());
 	if (jobs.size()>0){
@@ -146,7 +184,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 
 		thrust::device_vector<RayJob*> deviceJobList(jobs);
 
-		uint blockSize = 32;
+		uint blockSize = 64;
 		uint gridSize = (n + blockSize - 1) / blockSize;
 
 
@@ -160,7 +198,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 		cudaEventRecord(start, 0);
 
 
-		EngineResultClear << <gridSize, blockSize >> >(n, jobL);
+		
 
 		EngineExecute << <gridSize, blockSize >> >(n, jobL, WangHash(raySeedGl++), scene);
 

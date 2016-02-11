@@ -433,6 +433,7 @@ TASK_FUNCTION(Run)
 
 		rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
 		camera->UpdateVariables();
+		RayEngine::Clear();
 		RayEngine::Process(scene);
 
 		//draw
@@ -441,6 +442,7 @@ TASK_FUNCTION(Run)
 		SoulSynchGPU();
 		rend->Render();
 		SoulSynchGPU();
+		
 		glfwSwapBuffers(mainThread);
 	}
 }

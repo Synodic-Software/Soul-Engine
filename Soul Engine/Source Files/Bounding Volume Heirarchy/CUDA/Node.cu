@@ -10,3 +10,11 @@ Node::Node(){
 Node::~Node(){
 
 }
+
+Node* Node::GetRight(){
+	return childRight;
+}
+
+Node* Node::GetLeft(){
+	return childLeft;
+}

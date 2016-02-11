@@ -21,6 +21,6 @@ namespace RayEngine {
 	bool ChangeJob(RayJob*, uint, uint, Camera*);
 
 	void Process(const Scene*);
-
+	void Clear();
 
 }
