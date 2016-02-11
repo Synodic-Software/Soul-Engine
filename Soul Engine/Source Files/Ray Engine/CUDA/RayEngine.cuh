@@ -7,3 +7,4 @@
 #include <thrust/device_vector.h>
 
 __host__ void ProcessJobs(std::vector<RayJob*>&, const Scene*);
+__host__ void ClearResults(std::vector<RayJob*>&);

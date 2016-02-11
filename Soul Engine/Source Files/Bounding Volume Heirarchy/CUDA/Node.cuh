@@ -9,7 +9,10 @@ public:
 	Node();
 	~Node();
 
-	CUDA_FUNCTION void TransformRay(Ray&);
+	Node* GetRight();
+	Node* GetLeft();
+
+	//CUDA_FUNCTION void TransformRay(Ray&);
 
 private:
 	static const uint systemMin = 0;

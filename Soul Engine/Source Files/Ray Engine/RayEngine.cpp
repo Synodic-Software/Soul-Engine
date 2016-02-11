@@ -33,3 +33,7 @@ bool RayEngine::ChangeJob(RayJob* job, uint rayAmount,
 	}
 
 }
+
+void RayEngine::Clear(){
+	ClearResults(jobList);
+}
