@@ -21,8 +21,8 @@ public:
 	//@param The number of rays/data-points to be cast into the scene.
 	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
-	//@param Boolean inquiring whether or not to use memory optimizations if a job is per-frame.
-	__host__ RayJob(rayType, uint, float, Camera* camera);
+	//@param The amount of buffers used for result storage.
+	__host__ RayJob(rayType, uint, float, Camera* camera, uint);
 	__host__ ~RayJob();
 
 
@@ -60,6 +60,8 @@ private:
 	uint rayBaseAmount;
 	float samples;
 
+	uint numResultBuffers;
+
 	//result variables
-	void* results;
+	void* results[];
 };
