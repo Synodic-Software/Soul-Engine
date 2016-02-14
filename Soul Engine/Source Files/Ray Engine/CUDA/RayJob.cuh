@@ -43,9 +43,10 @@ public:
 
 
 	//Returns the pointer to the results (modifiable)
-	CUDA_FUNCTION void*& GetResultPointer();
+	CUDA_FUNCTION void*& GetResultPointer(uint);
 	
-
+	//Returns the pointer to the results (modifiable)
+	CUDA_FUNCTION void SwapResults(uint,uint);
 protected:
 
 private:

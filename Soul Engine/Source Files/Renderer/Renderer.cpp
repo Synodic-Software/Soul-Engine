@@ -1,6 +1,8 @@
 #include "Renderer.h"
+#include "CUDA/Renderer.cuh"
 
 Renderer::Renderer(Camera& camera, glm::uvec2 screen){
+	iCounter = 1;
 	debug = false;
 	modifiedScreen = screen;
 	originalScreen = screen;
@@ -38,9 +40,9 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 		cudaBuffer));
 
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
-	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, 1, &camera);
+	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, 1, &camera,2);
 
-	RenderJob->GetResultPointer() = bufferData;
+	RenderJob->GetResultPointer(0) = bufferData;
 
 	Vertices[0] = 0.0f;
 	Vertices[1] = 0.0f;
@@ -147,8 +149,16 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 
 }
 
-void Renderer::Render(){
+void Renderer::Render(bool integrate){
 
+	if (integrate){
+		Integrate(RenderJob, iCounter);
+		iCounter++;
+	}
+	else{
+		iCounter = 1;
+	}
+	
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBuffer);
@@ -159,10 +169,11 @@ void Renderer::Render(){
 	CUDAtoScreen->setUniform(modelUniform, glm::mat4());
 	CUDAtoScreen->setUniform(screenUniform, originalScreen.x, originalScreen.y);
 	CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
-
+	RenderJob->SwapResults(0,1);
 	glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
 	glBindVertexArray(0);
 	CUDAtoScreen->stopUsing();
 
-		
+	RenderJob->SwapResults(0, 1);
+
 }

@@ -14,12 +14,12 @@ public:
 
 	Renderer(Camera&, glm::uvec2);
 
-
 	void RenderSetup(const glm::uvec2&, Camera*, double, float);
-	void Render();
+	void Render(bool);
 
 
 private:
+	uint iCounter;
 	RayJob* RenderJob;
 	double frameTime;
 

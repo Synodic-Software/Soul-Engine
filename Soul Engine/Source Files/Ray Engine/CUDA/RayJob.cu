@@ -48,6 +48,12 @@ CUDA_FUNCTION float& RayJob::GetSampleAmount() {
 }
 
 //Returns the pointer to the results (modifiable)
-CUDA_FUNCTION void*& RayJob::GetResultPointer(){
-	return results[0];
+CUDA_FUNCTION void*& RayJob::GetResultPointer(uint x){
+	return results[x];
+}
+
+CUDA_FUNCTION void RayJob::SwapResults(uint a, uint b){
+	void* temp = results[a];
+	results[a] = results[b];
+	results[b] = temp;
 }
