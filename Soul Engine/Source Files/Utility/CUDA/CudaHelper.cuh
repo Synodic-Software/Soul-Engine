@@ -16,3 +16,7 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort =
 }
 
 CUDA_FUNCTION uint randHash(uint a);
+inline __device__ int getGlobalIdx_1D_1D()
+{
+	return blockIdx.x *blockDim.x + threadIdx.x;
+}

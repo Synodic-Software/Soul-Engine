@@ -51,12 +51,6 @@ inline CUDA_FUNCTION uint WangHash(uint a) {
 }
 
 
-inline __device__ int getGlobalIdx_1D_1D()
-{
-	return blockIdx.x *blockDim.x + threadIdx.x;
-}
-
-
 inline __device__ int GetCurrentJob(KernelArray<RayJob*>& jobList, const uint& index, uint& startIndex){
 
 	int i = 0;
@@ -85,7 +79,7 @@ __global__ void EngineResultClear(const uint n, KernelArray<RayJob*> jobs){
 		int cur=GetCurrentJob(jobs, index, startIndex);
 
 		
-		((glm::vec4*)jobs[cur]->GetResultPointer())[(index - startIndex) / int(glm::ceil(jobs[cur]->GetSampleAmount()))] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		((glm::vec4*)jobs[cur]->GetResultPointer(0))[(index - startIndex) / int(glm::ceil(jobs[cur]->GetSampleAmount()))] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 }
 
@@ -121,7 +115,7 @@ __global__ void EngineExecute(const uint n, KernelArray<RayJob*> job, const uint
 
 
 
-			glm::vec4* pt = &((glm::vec4*)job[cur]->GetResultPointer())[localIndex];
+			glm::vec4* pt = &((glm::vec4*)job[cur]->GetResultPointer(0))[localIndex];
 
 			atomicAdd(&(pt->x), col.x);
 

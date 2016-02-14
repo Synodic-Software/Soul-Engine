@@ -142,6 +142,9 @@
     <Filter Include="Engine Backend\Ray Engine\OpenCL">
       <UniqueIdentifier>{33124da9-5927-48f7-b83d-b4dfc8d964c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Renderer\CUDA">
+      <UniqueIdentifier>{1cf7e706-0806-40d7-b00b-0224ac3054c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -321,6 +324,9 @@
     <ClInclude Include="Source Files\Utility\GLIncludes.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Renderer\CUDA\Renderer.cuh">
+      <Filter>Engine Backend\Renderer\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -438,6 +444,9 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayJob.cu">
       <Filter>Engine Backend\Ray Engine\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Renderer\CUDA\Renderer.cu">
+      <Filter>Engine Backend\Renderer\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

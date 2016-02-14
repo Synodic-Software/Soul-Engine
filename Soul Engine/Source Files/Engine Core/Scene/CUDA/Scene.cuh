@@ -13,16 +13,18 @@ public:
 	__host__ ~Scene();
 
 	CUDA_FUNCTION glm::vec3 IntersectColour(const Ray& ray)const;
+	CUDA_FUNCTION void Build();
 	__host__ void AddObject(Object&);
 
 private:
+	//abstraction layer that linearizes all seperate object pointer
 	Node* BVH;
-	uint* mortonCodes;
+	uint64* mortonCodes;
 	uint* objectPointers;
 
 	uint indicesSize;
 
-
+	//for object storage
 	Object* objectList;
 	uint objectsSize;
 	uint maxObjects;

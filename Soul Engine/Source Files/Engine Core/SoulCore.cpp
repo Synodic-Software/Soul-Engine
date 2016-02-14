@@ -433,14 +433,20 @@ TASK_FUNCTION(Run)
 
 		rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
 		camera->UpdateVariables();
+
+
+
 		RayEngine::Clear();
+
+
+
 		RayEngine::Process(scene);
 
 		//draw
 		ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		SoulSynchGPU();
-		rend->Render();
+		rend->Render(false);
 		SoulSynchGPU();
 		
 		glfwSwapBuffers(mainThread);

@@ -15,6 +15,9 @@ Scene::~Scene()
 {
 }
 
+CUDA_FUNCTION void Build(){
+
+}
 
 CUDA_FUNCTION glm::vec3 positionAlongRay(const Ray& ray, const float& t) {
 	return ray.origin + t * ray.direction;
