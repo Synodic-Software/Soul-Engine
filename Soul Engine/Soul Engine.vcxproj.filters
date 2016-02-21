@@ -145,6 +145,12 @@
     <Filter Include="Engine Backend\Renderer\CUDA">
       <UniqueIdentifier>{1cf7e706-0806-40d7-b00b-0224ac3054c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum">
+      <UniqueIdentifier>{9cddc399-5cd1-4f10-b2f0-4bf8331b6488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA">
+      <UniqueIdentifier>{569e80ad-2c0c-4111-a1c0-46b44265cb04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -327,6 +333,12 @@
     <ClInclude Include="Source Files\Renderer\CUDA\Renderer.cuh">
       <Filter>Engine Backend\Renderer\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cuh">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -447,6 +459,9 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Renderer\CUDA\Renderer.cu">
       <Filter>Engine Backend\Renderer\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

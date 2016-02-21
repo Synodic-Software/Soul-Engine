@@ -245,7 +245,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	glEnable(GL_TEXTURE_2D);
 
 	mouseChangeDegrees = glm::vec2(0);
-
+	SoulSynchGPU();
 	// setup camera 
 	freeCam = true;
 	//camera->SetPosition(glm::vec3(-5.0f*METER, 2.0f*METER, 5.0f*METER));
@@ -435,7 +435,7 @@ TASK_FUNCTION(Run)
 		camera->UpdateVariables();
 
 
-
+		scene->Build();
 		RayEngine::Clear();
 
 
@@ -446,7 +446,7 @@ TASK_FUNCTION(Run)
 		ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		SoulSynchGPU();
-		rend->Render(false);
+		rend->Render(runPhysics);
 		SoulSynchGPU();
 		
 		glfwSwapBuffers(mainThread);

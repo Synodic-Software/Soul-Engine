@@ -7,6 +7,7 @@ Object::Object(){
 	faceAmount=0;
 	materialSize = 0;
 	localSceneIndex = 0;
+	ready = false;
 
 	vertices=NULL;
 	faces = NULL;

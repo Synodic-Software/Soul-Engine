@@ -18,6 +18,7 @@ class Object: public Managed{
 		Object();
 
 		bool requestRemoval;
+		bool ready;
 		bool isStatic;
 
 		glm::vec3 xyzPosition;

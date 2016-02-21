@@ -2,7 +2,7 @@
 
 #include "Utility\CUDAIncludes.h"
 
-class Vertex : public Managed
+class __align__(32) Vertex : public Managed
 {
 public:
 	Vertex();

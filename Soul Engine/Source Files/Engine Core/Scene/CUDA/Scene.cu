@@ -1,11 +1,11 @@
 #include "Scene.cuh"
-
+#include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
 
 Scene::Scene()
 {
 	objectsSize = 0;
 	maxObjects = 100;
-
+	indicesSize = 0;
 	cudaMallocManaged(&objectList,
 		maxObjects*sizeof(Object));
 }
@@ -14,8 +14,71 @@ Scene::Scene()
 Scene::~Scene()
 {
 }
+__host__ bool Scene::Clean(){
+	/*bool* objectBitSetupTemp;
 
-CUDA_FUNCTION void Build(){
+
+	int n = 0;
+	for (int i = 0; i < objectsSize; i++){
+		if (objectList[i].requestRemoval){
+
+
+
+			n += objectList[i].faceAmount;
+		}
+	}*/
+
+	return false;
+}
+__host__ bool Scene::Compile(){
+	int n = 0;
+	for (int i = 0; i < objectsSize;i++){
+		if (!objectList[i].ready){
+			n += objectList[i].faceAmount;
+		}
+	}
+
+	if (n > 0){
+		bool* objectBitSetupTemp;
+		cudaMallocManaged(&objectBitSetupTemp, indicesSize + n*sizeof(bool));
+		cudaMemcpy(objectBitSetupTemp, objectBitSetup, indicesSize, cudaMemcpyDefault);
+		cudaFree(objectBitSetup);
+		objectBitSetup = objectBitSetupTemp;
+		int l = 0;
+		for (int i = 0; i < objectsSize; i++){
+			if (!objectList[i].ready){
+				for (int t = 0; t < objectList[i].faceAmount;t++,l++){
+					if (t==0){
+						objectBitSetup[indicesSize + l] = true;
+					}
+					else{
+						objectBitSetup[indicesSize + l] = false;
+					}
+				}
+				objectList[i].ready = true;
+			}
+		}
+
+	}
+
+	return n > 0;
+}
+
+//__global__
+__host__ void Scene::AttachObjIds(){
+	PrefixSum::Calculate();
+}
+__host__ void Scene::Build(){
+	bool a=Clean();
+	bool b=Compile();
+
+
+	//if neither clean or compile did anything
+	if (a&&b){
+		AttachObjIds();
+	}
+	
+
 
 }
 
