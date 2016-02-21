@@ -46,7 +46,8 @@ private:
 	bool debug;
 	shading::ShaderSupport* CUDAtoScreen;
 
-	GLuint renderBuffer;
+	GLuint renderBufferA;
+	GLuint renderBufferB;
 	struct cudaGraphicsResource *cudaBuffer;
 	glm::vec4 *bufferData;
 	double newTime;

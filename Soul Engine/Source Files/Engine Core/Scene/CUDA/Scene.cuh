@@ -13,16 +13,21 @@ public:
 	__host__ ~Scene();
 
 	CUDA_FUNCTION glm::vec3 IntersectColour(const Ray& ray)const;
-	CUDA_FUNCTION void Build();
+
+	//adds all inthe queue and cleans all in the queue then builds the bvh
+	__host__ void Build();
 	__host__ void AddObject(Object&);
-
+	__host__ bool Scene::Clean();
+	__host__ bool Scene::Compile();
 private:
+	__host__ void AttachObjIds();
 	//abstraction layer that linearizes all seperate object pointer
-	Node* BVH;
-	uint64* mortonCodes;
-	uint* objectPointers;
+	Node* BVH; 
 
-	uint indicesSize;
+	uint indicesSize; //The amount of indices the entire scene takes
+	bool* objectBitSetup;
+
+	
 
 	//for object storage
 	Object* objectList;

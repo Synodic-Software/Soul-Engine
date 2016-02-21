@@ -21,8 +21,8 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	screenUniform = CUDAtoScreen->uniform("screen");
 	screenModUniform = CUDAtoScreen->uniform("screenMod");
 
-	glGenBuffers(1, &renderBuffer);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBuffer);
+	glGenBuffers(1, &renderBufferA);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBufferA);
 	glBufferData(GL_SHADER_STORAGE_BUFFER,
 		originalScreen.x*originalScreen.y*sizeof(glm::vec4),
 		NULL, GL_STATIC_DRAW);
@@ -30,7 +30,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
-		, renderBuffer
+		, renderBufferA
 		, cudaGraphicsRegisterFlagsWriteDiscard));
 
 
@@ -42,6 +42,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, 1, &camera,2);
 
+	cudaFree(RenderJob->GetResultPointer(0));
 	RenderJob->GetResultPointer(0) = bufferData;
 
 	Vertices[0] = 0.0f;
@@ -157,11 +158,11 @@ void Renderer::Render(bool integrate){
 	}
 	else{
 		iCounter = 1;
-	}
+	}	
 	
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBufferA);
 
 	CUDAtoScreen->use();
 	glBindVertexArray(vao);
@@ -169,11 +170,11 @@ void Renderer::Render(bool integrate){
 	CUDAtoScreen->setUniform(modelUniform, glm::mat4());
 	CUDAtoScreen->setUniform(screenUniform, originalScreen.x, originalScreen.y);
 	CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
-	RenderJob->SwapResults(0,1);
+	//RenderJob->SwapResults(0,1);
 	glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
 	glBindVertexArray(0);
 	CUDAtoScreen->stopUsing();
 
-	RenderJob->SwapResults(0, 1);
+	//RenderJob->SwapResults(0, 1);
 
 }

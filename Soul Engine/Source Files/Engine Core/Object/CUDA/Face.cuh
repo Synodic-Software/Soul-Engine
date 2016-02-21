@@ -2,7 +2,7 @@
 
 #include "Utility\CUDAIncludes.h"
 
-class Face : public Managed
+class __align__(32) Face : public Managed
 {
 public:
 	Face();
@@ -13,6 +13,9 @@ public:
 
 	glm::uvec3 indices;
 	uint materialID;
+	uint objectID;
+	uint64 mortonCode;
+
 private:
 	
 };

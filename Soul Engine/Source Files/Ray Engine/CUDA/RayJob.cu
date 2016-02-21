@@ -9,9 +9,9 @@ __host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, float newSamples, Ca
 	camera = cameraN;
 	numResultBuffers = numResultBuffersN;
 
-	cudaMallocManaged(results, numResultBuffers);
+	cudaMallocManaged(results, numResultBuffers*sizeof(glm::vec4*));
 	for (int i = 0; i < numResultBuffers; i++){
-		cudaMallocManaged(&results[i], rayBaseAmount);
+		cudaMallocManaged(&results[i], rayBaseAmount*sizeof(glm::vec4));
 	}
 
 }
