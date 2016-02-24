@@ -86,9 +86,8 @@ CUDA_FUNCTION glm::vec3 positionAlongRay(const Ray& ray, const float& t) {
 	return ray.origin + t * ray.direction;
 }
 CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
-	float position = (dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
-	glm::vec3 interpolatedColor = (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(1.0f, 1.0f, 1.0f);
-	return interpolatedColor * 1.0f;
+	float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
+	return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
 CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
@@ -98,19 +97,19 @@ CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b,
 	glm::vec3 edge1 = b - a;
 	glm::vec3 edge2 = c - a;
 
-	glm::vec3 pvec = cross(d, edge2);
-	float det = dot(edge1, pvec);
+	glm::vec3 pvec = glm::cross(d, edge2);
+	float det = glm::dot(edge1, pvec);
 	if (det == 0.0f){
 		return false;
 	}
 	float inv_det = 1.0f / det;
 
 	glm::vec3 tvec = o - a;
-	bary1 = dot(tvec, pvec) * inv_det;
+	bary1 = glm::dot(tvec, pvec) * inv_det;
 
-	glm::vec3 qvec = cross(tvec, edge1);
-	bary2 = dot(d, qvec) * inv_det;
-	lambda = dot(edge2, qvec) * inv_det;
+	glm::vec3 qvec = glm::cross(tvec, edge1);
+	bary2 = glm::dot(d, qvec) * inv_det;
+	lambda = glm::dot(edge2, qvec) * inv_det;
 
 	bool hit = (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
 	return hit;
