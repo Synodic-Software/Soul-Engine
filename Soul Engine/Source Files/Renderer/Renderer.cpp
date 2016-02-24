@@ -11,7 +11,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	frameTime = 0.0f;
 	changeCutoff = 0.05f;
 
-	samples = 1;
+	samples = 12;
 
 
 	CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
@@ -40,7 +40,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 		cudaBuffer));
 
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
-	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, 1, &camera,2);
+	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, &camera,2);
 
 	cudaFree(RenderJob->GetResultPointer(0));
 	RenderJob->GetResultPointer(0) = bufferData;
@@ -142,7 +142,7 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	camera->resolution=modifiedScreen;
 	RayEngine::ChangeJob(RenderJob, (modifiedScreen.x*modifiedScreen.y),
 		samples, camera);
-	RenderJob->GetSampleAmount()=0.1f;
+	//RenderJob->GetSampleAmount()=0.1f;
 	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
 	size_t num_bytes;
 	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
