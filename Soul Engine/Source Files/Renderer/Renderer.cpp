@@ -11,7 +11,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	frameTime = 0.0f;
 	changeCutoff = 0.05f;
 
-	samples = 12;
+	samples = 0.1f;
 
 
 	CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",

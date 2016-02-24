@@ -24,9 +24,10 @@ private:
 	double frameTime;
 
 	float changeCutoff;
-	GLuint samplesMax;
-	GLuint samplesMin;
-	GLuint samples;
+	float samplesMax;
+	float samplesMin;
+	float samples;
+
 	glm::uvec2 originalScreen;
 	glm::uvec2 modifiedScreen;
 

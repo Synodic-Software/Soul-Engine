@@ -1,16 +1,14 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
 
-
 std::vector<RayJob*> jobList;
-
 
 void RayEngine::Process(const Scene* scene){
 	ProcessJobs(jobList, scene);
 }
 
 RayJob* RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
-	uint samples, Camera* camera, uint resBuffN){
+	float samples, Camera* camera, uint resBuffN){
 
 	RayJob* newJob = new RayJob(whatToGet, rayAmount, samples, camera, resBuffN);
 	jobList.push_back(newJob);
@@ -19,7 +17,7 @@ RayJob* RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
 }
 
 bool RayEngine::ChangeJob(RayJob* job, uint rayAmount, 
-	uint samples, Camera* camera){
+	float samples, Camera* camera){
 
 	if (rayAmount<=job->RayAmountMax()){
 		job->GetRayAmount() = rayAmount;
