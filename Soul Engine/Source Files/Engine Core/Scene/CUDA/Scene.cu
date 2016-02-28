@@ -92,14 +92,14 @@ CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
 
 CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
 	const glm::vec3& o, const glm::vec3& d,
-	float& lambda, float& bary1, float& bary2)
+	float& t, float& bary1, float& bary2)
 {
 	glm::vec3 edge1 = b - a;
 	glm::vec3 edge2 = c - a;
 
 	glm::vec3 pvec = glm::cross(d, edge2);
 	float det = glm::dot(edge1, pvec);
-	if (det == 0.0f){
+	if (det > -EPSILON && det < EPSILON){
 		return false;
 	}
 	float inv_det = 1.0f / det;
@@ -109,10 +109,11 @@ CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b,
 
 	glm::vec3 qvec = glm::cross(tvec, edge1);
 	bary2 = glm::dot(d, qvec) * inv_det;
-	lambda = glm::dot(edge2, qvec) * inv_det;
 
-	bool hit = (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
-	return hit;
+	t = glm::dot(edge2, qvec) * inv_det;
+
+	//bool hit = t>EPSILON&&(bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
+	return t>EPSILON && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
 }
 
 CUDA_FUNCTION bool AABBIntersect(const glm::vec3& origin, const glm::vec3& extent, const glm::vec3& o, const glm::vec3& dInv, const float& t0, const float& t1){

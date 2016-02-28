@@ -50,12 +50,11 @@ inline CUDA_FUNCTION uint WangHash(uint a) {
 	return a;
 }
 
-
 inline __device__ int GetCurrentJob( KernelArray<RayJob*>& jobs, const uint& index, const uint& startIndex){
 
 	int i = 0;
 	for (; 
-		i<jobs.Size() && !(index < startIndex + jobs[i]->GetRayAmount()*glm::ceil(jobs[i]->GetSampleAmount()));
+		i<jobs.Size() && !(index < startIndex + jobs[i]->GetRayAmount()*jobs[i]->GetSampleAmount());
 		++i){
 
 	}
@@ -116,17 +115,16 @@ __global__ void EngineExecute(const uint n, KernelArray<RayJob*> job, const uint
 	//float prob = uniformDistribution(rng);
 	float prob =  curand_uniform(&randState);
 	if (index < n){
-		
-		uint sampCeil = glm::ceil(job[cur]->GetSampleAmount());
-		uint localIndex = (index - startIndex) / sampCeil;
 
+		uint localIndex = (index - startIndex) / job[cur]->GetSampleAmount();
+		uint rayAmount = job[cur]->GetRayAmount();
 
 			Ray ray;
 			job[cur]->GetCamera()->SetupRay(localIndex, ray, randState);
 
 
 			//calculate something
-			glm::vec3 col = scene->IntersectColour(ray) / (float)sampCeil;
+			glm::vec3 col = scene->IntersectColour(ray) / ((float)job[cur]->GetSampleAmount());
 
 
 
@@ -186,7 +184,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 
 	uint n = 0;
 	for (int i = 0; i < jobs.size();++i ){
-		n += jobs[i]->GetRayAmount()* glm::ceil(jobs[i]->GetSampleAmount());
+		n += jobs[i]->GetRayAmount()* jobs[i]->GetSampleAmount();
 	}
 
 	if (n!=0){

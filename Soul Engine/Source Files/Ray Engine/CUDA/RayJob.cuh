@@ -22,7 +22,7 @@ public:
 	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
 	//@param The amount of buffers used for result storage.
-	__host__ RayJob(rayType, uint, float, Camera* camera, uint);
+	__host__ RayJob(rayType, uint, uint, Camera* camera, uint);
 	__host__ ~RayJob();
 
 
@@ -39,7 +39,7 @@ public:
 	CUDA_FUNCTION uint& GetRayAmount();
 
 	//Returns the current sample per ray (modifiable)
-	CUDA_FUNCTION float& GetSampleAmount();
+	CUDA_FUNCTION uint& GetSampleAmount();
 
 
 	//Returns the pointer to the results (modifiable)
@@ -59,7 +59,7 @@ private:
     rayType type;
 	uint rayAmount;
 	uint rayBaseAmount;
-	float samples;
+	uint samples;
 
 	uint numResultBuffers;
 

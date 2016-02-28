@@ -153,6 +153,7 @@ void AddObject(Object* object){
 void RemoveObject(Object* object){
 
 	
+
 }
 
 void SoulSynchCPU(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint& size){

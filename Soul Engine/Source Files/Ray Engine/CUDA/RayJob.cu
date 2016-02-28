@@ -1,6 +1,6 @@
 #include "RayJob.cuh"
 
-__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, float newSamples, Camera* cameraN, uint numResultBuffersN){
+__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, uint newSamples, Camera* cameraN, uint numResultBuffersN){
 
 	type = whatToGet;
 	rayAmount = rayAmountN;
@@ -43,7 +43,7 @@ CUDA_FUNCTION uint& RayJob::GetRayAmount() {
 }
 
 //Returns the current sample per ray (modifiable)
-CUDA_FUNCTION float& RayJob::GetSampleAmount() {
+CUDA_FUNCTION uint& RayJob::GetSampleAmount() {
 	return samples;
 }
 
