@@ -26,7 +26,7 @@ private:
 	float changeCutoff;
 	float samplesMax;
 	float samplesMin;
-	float samples;
+	uint samples;
 
 	glm::uvec2 originalScreen;
 	glm::uvec2 modifiedScreen;

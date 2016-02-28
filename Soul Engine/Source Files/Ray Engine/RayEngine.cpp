@@ -8,7 +8,7 @@ void RayEngine::Process(const Scene* scene){
 }
 
 RayJob* RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
-	float samples, Camera* camera, uint resBuffN){
+	uint samples, Camera* camera, uint resBuffN){
 
 	RayJob* newJob = new RayJob(whatToGet, rayAmount, samples, camera, resBuffN);
 	jobList.push_back(newJob);
