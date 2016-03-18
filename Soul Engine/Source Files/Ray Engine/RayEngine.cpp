@@ -40,3 +40,6 @@ bool RayEngine::SwapResults(RayJob* job, uint a, uint b){
 	job->SwapResults(a, b);
 	return true;
 }
+void RayEngine::Clean(){
+	Cleanup();
+}

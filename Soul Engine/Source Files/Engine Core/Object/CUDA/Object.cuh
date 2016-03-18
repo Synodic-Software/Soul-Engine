@@ -43,9 +43,9 @@ class Object: public Managed{
 		Vertex* vertices;
 		Face* faces;
 
-	virtual void Update(double) = 0;
-	virtual void UpdateLate(double) = 0;
-	virtual void Load() = 0;
+	void Update(double);
+	void UpdateLate(double);
+	void Load();
 
 	Material* materials;
 	uint materialSize;

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Utility\CUDAIncludes.h"
-
-class __align__(32) Face : public Managed
+//__align__(32)
+class  Face : public Managed
 {
 public:
 	Face();
@@ -13,7 +13,6 @@ public:
 
 	glm::uvec3 indices;
 	uint materialID;
-	uint objectID;
 	uint64 mortonCode;
 
 private:

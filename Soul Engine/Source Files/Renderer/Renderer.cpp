@@ -10,8 +10,8 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	camera.resolution=screen;
 	frameTime = 0.0f;
 	changeCutoff = 0.05f;
-
-	samples = 8;
+	targetFPS = 60.0f;
+	samples = 1;
 	//samples cannot be a float because finding a constant random number across different threads becomes too time consuming 
 
 	CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
@@ -105,30 +105,25 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 
 	double oldTime = newTime;
 	newTime = glfwGetTime();
-	frameTime = newTime - oldTime;
+	double smoothing = 0.85;
 
-	/*fiveFrame.push_front(frameTime);
-
-	while (fiveFrame.size()>5){
-		fiveFrame.pop_back();
-	}
-	double avg = 0;
-	for (std::list<double>::iterator itr = fiveFrame.begin(); itr != fiveFrame.end();itr++){
-		avg += *itr;
-	}
-	avg = avg / fiveFrame.size();*/
+	double frameTop=newTime - oldTime;
+	frameTime = (frameTime * smoothing) + (frameTop * (1.0 - smoothing));
 
 	float aspectRatio = camera->GetAspect();
 	uint newWidth = (uint)glm::ceil(originalScreen.x*scroll);
 	
-	/*uint newWidth = modifiedScreen.x;
+	uint workCalc = RenderJob->GetSampleAmount()*RenderJob->GetRayAmount();
 
-	if (frameTime > timeTarget * (1.0f + changeCutoff)){
-		newWidth = glm::ceil(newWidth * ((timeTarget * (1.0f + changeCutoff)) / frameTime));
+	uint workTarget = (1000.0f / timeTarget) / frameTime;
+
+	/*if (workTarget - (workTarget*changeCutoff) > workCalc){
+		newWidth = newWidth*(1.0+changeCutoff);
 	}
-	else if (frameTime < timeTarget* (1.0f - changeCutoff)){
-		newWidth = glm::ceil(newWidth * ((timeTarget* (1.0f - changeCutoff)) / frameTime));
+	else if (workTarget + (workTarget*changeCutoff) < workCalc){
+		newWidth = newWidth/(1.0 + changeCutoff);
 	}*/
+
 
 	if (newWidth<48){
 		newWidth = 48;
@@ -158,7 +153,7 @@ void Renderer::Render(bool integrate){
 	}
 	else{
 		iCounter = 1;
-	}	
+	}		
 	
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 

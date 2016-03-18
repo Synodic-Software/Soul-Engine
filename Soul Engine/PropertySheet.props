@@ -45,13 +45,14 @@
       <NvccCompilation>compile</NvccCompilation>
       <GenerateLineInfo>true</GenerateLineInfo>
       <CudaRuntime>Static</CudaRuntime>
-      <CodeGeneration>compute_50,sm_50</CodeGeneration>
+      <CodeGeneration>compute_30,sm_30</CodeGeneration>
       <FastMath>true</FastMath>
       <UseHostInclude>true</UseHostInclude>
       <Optimization>O3</Optimization>
       <TypeInfo>InheritFromHost</TypeInfo>
-      <HostDebugInfo>false</HostDebugInfo>
+      <HostDebugInfo>true</HostDebugInfo>
       <RuntimeChecks>InheritFromHost</RuntimeChecks>
+      <GPUDebugInfo>false</GPUDebugInfo>
     </CudaCompile>
     <CudaLink>
       <Optimization>O3</Optimization>
