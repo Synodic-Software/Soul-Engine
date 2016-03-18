@@ -50,7 +50,7 @@ glm::vec2 mouseChangeDegrees;
 //Initializes Soul. This must be called before using variables or 
 //any other functions relating to the engine.
 void SoulInit(){
-	scrollUniform = 0.5f;
+	scrollUniform = 0.05f;
 seed = GLuint(time(NULL));
 srand(seed);
 settings = new Settings("Settings.ini");
@@ -122,6 +122,8 @@ else{
 	SetSetting("ScreenY", std::to_string(mode->height));
 }
 
+SCREEN_SIZE = glm::uvec2(SCREEN_SIZE.x / 1.05f, SCREEN_SIZE.y / 1.05f );
+
 //msaa samples
 
 std::string msAA = GetSetting("MSAA");
@@ -139,6 +141,7 @@ else{
 void SoulTerminate(){
 
 	Scheduler::Terminate();
+	RayEngine::Clean();
 	CudaCheck(cudaDeviceReset());
 	//delete hub;
 	delete settings;
@@ -162,7 +165,7 @@ void SoulSynchCPU(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint&
 	}
 }
 void SoulSynchGPU(){
-	cudaDeviceSynchronize();
+	CudaCheck(cudaDeviceSynchronize());
 }
 void SoulSynch(FiberTaskingLib::TaskScheduler* sched,COUNTER* counter,uint& size){
 	SoulSynchCPU(sched, counter, size);
@@ -214,7 +217,8 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-		mainThread = glfwCreateWindow(mode->width, mode->height, "Soul Engine", NULL, loopThread);
+		//mainThread = glfwCreateWindow(mode->width, mode->height, "Soul Engine", NULL, loopThread);   <---------actual
+		mainThread = glfwCreateWindow(SCREEN_SIZE.x, SCREEN_SIZE.y, "Soul Engine", NULL, loopThread);
 
 	}
 	
@@ -364,6 +368,7 @@ TASK_FUNCTION(Run)
 	
 	SoulSynchGPU();
 	SoulInit();
+	SoulSynchGPU();
 	camera = new Camera();
 	
 
@@ -424,7 +429,6 @@ TASK_FUNCTION(Run)
 			//Update();
 
 			//RunPhysics();
-
 			UpdateTimers();
 
 			t += deltaTime;

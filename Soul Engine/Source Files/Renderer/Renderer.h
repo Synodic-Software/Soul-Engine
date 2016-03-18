@@ -28,6 +28,8 @@ private:
 	float samplesMin;
 	uint samples;
 
+	float targetFPS;
+
 	glm::uvec2 originalScreen;
 	glm::uvec2 modifiedScreen;
 

@@ -3,6 +3,7 @@
 #include "Engine Core/BasicDependencies.h"
 #include "Engine Core\Scene\Scene.h"
 #include "RayJob.h"
+#include <thrust/device_vector.h>
 
 
 //The main engine that processes RayJobs
@@ -24,5 +25,6 @@ namespace RayEngine {
 
 	void Process(const Scene*);
 	void Clear();
+	void Clean();
 
 }

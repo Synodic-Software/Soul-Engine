@@ -5,6 +5,13 @@
 #include "ObjectSceneAbstraction.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
 #include "Bounding Volume Heirarchy\CUDA\Node.cuh"
+#include <thrust/fill.h>
+#include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
+#include <thrust/scan.h>
+#include <thrust/remove.h>
+#include <thrust/functional.h>
+
+
 
 class Scene : public Managed
 {
@@ -12,7 +19,7 @@ public:
 	__host__ Scene();
 	__host__ ~Scene();
 
-	CUDA_FUNCTION glm::vec3 IntersectColour(const Ray& ray)const;
+	__device__ glm::vec3 IntersectColour(Ray& ray, curandState&)const;
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
 	__host__ void Build();
@@ -25,9 +32,9 @@ private:
 	Node* BVH; 
 
 	uint indicesSize; //The amount of indices the entire scene takes
-	bool* objectBitSetup;
+	bool* objectBitSetup; // hold a true for the first indice of each object
 
-	
+	uint* objIds; //points to the object
 
 	//for object storage
 	Object* objectList;
