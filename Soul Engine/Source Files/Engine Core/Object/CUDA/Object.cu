@@ -9,6 +9,8 @@ Object::Object(){
 	localSceneIndex = 0;
 	ready = false;
 
+	xyzPosition = glm::vec3(0);
+
 	vertices=NULL;
 	faces = NULL;
 	materials = NULL;
@@ -39,6 +41,10 @@ void Object::ExtractFromFile(const char* name){
 
 	verticeAmount = overallSize;
 	faceAmount = faceOverallSize;
+
+	glm::vec3 max = glm::vec3(shapes[0].mesh.positions[0], shapes[0].mesh.positions[1], shapes[0].mesh.positions[2]);
+	glm::vec3 min = glm::vec3(shapes[0].mesh.positions[0], shapes[0].mesh.positions[1], shapes[0].mesh.positions[2]);
+
 	cudaDeviceSynchronize();
 
 	cudaMallocManaged(&vertices,
@@ -55,19 +61,28 @@ void Object::ExtractFromFile(const char* name){
 	for (uint i = 0; i < shapes.size(); i++){
 		for (uint v = 0; v < verticeAmount / 3; v++){
 			vertices[overallOffset + v].SetData(
-				glm::vec3(shapes[i].mesh.positions[3 * v + 0], shapes[i].mesh.positions[3 * v + 1], shapes[i].mesh.positions[3 * v + 2]),
+				glm::vec3(shapes[i].mesh.positions[3 * v + 0], shapes[i].mesh.positions[3 * v + 1], shapes[i].mesh.positions[3 * v + 2])*METER,
 				glm::vec2(shapes[i].mesh.texcoords[2 * v + 0], shapes[i].mesh.texcoords[2 * v + 1]),
 				glm::vec3(shapes[i].mesh.normals[3 * v + 0], shapes[i].mesh.normals[3 * v + 1], shapes[i].mesh.normals[3 * v + 2]));
+
+			vertices[overallOffset + v].position += xyzPosition;
+			max = glm::max(vertices[overallOffset + v].position, max);
+			min = glm::min(vertices[overallOffset + v].position, min);
+
 		}
 		overallOffset += shapes[i].mesh.positions.size();
 
 		for (uint f = 0; f < faceAmount / 3; f++){
 			faces[faceOffset + f].SetData(
 				glm::uvec3(shapes[i].mesh.indices[3 * f + 0], shapes[i].mesh.indices[3 * f + 1], shapes[i].mesh.indices[3 * f + 2]),
-				shapes[i].mesh.material_ids[f]);
+				NULL,this);
+				//shapes[i].mesh.material_ids[f]);
 		}
 		faceOffset += shapes[i].mesh.indices.size();
 	}
+
+	box.origin = ((max - min) / 2.0f) + min;
+	box.extent = box.origin - min;
 	cudaDeviceSynchronize();
 }
 //std::string Object::ResourcePath(std::string fileName) {

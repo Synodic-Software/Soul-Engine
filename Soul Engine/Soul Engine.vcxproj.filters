@@ -339,6 +339,9 @@
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Bounding Volume Heirarchy\BoundingBox.h">
+      <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -409,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Utility\OpenCL\OpenCLHelper.cl">
       <Filter>Engine Backend\Utility\OpenCL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
+      <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

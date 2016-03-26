@@ -181,6 +181,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cuh" />
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h" />
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h" />
+    <ClInclude Include="Source Files\Bounding Volume Heirarchy\BoundingBox.h" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
@@ -241,6 +242,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />
+    <ClCompile Include="Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />
     <ClCompile Include="Source Files\Engine Core\Material\Material.cpp" />

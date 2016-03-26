@@ -11,6 +11,9 @@
 #include "Engine Core/Object/CUDA/Vertex.cuh"
 #include "Engine Core/Object/CUDA/Face.cuh"
 #include "Engine Core/Object/ObjLoader.h"
+#include "Bounding Volume Heirarchy\BoundingBox.h"
+
+class Face;
 
 class Object: public Managed{
 	public:
@@ -49,6 +52,8 @@ class Object: public Managed{
 
 	Material* materials;
 	uint materialSize;
+
+	BoundingBox box;
 
 	uint localSceneIndex;
 protected:

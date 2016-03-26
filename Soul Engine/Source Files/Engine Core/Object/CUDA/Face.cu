@@ -4,12 +4,12 @@
 Face::Face()
 {
 }
-Face::Face(glm::uvec3 ind, uint matID){
+Face::Face(glm::uvec3 ind, Material* matID, Object* obj){
 	indices = ind;
 	materialID = matID;
 }
 
-void Face::SetData(glm::uvec3 ind, uint matID){
+void Face::SetData(glm::uvec3 ind, Material* matID, Object* obj){
 	indices = ind;
 	materialID = matID;
 }

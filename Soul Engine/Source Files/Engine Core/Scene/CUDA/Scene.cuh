@@ -5,13 +5,13 @@
 #include "ObjectSceneAbstraction.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
 #include "Bounding Volume Heirarchy\CUDA\Node.cuh"
+
+#include "Bounding Volume Heirarchy\BoundingBox.h"
 #include <thrust/fill.h>
 #include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
 #include <thrust/scan.h>
 #include <thrust/remove.h>
 #include <thrust/functional.h>
-
-
 
 class Scene : public Managed
 {
@@ -23,23 +23,43 @@ public:
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
 	__host__ void Build();
-	__host__ void AddObject(Object&);
-	__host__ bool Scene::Clean();
-	__host__ bool Scene::Compile();
-private:
-	__host__ void AttachObjIds();
-	//abstraction layer that linearizes all seperate object pointer
-	Node* BVH; 
 
-	uint indicesSize; //The amount of indices the entire scene takes
+	//signels the scene that an object should be added when the next 'Build()' is called
+	//modifies the global scene bounding box, making the 3D spatial calculation less accurate
+	__host__ uint AddObject(Object*);
+
+	//signels the scene that an object should be removed when the next 'Build()' is called
+	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
+	__host__ bool RemoveObject(const uint&);
+
+
+private:
+	//take in all requests for the frame and process them in bulk
+	__host__ bool Scene::Compile();
+
+	//abstraction layer that linearizes all seperate object pointer
+
+	// a list of objects to remove 
+	std::vector<uint> objectsToRemove;
+
+
+	Node* BVH; 
+	BoundingBox sceneBox;
+
+	uint newFacesAmount; //The amount of indices the entire scene takes
+	uint compiledSize; //the amount of indices as of the previous compile;
 	bool* objectBitSetup; // hold a true for the first indice of each object
 
 	uint* objIds; //points to the object
+	Face** faceIds;
+	//Variables converning face Pointers
+	uint indicesSize = 0;
 
-	//for object storage
-	Object* objectList;
+
+	//Variables concerning object storage
+
+	Object** objectList;
 	uint objectsSize;
-	uint maxObjects;
-
+	uint allocatedObjects;
 };
 

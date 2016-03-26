@@ -5,10 +5,11 @@
 Scene::Scene()
 {
 	objectsSize = 0;
-	maxObjects = 100;
+	allocatedObjects = 1;
 	indicesSize = 0;
+	newFacesAmount = 0;
 	cudaMallocManaged(&objectList,
-		maxObjects*sizeof(Object));
+		allocatedObjects*sizeof(Object*));
 }
 
 
@@ -25,6 +26,7 @@ struct is_scheduled
 		return (x.requestRemoval);
 	}
 };
+
 
 
 // Template structure to pass to kernel
@@ -189,14 +191,14 @@ __device__ const uint morton256_z[256] = {
 	0x00924804, 0x00924820, 0x00924824, 0x00924900, 0x00924904, 0x00924920, 0x00924924
 };
 
-__device__ uint64 mortonEncode_LUT(const glm::vec3& data){
-	float end = 10;
-	float storeX = (data.x + end / 2.0f) / end;
-	float storeY = (data.y + end / 2.0f) / end;
-	float storeZ = (data.z + end / 2.0f) / end;
-	uint x = uint((storeX*UINT_MAX) - (UINT_MAX/2.0f));
-	uint y = uint((storeY*UINT_MAX) - (UINT_MAX / 2.0f));
-	uint z = uint((storeZ*UINT_MAX) - (UINT_MAX / 2.0f));
+__device__ uint64 mortonEncode_LUT(const glm::vec3& data, const BoundingBox& box){
+
+
+	glm::dvec3 temp = (((glm::dvec3(data) - glm::dvec3(box.origin)) / glm::dvec3(box.extent))/2.0)+0.5;
+
+	uint x = uint(temp.x*UINT_MAX);
+	uint y = uint(temp.y*UINT_MAX);
+	uint z = uint(temp.z*UINT_MAX);
 
 
 
@@ -215,8 +217,7 @@ __device__ uint64 mortonEncode_LUT(const glm::vec3& data){
 }
 
 
-__global__ void GenerateMortonCodes(const uint n, KernelArray<uint> objIds, KernelArray<Object> objectList){
-
+__global__ void GenerateMortonCodes(const uint n, KernelArray<uint> objIds, KernelArray<Object> objectList,const BoundingBox box){
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -225,7 +226,7 @@ __global__ void GenerateMortonCodes(const uint n, KernelArray<uint> objIds, Kern
 		Face* face = &(current->faces[index - current->localSceneIndex]);
 
 		glm::vec3 centroid = (current->vertices[face->indices.x].position + current->vertices[face->indices.y].position + current->vertices[face->indices.z].position) / 3.0f;
-		face->mortonCode = mortonEncode_LUT(centroid);
+		face->mortonCode = mortonEncode_LUT(centroid, box);
 		
 	}
 }
@@ -248,105 +249,112 @@ __global__ void FillBool(const uint n, KernelArray<bool> jobs, KernelArray<uint>
 
 
 //remove all objects from the scene's arrays
-__host__ bool Scene::Clean(){
+//__host__ bool Scene::Clean(){
+//
+//	bool con = false;
+//	for (uint i = 0; i < objectsSize; i++){
+//		if (objectList[i].requestRemoval){
+//			con = true;
+//			break;
+//		}
+//	}
+//	if (!con){
+//		return false;
+//	}
+//
+//
+//	//create a mask buffer with 1s which will remove the face
+//	bool* objectBitSetupTemp;
+//	cudaMallocManaged(&objectBitSetupTemp, indicesSize*sizeof(bool));
+//
+//	thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(objectBitSetupTemp);
+//
+//	//variables from the scene to the kernal
+//	KernelArray<bool> boolJobs = KernelArray<bool>(objectBitSetupTemp, indicesSize);
+//	KernelArray<uint> objIdsInput = KernelArray<uint>(objIds, indicesSize);
+//
+//	KernelArray<Object> objectsInput = KernelArray<Object>(objectList, indicesSize);
+//
+//
+//	uint blockSize = 64;
+//	uint gridSize = (indicesSize + blockSize - 1) / blockSize;
+//
+//	//fill the mask with 1s or 0s
+//	FillBool << <gridSize, blockSize >> >(indicesSize, boolJobs, objIdsInput, objectsInput);
+//
+//	CudaCheck(cudaDeviceSynchronize());
+//
+//
+//	//remove the requested
+//	thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
+//
+//	thrust::device_ptr<bool> newEnd = thrust::remove_if(bitPtr, bitPtr + indicesSize, tempPtr, thrust::identity<bool>());
+//	CudaCheck(cudaDeviceSynchronize());
+//
+//
+//	thrust::device_ptr<uint> objPtr = thrust::device_pointer_cast(objIds);
+//
+//	thrust::remove_if(objPtr, objPtr + indicesSize, tempPtr, thrust::identity<uint>());
+//	CudaCheck(cudaDeviceSynchronize());
+//
+//
+//	//
+//	thrust::device_ptr<Object> objectsPtr = thrust::device_pointer_cast(objectList);
+//
+//	thrust::remove_if(objectsPtr, objectsPtr + objectsSize, is_scheduled());
+//	CudaCheck(cudaDeviceSynchronize());
+////count how many objects need to be removed
+//
+//	uint newObjSize = objectsSize;
+//	for (uint i = 0; i < objectsSize; i++){
+//		if (objectList[i].requestRemoval){
+//			newObjSize--;
+//		}
+//	}
+//	
+//	objectsSize = newObjSize;
+//
+//	uint l = 0;
+//	for (uint i = 0; i < objectsSize; i++){
+//		objectList[i].localSceneIndex = l;
+//		l += objectList[i].faceAmount;
+//	}
+//	
+//
+//	//free and return
+//	cudaFree(objectBitSetupTemp);
+//	indicesSize = newEnd.get() - objectBitSetup;
+//
+//	return true;
+//}
 
-	bool con = false;
-	for (uint i = 0; i < objectsSize; i++){
-		if (objectList[i].requestRemoval){
-			con = true;
-			break;
-		}
-	}
-	if (!con){
-		return false;
-	}
-
-
-	//create a mask buffer with 1s which will remove the face
-	bool* objectBitSetupTemp;
-	cudaMallocManaged(&objectBitSetupTemp, indicesSize*sizeof(bool));
-
-	thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(objectBitSetupTemp);
-
-	//variables from the scene to the kernal
-	KernelArray<bool> boolJobs = KernelArray<bool>(objectBitSetupTemp, indicesSize);
-	KernelArray<uint> objIdsInput = KernelArray<uint>(objIds, indicesSize);
-
-	KernelArray<Object> objectsInput = KernelArray<Object>(objectList, indicesSize);
-
-
-	uint blockSize = 64;
-	uint gridSize = (indicesSize + blockSize - 1) / blockSize;
-
-	//fill the mask with 1s or 0s
-	FillBool << <gridSize, blockSize >> >(indicesSize, boolJobs, objIdsInput, objectsInput);
-
-	CudaCheck(cudaDeviceSynchronize());
-
-
-	//remove the requested
-	thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
-
-	thrust::device_ptr<bool> newEnd = thrust::remove_if(bitPtr, bitPtr + indicesSize, tempPtr, thrust::identity<bool>());
-	CudaCheck(cudaDeviceSynchronize());
-
-
-	thrust::device_ptr<uint> objPtr = thrust::device_pointer_cast(objIds);
-
-	thrust::remove_if(objPtr, objPtr + indicesSize, tempPtr, thrust::identity<uint>());
-	CudaCheck(cudaDeviceSynchronize());
-
-
-	//
-	thrust::device_ptr<Object> objectsPtr = thrust::device_pointer_cast(objectList);
-
-	thrust::remove_if(objectsPtr, objectsPtr + objectsSize, is_scheduled());
-	CudaCheck(cudaDeviceSynchronize());
-//count how many objects need to be removed
-
-	uint newObjSize = objectsSize;
-	for (uint i = 0; i < objectsSize; i++){
-		if (objectList[i].requestRemoval){
-			newObjSize--;
-		}
-	}
-	
-	objectsSize = newObjSize;
-
-	uint l = 0;
-	for (uint i = 0; i < objectsSize; i++){
-		objectList[i].localSceneIndex = l;
-		l += objectList[i].faceAmount;
-	}
-	
-
-	//free and return
-	cudaFree(objectBitSetupTemp);
-	indicesSize = newEnd.get() - objectBitSetup;
-
-	return true;
-}
-
-//add all new objects into the scene's compilation arrays
+//add all new objects into the scene's arrays
 __host__ bool Scene::Compile(){
-
-	uint totalSize = 0;
-	//count the amount of new faces to add to the scene this frame
-	for (uint i = 0; i < objectsSize; i++){
-		totalSize += objectList[i].faceAmount;
-	}
-
-	if (totalSize - indicesSize > 0){
+	uint sizeNow = indicesSize;      //allows for multithreading
+	uint amountToRemove = objectsToRemove.size();
+	if (newFacesAmount > 0 || amountToRemove>0){
 
 		//bitSetup only has the first element of each object flagged
 		//this extends that length and copies the previous results as well
+
+		uint newSize = sizeNow + newFacesAmount - amountToRemove;
+		//
 		bool* objectBitSetupTemp;
 
 		cudaFree(objIds);
-		cudaMallocManaged(&objIds, totalSize*sizeof(uint));
-		cudaMallocManaged(&objectBitSetupTemp, totalSize*sizeof(bool));
+		cudaMallocManaged(&objIds, newSize*sizeof(uint));
+		cudaFree(faceIds);
+		cudaMallocManaged(&faceIds, newSize*sizeof(Face*));
 
-		cudaMemcpy(&objectBitSetupTemp, &objectBitSetup, indicesSize*sizeof(bool), cudaMemcpyDeviceToDevice);
+		cudaMallocManaged(&objectBitSetupTemp, newSize*sizeof(bool));
+
+
+
+
+
+
+
+		cudaMemcpy(objectBitSetupTemp, objectBitSetup, indicesSize*sizeof(bool), cudaMemcpyDeviceToDevice);
 		cudaFree(objectBitSetup);
 		objectBitSetup = objectBitSetupTemp;
 
@@ -371,51 +379,54 @@ __host__ bool Scene::Compile(){
 	}
 
 	//change the indice count of the scene
-	indicesSize = totalSize;
-
+	compiledSize = sizeNow;
+	newFacesAmount = 0;
+	objectsToRemove.clear();
 	return true;
 }
 
-//__global__
-__host__ void Scene::AttachObjIds(){
-	//PrefixSum::Calculate();
 
-	thrust::device_ptr<bool> bitPoint = thrust::device_pointer_cast(objectBitSetup);
-	thrust::device_ptr<uint> idPointer = thrust::device_pointer_cast(objIds);
+	//thrust::device_ptr<bool> bitPoint = thrust::device_pointer_cast(objectBitSetup);
+	//thrust::device_ptr<uint> idPointer = thrust::device_pointer_cast(objIds);
 
 
-	thrust::inclusive_scan(bitPoint, bitPoint + indicesSize, idPointer);
+	//thrust::inclusive_scan(bitPoint, bitPoint + indicesSize, idPointer);
 
-	CudaCheck(cudaDeviceSynchronize());
-}
+	//CudaCheck(cudaDeviceSynchronize());
+
 __host__ void Scene::Build(){
 	cudaEvent_t start, stop;
 	float time;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start, 0);
-	bool a = Clean();
+	//bool a = Clean();
 	bool b = Compile();
 
 
 	//if clean or compile did something
-	if (a || b){
-		AttachObjIds();
-	}
+	//if (a || b){
+	//	AttachObjIds();
+	//}
 
 
 	//calculate the morton code for each triangle
-	uint blockSize = 64;
+	/*uint blockSize = 64;
 	uint gridSize = (indicesSize + blockSize - 1) / blockSize;
 
 	KernelArray<uint> objIdsInput = KernelArray<uint>(objIds, indicesSize);
+	KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, indicesSize);
 
-	KernelArray<Object> objectsInput = KernelArray<Object>(objectList, indicesSize);
-
-
-	GenerateMortonCodes << <gridSize, blockSize >> >(indicesSize, objIdsInput, objectsInput);
+	GenerateMortonCodes << <gridSize, blockSize >> >(indicesSize, objIdsInput, objectsInput,sceneBox);
 
 	CudaCheck(cudaDeviceSynchronize());
+*/
+
+
+
+
+
+
 
 
 
@@ -499,11 +510,11 @@ __device__ glm::vec3 Scene::IntersectColour(Ray& ray, curandState& randState)con
 	float currentT;
 	glm::vec3 bestNormal = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	glm::vec4 accumulation;
+	//glm::vec4 accumulation;
 
 	for (int o = 0; o < objectsSize; o++){
 
-		Object* current = &objectList[o];
+		Object* current = objectList[o];
 
 		for (int i = 0; i < current->faceAmount; i++){
 			float bary1 = 0;
@@ -567,11 +578,43 @@ __device__ glm::vec3 Scene::IntersectColour(Ray& ray, curandState& randState)con
 	}
 }
 
-__host__ void Scene::AddObject(Object& obj){
-	if (maxObjects - 1 == objectsSize){
-		std::cout << "ObjectMax reached" << std::endl;
-		return;
+__host__ uint Scene::AddObject(Object* obj){
+
+	//if the size of objects stores increases, double the available size pool;
+	if (objectsSize == allocatedObjects){
+
+		Object** objectsTemp;
+		allocatedObjects *= 2;
+		cudaMallocManaged(&objectsTemp, allocatedObjects * sizeof(Object*));
+		
+		cudaMemcpy(objectsTemp, objectList, objectsSize*sizeof(Object*), cudaMemcpyDefault);
+		cudaFree(objectList);
+		objectList = objectsTemp;
 	}
+	
+	
+	//update the scene's bounding volume
+	glm::vec3 max = sceneBox.origin + sceneBox.extent;
+	glm::vec3 min = sceneBox.origin - sceneBox.extent;
+
+	glm::vec3 objMax = obj->box.origin + obj->box.extent;
+	glm::vec3 objMin = obj->box.origin - obj->box.extent;
+
+	glm::vec3 newMax = glm::max(max, objMax);
+	glm::vec3 newMin = glm::min(min, objMin);
+	
+	sceneBox.origin = ((newMax - newMin) / 2.0f) + newMin;
+	sceneBox.extent = sceneBox.origin - newMin;
+
+	//add the reference as the new object and increase the object count by 1
+	cudaDeviceSynchronize();
 	objectList[objectsSize] = obj;
 	objectsSize++;
+	newFacesAmount += obj->faceAmount;
+	return 0;
+}
+
+__host__ bool Scene::RemoveObject(const uint& tag){
+	objectsToRemove.push_back(tag);
+	return true;
 }

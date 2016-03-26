@@ -6,7 +6,7 @@
 class Hand: public Object
 {
 public:
-	Hand();
+	Hand(glm::vec3);
 	~Hand();
 
 	void Update(double);
