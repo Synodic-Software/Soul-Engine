@@ -1,8 +1,9 @@
 #include "Hand.h"
 
 
-Hand::Hand()
+Hand::Hand(glm::vec3 it)
 {
+	xyzPosition = it;
 	Load();
 }
 

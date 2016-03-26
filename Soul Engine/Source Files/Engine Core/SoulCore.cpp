@@ -381,9 +381,18 @@ TASK_FUNCTION(Run)
 	scene = new Scene();
 	rend= new Renderer(*camera,SCREEN_SIZE);
 
-	Hand* hand = new Hand();
+	Hand* hand = new Hand(glm::vec3(0.0f,0.0f,0.0f));
 	Object* handObj = hand;
-	scene->AddObject(*handObj);
+	scene->AddObject(handObj);
+
+	Hand* hand1 = new Hand(glm::vec3(0.0f, 0.0f, 20*METER));
+	Object* handObj1 = hand1;
+	scene->AddObject(handObj1);
+
+	Hand* hand2 = new Hand(glm::vec3(10*METER, 5*METER, 0.0f));
+	Object* handObj2 = hand2;
+	scene->AddObject(handObj2);
+
 
 	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
 	SetKey(GLFW_KEY_SPACE, std::bind(&TogglePhysics));
