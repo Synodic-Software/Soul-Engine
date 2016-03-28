@@ -50,7 +50,7 @@ private:
 	uint compiledSize; //the amount of indices as of the previous compile;
 	bool* objectBitSetup; // hold a true for the first indice of each object
 
-	uint* objIds; //points to the object
+	Object** objIds; //points to the object
 	Face** faceIds;
 	//Variables converning face Pointers
 	uint indicesSize = 0;
