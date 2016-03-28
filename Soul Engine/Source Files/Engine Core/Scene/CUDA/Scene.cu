@@ -342,14 +342,53 @@ __host__ bool Scene::Compile(){
 		bool* objectBitSetupTemp;
 
 		cudaFree(objIds);
-		cudaMallocManaged(&objIds, newSize*sizeof(uint));
+		cudaMallocManaged(&objIds, newSize*sizeof(Object*));
 		cudaFree(faceIds);
 		cudaMallocManaged(&faceIds, newSize*sizeof(Face*));
 
-		cudaMallocManaged(&objectBitSetupTemp, newSize*sizeof(bool));
+		cudaMallocManaged(&objectBitSetupTemp, sizeNow*sizeof(bool));
 
 
+		if (amountToRemove>0){
 
+			
+				thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(objectBitSetupTemp);
+			
+				//variables from the scene to the kernal
+				KernelArray<bool> boolJobs = KernelArray<bool>(objectBitSetupTemp, indicesSize);
+				KernelArray<Object*> objIdsInput = KernelArray<Object*>(objIds, indicesSize);
+			
+				KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, indicesSize);
+			
+			
+				uint blockSize = 64;
+				uint gridSize = (indicesSize + blockSize - 1) / blockSize;
+			
+				//fill the mask with 1s or 0s
+				FillBool << <gridSize, blockSize >> >(indicesSize, boolJobs, objIdsInput, objectsInput);
+			
+				CudaCheck(cudaDeviceSynchronize());
+			
+			
+				//remove the requested
+				thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
+			
+				thrust::device_ptr<bool> newEnd = thrust::remove_if(bitPtr, bitPtr + indicesSize, tempPtr, thrust::identity<bool>());
+				CudaCheck(cudaDeviceSynchronize());
+			
+			
+				thrust::device_ptr<uint> objPtr = thrust::device_pointer_cast(objIds);
+			
+				thrust::remove_if(objPtr, objPtr + indicesSize, tempPtr, thrust::identity<uint>());
+				CudaCheck(cudaDeviceSynchronize());
+			
+			
+				//
+				thrust::device_ptr<Object> objectsPtr = thrust::device_pointer_cast(objectList);
+			
+				thrust::remove_if(objectsPtr, objectsPtr + objectsSize, is_scheduled());
+				CudaCheck(cudaDeviceSynchronize());
+		}
 
 
 
