@@ -48,8 +48,9 @@ private:
 
 	uint newFacesAmount; //The amount of indices the entire scene takes
 	uint compiledSize; //the amount of indices as of the previous compile;
-	bool* objectBitSetup; // hold a true for the first indice of each object
+	uint allocatedSize; //the amount of triangles that have been allocated
 
+	bool* objectBitSetup; // hold a true for the first indice of each object
 	Object** objIds; //points to the object
 	Face** faceIds;
 	//Variables converning face Pointers
@@ -59,6 +60,7 @@ private:
 	//Variables concerning object storage
 
 	Object** objectList;
+	bool* objectRemoval;
 	uint objectsSize;
 	uint allocatedObjects;
 };
