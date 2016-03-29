@@ -5,11 +5,14 @@
 Scene::Scene()
 {
 	objectsSize = 0;
-	allocatedObjects = 1;
+	allocatedObjects = 0;
+	allocatedSize = 0;
+
 	indicesSize = 0;
 	newFacesAmount = 0;
 	cudaMallocManaged(&objectList,
 		allocatedObjects*sizeof(Object*));
+
 }
 
 
@@ -248,114 +251,29 @@ __global__ void FillBool(const uint n, KernelArray<bool> jobs, KernelArray<uint>
 }
 
 
-//remove all objects from the scene's arrays
-//__host__ bool Scene::Clean(){
-//
-//	bool con = false;
-//	for (uint i = 0; i < objectsSize; i++){
-//		if (objectList[i].requestRemoval){
-//			con = true;
-//			break;
-//		}
-//	}
-//	if (!con){
-//		return false;
-//	}
-//
-//
-//	//create a mask buffer with 1s which will remove the face
-//	bool* objectBitSetupTemp;
-//	cudaMallocManaged(&objectBitSetupTemp, indicesSize*sizeof(bool));
-//
-//	thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(objectBitSetupTemp);
-//
-//	//variables from the scene to the kernal
-//	KernelArray<bool> boolJobs = KernelArray<bool>(objectBitSetupTemp, indicesSize);
-//	KernelArray<uint> objIdsInput = KernelArray<uint>(objIds, indicesSize);
-//
-//	KernelArray<Object> objectsInput = KernelArray<Object>(objectList, indicesSize);
-//
-//
-//	uint blockSize = 64;
-//	uint gridSize = (indicesSize + blockSize - 1) / blockSize;
-//
-//	//fill the mask with 1s or 0s
-//	FillBool << <gridSize, blockSize >> >(indicesSize, boolJobs, objIdsInput, objectsInput);
-//
-//	CudaCheck(cudaDeviceSynchronize());
-//
-//
-//	//remove the requested
-//	thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
-//
-//	thrust::device_ptr<bool> newEnd = thrust::remove_if(bitPtr, bitPtr + indicesSize, tempPtr, thrust::identity<bool>());
-//	CudaCheck(cudaDeviceSynchronize());
-//
-//
-//	thrust::device_ptr<uint> objPtr = thrust::device_pointer_cast(objIds);
-//
-//	thrust::remove_if(objPtr, objPtr + indicesSize, tempPtr, thrust::identity<uint>());
-//	CudaCheck(cudaDeviceSynchronize());
-//
-//
-//	//
-//	thrust::device_ptr<Object> objectsPtr = thrust::device_pointer_cast(objectList);
-//
-//	thrust::remove_if(objectsPtr, objectsPtr + objectsSize, is_scheduled());
-//	CudaCheck(cudaDeviceSynchronize());
-////count how many objects need to be removed
-//
-//	uint newObjSize = objectsSize;
-//	for (uint i = 0; i < objectsSize; i++){
-//		if (objectList[i].requestRemoval){
-//			newObjSize--;
-//		}
-//	}
-//	
-//	objectsSize = newObjSize;
-//
-//	uint l = 0;
-//	for (uint i = 0; i < objectsSize; i++){
-//		objectList[i].localSceneIndex = l;
-//		l += objectList[i].faceAmount;
-//	}
-//	
-//
-//	//free and return
-//	cudaFree(objectBitSetupTemp);
-//	indicesSize = newEnd.get() - objectBitSetup;
-//
-//	return true;
-//}
-
 //add all new objects into the scene's arrays
 __host__ bool Scene::Compile(){
-	uint sizeNow = indicesSize;      //allows for multithreading
+
 	uint amountToRemove = objectsToRemove.size();
+
 	if (newFacesAmount > 0 || amountToRemove>0){
 
 		//bitSetup only has the first element of each object flagged
 		//this extends that length and copies the previous results as well
 
-		uint newSize = sizeNow + newFacesAmount - amountToRemove;
-		//
-		bool* objectBitSetupTemp;
+		uint newSize = compiledSize + newFacesAmount - amountToRemove;
 
-		cudaFree(objIds);
-		cudaMallocManaged(&objIds, newSize*sizeof(Object*));
-		cudaFree(faceIds);
-		cudaMallocManaged(&faceIds, newSize*sizeof(Face*));
-
-		cudaMallocManaged(&objectBitSetupTemp, sizeNow*sizeof(bool));
 
 
 		if (amountToRemove>0){
 
-			
-				thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(objectBitSetupTemp);
+				bool* markers;
+				cudaMallocManaged(&markers, compiledSize * sizeof(bool));
+
+				thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(markers);
 			
 				//variables from the scene to the kernal
-				KernelArray<bool> boolJobs = KernelArray<bool>(objectBitSetupTemp, indicesSize);
+				KernelArray<bool> boolJobs = KernelArray<bool>(markers, indicesSize);
 				KernelArray<Object*> objIdsInput = KernelArray<Object*>(objIds, indicesSize);
 			
 				KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, indicesSize);
@@ -376,62 +294,94 @@ __host__ bool Scene::Compile(){
 				thrust::device_ptr<bool> newEnd = thrust::remove_if(bitPtr, bitPtr + indicesSize, tempPtr, thrust::identity<bool>());
 				CudaCheck(cudaDeviceSynchronize());
 			
+				//objpointers
+				thrust::device_ptr<Object*> objPtr = thrust::device_pointer_cast(objIds);
 			
-				thrust::device_ptr<uint> objPtr = thrust::device_pointer_cast(objIds);
-			
-				thrust::remove_if(objPtr, objPtr + indicesSize, tempPtr, thrust::identity<uint>());
+				thrust::remove_if(objPtr, objPtr + indicesSize, tempPtr, thrust::identity<bool>());
+				CudaCheck(cudaDeviceSynchronize());
+
+				//faces
+				thrust::device_ptr<Face*> facePtr = thrust::device_pointer_cast(faceIds);
+
+				thrust::remove_if(facePtr, facePtr + indicesSize, tempPtr, thrust::identity<bool>());
 				CudaCheck(cudaDeviceSynchronize());
 			
-			
-				//
+				//actual object list
 				thrust::device_ptr<Object> objectsPtr = thrust::device_pointer_cast(objectList);
 			
 				thrust::remove_if(objectsPtr, objectsPtr + objectsSize, is_scheduled());
+
 				CudaCheck(cudaDeviceSynchronize());
+
+				objectsToRemove.clear();
+
 		}
 
+		if(newFacesAmount > 0){
+
+			if (allocatedSize<newSize){
+				Face** faceTemp;
+				Object** objTemp;
+				bool* objectBitSetupTemp;
+
+				allocatedSize = glm::max(uint(allocatedSize * 1.5f), newSize);
+
+				cudaMallocManaged(&faceTemp, allocatedSize * sizeof(Face*));
+				cudaMallocManaged(&objTemp, allocatedSize * sizeof(Object*));
+				cudaMallocManaged(&objectBitSetupTemp, allocatedSize * sizeof(bool));
 
 
+				cudaMemcpy(faceTemp, faceIds, compiledSize*sizeof(Face*), cudaMemcpyDefault);
+				cudaFree(faceIds);
+				faceIds = faceTemp;
 
-		cudaMemcpy(objectBitSetupTemp, objectBitSetup, indicesSize*sizeof(bool), cudaMemcpyDeviceToDevice);
-		cudaFree(objectBitSetup);
-		objectBitSetup = objectBitSetupTemp;
+				cudaMemcpy(objTemp, objIds, compiledSize*sizeof(Object*), cudaMemcpyDefault);
+				cudaFree(objIds);
+				objIds = objTemp;
+
+				cudaMemcpy(objectBitSetupTemp, objectBitSetup, compiledSize*sizeof(bool), cudaMemcpyDefault);
+				cudaFree(objectBitSetup);
+				objectBitSetup = objectBitSetupTemp;
+			}
 
 		//for each new object, (all at the end of the array) flag the first.
 		thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
-		thrust::fill(bitPtr + indicesSize, bitPtr + totalSize, (bool)false);
+		thrust::fill(bitPtr + compiledSize - amountToRemove, bitPtr + newSize, (bool)false);
 
 		CudaCheck(cudaDeviceSynchronize());
 
+
+
+
+		}
+
+		
+		
 		uint l = 0;
 		for (uint i = 0; i < objectsSize; i++){
-			if (!objectList[i].ready){
+			if (!objectList[i]->ready){
 				objectBitSetup[indicesSize + l] = true;
-				objectList[i].ready = true;
-				objectList[i].localSceneIndex = l;
+				objectList[i]->ready = true;
+				objectList[i]->localSceneIndex = l;
 			}
-			l += objectList[i].faceAmount;
+			l += objectList[i]->faceAmount;
 		}
+
+	//change the indice count of the scene
+	compiledSize = newSize;
+	newFacesAmount = 0;
+	return true;
+		
+
+
 	}
 	else{
 		return false;
 	}
 
-	//change the indice count of the scene
-	compiledSize = sizeNow;
-	newFacesAmount = 0;
-	objectsToRemove.clear();
-	return true;
+		
 }
 
-
-	//thrust::device_ptr<bool> bitPoint = thrust::device_pointer_cast(objectBitSetup);
-	//thrust::device_ptr<uint> idPointer = thrust::device_pointer_cast(objIds);
-
-
-	//thrust::inclusive_scan(bitPoint, bitPoint + indicesSize, idPointer);
-
-	//CudaCheck(cudaDeviceSynchronize());
 
 __host__ void Scene::Build(){
 	cudaEvent_t start, stop;
@@ -624,6 +574,11 @@ __host__ uint Scene::AddObject(Object* obj){
 
 		Object** objectsTemp;
 		allocatedObjects *= 2;
+
+		if (allocatedObjects==0){
+			allocatedObjects = 1;
+		}
+
 		cudaMallocManaged(&objectsTemp, allocatedObjects * sizeof(Object*));
 		
 		cudaMemcpy(objectsTemp, objectList, objectsSize*sizeof(Object*), cudaMemcpyDefault);
@@ -654,6 +609,6 @@ __host__ uint Scene::AddObject(Object* obj){
 }
 
 __host__ bool Scene::RemoveObject(const uint& tag){
-	objectsToRemove.push_back(tag);
+	objectRemoval[tag] = true;
 	return true;
 }
