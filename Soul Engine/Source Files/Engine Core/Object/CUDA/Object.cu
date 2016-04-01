@@ -40,7 +40,7 @@ void Object::ExtractFromFile(const char* name){
 
 
 	verticeAmount = overallSize;
-	faceAmount = faceOverallSize;
+	faceAmount = faceOverallSize/3;
 
 	glm::vec3 max = glm::vec3(shapes[0].mesh.positions[0], shapes[0].mesh.positions[1], shapes[0].mesh.positions[2]);
 	glm::vec3 min = glm::vec3(shapes[0].mesh.positions[0], shapes[0].mesh.positions[1], shapes[0].mesh.positions[2]);
@@ -72,10 +72,10 @@ void Object::ExtractFromFile(const char* name){
 		}
 		overallOffset += shapes[i].mesh.positions.size();
 
-		for (uint f = 0; f < faceAmount / 3; f++){
+		for (uint f = 0; f < faceAmount; f++){
 			faces[faceOffset + f].SetData(
 				glm::uvec3(shapes[i].mesh.indices[3 * f + 0], shapes[i].mesh.indices[3 * f + 1], shapes[i].mesh.indices[3 * f + 2]),
-				NULL,this);
+				NULL);
 				//shapes[i].mesh.material_ids[f]);
 		}
 		faceOffset += shapes[i].mesh.indices.size();

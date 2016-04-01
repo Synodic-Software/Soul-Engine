@@ -10,14 +10,13 @@ class  Face : public Managed
 {
 public:
 	Face();
-	Face(glm::uvec3, Material*, Object*);
+	Face(glm::uvec3, Material*);
 	~Face();
 
-	void SetData(glm::uvec3, Material*, Object*);
+	void SetData(glm::uvec3, Material*);
 
 	glm::uvec3 indices;
 	Material* materialID;
-	uint64 mortonCode;
 	Object* objectPointer;
 private:
 	

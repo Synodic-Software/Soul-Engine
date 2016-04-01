@@ -3,24 +3,34 @@
 #include "Utility\CUDAIncludes.h"
 #include "BoundingBox.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
+#include "Engine Core\Object\Face.h"
+
 class Node : public Managed
 {
 public:
 	Node();
 	~Node();
 
-	Node* GetRight();
-	Node* GetLeft();
+
+	Node* childLeft;
+	Node* childRight;
+
+	BoundingBox box;
+
+	
+	Face* faceID;
+	uint atomic;
+	uint rangeRight;
+	uint rangeLeft;
+
 
 	//CUDA_FUNCTION void TransformRay(Ray&);
 
 private:
-	static const uint systemMin = 0;
-	static const uint systemMax = 0xffffffff;
 
-	BoundingBox* box;
 
-	Node* childLeft;
-	Node* childRight;
+	
+
+	
 
 };

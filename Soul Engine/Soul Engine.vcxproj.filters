@@ -342,6 +342,9 @@
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\BoundingBox.h">
       <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -468,6 +471,9 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

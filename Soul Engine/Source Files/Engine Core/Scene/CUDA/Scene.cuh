@@ -4,12 +4,12 @@
 #include "Engine Core\Object\CUDA/Object.cuh"
 #include "ObjectSceneAbstraction.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
-#include "Bounding Volume Heirarchy\CUDA\Node.cuh"
 
-#include "Bounding Volume Heirarchy\BoundingBox.h"
+#include "Bounding Volume Heirarchy\BVH.h"
 #include <thrust/fill.h>
 #include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
 #include <thrust/scan.h>
+#include <thrust/sort.h>
 #include <thrust/remove.h>
 #include <thrust/functional.h>
 
@@ -43,19 +43,17 @@ private:
 	std::vector<uint> objectsToRemove;
 
 
-	Node* BVH; 
+	BVH* bvh; 
 	BoundingBox sceneBox;
 
-	uint newFacesAmount; //The amount of indices the entire scene takes
+	uint newFaceAmount; //The amount of indices the entire scene takes
 	uint compiledSize; //the amount of indices as of the previous compile;
 	uint allocatedSize; //the amount of triangles that have been allocated
 
 	bool* objectBitSetup; // hold a true for the first indice of each object
-	Object** objIds; //points to the object
+	uint* objIds; //points to the object
 	Face** faceIds;
-	//Variables converning face Pointers
-	uint indicesSize = 0;
-
+	uint64* mortonCodes;
 
 	//Variables concerning object storage
 
