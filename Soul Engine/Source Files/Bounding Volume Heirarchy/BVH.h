@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Engine Core/BasicDependencies.h"
-#include "Engine Core/Material/Material.h"
 
-class BVH{
-private: 
+#pragma once
 
+//#   if defined(__CUDACC__)
 
-private:
-	
+#include "CUDA/BVH.cuh"
 
-};
+//#	else
+//
+//#include "OpenCL\CLRayJob.h"
+//
+//#endif

@@ -184,6 +184,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\BoundingBox.h" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
+    <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h" />
     <ClInclude Include="Source Files\Engine Core\Camera\Camera.h" />
@@ -270,6 +271,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu" />
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Quicksort.cu" />
     <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
+    <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu" />
     <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cu" />
     <CudaCompile Include="Source Files\Engine Core\Camera\CUDA\Camera.cu" />
     <CudaCompile Include="Source Files\Engine Core\Object\CUDA\Face.cu" />
