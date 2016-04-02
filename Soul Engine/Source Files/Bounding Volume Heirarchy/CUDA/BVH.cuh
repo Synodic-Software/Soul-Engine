@@ -12,6 +12,9 @@ public:
 	BVH(Face*** datan, uint64** mortonCodesn);
 
 	CUDA_FUNCTION Node* GetRoot(){
+		return root;
+	}
+	CUDA_FUNCTION Node* GetNodes(){
 		return bvh;
 	}
 	CUDA_FUNCTION bool IsLeaf(Node* test){
@@ -21,7 +24,10 @@ public:
 		return currentSize;
 	}
 	void Build(uint);
+	Node* root;
 private:
+
+	
 	Node* bvh;
 	uint currentSize;
 	uint allocatedSize;

@@ -454,12 +454,7 @@ __host__ bool Scene::Compile(){
 
 
 __host__ void Scene::Build(){
-	cudaEvent_t start, stop;
-	float time;
-	cudaEventCreate(&start);
-	cudaEventCreate(&stop);
-	cudaEventRecord(start, 0);
-
+	
 	bool b = Compile();
 
 		//calculate the morton code for each triangle
@@ -480,6 +475,12 @@ __host__ void Scene::Build(){
 		thrust::device_ptr<Face*> values = thrust::device_pointer_cast(faceIds);
 
 		CudaCheck(cudaDeviceSynchronize());
+
+		cudaEvent_t start, stop;
+		float time;
+		cudaEventCreate(&start);
+		cudaEventCreate(&stop);
+		cudaEventRecord(start, 0);
 
 		//thrust::sort_by_key(keys, keys + compiledSize, values);            //I assume this is broken with this build setup, is ok though, will try to phase out thrust in a final build
 
@@ -509,6 +510,13 @@ __host__ void Scene::Build(){
 
 		CudaCheck(cudaDeviceSynchronize());
 
+		cudaEventRecord(stop, 0);
+		cudaEventSynchronize(stop);
+		cudaEventElapsedTime(&time, start, stop);
+		cudaEventDestroy(start);
+		cudaEventDestroy(stop);
+
+		std::cout << "     Sorting Execution: " << time << "ms" << std::endl;
 	/*	for (int i = 0; i < compiledSize;i++){
 			std::cout << mortonCodes[i] << std::endl;
 		}
@@ -517,26 +525,17 @@ __host__ void Scene::Build(){
 
 		bvh->Build(compiledSize);
 
-		CudaCheck(cudaDeviceSynchronize());
+		//CudaCheck(cudaDeviceSynchronize());
 
-		//for (int i = compiledSize - 1; i < compiledSize*2 - 1; i++){
+		//for (int i = 0; i < compiledSize - 1; i++){
 		//		/*std::cout << bvh->GetRoot()[i].box.origin.x << " " << bvh->GetRoot()[i].box.origin.y << " " << bvh->GetRoot()[i].box.origin.z << std::endl;
 		//		std::cout << bvh->GetRoot()[i].box.extent.x << " " << bvh->GetRoot()[i].box.extent.y << " " << bvh->GetRoot()[i].box.extent.z << std::endl;
 		//		std::cout << std::endl;*/
-		//		std::cout << bvh->GetRoot()[i].faceID << std::endl;
+		//	std::cout << bvh->GetRoot()[i].childLeft <<" "<< bvh->GetRoot()[i].childRight << std::endl;
 		//}
 
 		//CudaCheck(cudaDeviceSynchronize());
 
-
-
-	cudaEventRecord(stop, 0);
-	cudaEventSynchronize(stop);
-	cudaEventElapsedTime(&time, start, stop);
-	cudaEventDestroy(start);
-	cudaEventDestroy(stop);
-
-	std::cout << "Building Execution: " << time << "ms" << std::endl;
 
 
 }
@@ -551,7 +550,7 @@ CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
 
 CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
 	const glm::vec3& o, const glm::vec3& d,
-	float& t, float& bary1, float& bary2)
+	float& tMax, float& bary1, float& bary2)
 {
 	glm::vec3 edge1 = b - a;
 	glm::vec3 edge2 = c - a;
@@ -569,13 +568,19 @@ CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b,
 	glm::vec3 qvec = glm::cross(tvec, edge1);
 	bary2 = glm::dot(d, qvec) * inv_det;
 
-	t = glm::dot(edge2, qvec) * inv_det;
+	float t = glm::dot(edge2, qvec) * inv_det;
 
 	//bool hit = t>EPSILON&&(bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
-	return t > EPSILON && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
+	if (t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f)){
+		tMax = t;
+		return true;
+	}
+	else{
+		return false;
+	}
 }
 
-CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, const float& t1){
+CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, float& t1){
 
 	glm::vec3 boxMax = box.origin + box.extent;
 	glm::vec3 boxMin = box.origin - box.extent;
@@ -598,14 +603,18 @@ CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, con
 	tmin = glm::max(tmin, glm::min(tz1, tz2));
 	tmax = glm::min(tmax, glm::max(tz1, tz2));
 	//return true;
-	return tmax >= glm::max(t0, tmin) && tmin < t1;
+	if (tmax >= glm::max(t0, tmin) && tmin < t1){
+		return true;
+	}
+	else{
+		return true;
+	}
 
 }
 
 __device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::vec3& bestNormal){
 
 	bool intersected = false;
-	float currentT;
 
 	Node* stack[BVH_STACK_SIZE];
 
@@ -614,8 +623,6 @@ __device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::ve
 	stack[stackIdx++] = bvh->GetRoot();
 
 	while (stackIdx>0) {
-
-
 
 		// pop a BVH node
 
@@ -642,9 +649,8 @@ __device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::ve
 		float bary2 = 0;
 		bool touched = FindTriangleIntersect(current->vertices[face.x].position, current->vertices[face.y].position, current->vertices[face.z].position,
 			ray.origin, ray.direction,
-			currentT, bary1, bary2);
-		if (touched&&bestT > currentT){
-			bestT = currentT;
+			bestT, bary1, bary2);
+		if (touched){
 			glm::vec3 norm1 = current->vertices[face.x].normal;
 			glm::vec3 norm2 = current->vertices[face.y].normal;
 			glm::vec3 norm3 = current->vertices[face.z].normal;

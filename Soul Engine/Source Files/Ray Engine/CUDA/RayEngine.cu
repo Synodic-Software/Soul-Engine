@@ -53,7 +53,7 @@ struct is_marked
 	Ray* deviceRays;
 	uint raySeedGl = 0;
 	uint numRays = 0;
-	const uint rayDepth = 6;
+	const uint rayDepth = 3;
 
 	inline CUDA_FUNCTION uint WangHash(uint a) {
 		a = (a ^ 61) ^ (a >> 16);
