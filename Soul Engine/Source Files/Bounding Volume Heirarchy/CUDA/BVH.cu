@@ -15,7 +15,7 @@ __device__ uint HighestBit(uint i, uint64* morton)
 
 
 // Sets the bounding box and traverses to root
-__device__ void ProcessParent(const uint nData, Node* currentNode, Node* nodes, uint64* morton, const uint leafOffset)
+__device__ void ProcessParent(const uint nData, Node* currentNode, Node* nodes, uint64* morton, const uint leafOffset, BVH* bvh)
 {
 	// Allow only one thread to process a node
 	if (atomicAdd(&(currentNode->atomic), 1) != 1)
@@ -58,19 +58,20 @@ __device__ void ProcessParent(const uint nData, Node* currentNode, Node* nodes, 
 		parent->rangeRight = right;
 	}
 
-	if (left == 0 && right == nData){
+	if (left == 0 && right == nData-1){
+		bvh->root = currentNode;
 		return;
 	}
-	ProcessParent(nData, parent, nodes, morton, leafOffset);
+	ProcessParent(nData, parent, nodes, morton, leafOffset,bvh);
 }
 
-__global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* mortonCodes, const uint leafOffset)
+__global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* mortonCodes, const uint leafOffset,BVH* bvh)
 {
 	uint index = getGlobalIdx_1D_1D();
 	if (index >= n)
 		return;
 
-	ProcessParent(n, nodes + (leafOffset+index), nodes, mortonCodes, leafOffset);
+	ProcessParent(n, nodes + (leafOffset+index), nodes, mortonCodes, leafOffset,bvh);
 }
 
 __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes,const uint leafOffset)
@@ -85,8 +86,13 @@ __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes
 	nodes[leafOffset + index].rangeLeft = index;
 	nodes[leafOffset + index].rangeRight = index;
 	nodes[leafOffset + index].atomic = 1; // To allow the next thread to process
+	nodes[leafOffset + index].childLeft = NULL; // Second thread to process
+	nodes[leafOffset + index].childRight = NULL; // Second thread to process
 	if (index<leafOffset){
 		nodes[index].atomic = 0; // Second thread to process
+		nodes[index].childLeft = NULL; // Second thread to process
+		nodes[index].childRight = NULL; // Second thread to process
+
 	}
 
 
@@ -117,6 +123,12 @@ __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes
 }
 
 void BVH::Build(uint size){
+	cudaEvent_t start, stop;
+	float time;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start, 0);
+
 	currentSize = size;
 	if (currentSize > allocatedSize){
 
@@ -131,6 +143,8 @@ void BVH::Build(uint size){
 		bvh = nodeTemp;
 	}
 
+	root = bvh;
+
 	uint blockSize = 64;
 	uint gridSize = (currentSize + blockSize - 1) / blockSize;
 
@@ -139,8 +153,16 @@ void BVH::Build(uint size){
 	Reset << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1);
 	CudaCheck(cudaDeviceSynchronize());
 
-	BuildTree << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1);
+	BuildTree << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1,this);
 
 	CudaCheck(cudaDeviceSynchronize());
+
+	cudaEventRecord(stop, 0);
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&time, start, stop);
+	cudaEventDestroy(start);
+	cudaEventDestroy(stop);
+
+	std::cout << "     BVH Creation Execution: " << time << "ms" << std::endl;
 
 }

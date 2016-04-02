@@ -385,13 +385,13 @@ TASK_FUNCTION(Run)
 	Object* handObj = hand;
 	scene->AddObject(handObj);
 
-	Hand* hand1 = new Hand(glm::vec3(0.0f, 0.0f, 20*METER));
-	Object* handObj1 = hand1;
-	scene->AddObject(handObj1);
+	//Hand* hand1 = new Hand(glm::vec3(0.0f, 0.0f, 20*METER));
+	//Object* handObj1 = hand1;
+	//scene->AddObject(handObj1);
 
-	Hand* hand2 = new Hand(glm::vec3(10*METER, 5*METER, 0.0f));
-	Object* handObj2 = hand2;
-	scene->AddObject(handObj2);
+	//Hand* hand2 = new Hand(glm::vec3(10*METER, 5*METER, 0.0f));
+	//Object* handObj2 = hand2;
+	//scene->AddObject(handObj2);
 
 
 	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
@@ -409,7 +409,7 @@ TASK_FUNCTION(Run)
 	//stop loop when glfw exit is called
 	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
 
-
+	bool test = true;
 	while (!glfwWindowShouldClose(mainThread)){
 		double newTime = glfwGetTime();
 		double frameTime = newTime - currentTime;
@@ -448,8 +448,27 @@ TASK_FUNCTION(Run)
 		rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
 		camera->UpdateVariables();
 
+		//if (test){
+			test = !test;
+			cudaEvent_t start, stop;
+			float time;
+			cudaEventCreate(&start);
+			cudaEventCreate(&stop);
+			cudaEventRecord(start, 0);
 
-		scene->Build();
+			scene->Build();
+
+			cudaEventRecord(stop, 0);
+			cudaEventSynchronize(stop);
+			cudaEventElapsedTime(&time, start, stop);
+			cudaEventDestroy(start);
+			cudaEventDestroy(stop);
+		//}
+
+
+		std::cout << "Building Execution: " << time << "ms" << std::endl;
+
+
 		RayEngine::Clear();
 
 
