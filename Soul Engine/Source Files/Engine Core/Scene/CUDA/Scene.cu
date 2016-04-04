@@ -1,7 +1,7 @@
 #include "Scene.cuh"
 
 #define RAY_BIAS_DISTANCE 0.0002f 
-#define BVH_STACK_SIZE 32
+#define BVH_STACK_SIZE 64
 
 Scene::Scene()
 {
@@ -544,75 +544,64 @@ CUDA_FUNCTION glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
 	return ray.origin + t * ray.direction;
 }
 CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
-	float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
-	return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(1.0f, 1.0f, 1.0f);
+	//float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
+	//return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(1.0f, 1.0f, 1.0f);
+	return glm::vec3(0.1f, 0.1f, 0.1f);
 }
 
-CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
-	const glm::vec3& o, const glm::vec3& d,
-	float& tMax, float& bary1, float& bary2)
+CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& edge1, const glm::vec3& edge2,
+	const Ray& ray,
+	float& t,const float& tMax, float& bary1, float& bary2)
 {
-	glm::vec3 edge1 = b - a;
-	glm::vec3 edge2 = c - a;
 
-	glm::vec3 pvec = glm::cross(d, edge2);
+	glm::vec3 pvec = glm::cross(ray.direction, edge2);
 	float det = glm::dot(edge1, pvec);
 	if (det > -EPSILON && det < EPSILON){
 		return false;
 	}
 	float inv_det = 1.0f / det;
 
-	glm::vec3 tvec = o - a;
+	glm::vec3 tvec = ray.origin - a;
 	bary1 = glm::dot(tvec, pvec) * inv_det;
 
 	glm::vec3 qvec = glm::cross(tvec, edge1);
-	bary2 = glm::dot(d, qvec) * inv_det;
+	bary2 = glm::dot(ray.direction, qvec) * inv_det;
 
-	float t = glm::dot(edge2, qvec) * inv_det;
+	t = glm::dot(edge2, qvec) * inv_det;
 
-	//bool hit = t>EPSILON&&(bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
-	if (t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f)){
-		tMax = t;
-		return true;
-	}
-	else{
-		return false;
-	}
+	return t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
+
 }
 
-CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, float& t1){
+CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0,  float& t1){
 
 	glm::vec3 boxMax = box.origin + box.extent;
 	glm::vec3 boxMin = box.origin - box.extent;
 
-	float tx1 = (boxMin.x - o.x)*dInv.x;
-	float tx2 = (boxMax.x - o.x)*dInv.x;
+	float temp1 = (boxMin.x - o.x)*dInv.x;
+	float temp2 = (boxMax.x - o.x)*dInv.x;
 
-	float tmin = glm::min(tx1, tx2);
-	float tmax = glm::max(tx1, tx2);
+	float tmin = glm::min(temp1, temp2);
+	float tmax = glm::max(temp1, temp2);
 
-	float ty1 = (boxMin.y - o.y)*dInv.y;
-	float ty2 = (boxMax.y - o.y)*dInv.y;
+	temp1 = (boxMin.y - o.y)*dInv.y;
+	temp2 = (boxMax.y - o.y)*dInv.y;
 
-	tmin = glm::max(tmin, glm::min(ty1, ty2));
-	tmax = glm::min(tmax, glm::max(ty1, ty2));
+	tmin = glm::max(tmin, glm::min(temp1, temp2));
+	tmax = glm::min(tmax, glm::max(temp1, temp2));
 
-	float tz1 = (boxMin.z - o.z)*dInv.z;
-	float tz2 = (boxMax.z - o.z)*dInv.z;
+	temp1 = (boxMin.z - o.z)*dInv.z;
+	temp2 = (boxMax.z - o.z)*dInv.z;
 
-	tmin = glm::max(tmin, glm::min(tz1, tz2));
-	tmax = glm::min(tmax, glm::max(tz1, tz2));
-	//return true;
-	if (tmax >= glm::max(t0, tmin) && tmin < t1){
-		return true;
-	}
-	else{
-		return true;
-	}
+	tmin = glm::max(tmin, glm::min(temp1, temp2));
+	tmax = glm::min(tmax, glm::max(temp1, temp2));
 
+	float tTest = t1;
+	t1 = tmin;
+	return tmax >= glm::max(t0, tmin) && tmin < tTest;
 }
 
-__device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::vec3& bestNormal){
+__device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::vec3& bestNormal, Material*& mat){
 
 	bool intersected = false;
 
@@ -620,7 +609,12 @@ __device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::ve
 
 	uint stackIdx = 0;
 	
-	stack[stackIdx++] = bvh->GetRoot();
+	glm::vec3 dirInverse = 1.0f / ray.direction;
+
+	float t = bestT;
+	if (AABBIntersect(bvh->GetRoot()->box, ray.origin, dirInverse, 0.0f, t)){
+		stack[stackIdx++] = bvh->GetRoot();
+	}
 
 	while (stackIdx>0) {
 
@@ -629,39 +623,69 @@ __device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::ve
 		Node* node = stack[--stackIdx];
 
 		//inner node
-		if (!bvh->IsLeaf(node)) {
-			if (AABBIntersect(node->box, ray.origin, 1.0f / ray.direction, 0.0f, bestT)){
-				stack[stackIdx++] = node->childRight; // right child node index
 
-				stack[stackIdx++] = node->childLeft; // left child node index
+		if (bvh->IsLeaf(node)) {
+
+			glm::uvec3 face = node->faceID->indices;
+
+			glm::vec3 xIndPos = node->faceID->objectPointer->vertices[face.x].position;
+			glm::vec3 yIndPos = node->faceID->objectPointer->vertices[face.y].position;
+			glm::vec3 zIndPos = node->faceID->objectPointer->vertices[face.z].position;
+
+
+			float bary1 = 0;
+			float bary2 = 0;
+			float tTemp;
+
+			glm::vec3 edge1 = yIndPos - xIndPos;
+			glm::vec3 edge2 = zIndPos - xIndPos;
+
+			if (FindTriangleIntersect(xIndPos, edge1, edge2,
+				ray,
+				tTemp, bestT, bary1, bary2)){
+
+				bestT = tTemp;
+				/*	glm::vec3 norm1 = current->vertices[face.x].normal;
+				glm::vec3 norm2 = current->vertices[face.y].normal;
+				glm::vec3 norm3 = current->vertices[face.z].normal;*/
+				bestNormal = glm::normalize(glm::cross(edge1, edge2));
+				//bestNormal =glm::normalize( (norm3*bary2) + (norm2*bary1) + (norm1*(1.0f - bary1 - bary2)));
+				mat = node->faceID->materialPointer;
+				intersected = true;
 			}
+
+			
 		}
 		//outer node
-		else{
-	
-	
-		glm::uvec3 face = node->faceID->indices;
+		else {
+			Node* first = node->childRight;
+			Node* second = node->childLeft;
 
-		Object* current = node->faceID->objectPointer;
+			float tL = bestT;
+			float tR = bestT;
+			bool t1 = AABBIntersect(second->box, ray.origin, dirInverse, 0.0f, tL);
+			bool t2 = AABBIntersect(first->box, ray.origin, dirInverse, 0.0f, tR);
 
+			
 
-		float bary1 = 0;
-		float bary2 = 0;
-		bool touched = FindTriangleIntersect(current->vertices[face.x].position, current->vertices[face.y].position, current->vertices[face.z].position,
-			ray.origin, ray.direction,
-			bestT, bary1, bary2);
-		if (touched){
-			glm::vec3 norm1 = current->vertices[face.x].normal;
-			glm::vec3 norm2 = current->vertices[face.y].normal;
-			glm::vec3 norm3 = current->vertices[face.z].normal;
-			glm::vec3 edge1 = current->vertices[face.y].position - current->vertices[face.x].position;
-			glm::vec3 edge2 = current->vertices[face.z].position - current->vertices[face.x].position;
-			bestNormal = glm::normalize(glm::cross(edge1, edge2));
-			//bestNormal =glm::normalize( (norm3*bary2) + (norm2*bary1) + (norm1*(1.0f - bary1 - bary2)));
+			if (t1&&t2&&tL<tR){
+				Node* temp = first;
+				first = second;
+				second = temp;
 
-
-			intersected = true;
-		}
+			}
+			if (t1){
+				stack[stackIdx++] = second; // right child node index
+				if (stackIdx==BVH_STACK_SIZE){
+					return false;
+				}
+			}
+			if (t2){
+				stack[stackIdx++] = first; // left child node index
+				if (stackIdx == BVH_STACK_SIZE){
+					return false;
+				}
+			}
 		}
 	}
 
@@ -678,8 +702,8 @@ __device__ glm::vec3 Scene::IntersectColour(Ray& ray, curandState& randState)con
 
 	//glm::vec4 accumulation;
 
-
-	bool intersected = FindBVHIntersect(ray,bvh,bestT,bestNormal);
+	Material* mat;
+	bool intersected = FindBVHIntersect(ray, bvh, bestT, bestNormal, mat);
 
 
 
@@ -694,9 +718,9 @@ __device__ glm::vec3 Scene::IntersectColour(Ray& ray, curandState& randState)con
 		glm::vec3 bestIntersectionPoint = PositionAlongRay(ray, bestT);
 
 
-		glm::vec3 accumulation = glm::vec3(ray.storage * 0.0f);//emite=0.0f
+		glm::vec3 accumulation = glm::vec3(ray.storage * mat->emit);
 
-		ray.storage *= glm::vec4(1.0f, 0.1f, 0.0f, 1.0f);
+		ray.storage *= mat->diffuse;
 
 
 		////glm::vec3 incident = -ray.direction;

@@ -381,9 +381,21 @@ TASK_FUNCTION(Run)
 	scene = new Scene();
 	rend= new Renderer(*camera,SCREEN_SIZE);
 
-	Hand* hand = new Hand(glm::vec3(0.0f,0.0f,0.0f));
-	Object* handObj = hand;
-	scene->AddObject(handObj);
+	//Hand* hand = new Hand();
+
+	Material* light = new Material();
+	light->diffuse = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+	light->emit = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	Material* whiteGray = new Material();
+	whiteGray->diffuse = glm::vec4(1.0f, 0.5f, 0.5f, 1.0f);
+	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	Object* sun = new Object(glm::vec3(-5.0f*METER, 5.0f*METER, -5.0f*METER), "sphere.obj", light);
+	scene->AddObject(sun);
+
+	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "sphere.obj", whiteGray);
+	scene->AddObject(obj);
 
 	//Hand* hand1 = new Hand(glm::vec3(0.0f, 0.0f, 20*METER));
 	//Object* handObj1 = hand1;

@@ -17,6 +17,10 @@ public:
 	void SetTexture(std::string);
 	static void SetDefaultTexture(std::string);
 
+
+	glm::vec4 diffuse;
+	glm::vec4 emit;
+
 private:
 	//helper
 	static cudaTextureObject_t defaultTex;
@@ -34,7 +38,6 @@ private:
 	//texture/mapping information
 	bool hasTexture;
 
-	glm::vec4 diffuse;
 	std::string textureLocation;
 	bool textureIsLoaded;
 

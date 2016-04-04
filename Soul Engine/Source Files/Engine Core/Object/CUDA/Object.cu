@@ -13,7 +13,25 @@ Object::Object(){
 
 	vertices=NULL;
 	faces = NULL;
-	materials = NULL;
+	materialP = NULL;
+}
+Object::Object(glm::vec3 pos,std::string name, Material* mat){
+
+	verticeAmount = 0;
+	faceAmount = 0;
+	materialSize = 1;
+	localSceneIndex = 0;
+	ready = false;
+
+	xyzPosition = glm::vec3(0);
+
+	vertices = NULL;
+	faces = NULL;
+	cudaMallocManaged(&materialP, materialSize*sizeof(Material*));
+	materialP[0] = mat;
+
+	xyzPosition = pos;
+	ExtractFromFile(name.c_str());
 }
 
 void Object::AddVertices(Vertex* vertices, uint vSize){
@@ -75,7 +93,7 @@ void Object::ExtractFromFile(const char* name){
 		for (uint f = 0; f < faceAmount; f++){
 			faces[faceOffset + f].SetData(
 				glm::uvec3(shapes[i].mesh.indices[3 * f + 0], shapes[i].mesh.indices[3 * f + 1], shapes[i].mesh.indices[3 * f + 2]),
-				NULL);
+				materialP[0]);
 				//shapes[i].mesh.material_ids[f]);
 		}
 		faceOffset += shapes[i].mesh.indices.size();
