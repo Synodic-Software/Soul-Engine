@@ -11,7 +11,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	frameTime = 0.0f;
 	changeCutoff = 0.05f;
 	targetFPS = 60.0f;
-	samples = 1;
+	samples = 8;
 	//samples cannot be a float because finding a constant random number across different threads becomes too time consuming 
 
 	CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",

@@ -20,6 +20,8 @@ class Object: public Managed{
 
 		Object();
 
+		Object(glm::vec3,std::string,Material*);
+
 		bool requestRemoval;
 		bool ready;
 		bool isStatic;
@@ -50,7 +52,7 @@ class Object: public Managed{
 	void UpdateLate(double);
 	void Load();
 
-	Material* materials;
+	Material** materialP;
 	uint materialSize;
 
 	BoundingBox box;

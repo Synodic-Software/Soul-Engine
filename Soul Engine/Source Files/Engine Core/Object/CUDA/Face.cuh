@@ -6,7 +6,7 @@
 
 class Object;
 //__align__(32)
-class  Face : public Managed
+class __align__(32) Face : public Managed
 {
 public:
 	Face();
@@ -16,7 +16,7 @@ public:
 	void SetData(glm::uvec3, Material*);
 
 	glm::uvec3 indices;
-	Material* materialID;
+	Material* materialPointer;
 	Object* objectPointer;
 private:
 	
