@@ -3,6 +3,7 @@ Soul Engine is a physically based renderer and engine for real-time applications
 system with CUDA (primary) or OpenCL (secondary) support. 
 
 ![Winged Victory Model](WingedVictoryBroken.png)
+(This is image is produced after 10 seconds of accumulation on a using a 750TI)
 
 #Features
 These are planned features (partial/incomplete implementations) for aid in the vision of the final application.
