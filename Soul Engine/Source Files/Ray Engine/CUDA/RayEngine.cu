@@ -53,7 +53,7 @@ KernelArray<RayJob*> jobL;
 Ray* deviceRays;
 uint raySeedGl = 0;
 uint numRays = 0;
-const uint rayDepth = 5;
+const uint rayDepth = 3;
 
 inline CUDA_FUNCTION uint WangHash(uint a) {
 	a = (a ^ 61) ^ (a >> 16);
@@ -100,19 +100,24 @@ __global__ void EngineResultClear(const uint n, KernelArray<RayJob*> jobs){
 
 	uint index = getGlobalIdx_1D_1D();
 
-	if (index < n){
-
-		uint startIndex = 0;
-
-		int cur = GetCurrentJobNoSample(jobs, index, startIndex);
-
-		((glm::vec4*)jobs[cur]->GetResultPointer(0))[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	if (index >= n){
+		return;
 	}
+
+	uint startIndex = 0;
+
+	int cur = GetCurrentJobNoSample(jobs, index, startIndex);
+
+	((glm::vec4*)jobs[cur]->GetResultPointer(0))[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 __global__ void EngineExecute(const uint n, KernelArray<RayJob*> job, KernelArray<Ray> rays, const uint raySeed, const Scene* scene){
 
 	uint index = getGlobalIdx_1D_1D();
+
+	if (index >= n){
+		return;
+	}
 
 	uint startIndex = 0;
 	int cur = GetCurrentJob(job, index, startIndex);
@@ -129,9 +134,7 @@ __global__ void EngineExecute(const uint n, KernelArray<RayJob*> job, KernelArra
 	//float prob = uniformDistribution(rng);
 	float prob = curand_uniform(&randState);
 
-	if (index >= n){
-		return;
-	}
+	
 
 	uint localIndex = (index - startIndex) / job[cur]->GetSampleAmount();
 	uint rayAmount = job[cur]->GetRayAmount();
@@ -193,7 +196,7 @@ __global__ void EngineExecuteSample(const uint n, KernelArray<RayJob*> job, Kern
 
 	rays[index] = ray;
 
-	glm::vec4* pt = &((glm::vec4*)job[cur]->GetResultPointer(0))[localIndex];/////////////////////////////////////////////////////////////////////////////////////////here
+	glm::vec4* pt = &((glm::vec4*)job[cur]->GetResultPointer(0))[localIndex];
 
 	atomicAdd(&(pt->x), col.x);
 
@@ -266,8 +269,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 
 			thrust::device_vector<RayJob*> deviceJobList(jobs);
 
-			uint blockSize = 64;
-			uint gridSize = (n + blockSize - 1) / blockSize;
+			
 
 
 			//execute engine
@@ -285,7 +287,8 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 			cudaEventRecord(start, 0);
 
 
-
+			uint blockSize = 64;
+			uint gridSize = (n + blockSize - 1) / blockSize;
 
 			EngineExecute << <gridSize, blockSize >> >(n, jobL, raysL, WangHash(++raySeedGl), scene);
 			CudaCheck(cudaDeviceSynchronize());
@@ -293,7 +296,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 			for (uint i = 0; i < rayDepth; i++){
 				thrust::device_ptr<Ray> newEnd = thrust::remove_if(rayPtr, rayPtr + numActive, is_marked());
 
-				numActive = newEnd.get() - deviceRays;
+				numActive = newEnd.get() - rayPtr.get();
 
 				blockSize = 64;
 				gridSize = (numActive + blockSize - 1) / blockSize;
