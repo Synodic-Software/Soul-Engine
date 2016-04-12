@@ -78,6 +78,8 @@ else{
 	window = FULLSCREEN;
 }
 
+//window = FULLSCREEN; ///////////////////////////////////////////////////////////////////////// <----------- TEMPORARY
+
 	//set renderer
 std::string rSet = GetSetting("Renderer");
 /*if (rSet.compare("RASTER") == 0){
@@ -123,7 +125,7 @@ else{
 }
 
 SCREEN_SIZE = glm::uvec2(SCREEN_SIZE.x / 1.05f, SCREEN_SIZE.y / 1.05f );
-
+												///////////////////////////////////////////////////////////////////////// <----------- TEMPORARY
 //msaa samples
 
 std::string msAA = GetSetting("MSAA");
@@ -388,14 +390,21 @@ TASK_FUNCTION(Run)
 	light->emit = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	Material* whiteGray = new Material();
-	whiteGray->diffuse = glm::vec4(1.0f, 0.5f, 0.5f, 1.0f);
+	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
 	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	Object* sun = new Object(glm::vec3(-5.0f*METER, 5.0f*METER, -5.0f*METER), "sphere.obj", light);
-	scene->AddObject(sun);
 
-	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "sphere.obj", whiteGray);
+	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "Rebellion.obj", whiteGray);
 	scene->AddObject(obj);
+
+	/*Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
+	scene->AddObject(sun);*/
+
+	
+
+
+
+	
 
 	//Hand* hand1 = new Hand(glm::vec3(0.0f, 0.0f, 20*METER));
 	//Object* handObj1 = hand1;

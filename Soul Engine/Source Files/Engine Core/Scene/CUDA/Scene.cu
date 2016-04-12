@@ -1,7 +1,7 @@
 #include "Scene.cuh"
 
 #define RAY_BIAS_DISTANCE 0.0002f 
-#define BVH_STACK_SIZE 64
+#define BVH_STACK_SIZE 32
 
 Scene::Scene()
 {
@@ -278,11 +278,14 @@ __global__ void GetFace(const uint n, KernelArray<uint> objIds, KernelArray<Obje
 	uint index = getGlobalIdx_1D_1D();
 
 
-	if (index < n){
-		Object* obj = objects[objIds[offset+index] - 1];
-		faces[offset + index] = obj->faces + (offset+index - obj->localSceneIndex);
-		faces[offset + index]->objectPointer = obj;
+	if (index >= n){
+		return;
 	}
+
+	Object* obj = objects[objIds[offset+index] - 1];
+	faces[offset + index] = obj->faces + (index - obj->localSceneIndex);
+	faces[offset + index]->objectPointer = obj;
+
 }
 
 
@@ -298,6 +301,7 @@ __host__ bool Scene::Compile(){
 
 		uint newSize = compiledSize + newFaceAmount;
 		uint indicesToRemove = 0;
+		uint removedOffset = 0;
 		if (amountToRemove>0){
 
 				bool* markers;
@@ -371,7 +375,8 @@ __host__ bool Scene::Compile(){
 				cudaMallocManaged(&faceTemp, allocatedSize * sizeof(Face*));
 				cudaMallocManaged(&objTemp, allocatedSize * sizeof(uint));
 				cudaMallocManaged(&objectBitSetupTemp, allocatedSize * sizeof(bool));
-
+				cudaFree(mortonCodes);
+				cudaMallocManaged(&mortonCodes, allocatedSize * sizeof(uint64));
 
 				cudaMemcpy(faceTemp, faceIds, compiledSize*sizeof(Face*), cudaMemcpyDefault);
 				cudaFree(faceIds);
@@ -385,16 +390,13 @@ __host__ bool Scene::Compile(){
 				cudaFree(objectBitSetup);
 				objectBitSetup = objectBitSetupTemp;
 
-				cudaFree(mortonCodes);
-				cudaMallocManaged(&mortonCodes, allocatedSize * sizeof(uint64));
-
 			}
 
 			CudaCheck(cudaDeviceSynchronize());
-
+			removedOffset = compiledSize - indicesToRemove;
 			//for each new object, (all at the end of the array) fill with falses.
 			thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
-			thrust::fill(bitPtr + compiledSize - indicesToRemove, bitPtr + newSize, (bool)false);
+			thrust::fill(bitPtr + removedOffset, bitPtr + newSize, (bool)false);
 
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -430,9 +432,9 @@ __host__ bool Scene::Compile(){
 
 
 			uint blockSize = 64;
-			uint gridSize = (newSize + blockSize - 1) / blockSize;
+			uint gridSize = ((newSize - removedOffset) + blockSize - 1) / blockSize;
 
-			GetFace << <gridSize, blockSize >> >(newSize - (compiledSize - indicesToRemove), objIdsInput, objectsInput, faceInput, compiledSize - indicesToRemove);
+			GetFace << <gridSize, blockSize >> >(newSize - removedOffset, objIdsInput, objectsInput, faceInput, removedOffset);
 			CudaCheck(cudaDeviceSynchronize());
 
 		}
@@ -544,9 +546,9 @@ CUDA_FUNCTION glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
 	return ray.origin + t * ray.direction;
 }
 CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
-	//float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
-	//return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(1.0f, 1.0f, 1.0f);
-	return glm::vec3(0.1f, 0.1f, 0.1f);
+	float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
+	return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(0.7f, 0.7f, 1.0f);
+	//return glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& edge1, const glm::vec3& edge2,
@@ -780,7 +782,7 @@ __host__ uint Scene::AddObject(Object* obj){
 	CudaCheck(cudaDeviceSynchronize());
 	objectList[objectsSize] = obj;
 	objectsSize++;
-	newFaceAmount = newFaceAmount+obj->faceAmount;
+	newFaceAmount += obj->faceAmount;
 	return 0;
 }
 
