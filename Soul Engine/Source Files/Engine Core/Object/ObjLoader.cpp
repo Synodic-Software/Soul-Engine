@@ -1,6 +1,5 @@
 #include "ObjLoader.h"
 
-
 #include <cstdlib>
 #include <cstring>
 #include <cassert>
@@ -27,6 +26,7 @@ namespace tinyobj {
 		vertex_index(int vidx, int vtidx, int vnidx)
 			: v_idx(vidx), vt_idx(vtidx), vn_idx(vnidx){};
 	};
+	
 	// for std::map
 	static inline bool operator<(const vertex_index &a, const vertex_index &b) {
 		if (a.v_idx != b.v_idx)
@@ -74,7 +74,6 @@ namespace tinyobj {
 		return i;
 	}
 
-
 	// Tries to parse a floating point number located at s.
 	//
 	// s_end should be a location in the string where reading should absolutely
@@ -102,10 +101,10 @@ namespace tinyobj {
 	//  - s >= s_end.
 	//  - parse failure.
 	// 
-	static bool tryParseDouble(const char *s, const char *s_end, double *result)
-	{
-		if (s >= s_end)
-		{
+	
+	static bool tryParseDouble(const char *s, const char *s_end, double *result) {
+		
+		if (s >= s_end) {
 			return false;
 		}
 
@@ -135,20 +134,17 @@ namespace tinyobj {
 		*/
 
 		// Find out what sign we've got.
-		if (*curr == '+' || *curr == '-')
-		{
+		if (*curr == '+' || *curr == '-') {
 			sign = *curr;
 			curr++;
 		}
+		
 		else if (isdigit(*curr)) { /* Pass through. */ }
-		else
-		{
-			goto fail;
-		}
+		else {	goto fail; }
 
 		// Read the integer part.
-		while ((end_not_reached = (curr != s_end)) && isdigit(*curr))
-		{
+		while ((end_not_reached = (curr != s_end)) && isdigit(*curr)) {
+			
 			mantissa *= 10;
 			mantissa += static_cast<int>(*curr - 0x30);
 			curr++;	read++;
@@ -162,20 +158,21 @@ namespace tinyobj {
 			goto assemble;
 
 		// Read the decimal part.
-		if (*curr == '.')
-		{
+		if (*curr == '.') {
+			
 			curr++;
 			read = 1;
-			while ((end_not_reached = (curr != s_end)) && isdigit(*curr))
-			{
+			while ((end_not_reached = (curr != s_end)) && isdigit(*curr)) {
+				
 				// NOTE: Don't use powf here, it will absolutely murder precision.
 				mantissa += static_cast<int>(*curr - 0x30) * pow(10.0, -read);
 				read++; curr++;
 			}
 		}
+		
 		else if (*curr == 'e' || *curr == 'E') {}
-		else
-		{
+		
+		else {
 			goto assemble;
 		}
 
@@ -183,8 +180,8 @@ namespace tinyobj {
 			goto assemble;
 
 		// Read the exponent part.
-		if (*curr == 'e' || *curr == 'E')
-		{
+		if (*curr == 'e' || *curr == 'E') {
+			
 			curr++;
 			// Figure out if a sign is present and if it is.
 			if ((end_not_reached = (curr != s_end)) && (*curr == '+' || *curr == '-'))
@@ -492,8 +489,11 @@ namespace tinyobj {
 
 			// transmittance
 			if (token[0] == 'K' && token[1] == 't' && isSpace((token[2]))) {
+				
 				token += 2;
+				
 				float r, g, b;
+				
 				parseFloat3(r, g, b, token);
 				material.transmittance[0] = r;
 				material.transmittance[1] = g;
@@ -503,6 +503,7 @@ namespace tinyobj {
 
 			// ior(index of refraction)
 			if (token[0] == 'N' && token[1] == 'i' && isSpace((token[2]))) {
+				
 				token += 2;
 				material.ior = parseFloat(token);
 				continue;
@@ -510,8 +511,11 @@ namespace tinyobj {
 
 			// emission
 			if (token[0] == 'K' && token[1] == 'e' && isSpace(token[2])) {
+				
 				token += 2;
+				
 				float r, g, b;
+				
 				parseFloat3(r, g, b, token);
 				material.emission[0] = r;
 				material.emission[1] = g;
@@ -521,6 +525,7 @@ namespace tinyobj {
 
 			// shininess
 			if (token[0] == 'N' && token[1] == 's' && isSpace(token[2])) {
+				
 				token += 2;
 				material.shininess = parseFloat(token);
 				continue;
@@ -528,6 +533,7 @@ namespace tinyobj {
 
 			// illum model
 			if (0 == strncmp(token, "illum", 5) && isSpace(token[5])) {
+				
 				token += 6;
 				material.illum = parseInt(token);
 				continue;
@@ -535,11 +541,13 @@ namespace tinyobj {
 
 			// dissolve
 			if ((token[0] == 'd' && isSpace(token[1]))) {
+				
 				token += 1;
 				material.dissolve = parseFloat(token);
 				continue;
 			}
 			if (token[0] == 'T' && token[1] == 'r' && isSpace(token[2])) {
+				
 				token += 2;
 				// Invert value of Tr(assume Tr is in range [0, 1])
 				material.dissolve = 1.0f - parseFloat(token);
@@ -548,6 +556,7 @@ namespace tinyobj {
 
 			// ambient texture
 			if ((0 == strncmp(token, "map_Ka", 6)) && isSpace(token[6])) {
+				
 				token += 7;
 				material.ambient_texname = token;
 				continue;
@@ -562,6 +571,7 @@ namespace tinyobj {
 
 			// specular texture
 			if ((0 == strncmp(token, "map_Ks", 6)) && isSpace(token[6])) {
+				
 				token += 7;
 				material.specular_texname = token;
 				continue;
@@ -569,6 +579,7 @@ namespace tinyobj {
 
 			// specular highlight texture
 			if ((0 == strncmp(token, "map_Ns", 6)) && isSpace(token[6])) {
+				
 				token += 7;
 				material.specular_highlight_texname = token;
 				continue;
