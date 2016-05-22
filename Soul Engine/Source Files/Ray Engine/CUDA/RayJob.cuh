@@ -64,5 +64,5 @@ private:
 	uint numResultBuffers;
 
 	//result variables
-	void* results[];
+	void** results;
 };

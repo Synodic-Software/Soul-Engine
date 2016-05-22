@@ -41,5 +41,9 @@ bool RayEngine::SwapResults(RayJob* job, uint a, uint b){
 	return true;
 }
 void RayEngine::Clean(){
+	CudaCheck(cudaDeviceSynchronize());
+	for (int i = 0; i < jobList.size(); i++){
+		delete jobList[i];
+	}
 	Cleanup();
 }

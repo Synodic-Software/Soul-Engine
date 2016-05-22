@@ -31,7 +31,7 @@ public:
 	//signels the scene that an object should be removed when the next 'Build()' is called
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
 	__host__ bool RemoveObject(const uint&);
-
+BVH* bvh; 
 
 private:
 	//take in all requests for the frame and process them in bulk
@@ -43,7 +43,7 @@ private:
 	std::vector<uint> objectsToRemove;
 
 
-	BVH* bvh; 
+	
 	BoundingBox sceneBox;
 
 	uint newFaceAmount; //The amount of indices the entire scene takes

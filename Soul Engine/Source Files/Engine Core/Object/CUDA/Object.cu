@@ -27,7 +27,7 @@ Object::Object(glm::vec3 pos,std::string name, Material* mat){
 
 	vertices = NULL;
 	faces = NULL;
-	cudaMallocManaged(&materialP, materialSize*sizeof(Material*));
+	CudaCheck(cudaMallocManaged((void**)&materialP, materialSize*sizeof(Material*)));
 	materialP[0] = mat;
 
 	xyzPosition = pos;
@@ -65,11 +65,11 @@ void Object::ExtractFromFile(const char* name){
 
 	cudaDeviceSynchronize();
 
-	cudaMallocManaged(&vertices,
-		verticeAmount*sizeof(Vertex));
+	CudaCheck(cudaMallocManaged((void**)&vertices,
+		verticeAmount*sizeof(Vertex)));
 
-	cudaMallocManaged(&faces,
-		faceAmount*sizeof(Face));
+	CudaCheck(cudaMallocManaged((void**)&faces,
+		faceAmount*sizeof(Face)));
 
 	cudaDeviceSynchronize();
 
