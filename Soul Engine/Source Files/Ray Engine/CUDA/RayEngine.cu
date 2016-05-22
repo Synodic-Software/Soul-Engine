@@ -50,7 +50,7 @@ public:
 };
 
 KernelArray<RayJob*> jobL;
-Ray* deviceRays;
+Ray* deviceRays=NULL;
 uint raySeedGl = 0;
 uint numRays = 0;
 const uint rayDepth = 3;
@@ -259,11 +259,12 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 		}
 
 		if (n != 0){
-
 			if (n > numRays){
 				//deviceRays.resize(n);
-				cudaFree(&deviceRays);
-				cudaMallocManaged(&deviceRays, n*sizeof(Ray));
+				if (deviceRays != NULL){
+					CudaCheck(cudaFree(&deviceRays));
+				}
+				CudaCheck(cudaMallocManaged((void**)&deviceRays, n*sizeof(Ray)));
 				numRays = n;
 			}
 
@@ -294,7 +295,14 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 			CudaCheck(cudaDeviceSynchronize());
 			uint numActive = numRays;
 			for (uint i = 0; i < rayDepth; i++){
+				CudaCheck(cudaDeviceSynchronize());
+
+				size_t mem_tot_0 = 0;
+				size_t mem_free_0 = 0;
+				cudaMemGetInfo(&mem_free_0, &mem_tot_0);
+				std::cout << "GPU Memory left: " << mem_free_0/1000000000.0f << std::endl;
 				thrust::device_ptr<Ray> newEnd = thrust::remove_if(rayPtr, rayPtr + numActive, is_marked());
+				CudaCheck(cudaDeviceSynchronize());
 
 				numActive = newEnd.get() - rayPtr.get();
 
@@ -304,7 +312,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
 				EngineExecuteSample << <gridSize, blockSize >> >(numActive, jobL, raysL, WangHash(++raySeedGl), scene);
 				CudaCheck(cudaDeviceSynchronize());
 			}
-
+			CudaCheck(cudaDeviceSynchronize());
 
 			cudaEventRecord(stop, 0);
 			cudaEventSynchronize(stop);

@@ -41,8 +41,13 @@ __device__ void ProcessParent(const uint nData, Node* currentNode, Node* nodes, 
 	uint left = currentNode->rangeLeft;
 	uint right = currentNode->rangeRight;
 
+	if (left == 0 && right == leafOffset){
+		bvh->root = currentNode;
+		return;
+	}
+
 	Node* parent;
-	if (left == 0 || (right != nData - 1 && HighestBit(right, morton) < HighestBit(left - 1, morton)))
+	if (left == 0 || (right < leafOffset && HighestBit(left - 1, morton) > HighestBit(right, morton)))
 	{
 		// parent = right, set parent left child and range to node
 		parent = nodes+right;
@@ -58,10 +63,6 @@ __device__ void ProcessParent(const uint nData, Node* currentNode, Node* nodes, 
 		parent->rangeRight = right;
 	}
 
-	if (left == 0 && right == nData-1){
-		bvh->root = currentNode;
-		return;
-	}
 	ProcessParent(nData, parent, nodes, morton, leafOffset,bvh);
 }
 
@@ -71,7 +72,7 @@ __global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* morton
 	if (index >= n)
 		return;
 
-	ProcessParent(n, nodes + (leafOffset+index), nodes, mortonCodes, leafOffset,bvh);
+	ProcessParent(n, nodes + (leafOffset+index), nodes, mortonCodes, leafOffset, bvh);
 }
 
 __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes,const uint leafOffset)
@@ -89,10 +90,11 @@ __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes
 	nodes[leafOffset + index].childLeft = NULL; // Second thread to process
 	nodes[leafOffset + index].childRight = NULL; // Second thread to process
 	if (index<leafOffset){
+		/*nodes[index].rangeLeft = index;   //unneeded as all nodes are touched and updated
+		nodes[index].rangeRight = index + 1;*/
 		nodes[index].atomic = 0; // Second thread to process
-		nodes[index].childLeft = NULL; // Second thread to process
-		nodes[index].childRight = NULL; // Second thread to process
-
+		nodes[index].childLeft = &nodes[leafOffset + index]; // Second thread to process
+		nodes[index].childRight = &nodes[leafOffset + index+1]; // Second thread to process
 	}
 
 
@@ -137,9 +139,9 @@ void BVH::Build(uint size){
 		allocatedSize = glm::max(uint(allocatedSize * 1.5f), (currentSize * 2) - 1);
 
 
-		cudaMallocManaged(&nodeTemp, allocatedSize * sizeof(Node));
+		CudaCheck(cudaMallocManaged((void**)&nodeTemp, allocatedSize * sizeof(Node)));
 
-		cudaFree(bvh);
+		CudaCheck(cudaFree(bvh));
 		bvh = nodeTemp;
 	}
 
@@ -165,4 +167,45 @@ void BVH::Build(uint size){
 
 	std::cout << "     BVH Creation Execution: " << time << "ms" << std::endl;
 
+	//Node* stack[256];
+	//uint stackIdx = 0;
+
+	//stack[stackIdx++] = root;
+
+
+	/*for (int i = currentSize - 1; i < (currentSize * 2) - 1; i++){
+		if ((bvh + i)->childLeft != NULL|| (bvh + i)->childRight != NULL){
+			std::cout << i - (currentSize - 1) << ": " << (bvh + i)->childLeft << " " << (bvh + i)->childRight << std::endl;
+		}
+	}
+
+	for (int i = 0; i < currentSize - 1; i++){
+		if ((bvh + i)->atomic >2 ){
+			std::cout << i << std::endl;
+		}
+	}
+	std::cout << "root: "<<root-bvh << std::endl;*/
+	//while (stackIdx>0){
+	//	Node* node = stack[--stackIdx];
+
+	//	if (node->childRight != NULL){
+	//		Node* first = node->childRight;
+	//		first->atomic = 0;
+	//		//std::cout << stackIdx << std::endl;
+	//		stack[stackIdx++] = first; 
+	//	}
+	//	if (node->childLeft != NULL){
+	//		Node* second = node->childLeft;
+	//		second->atomic = 0;
+	//		//std::cout << stackIdx << std::endl;
+	//		stack[stackIdx++] = second;
+	//	}
+
+	//}
+
+	//for (int i = currentSize - 1; i < currentSize * 2 - 1; i++){
+	//	if ((bvh + i)->atomic!=0){
+	//		std::cout << (bvh + i)->atomic << std::endl;
+	//	}
+	//}
 }

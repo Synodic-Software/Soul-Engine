@@ -17,5 +17,3 @@
 #include "Metrics.h"
 
 #include "CUDA/CUDAManaged.cuh"
-
-
