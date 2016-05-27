@@ -24,18 +24,10 @@ __device__ void ProcessParent(const uint nData, Node* currentNode, Node* nodes, 
 	// Set bounding box if the node is no leaf
 	if (currentNode - nodes<leafOffset)
 	{
-		//update the node's bounding volume
-		glm::vec3 max = currentNode->childLeft->box.origin + currentNode->childLeft->box.extent;
-		glm::vec3 min = currentNode->childLeft->box.origin - currentNode->childLeft->box.extent;
 
-		glm::vec3 objMax = currentNode->childRight->box.origin + currentNode->childRight->box.extent;
-		glm::vec3 objMin = currentNode->childRight->box.origin - currentNode->childRight->box.extent;
+		currentNode->box.max = glm::max(currentNode->childLeft->box.max, currentNode->childRight->box.max);
+		currentNode->box.min = glm::min(currentNode->childLeft->box.min, currentNode->childRight->box.min);
 
-		glm::vec3 newMax = glm::max(max, objMax);
-		glm::vec3 newMin = glm::min(min, objMin);
-
-		currentNode->box.origin = ((newMax - newMin) / 2.0f) + newMin;
-		currentNode->box.extent = currentNode->box.origin - newMin;
 	}
 
 	uint left = currentNode->rangeLeft;
@@ -113,8 +105,8 @@ __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes
 	max = glm::max(face->objectPointer->vertices[face->indices.z].position, max);
 	min = glm::min(face->objectPointer->vertices[face->indices.z].position, min);
 
-	nodes[leafOffset + index].box.origin = ((max - min) / 2.0f) + min;
-	nodes[leafOffset + index].box.extent = nodes[leafOffset + index].box.origin - min;
+	nodes[leafOffset + index].box.max = max;
+	nodes[leafOffset + index].box.min = min;
 
 	// Special case
 	if (n == 1)

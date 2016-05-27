@@ -10,5 +10,5 @@ CUDA_FUNCTION Ray::Ray(const Ray &a)
 	storage = a.storage;
 	job = a.job;
 	resultOffset = a.resultOffset;
-	active = a.active;
+	currentHit = a.currentHit;
 }

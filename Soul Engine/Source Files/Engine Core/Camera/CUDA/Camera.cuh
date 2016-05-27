@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Utility\CUDAIncludes.h"
-#include "Ray Engine\CUDA/Ray.cuh"
+#include "Ray Engine\CUDA\Ray.cuh"
 //#include "thrust\random.h"
 
-
+class Ray;
 //forward and right must be normalized!
     class Camera : public Managed {
     public:

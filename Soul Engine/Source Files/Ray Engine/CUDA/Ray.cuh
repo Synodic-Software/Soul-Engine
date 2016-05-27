@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Utility\CUDAIncludes.h"
+#include "Engine Core\Object\CUDA\Face.cuh"
 
+class Face;
 //__align__(64)
 class Ray : public Managed
 {
@@ -20,18 +22,18 @@ public:
 		storage = a.storage;
 		job = a.job;
 		resultOffset = a.resultOffset;
-		active = a.active;
+		currentHit = a.currentHit;
 
 		return *this;
 	}
 
 	glm::vec4 storage;
-	glm::vec3 origin; //origin and a single value representing the remaining distance this ray can travel in this frame
+	glm::vec4 origin; //origin and a single value representing the remaining distance this ray can travel in this frame
+	glm::vec4 direction;
+	glm::vec2 uv;
+	Face* currentHit;
 	uint resultOffset;
-	glm::vec3 direction;
 	char job;
-	bool active;
-	glm::vec4 padding;
 	
 private:
 

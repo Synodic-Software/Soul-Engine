@@ -19,7 +19,7 @@ public:
 	__host__ Scene();
 	__host__ ~Scene();
 
-	__device__ glm::vec3 IntersectColour(Ray& ray, curandState&)const;
+	//__device__ glm::vec3 IntersectColour(Ray& ray, curandState&)const;
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
 	__host__ void Build();

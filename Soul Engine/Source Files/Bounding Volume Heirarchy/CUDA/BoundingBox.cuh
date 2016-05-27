@@ -2,15 +2,25 @@
 
 #include "Utility/CUDAIncludes.h"
 
-class BoundingBox : public Managed
+class __align__(32) BoundingBox : public Managed
 {
 public:
 	CUDA_FUNCTION BoundingBox();
 	CUDA_FUNCTION BoundingBox(glm::vec3, glm::vec3);
 
+	CUDA_FUNCTION BoundingBox& BoundingBox::operator= (const BoundingBox &a)
+	{
+
+		min = a.min;
+		max = a.max;
+
+		return *this;
+	}
+
 	CUDA_FUNCTION ~BoundingBox();
-	glm::vec3 origin;
-	glm::vec3 extent;
+
+	glm::vec3 min;
+	glm::vec3 max;
 private: 
 	
 };
