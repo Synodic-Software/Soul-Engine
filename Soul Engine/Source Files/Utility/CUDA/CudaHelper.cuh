@@ -2,6 +2,7 @@
 
 #include "Utility\CUDAIncludes.h"
 #include <iostream>
+#include "cuda.h"
 
 #define CUDA_FUNCTION __host__ __device__
 
@@ -10,8 +11,8 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort =
 {
 	if (code != cudaSuccess)
 	{
-		std::cout<<cudaGetErrorString(code)<< file<< line<<std::endl;
-		if (abort) exit(code);
+		std::cout << cudaGetErrorString(code) << file << line << std::endl;
+		//if (abort) exit(code);
 	}
 }
 
@@ -20,3 +21,5 @@ inline __device__ int getGlobalIdx_1D_1D()
 {
 	return blockIdx.x *blockDim.x + threadIdx.x;
 }
+
+

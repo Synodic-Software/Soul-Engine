@@ -24,7 +24,10 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
-      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\fiber\lib;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw-3.1.1.bin.WIN64\lib-vc2013;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(LibraryPath);$(ProjectDir)\Libraries\boost;%(AdditionalLibraryDirectories);$(AMDAPPSDKROOT)\lib\x86_64\</AdditionalLibraryDirectories>
@@ -50,9 +53,10 @@
       <UseHostInclude>true</UseHostInclude>
       <Optimization>O3</Optimization>
       <TypeInfo>InheritFromHost</TypeInfo>
-      <HostDebugInfo>true</HostDebugInfo>
+      <HostDebugInfo>false</HostDebugInfo>
       <RuntimeChecks>InheritFromHost</RuntimeChecks>
       <GPUDebugInfo>false</GPUDebugInfo>
+      <PtxAsOptionV>false</PtxAsOptionV>
     </CudaCompile>
     <CudaLink>
       <Optimization>O3</Optimization>

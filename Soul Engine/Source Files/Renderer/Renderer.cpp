@@ -11,7 +11,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	frameTime = 0.0f;
 	changeCutoff = 0.05f;
 	targetFPS = 60.0f;
-	samples = 4;
+	samples = 1;
 	//samples cannot be a float because finding a constant random number across different threads becomes too time consuming 
 
 	CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
@@ -42,7 +42,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, &camera,2);
 
-	cudaFree(RenderJob->GetResultPointer(0));
+	CudaCheck(cudaFree(RenderJob->GetResultPointer(0)));
 	RenderJob->GetResultPointer(0) = bufferData;
 
 	Vertices[0] = 0.0f;

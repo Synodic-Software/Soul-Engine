@@ -19,7 +19,7 @@ public:
 	__host__ Scene();
 	__host__ ~Scene();
 
-	__device__ glm::vec3 IntersectColour(Ray& ray, curandState&)const;
+	//__device__ glm::vec3 IntersectColour(Ray& ray, curandState&)const;
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
 	__host__ void Build();
@@ -31,7 +31,7 @@ public:
 	//signels the scene that an object should be removed when the next 'Build()' is called
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
 	__host__ bool RemoveObject(const uint&);
-
+BVH* bvh; 
 
 private:
 	//take in all requests for the frame and process them in bulk
@@ -43,7 +43,7 @@ private:
 	std::vector<uint> objectsToRemove;
 
 
-	BVH* bvh; 
+	
 	BoundingBox sceneBox;
 
 	uint newFaceAmount; //The amount of indices the entire scene takes

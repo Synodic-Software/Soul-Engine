@@ -3,13 +3,12 @@
 
 std::vector<RayJob*> jobList;
 
-void RayEngine::Process(const Scene* scene) {
+void RayEngine::Process(const Scene* scene){
 	ProcessJobs(jobList, scene);
 }
 
-// adds job to keep until deleted
 RayJob* RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
-	uint samples, Camera* camera, uint resBuffN) {
+	uint samples, Camera* camera, uint resBuffN){
 
 	RayJob* newJob = new RayJob(whatToGet, rayAmount, samples, camera, resBuffN);
 	jobList.push_back(newJob);
@@ -18,34 +17,33 @@ RayJob* RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
 }
 
 bool RayEngine::ChangeJob(RayJob* job, uint rayAmount, 
-	float samples, Camera* camera) {
+	float samples, Camera* camera){
 
 	if (rayAmount<=job->RayAmountMax()){
-		
 		job->GetRayAmount() = rayAmount;
 		job->GetSampleAmount() = samples;
 		job->GetCamera() = camera;
 
 		return true;
 	}
-	
-	else {
+	else{
 		return false;
 	}
 
 }
 
-// clear subengine of jobs
-void RayEngine::Clear() {
-	
+void RayEngine::Clear(){
 	ClearResults(jobList);
 }
 
-bool RayEngine::SwapResults(RayJob* job, uint a, uint b) {
-	
+bool RayEngine::SwapResults(RayJob* job, uint a, uint b){
 	job->SwapResults(a, b);
 	return true;
 }
-void RayEngine::Clean() {
+void RayEngine::Clean(){
+	CudaCheck(cudaDeviceSynchronize());
+	for (int i = 0; i < jobList.size(); i++){
+		delete jobList[i];
+	}
 	Cleanup();
 }
