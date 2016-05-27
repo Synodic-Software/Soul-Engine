@@ -18,7 +18,7 @@ public:
 		return bvh;
 	}
 	CUDA_FUNCTION bool IsLeaf(Node* test){
-		return ((test - bvh)>=(currentSize - 1));
+		return ((test - bvh) >= (currentSize - 1));
 	}
 	CUDA_FUNCTION uint GetSize(){
 		return currentSize;

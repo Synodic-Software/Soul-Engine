@@ -99,8 +99,8 @@ void Object::ExtractFromFile(const char* name){
 		faceOffset += shapes[i].mesh.indices.size();
 	}
 
-	box.origin = ((max - min) / 2.0f) + min;
-	box.extent = box.origin - min;
+	box.max = max;
+	box.min = min;
 	cudaDeviceSynchronize();
 }
 //std::string Object::ResourcePath(std::string fileName) {

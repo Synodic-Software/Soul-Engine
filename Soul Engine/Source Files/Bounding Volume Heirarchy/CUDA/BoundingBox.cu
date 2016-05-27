@@ -4,10 +4,10 @@ BoundingBox::BoundingBox()
 {
 }
 
-BoundingBox::BoundingBox(glm::vec3 originN, glm::vec3 extentN)
+BoundingBox::BoundingBox(glm::vec3 minN, glm::vec3 maxN)
 {
-	origin = originN;
-	extent = extentN;
+	min = minN;
+	max = maxN;
 }
 
 BoundingBox::~BoundingBox()

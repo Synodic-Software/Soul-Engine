@@ -258,7 +258,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	// setup camera 
 	freeCam = true;
 	//camera->SetPosition(glm::vec3(-5.0f*METER, 2.0f*METER, 5.0f*METER));
-	camera->SetPosition(glm::vec3(-(DECAMETER * 5), DECAMETER * 5, -(DECAMETER * 5)));
+	camera->SetPosition(glm::vec3(-(METER * 2), METER * 2*2, -(METER * 2)));
 	camera->OffsetOrientation(45, 45);
 
 	//unsigned concurentThreadsSupported = std::thread::hardware_concurrency();

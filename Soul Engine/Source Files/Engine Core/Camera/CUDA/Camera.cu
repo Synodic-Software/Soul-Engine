@@ -122,8 +122,9 @@ __device__ void Camera::SetupRay(uint& index, Ray& ray, curandState& rng){
 	glm::vec3 pointOnPlaneOneUnitAwayFromEye = 
 		(aperturePoint + forward) + (((2 * sx) - 1) * xHelper) + (((2 * sy) - 1) * yHelper);
 
-	ray.origin = aperturePoint;
-	ray.direction = (position + ((pointOnPlaneOneUnitAwayFromEye-position) * focalDistance)) - aperturePoint;
+	ray.origin = glm::vec4(aperturePoint.x, aperturePoint.y, aperturePoint.z, 0.0f);
+	glm::vec3 tmp= (position + ((pointOnPlaneOneUnitAwayFromEye-position) * focalDistance)) - aperturePoint;
+	ray.direction = glm::vec4(tmp.x, tmp.y, tmp.z, 40000000000000000000.0f);
 
 }
 
