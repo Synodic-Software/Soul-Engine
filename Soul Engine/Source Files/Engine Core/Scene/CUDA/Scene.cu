@@ -1,18 +1,19 @@
 #include "Scene.cuh"
 
 #define RAY_BIAS_DISTANCE 0.0002f 
-#define BVH_STACK_SIZE 32
+#define BVH_STACK_SIZE 64
+#define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 
 Scene::Scene()
 {
 	objectsSize = 0;
-	allocatedObjects = 0;
+	allocatedObjects = 1;
 	allocatedSize = 0;
 
 	compiledSize = 0;
 	newFaceAmount = 0;
-	cudaMallocManaged(&objectList,
-		allocatedObjects*sizeof(Object*));
+	CudaCheck(cudaMallocManaged((void**)&objectList,
+		allocatedObjects*sizeof(Object*)));
 
 	objectsToRemove.clear();
 
@@ -24,15 +25,17 @@ Scene::Scene()
 Scene::~Scene()
 {
 
-	cudaFree( objectBitSetup); // hold a true for the first indice of each object
-	cudaFree(objIds); //points to the object
-	cudaFree(faceIds);
-	cudaFree(mortonCodes);
+	CudaCheck(cudaFree(objectBitSetup)); // hold a true for the first indice of each object
+	CudaCheck(cudaFree(objIds)); //points to the object
+	CudaCheck(cudaFree(faceIds));
+	CudaCheck(cudaFree(mortonCodes));
 
 	//Variables concerning object storage
+	
+	CudaCheck(cudaFree(objectList));
+	CudaCheck(cudaFree(objectRemoval));
 
-	cudaFree(objectList);
-	cudaFree(objectRemoval);
+	delete bvh;
 }
 
 
@@ -211,7 +214,7 @@ __device__ const uint morton256_z[256] = {
 
 __device__ uint64 mortonEncode_LUT(const glm::vec3& data, const BoundingBox& box){
 
-	glm::dvec3 temp = (((glm::dvec3(data) - glm::dvec3(box.origin)) / glm::dvec3(box.extent))/2.0)+0.5;
+	glm::dvec3 temp = (((glm::dvec3(data) - glm::dvec3(((box.max - box.min) / 2.0f) + box.min)) / glm::dvec3((box.max - box.min) / 2.0f)) / 2.0) + 0.5;
 
 	//uint max = powf(2, 21) - 1;
 
@@ -246,18 +249,18 @@ __global__ void GenerateMortonCodes(const uint n, KernelArray<uint64> mortonCode
 
 		glm::vec3 centroid = (current->vertices[face->indices.x].position + current->vertices[face->indices.y].position + current->vertices[face->indices.z].position) / 3.0f;
 		mortonCodes[index] = mortonEncode_LUT(centroid, box);
-		
+
 	}
 }
 
-__global__ void FillBool(const uint n,KernelArray<bool> jobs , KernelArray<bool> fjobs,  KernelArray<Face*> faces,  KernelArray<uint> objIds, KernelArray<Object*> objects){
+__global__ void FillBool(const uint n, KernelArray<bool> jobs, KernelArray<bool> fjobs, KernelArray<Face*> faces, KernelArray<uint> objIds, KernelArray<Object*> objects){
 
 
 	uint index = getGlobalIdx_1D_1D();
 
 
 	if (index < n){
-		if (objects[objIds[index]-1]->requestRemoval){
+		if (objects[objIds[index] - 1]->requestRemoval){
 			jobs[index] = true;
 		}
 		else{
@@ -282,7 +285,7 @@ __global__ void GetFace(const uint n, KernelArray<uint> objIds, KernelArray<Obje
 		return;
 	}
 
-	Object* obj = objects[objIds[offset+index] - 1];
+	Object* obj = objects[objIds[offset + index] - 1];
 	faces[offset + index] = obj->faces + (index - obj->localSceneIndex);
 	faces[offset + index]->objectPointer = obj;
 
@@ -294,7 +297,7 @@ __host__ bool Scene::Compile(){
 
 	uint amountToRemove = objectsToRemove.size();
 
-	if (newFaceAmount > 0 || amountToRemove>0){
+	if (newFaceAmount > 0 || amountToRemove > 0){
 
 		//bitSetup only has the first element of each object flagged
 		//this extends that length and copies the previous results as well
@@ -302,92 +305,92 @@ __host__ bool Scene::Compile(){
 		uint newSize = compiledSize + newFaceAmount;
 		uint indicesToRemove = 0;
 		uint removedOffset = 0;
-		if (amountToRemove>0){
+		if (amountToRemove > 0){
 
-				bool* markers;
-				bool* faceMarkers;
-				cudaMallocManaged(&markers, compiledSize * sizeof(bool));
-				cudaMallocManaged(&faceMarkers, compiledSize * sizeof(bool));
-
-
-				thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(markers);
-				thrust::device_ptr<bool> faceTempPtr = thrust::device_pointer_cast(faceMarkers);
+			bool* markers;
+			bool* faceMarkers;
+			CudaCheck(cudaMallocManaged((void**)&markers, compiledSize * sizeof(bool)));
+			CudaCheck(cudaMallocManaged((void**)&faceMarkers, compiledSize * sizeof(bool)));
 
 
-				//variables from the scene to the kernal
-				KernelArray<bool> boolJobs = KernelArray<bool>(markers, compiledSize);
-				KernelArray<bool> faceBoolJobs = KernelArray<bool>(faceMarkers, compiledSize);
-				KernelArray<Face*>faceIdsInput = KernelArray<Face*>(faceIds, compiledSize);
+			thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(markers);
+			thrust::device_ptr<bool> faceTempPtr = thrust::device_pointer_cast(faceMarkers);
 
-				KernelArray<uint> objIdsInput = KernelArray<uint>(objIds, compiledSize);
-			
-				KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, compiledSize);
-			
-			
-				uint blockSize = 64;
-				uint gridSize = (compiledSize + blockSize - 1) / blockSize;
-			
-				//fill the mask with 1s or 0s
-				FillBool << <gridSize, blockSize >> >(compiledSize, boolJobs, faceBoolJobs, faceIdsInput, objIdsInput, objectsInput);
-			
-				CudaCheck(cudaDeviceSynchronize());
-			
-			
-				//remove the requested
-				thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
-			
-				thrust::device_ptr<bool> newEnd = thrust::remove_if(bitPtr, bitPtr + compiledSize, tempPtr, thrust::identity<bool>());
-				CudaCheck(cudaDeviceSynchronize());
 
-				indicesToRemove = bitPtr + compiledSize - newEnd;
-				newSize = newSize-indicesToRemove;
-				//objpointers
-				thrust::device_ptr<uint> objPtr = thrust::device_pointer_cast(objIds);
-			
-				thrust::remove_if(objPtr, objPtr + compiledSize, tempPtr, thrust::identity<bool>());
-				CudaCheck(cudaDeviceSynchronize());
+			//variables from the scene to the kernal
+			KernelArray<bool> boolJobs = KernelArray<bool>(markers, compiledSize);
+			KernelArray<bool> faceBoolJobs = KernelArray<bool>(faceMarkers, compiledSize);
+			KernelArray<Face*>faceIdsInput = KernelArray<Face*>(faceIds, compiledSize);
 
-				//faces
-				thrust::device_ptr<Face*> facePtr = thrust::device_pointer_cast(faceIds);
+			KernelArray<uint> objIdsInput = KernelArray<uint>(objIds, compiledSize);
 
-				thrust::remove_if(facePtr, facePtr + compiledSize, faceTempPtr, thrust::identity<bool>());
-				CudaCheck(cudaDeviceSynchronize());
-			
-				//actual object list
-				thrust::device_ptr<Object*> objectsPtr = thrust::device_pointer_cast(objectList);
-			
-				thrust::remove_if(objectsPtr, objectsPtr + objectsSize, is_scheduled());
+			KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, compiledSize);
 
-				CudaCheck(cudaDeviceSynchronize());
-				cudaFree(markers);
-				cudaFree(faceMarkers);
+
+			uint blockSize = 64;
+			uint gridSize = (compiledSize + blockSize - 1) / blockSize;
+
+			//fill the mask with 1s or 0s
+			FillBool << <gridSize, blockSize >> >(compiledSize, boolJobs, faceBoolJobs, faceIdsInput, objIdsInput, objectsInput);
+
+			CudaCheck(cudaDeviceSynchronize());
+
+
+			//remove the requested
+			thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
+
+			thrust::device_ptr<bool> newEnd = thrust::remove_if(bitPtr, bitPtr + compiledSize, tempPtr, thrust::identity<bool>());
+			CudaCheck(cudaDeviceSynchronize());
+
+			indicesToRemove = bitPtr + compiledSize - newEnd;
+			newSize = newSize - indicesToRemove;
+			//objpointers
+			thrust::device_ptr<uint> objPtr = thrust::device_pointer_cast(objIds);
+
+			thrust::remove_if(objPtr, objPtr + compiledSize, tempPtr, thrust::identity<bool>());
+			CudaCheck(cudaDeviceSynchronize());
+
+			//faces
+			thrust::device_ptr<Face*> facePtr = thrust::device_pointer_cast(faceIds);
+
+			thrust::remove_if(facePtr, facePtr + compiledSize, faceTempPtr, thrust::identity<bool>());
+			CudaCheck(cudaDeviceSynchronize());
+
+			//actual object list
+			thrust::device_ptr<Object*> objectsPtr = thrust::device_pointer_cast(objectList);
+
+			thrust::remove_if(objectsPtr, objectsPtr + objectsSize, is_scheduled());
+
+			CudaCheck(cudaDeviceSynchronize());
+			CudaCheck(cudaFree(markers));
+			CudaCheck(cudaFree(faceMarkers));
 		}
 
-		if(newFaceAmount > 0){
+		if (newFaceAmount > 0){
 
-			if (allocatedSize<newSize){
+			if (allocatedSize < newSize){
 				Face** faceTemp;
 				uint* objTemp;
 				bool* objectBitSetupTemp;
 
 				allocatedSize = glm::max(uint(allocatedSize * 1.5f), newSize);
 
-				cudaMallocManaged(&faceTemp, allocatedSize * sizeof(Face*));
-				cudaMallocManaged(&objTemp, allocatedSize * sizeof(uint));
-				cudaMallocManaged(&objectBitSetupTemp, allocatedSize * sizeof(bool));
-				cudaFree(mortonCodes);
-				cudaMallocManaged(&mortonCodes, allocatedSize * sizeof(uint64));
+				CudaCheck(cudaMallocManaged((void**)&faceTemp, allocatedSize * sizeof(Face*)));
+				CudaCheck(cudaMallocManaged((void**)&objTemp, allocatedSize * sizeof(uint)));
+				CudaCheck(cudaMallocManaged((void**)&objectBitSetupTemp, allocatedSize * sizeof(bool)));
+				CudaCheck(cudaFree(mortonCodes));
+				CudaCheck(cudaMallocManaged((void**)&mortonCodes, allocatedSize * sizeof(uint64)));
 
 				cudaMemcpy(faceTemp, faceIds, compiledSize*sizeof(Face*), cudaMemcpyDefault);
-				cudaFree(faceIds);
+				CudaCheck(cudaFree(faceIds));
 				faceIds = faceTemp;
 
 				cudaMemcpy(objTemp, objIds, compiledSize*sizeof(uint), cudaMemcpyDefault);
-				cudaFree(objIds);
+				CudaCheck(cudaFree(objIds));
 				objIds = objTemp;
 
 				cudaMemcpy(objectBitSetupTemp, objectBitSetup, compiledSize*sizeof(bool), cudaMemcpyDefault);
-				cudaFree(objectBitSetup);
+				CudaCheck(cudaFree(objectBitSetup));
 				objectBitSetup = objectBitSetupTemp;
 
 			}
@@ -402,7 +405,7 @@ __host__ bool Scene::Compile(){
 
 		}
 
-		
+
 		CudaCheck(cudaDeviceSynchronize());
 
 		//flag the first and setup state of life (only time iteration through objects should be done)
@@ -440,310 +443,315 @@ __host__ bool Scene::Compile(){
 		}
 		CudaCheck(cudaDeviceSynchronize());
 
-	//change the indice count of the scene
-	compiledSize = newSize;
-	newFaceAmount = 0;
-	objectsToRemove.clear();
-	return true;
-		
+		//change the indice count of the scene
+		compiledSize = newSize;
+		newFaceAmount = 0;
+		objectsToRemove.clear();
+		return true;
+
 	}
 	else{
 		return false;
 	}
 
-		
+
 }
 
 
 __host__ void Scene::Build(){
-	
+
 	bool b = Compile();
 
-		//calculate the morton code for each triangle
+	//calculate the morton code for each triangle
 
-		uint blockSize = 64;
-		uint gridSize = (compiledSize + blockSize - 1) / blockSize;
+	uint blockSize = 64;
+	uint gridSize = (compiledSize + blockSize - 1) / blockSize;
 
-		KernelArray<Face*> faceInput = KernelArray<Face*>(faceIds, compiledSize);
-		KernelArray<uint64> mortonInput = KernelArray<uint64>(mortonCodes, compiledSize);
+	KernelArray<Face*> faceInput = KernelArray<Face*>(faceIds, compiledSize);
+	KernelArray<uint64> mortonInput = KernelArray<uint64>(mortonCodes, compiledSize);
 
-		KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, compiledSize);
+	KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, compiledSize);
 
-		CudaCheck(cudaDeviceSynchronize());
+	CudaCheck(cudaDeviceSynchronize());
 
-		GenerateMortonCodes << <gridSize, blockSize >> >(compiledSize, mortonInput, faceInput, objectsInput, sceneBox);
+	GenerateMortonCodes << <gridSize, blockSize >> >(compiledSize, mortonInput, faceInput, objectsInput, sceneBox);
 
-		thrust::device_ptr<uint64_t> keys = thrust::device_pointer_cast(mortonCodes);
-		thrust::device_ptr<Face*> values = thrust::device_pointer_cast(faceIds);
+	thrust::device_ptr<uint64_t> keys = thrust::device_pointer_cast(mortonCodes);
+	thrust::device_ptr<Face*> values = thrust::device_pointer_cast(faceIds);
 
-		CudaCheck(cudaDeviceSynchronize());
+	CudaCheck(cudaDeviceSynchronize());
 
-		cudaEvent_t start, stop;
-		float time;
-		cudaEventCreate(&start);
-		cudaEventCreate(&stop);
-		cudaEventRecord(start, 0);
+	cudaEvent_t start, stop;
+	float time;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start, 0);
 
-		//thrust::sort_by_key(keys, keys + compiledSize, values);            //I assume this is broken with this build setup, is ok though, will try to phase out thrust in a final build
+	//thrust::sort_by_key(keys, keys + compiledSize, values);            //I assume this is broken with this build setup, is ok though, will try to phase out thrust in a final build
 
-		//simple bubblesort to bide the time
-		bool swapped = true;
-		int j = 0;
-		uint64 tmp;
-		Face* ftmp;
-		while (swapped) {
-			swapped = false;
-			j++;
-			for (int i = 0; i < compiledSize - j; i++) {
-				if (mortonCodes[i] > mortonCodes[i + 1]) {
-					tmp = mortonCodes[i];
-					mortonCodes[i] = mortonCodes[i + 1];
-					mortonCodes[i + 1] = tmp;
-					
-					ftmp = faceIds[i];
-					faceIds[i] = faceIds[i + 1];
-					faceIds[i + 1] = ftmp;
+	//simple bubblesort to bide the time
+	bool swapped = true;
+	int j = 0;
+	uint64 tmp;
+	Face* ftmp;
+	while (swapped) {
+		swapped = false;
+		j++;
+		for (int i = 0; i < compiledSize - j; i++) {
+			if (mortonCodes[i] > mortonCodes[i + 1]) {
+				tmp = mortonCodes[i];
+				mortonCodes[i] = mortonCodes[i + 1];
+				mortonCodes[i + 1] = tmp;
 
-					swapped = true;
-				}
+				ftmp = faceIds[i];
+				faceIds[i] = faceIds[i + 1];
+				faceIds[i + 1] = ftmp;
+
+				swapped = true;
 			}
 		}
+	}
 
 
-		CudaCheck(cudaDeviceSynchronize());
+	CudaCheck(cudaDeviceSynchronize());
 
-		cudaEventRecord(stop, 0);
-		cudaEventSynchronize(stop);
-		cudaEventElapsedTime(&time, start, stop);
-		cudaEventDestroy(start);
-		cudaEventDestroy(stop);
+	cudaEventRecord(stop, 0);
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&time, start, stop);
+	cudaEventDestroy(start);
+	cudaEventDestroy(stop);
 
-		std::cout << "     Sorting Execution: " << time << "ms" << std::endl;
+	std::cout << "     Sorting Execution: " << time << "ms" << std::endl;
 	/*	for (int i = 0; i < compiledSize;i++){
 			std::cout << mortonCodes[i] << std::endl;
-		}
-
-		CudaCheck(cudaDeviceSynchronize());*/
-
-		bvh->Build(compiledSize);
-
-		//CudaCheck(cudaDeviceSynchronize());
-
-		//for (int i = 0; i < compiledSize - 1; i++){
-		//		/*std::cout << bvh->GetRoot()[i].box.origin.x << " " << bvh->GetRoot()[i].box.origin.y << " " << bvh->GetRoot()[i].box.origin.z << std::endl;
-		//		std::cout << bvh->GetRoot()[i].box.extent.x << " " << bvh->GetRoot()[i].box.extent.y << " " << bvh->GetRoot()[i].box.extent.z << std::endl;
-		//		std::cout << std::endl;*/
-		//	std::cout << bvh->GetRoot()[i].childLeft <<" "<< bvh->GetRoot()[i].childRight << std::endl;
-		//}
-
-		//CudaCheck(cudaDeviceSynchronize());
-
-
-
-}
-
-CUDA_FUNCTION glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
-	return ray.origin + t * ray.direction;
-}
-CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
-	float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
-	return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(0.7f, 0.7f, 1.0f);
-	//return glm::vec3(0.0f, 0.0f, 0.0f);
-}
-
-CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& edge1, const glm::vec3& edge2,
-	const Ray& ray,
-	float& t,const float& tMax, float& bary1, float& bary2)
-{
-
-	glm::vec3 pvec = glm::cross(ray.direction, edge2);
-	float det = glm::dot(edge1, pvec);
-	if (det > -EPSILON && det < EPSILON){
-		return false;
-	}
-	float inv_det = 1.0f / det;
-
-	glm::vec3 tvec = ray.origin - a;
-	bary1 = glm::dot(tvec, pvec) * inv_det;
-
-	glm::vec3 qvec = glm::cross(tvec, edge1);
-	bary2 = glm::dot(ray.direction, qvec) * inv_det;
-
-	t = glm::dot(edge2, qvec) * inv_det;
-
-	return t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f);
-
-}
-
-CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0,  float& t1){
-
-	glm::vec3 boxMax = box.origin + box.extent;
-	glm::vec3 boxMin = box.origin - box.extent;
-
-	float temp1 = (boxMin.x - o.x)*dInv.x;
-	float temp2 = (boxMax.x - o.x)*dInv.x;
-
-	float tmin = glm::min(temp1, temp2);
-	float tmax = glm::max(temp1, temp2);
-
-	temp1 = (boxMin.y - o.y)*dInv.y;
-	temp2 = (boxMax.y - o.y)*dInv.y;
-
-	tmin = glm::max(tmin, glm::min(temp1, temp2));
-	tmax = glm::min(tmax, glm::max(temp1, temp2));
-
-	temp1 = (boxMin.z - o.z)*dInv.z;
-	temp2 = (boxMax.z - o.z)*dInv.z;
-
-	tmin = glm::max(tmin, glm::min(temp1, temp2));
-	tmax = glm::min(tmax, glm::max(temp1, temp2));
-
-	float tTest = t1;
-	t1 = tmin;
-	return tmax >= glm::max(t0, tmin) && tmin < tTest;
-}
-
-__device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::vec3& bestNormal, Material*& mat){
-
-	bool intersected = false;
-
-	Node* stack[BVH_STACK_SIZE];
-
-	uint stackIdx = 0;
-	
-	glm::vec3 dirInverse = 1.0f / ray.direction;
-
-	float t = bestT;
-	if (AABBIntersect(bvh->GetRoot()->box, ray.origin, dirInverse, 0.0f, t)){
-		stack[stackIdx++] = bvh->GetRoot();
-	}
-
-	while (stackIdx>0) {
-
-		// pop a BVH node
-
-		Node* node = stack[--stackIdx];
-
-		//inner node
-
-		if (bvh->IsLeaf(node)) {
-
-			glm::uvec3 face = node->faceID->indices;
-
-			glm::vec3 xIndPos = node->faceID->objectPointer->vertices[face.x].position;
-			glm::vec3 yIndPos = node->faceID->objectPointer->vertices[face.y].position;
-			glm::vec3 zIndPos = node->faceID->objectPointer->vertices[face.z].position;
-
-
-			float bary1 = 0;
-			float bary2 = 0;
-			float tTemp;
-
-			glm::vec3 edge1 = yIndPos - xIndPos;
-			glm::vec3 edge2 = zIndPos - xIndPos;
-
-			if (FindTriangleIntersect(xIndPos, edge1, edge2,
-				ray,
-				tTemp, bestT, bary1, bary2)){
-
-				bestT = tTemp;
-				/*	glm::vec3 norm1 = current->vertices[face.x].normal;
-				glm::vec3 norm2 = current->vertices[face.y].normal;
-				glm::vec3 norm3 = current->vertices[face.z].normal;*/
-				bestNormal = glm::normalize(glm::cross(edge1, edge2));
-				//bestNormal =glm::normalize( (norm3*bary2) + (norm2*bary1) + (norm1*(1.0f - bary1 - bary2)));
-				mat = node->faceID->materialPointer;
-				intersected = true;
 			}
 
-			
-		}
-		//outer node
-		else {
-			Node* first = node->childRight;
-			Node* second = node->childLeft;
+			CudaCheck(cudaDeviceSynchronize());*/
 
-			float tL = bestT;
-			float tR = bestT;
-			bool t1 = AABBIntersect(second->box, ray.origin, dirInverse, 0.0f, tL);
-			bool t2 = AABBIntersect(first->box, ray.origin, dirInverse, 0.0f, tR);
+	bvh->Build(compiledSize);
 
-			
+	//CudaCheck(cudaDeviceSynchronize());
 
-			if (t1&&t2&&tL<tR){
-				Node* temp = first;
-				first = second;
-				second = temp;
+	//for (int i = 0; i < compiledSize - 1; i++){
+	//		/*std::cout << bvh->GetRoot()[i].box.origin.x << " " << bvh->GetRoot()[i].box.origin.y << " " << bvh->GetRoot()[i].box.origin.z << std::endl;
+	//		std::cout << bvh->GetRoot()[i].box.extent.x << " " << bvh->GetRoot()[i].box.extent.y << " " << bvh->GetRoot()[i].box.extent.z << std::endl;
+	//		std::cout << std::endl;*/
+	//	std::cout << bvh->GetRoot()[i].childLeft <<" "<< bvh->GetRoot()[i].childRight << std::endl;
+	//}
 
-			}
-			if (t1){
-				stack[stackIdx++] = second; // right child node index
-				if (stackIdx==BVH_STACK_SIZE){
-					return false;
-				}
-			}
-			if (t2){
-				stack[stackIdx++] = first; // left child node index
-				if (stackIdx == BVH_STACK_SIZE){
-					return false;
-				}
-			}
-		}
-	}
+	//CudaCheck(cudaDeviceSynchronize());
 
 
-	return intersected;
+
 }
 
+//CUDA_FUNCTION glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
+//	return ray.origin + t * ray.direction;
+//}
+//CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
+//	float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
+//	return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(0.7f, 0.7f, 1.0f);
+//	//return glm::vec3(0.0f, 0.0f, 0.0f);
+//}
 
-__device__ glm::vec3 Scene::IntersectColour(Ray& ray, curandState& randState)const{
+//CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& edge1, const glm::vec3& edge2,
+//	const Ray& ray, const glm::vec3& invDir, 
+//	float& t, const float& tMax, float& bary1, float& bary2)
+//{
+//
+//	glm::vec3 pvec = glm::cross(ray.direction, edge2);
+//
+//	float det = glm::dot(edge1, pvec);
+//
+//	if (det == 0.f)
+//		return false;
+//
+//	float inv_det = 1.0f / det;
+//
+//	glm::vec3 tvec = ray.origin - a;
+//
+//	bary1 = glm::dot(tvec, pvec) * inv_det;
+//
+//
+//
+//	glm::vec3 qvec = glm::cross(tvec, edge1);
+//
+//	bary2 = glm::dot(ray.direction, qvec) * inv_det;
+//
+//	t = glm::dot(edge2, qvec) * inv_det;
+//
+//	return( t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f));
+//}
+//
+//CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, float& t1){
+//
+//	glm::vec3 boxMax = box.origin + box.extent;
+//	glm::vec3 boxMin = box.origin - box.extent;
+//
+//	float temp1 = (boxMin.x - o.x)*dInv.x;
+//	float temp2 = (boxMax.x - o.x)*dInv.x;
+//
+//	float tmin = glm::min(temp1, temp2);
+//	float tmax = glm::max(temp1, temp2);
+//
+//	temp1 = (boxMin.y - o.y)*dInv.y;
+//	temp2 = (boxMax.y - o.y)*dInv.y;
+//
+//	tmin = glm::max(tmin, glm::min(temp1, temp2));
+//	tmax = glm::min(tmax, glm::max(temp1, temp2));
+//
+//	temp1 = (boxMin.z - o.z)*dInv.z;
+//	temp2 = (boxMax.z - o.z)*dInv.z;
+//
+//	tmin = glm::max(tmin, glm::min(temp1, temp2));
+//	tmax = glm::min(tmax, glm::max(temp1, temp2));
+//
+//	float tTest = t1;
+//	t1 = tmin;
+//	return tmax >= glm::max(t0, tmin) && tmin < tTest;
+//}
 
-	float bestT = 400000000.0f;
-
-	glm::vec3 bestNormal = glm::vec3(0.0f, 0.0f, 0.0f);
-
-	//glm::vec4 accumulation;
-
-	Material* mat;
-	bool intersected = FindBVHIntersect(ray, bvh, bestT, bestNormal, mat);
-
-
-
-	if (!intersected){
-
-		ray.active = false;
-		return  glm::vec3(ray.storage)*computeBackgroundColor(ray.direction);
-	}
-	else{
-		glm::vec3 biasVector = (RAY_BIAS_DISTANCE * bestNormal);
-
-		glm::vec3 bestIntersectionPoint = PositionAlongRay(ray, bestT);
-
-
-		glm::vec3 accumulation = glm::vec3(ray.storage * mat->emit);
-
-		ray.storage *= mat->diffuse;
-
-
-		////glm::vec3 incident = -ray.direction;
-
-		glm::vec3 orientedNormal = glm::dot(bestNormal, ray.direction) < 0 ? bestNormal : bestNormal * -1.0f;
-
-		float r1 = 2 * PI * curand_uniform(&randState);
-		float r2 = curand_uniform(&randState);
-		float r2s = sqrtf(r2);
-
-		glm::vec3 u = glm::normalize(glm::cross((glm::abs(orientedNormal.x) > .1 ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0)), orientedNormal));
-		glm::vec3 v = glm::cross(orientedNormal, u);
-
-		ray.origin = bestIntersectionPoint + biasVector;
-		ray.direction = glm::normalize(u*cos(r1)*r2s + v*sin(r1)*r2s + orientedNormal*sqrtf(1 - r2));
-
-		return accumulation;
-
-		//return glm::vec3(1.0f,0.0f,0.0f);
-	}
-}
+//__device__ bool FindBVHIntersect(const Ray& ray, BVH* bvh, float& bestT, glm::vec3& bestNormal, Material*& mat){
+//
+//	bool intersected = false;
+//
+//	Node* stack[BVH_STACK_SIZE];
+//
+//	uint stackIdx = 0;
+//
+//	glm::vec3 dirInverse = 1.0f / ray.direction;
+//
+//	float t = bestT;
+//	if (AABBIntersect(bvh->GetRoot()->box, ray.origin, dirInverse, 0.0f, t)){
+//		stack[stackIdx++] = bvh->GetRoot();
+//	}
+//
+//	while (stackIdx > 0) {
+//
+//		// pop a BVH node
+//
+//		Node* node = stack[--stackIdx];
+//
+//		//inner node
+//
+//		if (bvh->IsLeaf(node)) {
+//
+//			glm::uvec3 face = node->faceID->indices;
+//
+//			glm::vec3 xIndPos = node->faceID->objectPointer->vertices[face.x].position;
+//			glm::vec3 yIndPos = node->faceID->objectPointer->vertices[face.y].position;
+//			glm::vec3 zIndPos = node->faceID->objectPointer->vertices[face.z].position;
+//
+//
+//			float bary1 = 0;
+//			float bary2 = 0;
+//			float tTemp;
+//
+//			glm::vec3 edge1 = yIndPos - xIndPos;
+//			glm::vec3 edge2 = zIndPos - xIndPos;
+//
+//			if (FindTriangleIntersect(xIndPos, edge1, edge2,
+//				ray, dirInverse,
+//				tTemp, bestT, bary1, bary2)){
+//
+//				bestT = tTemp;
+//				/*	glm::vec3 norm1 = current->vertices[face.x].normal;
+//				glm::vec3 norm2 = current->vertices[face.y].normal;
+//				glm::vec3 norm3 = current->vertices[face.z].normal;*/
+//				bestNormal = glm::normalize(glm::cross(edge1, edge2));
+//				//bestNormal =glm::normalize( (norm3*bary2) + (norm2*bary1) + (norm1*(1.0f - bary1 - bary2)));
+//				mat = node->faceID->materialPointer;
+//				intersected = true;
+//			}
+//
+//
+//		}
+//		//outer node
+//		else {
+//			Node* first = node->childRight;
+//			Node* second = node->childLeft;
+//
+//			float tL = bestT;
+//			float tR = bestT;
+//			bool t1 = AABBIntersect(second->box, ray.origin, dirInverse, 0.0f, tL);
+//			bool t2 = AABBIntersect(first->box, ray.origin, dirInverse, 0.0f, tR);
+//
+//
+//
+//			if (t1&&t2&&tL < tR){
+//				Node* temp = first;
+//				first = second;
+//				second = temp;
+//
+//			}
+//			if (t1){
+//				stack[stackIdx++] = second; // right child node index
+//				if (stackIdx == BVH_STACK_SIZE){
+//					return false;
+//				}
+//			}
+//			if (t2){
+//				stack[stackIdx++] = first; // left child node index
+//				if (stackIdx == BVH_STACK_SIZE){
+//					return false;
+//				}
+//			}
+//		}
+//	}
+//
+//
+//	return intersected;
+//}
+//
+//
+//__device__ glm::vec3 Scene::IntersectColour(Ray& ray, curandState& randState)const{
+//
+//	float bestT = 400000000.0f;
+//
+//	glm::vec3 bestNormal = glm::vec3(0.0f, 0.0f, 0.0f);
+//
+//	//glm::vec4 accumulation;
+//
+//	Material* mat;
+//	bool intersected = FindBVHIntersect(ray, bvh, bestT, bestNormal, mat);
+//
+//
+//
+//	if (!intersected){
+//
+//		ray.active = false;
+//		return  glm::vec3(ray.storage)*computeBackgroundColor(ray.direction);
+//	}
+//	else{
+//		glm::vec3 biasVector = (RAY_BIAS_DISTANCE * bestNormal);
+//
+//		glm::vec3 bestIntersectionPoint = PositionAlongRay(ray, bestT);
+//
+//
+//		glm::vec3 accumulation = glm::vec3(ray.storage * mat->emit);
+//
+//		ray.storage *= mat->diffuse;
+//
+//
+//		////glm::vec3 incident = -ray.direction;
+//
+//		glm::vec3 orientedNormal = glm::dot(bestNormal, ray.direction) < 0 ? bestNormal : bestNormal * -1.0f;
+//
+//		float r1 = 2 * PI * curand_uniform(&randState);
+//		float r2 = curand_uniform(&randState);
+//		float r2s = sqrtf(r2);
+//
+//		glm::vec3 u = glm::normalize(glm::cross((glm::abs(orientedNormal.x) > .1 ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0)), orientedNormal));
+//		glm::vec3 v = glm::cross(orientedNormal, u);
+//
+//		ray.origin = bestIntersectionPoint + biasVector;
+//		ray.direction = glm::normalize(u*cos(r1)*r2s + v*sin(r1)*r2s + orientedNormal*sqrtf(1 - r2));
+//
+//		return accumulation;
+//
+//		//return glm::vec3(1.0f,0.0f,0.0f);
+//	}
+//}
 
 __host__ uint Scene::AddObject(Object* obj){
 
@@ -753,30 +761,22 @@ __host__ uint Scene::AddObject(Object* obj){
 		Object** objectsTemp;
 		allocatedObjects *= 2;
 
-		if (allocatedObjects==0){
+		if (allocatedObjects == 0){
 			allocatedObjects = 1;
 		}
 
-		cudaMallocManaged(&objectsTemp, allocatedObjects * sizeof(Object*));
-		
+		CudaCheck(cudaMallocManaged((void**)&objectsTemp, allocatedObjects * sizeof(Object*)));
+
 		cudaMemcpy(objectsTemp, objectList, objectsSize*sizeof(Object*), cudaMemcpyDefault);
-		cudaFree(objectList);
+		CudaCheck(cudaFree(objectList));
 		objectList = objectsTemp;
 	}
-	
-	
+
+
 	//update the scene's bounding volume
-	glm::vec3 max = sceneBox.origin + sceneBox.extent;
-	glm::vec3 min = sceneBox.origin - sceneBox.extent;
 
-	glm::vec3 objMax = obj->box.origin + obj->box.extent;
-	glm::vec3 objMin = obj->box.origin - obj->box.extent;
-
-	glm::vec3 newMax = glm::max(max, objMax);
-	glm::vec3 newMin = glm::min(min, objMin);
-	
-	sceneBox.origin = ((newMax - newMin) / 2.0f) + newMin;
-	sceneBox.extent = sceneBox.origin - newMin;
+	sceneBox.max = glm::max(sceneBox.max, obj->box.max);
+	sceneBox.min = glm::min(sceneBox.min, obj->box.min);
 
 	//add the reference as the new object and increase the object count by 1
 	CudaCheck(cudaDeviceSynchronize());

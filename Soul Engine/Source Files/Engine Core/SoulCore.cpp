@@ -33,6 +33,7 @@ Camera* camera;
 
 float scrollUniform;
 
+bool runShutdown;
 bool freeCam;
 
 float timeModifier = 1.0f;
@@ -50,6 +51,7 @@ glm::vec2 mouseChangeDegrees;
 //Initializes Soul. This must be called before using variables or 
 //any other functions relating to the engine.
 void SoulInit(){
+	runShutdown = false;
 	scrollUniform = 0.05f;
 seed = GLuint(time(NULL));
 srand(seed);
@@ -141,15 +143,15 @@ else{
 
 //Call to deconstuct both the engine and its dependencies
 void SoulTerminate(){
-
+	runShutdown = true;
+}
+void SoulShutDown(){
 	Scheduler::Terminate();
 	RayEngine::Clean();
 	CudaCheck(cudaDeviceReset());
 	//delete hub;
 	delete settings;
 	glfwTerminate();
-
-	exit(0);
 }
 void AddObject(Object* object){
 	//hub->Add(object);
@@ -256,7 +258,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	// setup camera 
 	freeCam = true;
 	//camera->SetPosition(glm::vec3(-5.0f*METER, 2.0f*METER, 5.0f*METER));
-	camera->SetPosition(glm::vec3(-(DECAMETER * 5), DECAMETER * 5, -(DECAMETER * 5)));
+	camera->SetPosition(glm::vec3(-(METER * 2), METER * 2*2, -(METER * 2)));
 	camera->OffsetOrientation(45, 45);
 
 	//unsigned concurentThreadsSupported = std::thread::hardware_concurrency();
@@ -394,7 +396,7 @@ TASK_FUNCTION(Run)
 	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 
-	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "Rebellion.obj", whiteGray);
+	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "Winged_Victory.obj", whiteGray);
 	scene->AddObject(obj);
 
 	/*Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
@@ -431,7 +433,7 @@ TASK_FUNCTION(Run)
 	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
 
 	bool test = true;
-	while (!glfwWindowShouldClose(mainThread)){
+	while (!runShutdown){
 		double newTime = glfwGetTime();
 		double frameTime = newTime - currentTime;
 		//std::cout << "FPS:: " <<1.0f / frameTime << std::endl;
@@ -505,6 +507,13 @@ TASK_FUNCTION(Run)
 		
 		glfwSwapBuffers(mainThread);
 	}
+
+	delete camera;
+	delete light;
+	delete whiteGray;
+	delete obj;
+	delete scene;
+	delete rend;
 }
 glm::vec2* GetMouseChange(){
 	return &mouseChangeDegrees;
@@ -529,6 +538,6 @@ void TogglePhysics(){
 int main(){
 
 	Scheduler::Start({ Run, nullptr });
-	SoulTerminate();
+	SoulShutDown();
 	return 0;
 }
