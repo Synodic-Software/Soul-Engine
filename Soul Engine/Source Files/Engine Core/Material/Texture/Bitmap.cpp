@@ -1,11 +1,11 @@
-
 #include "Bitmap.h"
 #include <stdexcept>
 #include <iostream>
 
 //uses stb_image to try load files
-#define STBI_FAILURE_USERMSG
-#include <stb_image.c>
+#define STB_IMAGE_IMPLEMENTATION
+//#define STBI_FAILURE_USERMSG
+#include <stb_image.h>
 
 
 inline unsigned char AverageRGB(unsigned char rgb[3]) {

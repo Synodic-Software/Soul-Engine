@@ -49,56 +49,6 @@ struct is_scheduled
 };
 
 
-
-// Template structure to pass to kernel
-template <typename T>
-struct KernelArray : public Managed
-{
-public:
-	T*  _array;
-	int _size;
-
-public:
-	__device__ int Size() const{
-		return _size;
-	}
-
-	__device__ T operator[](const int& i)const {
-		return _array[i];
-	}
-	__device__ T& operator[](const int& i) {
-		return _array[i];
-	}
-	__device__ T& operator[](const uint& i) {
-		return _array[i];
-	}
-	__device__ T operator[](const uint& i)const {
-		return _array[i];
-	}
-	__host__ KernelArray() {
-		_array = NULL;
-		_size = 0;
-
-	}
-
-	// constructor allows for implicit conversion
-
-	__host__ KernelArray(thrust::device_vector<T>& dVec) {
-		_array = thrust::raw_pointer_cast(&dVec[0]);
-		_size = (int)dVec.size();
-	}
-	__host__ KernelArray(T* arr, int size) {
-		_array = arr;
-		_size = size;
-	}
-	__host__ ~KernelArray(){
-
-	}
-
-};
-
-
-
 //morton codes
 
 __device__ const uint morton256_x[256] =
@@ -239,7 +189,7 @@ __device__ uint64 mortonEncode_LUT(const glm::vec3& data, const BoundingBox& box
 }
 
 
-__global__ void GenerateMortonCodes(const uint n, KernelArray<uint64> mortonCodes, KernelArray<Face*> faceList, KernelArray<Object*> objectList, const BoundingBox box){
+__global__ void GenerateMortonCodes(const uint n, uint64* mortonCodes, Face** faceList, Object** objectList, const BoundingBox box){
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -253,7 +203,7 @@ __global__ void GenerateMortonCodes(const uint n, KernelArray<uint64> mortonCode
 	}
 }
 
-__global__ void FillBool(const uint n, KernelArray<bool> jobs, KernelArray<bool> fjobs, KernelArray<Face*> faces, KernelArray<uint> objIds, KernelArray<Object*> objects){
+__global__ void FillBool(const uint n, bool* jobs, bool* fjobs, Face** faces, uint* objIds, Object** objects){
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -275,7 +225,7 @@ __global__ void FillBool(const uint n, KernelArray<bool> jobs, KernelArray<bool>
 	}
 }
 
-__global__ void GetFace(const uint n, KernelArray<uint> objIds, KernelArray<Object*> objects, KernelArray<Face*> faces, const uint offset){
+__global__ void GetFace(const uint n, uint* objIds, Object** objects, Face** faces, const uint offset){
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -318,20 +268,12 @@ __host__ bool Scene::Compile(){
 
 
 			//variables from the scene to the kernal
-			KernelArray<bool> boolJobs = KernelArray<bool>(markers, compiledSize);
-			KernelArray<bool> faceBoolJobs = KernelArray<bool>(faceMarkers, compiledSize);
-			KernelArray<Face*>faceIdsInput = KernelArray<Face*>(faceIds, compiledSize);
-
-			KernelArray<uint> objIdsInput = KernelArray<uint>(objIds, compiledSize);
-
-			KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, compiledSize);
-
 
 			uint blockSize = 64;
 			uint gridSize = (compiledSize + blockSize - 1) / blockSize;
 
 			//fill the mask with 1s or 0s
-			FillBool << <gridSize, blockSize >> >(compiledSize, boolJobs, faceBoolJobs, faceIdsInput, objIdsInput, objectsInput);
+			FillBool << <gridSize, blockSize >> >(compiledSize, markers, faceMarkers, faceIds, objIds, objectList);
 
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -429,15 +371,10 @@ __host__ bool Scene::Compile(){
 			CudaCheck(cudaDeviceSynchronize());
 
 
-			KernelArray<Face*> faceInput = KernelArray<Face*>(faceIds, newSize);
-			KernelArray<uint> objIdsInput = KernelArray<uint>(objIds, newSize);
-			KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, newSize);
-
-
 			uint blockSize = 64;
 			uint gridSize = ((newSize - removedOffset) + blockSize - 1) / blockSize;
 
-			GetFace << <gridSize, blockSize >> >(newSize - removedOffset, objIdsInput, objectsInput, faceInput, removedOffset);
+			GetFace << <gridSize, blockSize >> >(newSize - removedOffset, objIds, objectList, faceIds, removedOffset);
 			CudaCheck(cudaDeviceSynchronize());
 
 		}
@@ -467,14 +404,9 @@ __host__ void Scene::Build(){
 	uint blockSize = 64;
 	uint gridSize = (compiledSize + blockSize - 1) / blockSize;
 
-	KernelArray<Face*> faceInput = KernelArray<Face*>(faceIds, compiledSize);
-	KernelArray<uint64> mortonInput = KernelArray<uint64>(mortonCodes, compiledSize);
-
-	KernelArray<Object*> objectsInput = KernelArray<Object*>(objectList, compiledSize);
-
 	CudaCheck(cudaDeviceSynchronize());
 
-	GenerateMortonCodes << <gridSize, blockSize >> >(compiledSize, mortonInput, faceInput, objectsInput, sceneBox);
+	GenerateMortonCodes << <gridSize, blockSize >> >(compiledSize, mortonCodes, faceIds, objectList, sceneBox);
 
 	thrust::device_ptr<uint64_t> keys = thrust::device_pointer_cast(mortonCodes);
 	thrust::device_ptr<Face*> values = thrust::device_pointer_cast(faceIds);
@@ -497,6 +429,7 @@ __host__ void Scene::Build(){
 	while (swapped) {
 		swapped = false;
 		j++;
+
 		for (int i = 0; i < compiledSize - j; i++) {
 			if (mortonCodes[i] > mortonCodes[i + 1]) {
 				tmp = mortonCodes[i];

@@ -270,10 +270,6 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 
 	const GLubyte* renderer = glGetString(GL_VENDOR);
 
-
-
-	Material::SetDefaultTexture("SoulDefault.png");
-
 	glfwSetKeyCallback(mainThread, InputKeyboardCallback);
 	SetInputWindow(mainThread);
 }
@@ -387,6 +383,7 @@ TASK_FUNCTION(Run)
 
 	//Hand* hand = new Hand();
 
+
 	Material* light = new Material();
 	light->diffuse = glm::vec4(1.0f,1.0f,1.0f,1.0f);
 	light->emit = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -396,7 +393,7 @@ TASK_FUNCTION(Run)
 	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 
-	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "Winged_Victory.obj", whiteGray);
+	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "rebellion.obj", whiteGray);
 	scene->AddObject(obj);
 
 	/*Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
@@ -471,7 +468,7 @@ TASK_FUNCTION(Run)
 		rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
 		camera->UpdateVariables();
 
-		//if (test){
+		try{
 			test = !test;
 			cudaEvent_t start, stop;
 			float time;
@@ -486,18 +483,28 @@ TASK_FUNCTION(Run)
 			cudaEventElapsedTime(&time, start, stop);
 			cudaEventDestroy(start);
 			cudaEventDestroy(stop);
-		//}
+		}
+		catch (thrust::system_error &e)
+		{
+			std::cerr << "thrust system error: " << e.what() << std::endl;
+			exit(-1);
+		}
 
 
 		std::cout << "Building Execution: " << time << "ms" << std::endl;
 
-
+		try{
 		RayEngine::Clear();
 
 
 
 		RayEngine::Process(scene);
-
+	}
+	catch (thrust::system_error &e)
+	{
+		std::cerr << "thrust system error: " << e.what() << std::endl;
+		exit(-1);
+	}
 		//draw
 		ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 

@@ -149,7 +149,7 @@ void BVH::Build(uint size){
 
 	BuildTree << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1,this);
 
-	CudaCheck(cudaDeviceSynchronize());
+	cudaDeviceSynchronize();
 
 	cudaEventRecord(stop, 0);
 	cudaEventSynchronize(stop);

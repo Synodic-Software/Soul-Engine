@@ -125,8 +125,8 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	}*/
 
 
-	if (newWidth<48){
-		newWidth = 48;
+	if (newWidth<32){
+		newWidth = 32;
 	}
 	else if (newWidth>originalScreen.x){
 		newWidth = originalScreen.x;

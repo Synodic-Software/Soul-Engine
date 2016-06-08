@@ -46,9 +46,9 @@ private:
 	
 	BoundingBox sceneBox;
 
-	uint newFaceAmount; //The amount of indices the entire scene takes
-	uint compiledSize; //the amount of indices as of the previous compile;
-	uint allocatedSize; //the amount of triangles that have been allocated
+	int newFaceAmount; //The amount of indices the entire scene takes
+	int compiledSize; //the amount of indices as of the previous compile;
+	int allocatedSize; //the amount of triangles that have been allocated
 
 	bool* objectBitSetup; // hold a true for the first indice of each object
 	uint* objIds; //points to the object
