@@ -11,6 +11,9 @@
 #include <device_functions.h>
 #include <curand.h>
 #include <curand_kernel.h>
+#include <vector_types.h>
+#include <driver_functions.h>
+#include "CUDA\cutil_math.h"
 
 //#include "thrust\random.h"
 

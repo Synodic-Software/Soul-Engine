@@ -151,6 +151,9 @@
     <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA">
       <UniqueIdentifier>{569e80ad-2c0c-4111-a1c0-46b44265cb04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Engine Core\Material\CUDA">
+      <UniqueIdentifier>{8667c13f-ee65-4881-a0f8-de523386f4f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -176,9 +179,6 @@
     </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Object\Character\Character.h">
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Material\Material.h">
-      <Filter>Engine Backend\Engine Core\Material</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Texture.h">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
@@ -345,6 +345,15 @@
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\Material.h">
+      <Filter>Engine Backend\Engine Core\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\CUDA\Material.cuh">
+      <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\CUDA\cutil_math.h">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -367,9 +376,6 @@
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp">
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Material\Material.cpp">
-      <Filter>Engine Backend\Engine Core\Material</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Material\Texture\Bitmap.cpp">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
@@ -474,6 +480,9 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Engine Core\Material\CUDA\Material.cu">
+      <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
