@@ -42,7 +42,7 @@ bool runPhysics;
 bool freeMouse;
 void TogglePhysics();
 void UpdateTimers();
-void ClearColor(float,float,float,float);
+void ClearColor(float, float, float, float);
 float physicsTimer;
 glm::vec2 mouseChangeDegrees;
 
@@ -53,91 +53,91 @@ glm::vec2 mouseChangeDegrees;
 void SoulInit(){
 	runShutdown = false;
 	scrollUniform = 0.05f;
-seed = GLuint(time(NULL));
-srand(seed);
-settings = new Settings("Settings.ini");
-physicsTimer = 0;
+	seed = GLuint(time(NULL));
+	srand(seed);
+	settings = new Settings("Settings.ini");
+	physicsTimer = 0;
 
-runPhysics = false;
+	runPhysics = false;
 
-if (!glfwInit()){
-	SoulTerminate();
-}
+	if (!glfwInit()){
+		SoulTerminate();
+	}
 
 	//set window
-std::string wSet = GetSetting("Window");
-if (wSet.compare("WINDOWED") == 0){
-	window = WINDOWED;
-}
-else if (wSet.compare("FULLSCREEN") == 0){
-	window = FULLSCREEN;
-}
-else if (wSet.compare("BORDERLESS") == 0){
-	window = BORDERLESS;
-}
-else{
-	SetSetting("Window", "FULLSCREEN");
-	window = FULLSCREEN;
-}
+	std::string wSet = GetSetting("Window");
+	if (wSet.compare("WINDOWED") == 0){
+		window = WINDOWED;
+	}
+	else if (wSet.compare("FULLSCREEN") == 0){
+		window = FULLSCREEN;
+	}
+	else if (wSet.compare("BORDERLESS") == 0){
+		window = BORDERLESS;
+	}
+	else{
+		SetSetting("Window", "FULLSCREEN");
+		window = FULLSCREEN;
+	}
 
-//window = FULLSCREEN; ///////////////////////////////////////////////////////////////////////// <----------- TEMPORARY
+	//window = FULLSCREEN; ///////////////////////////////////////////////////////////////////////// <----------- TEMPORARY
 
 	//set renderer
-std::string rSet = GetSetting("Renderer");
-/*if (rSet.compare("RASTER") == 0){
-	renderer = RASTER;
-}
-else */if (rSet.compare("SPECTRAL") == 0){
-	renderer = SPECTRAL;
-}
-else if (rSet.compare("PATH") == 0){
-	renderer = PATH;
-}
-//else if (rSet.compare("RAY") == 0){
-//	renderer = RAY;
-//}
-else{
-	SetSetting("Renderer", "SPECTRAL");
-	renderer = SPECTRAL;
-}
+	std::string rSet = GetSetting("Renderer");
+	/*if (rSet.compare("RASTER") == 0){
+		renderer = RASTER;
+		}
+		else */if (rSet.compare("SPECTRAL") == 0){
+			renderer = SPECTRAL;
+		}
+		else if (rSet.compare("PATH") == 0){
+			renderer = PATH;
+		}
+		//else if (rSet.compare("RAY") == 0){
+		//	renderer = RAY;
+		//}
+		else{
+			SetSetting("Renderer", "SPECTRAL");
+			renderer = SPECTRAL;
+		}
 
 
-int count;
-GLFWmonitor** monitors = glfwGetMonitors(&count);
+		int count;
+		GLFWmonitor** monitors = glfwGetMonitors(&count);
 
-	//set screen size
-const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		//set screen size
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-std::string xScreen = GetSetting("ScreenX");
-if (xScreen.compare("")!=0){
-	SCREEN_SIZE.x = atoi(xScreen.c_str());
-}
-else{
-	SCREEN_SIZE.x = mode->width;
-	SetSetting("ScreenX", std::to_string(mode->width));
-}
+		std::string xScreen = GetSetting("ScreenX");
+		if (xScreen.compare("") != 0){
+			SCREEN_SIZE.x = atoi(xScreen.c_str());
+		}
+		else{
+			SCREEN_SIZE.x = mode->width;
+			SetSetting("ScreenX", std::to_string(mode->width));
+		}
 
-std::string yScreen = GetSetting("ScreenY");
-if (yScreen.compare("") != 0){
-	SCREEN_SIZE.y = atoi(yScreen.c_str());
-}
-else{
-	SCREEN_SIZE.y = mode->height;
-	SetSetting("ScreenY", std::to_string(mode->height));
-}
+		std::string yScreen = GetSetting("ScreenY");
+		if (yScreen.compare("") != 0){
+			SCREEN_SIZE.y = atoi(yScreen.c_str());
+		}
+		else{
+			SCREEN_SIZE.y = mode->height;
+			SetSetting("ScreenY", std::to_string(mode->height));
+		}
 
-SCREEN_SIZE = glm::uvec2(SCREEN_SIZE.x / 1.05f, SCREEN_SIZE.y / 1.05f );
-												///////////////////////////////////////////////////////////////////////// <----------- TEMPORARY
-//msaa samples
+		SCREEN_SIZE = glm::uvec2(SCREEN_SIZE.x / 1.05f, SCREEN_SIZE.y / 1.05f);
+		///////////////////////////////////////////////////////////////////////// <----------- TEMPORARY
+		//msaa samples
 
-std::string msAA = GetSetting("MSAA");
-if (msAA.compare("") != 0){
-	MSAASamples = atoi(msAA.c_str());
-}
-else{
-	SetSetting("MSAA", std::to_string(16));
-	MSAASamples = 16;
-}
+		std::string msAA = GetSetting("MSAA");
+		if (msAA.compare("") != 0){
+			MSAASamples = atoi(msAA.c_str());
+		}
+		else{
+			SetSetting("MSAA", std::to_string(16));
+			MSAASamples = 16;
+		}
 
 }
 
@@ -159,7 +159,7 @@ void AddObject(Object* object){
 }
 void RemoveObject(Object* object){
 
-	
+
 
 }
 
@@ -171,7 +171,7 @@ void SoulSynchCPU(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint&
 void SoulSynchGPU(){
 	CudaCheck(cudaDeviceSynchronize());
 }
-void SoulSynch(FiberTaskingLib::TaskScheduler* sched,COUNTER* counter,uint& size){
+void SoulSynch(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint& size){
 	SoulSynchCPU(sched, counter, size);
 	SoulSynchGPU();
 }
@@ -186,14 +186,14 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	renderer = rendererT;
 	SetSetting("Renderer", "PATH");
 
-	glfwWindowHint( GLFW_VISIBLE, GL_FALSE );
+	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 	loopThread = glfwCreateWindow(1, 1, "Thread Window", NULL, NULL);
 
 
 	glfwWindowHint(GLFW_SAMPLES, 0);
-	glfwWindowHint(GLFW_VISIBLE, GL_TRUE );
+	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
 
-	if (window==FULLSCREEN){
+	if (window == FULLSCREEN){
 
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
@@ -225,12 +225,12 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 		mainThread = glfwCreateWindow(SCREEN_SIZE.x, SCREEN_SIZE.y, "Soul Engine", NULL, loopThread);
 
 	}
-	
+
 
 	if (!mainThread){
-        glfwTerminate();
+		glfwTerminate();
 		throw std::runtime_error("GLFW window failed");
-    }
+	}
 
 	glfwMakeContextCurrent(mainThread);
 
@@ -245,7 +245,7 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0, SCREEN_SIZE.y / 2.0);
 
 	//Discard all the errors
-	while(glGetError() != GL_NO_ERROR) {}
+	while (glGetError() != GL_NO_ERROR) {}
 
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	glDepthMask(GL_TRUE);  // turn on
@@ -258,15 +258,13 @@ void SoulCreateWindow(WindowType windowT, RenderType rendererT){
 	// setup camera 
 	freeCam = true;
 	//camera->SetPosition(glm::vec3(-5.0f*METER, 2.0f*METER, 5.0f*METER));
-	camera->SetPosition(glm::vec3(-(METER * 2), METER * 2*2, -(METER * 2)));
+	camera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
 	camera->OffsetOrientation(45, 45);
 
 	//unsigned concurentThreadsSupported = std::thread::hardware_concurrency();
 	//threads = new ThreadPool(concurentThreadsSupported);
 
 	//hub = new BVH();
-
-
 
 	const GLubyte* renderer = glGetString(GL_VENDOR);
 
@@ -355,37 +353,37 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 
 	scrollUniform += (float)(yoffset / 50.0);
-	if (scrollUniform>1.0f){
+	if (scrollUniform > 1.0f){
 		scrollUniform = 1.0f;
 	}
-	else if (scrollUniform<0.0f){
+	else if (scrollUniform < 0.0f){
 		scrollUniform = 0.0f;
 	}
 }
 
 TASK_FUNCTION(Run)
 {
-	
+
 	SoulSynchGPU();
 	SoulInit();
 	SoulSynchGPU();
 	camera = new Camera();
-	
 
-	
+
+
 
 	SoulSynchGPU();
 	SoulCreateWindow(BORDERLESS, SPECTRAL);
 
 
 	scene = new Scene();
-	rend= new Renderer(*camera,SCREEN_SIZE);
+	rend = new Renderer(*camera, SCREEN_SIZE);
 
 	//Hand* hand = new Hand();
 
 
 	Material* light = new Material();
-	light->diffuse = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+	light->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	light->emit = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	Material* whiteGray = new Material();
@@ -396,14 +394,14 @@ TASK_FUNCTION(Run)
 	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "rebellion.obj", whiteGray);
 	scene->AddObject(obj);
 
-	/*Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
-	scene->AddObject(sun);*/
-
-	
+	Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
+	scene->AddObject(sun);
 
 
 
-	
+
+
+
 
 	//Hand* hand1 = new Hand(glm::vec3(0.0f, 0.0f, 20*METER));
 	//Object* handObj1 = hand1;
@@ -449,13 +447,34 @@ TASK_FUNCTION(Run)
 			//loading and updates for multithreading
 
 			//set cursor in center
-			UpdateMouse();
 
 			glfwPollEvents();
 
 			UpdateKeys();
 
+			UpdateMouse();
+
+			camera->UpdateVariables();
+		
 			//Update();
+
+
+
+		cudaEvent_t start, stop;
+		float time;
+		cudaEventCreate(&start);
+		cudaEventCreate(&stop);
+		cudaEventRecord(start, 0);
+
+		scene->Build();
+
+		cudaEventRecord(stop, 0);
+		cudaEventSynchronize(stop);
+		cudaEventElapsedTime(&time, start, stop);
+		cudaEventDestroy(start);
+		cudaEventDestroy(stop);
+
+		std::cout << "Building Execution: " << time << "ms" << std::endl;
 
 			//RunPhysics();
 			UpdateTimers();
@@ -466,52 +485,29 @@ TASK_FUNCTION(Run)
 		}
 
 		rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
-		camera->UpdateVariables();
+		//camera->UpdateVariables();
 
-		try{
-			test = !test;
-			cudaEvent_t start, stop;
-			float time;
-			cudaEventCreate(&start);
-			cudaEventCreate(&stop);
-			cudaEventRecord(start, 0);
+		test = !test;
 
-			scene->Build();
-
-			cudaEventRecord(stop, 0);
-			cudaEventSynchronize(stop);
-			cudaEventElapsedTime(&time, start, stop);
-			cudaEventDestroy(start);
-			cudaEventDestroy(stop);
-		}
-		catch (thrust::system_error &e)
-		{
-			std::cerr << "thrust system error: " << e.what() << std::endl;
-			exit(-1);
-		}
+		
 
 
-		std::cout << "Building Execution: " << time << "ms" << std::endl;
 
-		try{
+		
+
 		RayEngine::Clear();
 
 
 
 		RayEngine::Process(scene);
-	}
-	catch (thrust::system_error &e)
-	{
-		std::cerr << "thrust system error: " << e.what() << std::endl;
-		exit(-1);
-	}
+
 		//draw
 		ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		SoulSynchGPU();
 		rend->Render(runPhysics);
 		SoulSynchGPU();
-		
+
 		glfwSwapBuffers(mainThread);
 	}
 
@@ -527,7 +523,7 @@ glm::vec2* GetMouseChange(){
 }
 
 void UpdateTimers(){
-	if (physicsTimer>0){
+	if (physicsTimer > 0){
 		physicsTimer = physicsTimer - deltaTime;
 	}
 }

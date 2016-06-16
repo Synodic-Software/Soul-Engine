@@ -1,7 +1,7 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
 
-std::vector<RayJob*> jobList;
+std::vector<RayJob*> jobList = std::vector<RayJob*>(0);
 
 void RayEngine::Process(const Scene* scene){
 	ProcessJobs(jobList, scene);

@@ -154,6 +154,12 @@
     <Filter Include="Engine Backend\Engine Core\Material\CUDA">
       <UniqueIdentifier>{8667c13f-ee65-4881-a0f8-de523386f4f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Compact">
+      <UniqueIdentifier>{74a4718e-692b-49ef-9fac-e408ea0b80f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Scan">
+      <UniqueIdentifier>{b1106127-54c1-4727-a4cf-dc983c2fff9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -181,9 +187,6 @@
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Texture.h">
-      <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Material\Texture\Bitmap.h">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.h">
@@ -354,6 +357,12 @@
     <ClInclude Include="Source Files\Utility\CUDA\cutil_math.h">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Compact</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\Texture\Image.h">
+      <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -376,9 +385,6 @@
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp">
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Material\Texture\Bitmap.cpp">
-      <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Material\Texture\Texture.cpp">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
@@ -424,6 +430,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
       <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Material\Texture\Image.cpp">
+      <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

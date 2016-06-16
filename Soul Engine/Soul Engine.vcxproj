@@ -178,6 +178,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="Include Files\Metrics.h" />
     <ClInclude Include="Include Files\SoulCore.h" />
+    <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh" />
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cuh" />
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h" />
     <ClInclude Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h" />
@@ -193,7 +194,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Engine Core\Frame\Frame.h" />
     <ClInclude Include="Source Files\Engine Core\Material\CUDA\Material.cuh" />
     <ClInclude Include="Source Files\Engine Core\Material\Material.h" />
-    <ClInclude Include="Source Files\Engine Core\Material\Texture\Bitmap.h" />
+    <ClInclude Include="Source Files\Engine Core\Material\Texture\Image.h" />
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Texture.h" />
     <ClInclude Include="Source Files\Engine Core\Object\Character\Character.h" />
     <ClInclude Include="Source Files\Engine Core\Object\CUDA\Face.cuh" />
@@ -248,7 +249,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />
-    <ClCompile Include="Source Files\Engine Core\Material\Texture\Bitmap.cpp" />
+    <ClCompile Include="Source Files\Engine Core\Material\Texture\Image.cpp" />
     <ClCompile Include="Source Files\Engine Core\Material\Texture\Texture.cpp" />
     <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp" />
     <ClCompile Include="Source Files\Engine Core\Object\ObjLoader.cpp" />

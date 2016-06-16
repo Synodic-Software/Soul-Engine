@@ -49,7 +49,7 @@
       <NvccCompilation>compile</NvccCompilation>
       <GenerateLineInfo>true</GenerateLineInfo>
       <CudaRuntime>Static</CudaRuntime>
-      <CodeGeneration>compute_30,sm_52</CodeGeneration>
+      <CodeGeneration>compute_30,sm_50</CodeGeneration>
       <FastMath>true</FastMath>
       <UseHostInclude>true</UseHostInclude>
       <Optimization>O3</Optimization>

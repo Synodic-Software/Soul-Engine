@@ -12,17 +12,27 @@ public:
 
 	//CUDA_FUNCTION Ray(glm::vec3 newO, glm::vec3 newD) : origin(newO), direction(newD){}
 	CUDA_FUNCTION Ray();
-	CUDA_FUNCTION Ray(const Ray &a);
+	CUDA_FUNCTION Ray::Ray(const Ray &a)
+	{
+		storage = a.storage;
+		origin = a.origin;
+		direction = a.direction;
+		bary = a.bary;
+		currentHit = a.currentHit;
+		resultOffset = a.resultOffset;
+		job = a.job;
+	}
 
 	CUDA_FUNCTION Ray& Ray::operator= (const Ray &a)
 	{
 
+		storage = a.storage;
 		origin = a.origin;
 		direction = a.direction;
-		storage = a.storage;
-		job = a.job;
-		resultOffset = a.resultOffset;
+		bary = a.bary;
 		currentHit = a.currentHit;
+		resultOffset = a.resultOffset;
+		job = a.job;
 
 		return *this;
 	}
@@ -30,7 +40,7 @@ public:
 	glm::vec4 storage;
 	glm::vec4 origin; //origin and a single value representing the remaining distance this ray can travel in this frame
 	glm::vec4 direction;
-	glm::vec2 uv;
+	glm::vec2 bary;
 	Face* currentHit;
 	uint resultOffset;
 	char job;
