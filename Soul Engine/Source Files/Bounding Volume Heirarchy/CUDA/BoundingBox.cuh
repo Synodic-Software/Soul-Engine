@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Utility/CUDAIncludes.h"
-
-class __align__(32) BoundingBox : public Managed
+// __align__(32)
+class BoundingBox : public Managed
 {
 public:
 	CUDA_FUNCTION BoundingBox();

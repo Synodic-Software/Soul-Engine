@@ -4,10 +4,6 @@
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 #define RAY_BIAS_DISTANCE 0.0002f 
 
-#define GPU_CORES 640
-#define BLOCK_HEIGHT 4 //cores/smm /32
-#define WARP_SIZE 32
-
 struct is_marked
 {
 	__host__ __device__
@@ -17,16 +13,14 @@ struct is_marked
 	}
 };
 
-RayJob** jobL;
 Ray* deviceRays = NULL;
+Ray* deviceRaysB = NULL;
 uint raySeedGl = 0;
 uint numRaysAllocated = 0;
-const uint rayDepth = 2;
+const uint rayDepth = 3;
 
 
-
-
-template <class T> __device__ __inline__ void swap(T& a, T& b)
+template <class T> CUDA_FUNCTION __inline__ void swap(T& a, T& b)
 {
 	T t = a;
 	a = b;
@@ -120,12 +114,6 @@ __device__ __inline__ float magic_min7(float a0, float a1, float b0, float b1, f
 
 __device__ __inline__ float spanBeginKepler(float a0, float a1, float b0, float b1, float c0, float c1, float d){ return fmax_fmax(fminf(a0, a1), fminf(b0, b1), fmin_fmax(c0, c1, d)); }
 __device__ __inline__ float spanEndKepler(float a0, float a1, float b0, float b1, float c0, float c1, float d)	{ return fmin_fmin(fmaxf(a0, a1), fmaxf(b0, b1), fmax_fmin(c0, c1, d)); }
-
-
-
-
-
-
 
 
 CUDA_FUNCTION __inline__ uint WangHash(uint a) {
@@ -280,7 +268,7 @@ CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, con
 }
 
 
-__global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene){
+__global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, Ray* raysNew, const uint raySeed, const Scene* scene, int * nAtomic){
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -309,12 +297,13 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 	}
 	else{
 
+
+
 		Material* mat = ray.currentHit->materialPointer;
 
 		Vertex* vP = faceHit->objectPointer->vertices;
 
-		glm::vec2 bary = ray.uv;
-
+		glm::vec2 bary = ray.bary;
 
 		glm::vec3 n0 = vP[faceHit->indices.x].position;
 		glm::vec3 n1 = vP[faceHit->indices.y].position;
@@ -332,7 +321,8 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 		glm::vec2 uv1 = vP[faceHit->indices.y].textureCoord;
 		glm::vec2 uv2 = vP[faceHit->indices.z].textureCoord;
 
-		glm::vec2 bestUV = (1 - bary.x - bary.y) * uv0 + bary.x * uv1 + bary.y * uv2;
+		glm::vec2 bestUV = (1.0f - bary.x - bary.y) * uv0 + bary.x * uv1 + bary.y * uv2;
+
 
 		glm::vec3 biasVector = (RAY_BIAS_DISTANCE * bestNormal);
 
@@ -348,11 +338,13 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 		//unsigned char blue = tex2D<unsigned char>(mat->texObj, (4 * localIndex), localIndex);
 		//unsigned char green = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 1, localIndex);
 		//unsigned char red = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 2, localIndex);
-		//float4 PicCol = tex2DLod<float4>(mat->texObj, bestUV.x, bestUV.y, 0.0f);
-		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
-		//ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
 
-		ray.storage *= mat->diffuse;
+		float4 PicCol = tex2DLod<float4>(mat->texObj, bestUV.x, bestUV.y, 0.0f);
+		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
+		ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
+
+
+		//ray.storage *= mat->diffuse;
 
 		glm::vec3 orientedNormal = glm::dot(bestNormal, glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z)) < 0 ? bestNormal : bestNormal * -1.0f;
 
@@ -367,10 +359,16 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 		ray.direction = glm::vec4(glm::normalize(u*cos(r1)*r2s + v*sin(r1)*r2s + orientedNormal*sqrtf(1 - r2)), 40000000000000.0f);
 
 		col = accumulation;
+
+		//newListwithatomics
+
+
+		raysNew[FastAtomicAdd(nAtomic)] = ray;
+
 	}
 	col /= job[cur]->GetSampleAmount();
 
-	rays[index] = ray;
+	//rays[index] = ray;
 
 	glm::vec4* pt = &((glm::vec4*)job[cur]->GetResultPointer(0))[localIndex];
 
@@ -386,7 +384,7 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 
 
 
-__global__ void EngineExecute(const uint n, RayJob** job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene, uint* counter){
+__global__ void EngineExecute(const uint n, RayJob** job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene, int* counter){
 
 
 	Node * traversalStack[STACK_SIZE];
@@ -559,7 +557,7 @@ __global__ void EngineExecute(const uint n, RayJob** job, int jobSize, Ray* rays
 				tTemp, ray.direction.w, bary1, bary2)){
 
 					ray.direction.w = tTemp;
-					ray.uv = glm::vec2(bary1, bary2);
+					ray.bary = glm::vec2(bary1, bary2);
 					ray.currentHit = currentLeaf->faceID;
 				}
 
@@ -594,7 +592,12 @@ __host__ void ClearResults(std::vector<RayJob*>& hjobs){
 	uint jobsSize = hjobs.size();
 	cudaMallocManaged((void**)&jobs, jobsSize*sizeof(RayJob*));
 
+	CudaCheck(cudaDeviceSynchronize());
+
 	for (int i = 0; i < jobsSize; i++){
+	/*	std::cout << jobs[i] << std::endl;
+		std::cout << hjobs[i] << std::endl;*/
+
 		jobs[i] = hjobs[i];
 	}
 
@@ -634,12 +637,16 @@ __host__ void ClearResults(std::vector<RayJob*>& hjobs){
 		}
 		CudaCheck(cudaDeviceSynchronize());
 	}
+
+	cudaFree(jobs);
 }
 __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 	CudaCheck(cudaDeviceSynchronize());
 	RayJob** jobs;
 	uint jobsSize = hjobs.size();
 	cudaMallocManaged((void**)&jobs, jobsSize*sizeof(RayJob*));
+
+	CudaCheck(cudaDeviceSynchronize());
 
 	for (int i = 0; i < jobsSize; i++){
 		jobs[i] = hjobs[i];
@@ -658,13 +665,17 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 			}
 		}
 
+		CudaCheck(cudaDeviceSynchronize());
+
 		if (n != 0){
 			if (n > numRaysAllocated){
 				//deviceRays.resize(n);
-				if (deviceRays != NULL){
-					CudaCheck(cudaFree(&deviceRays));
-				}
+
+				CudaCheck(cudaFree(deviceRays));
+				CudaCheck(cudaFree(deviceRaysB));
+
 				CudaCheck(cudaMallocManaged((void**)&deviceRays, n*sizeof(Ray)));
+				CudaCheck(cudaMallocManaged((void**)&deviceRaysB, n*sizeof(Ray)));
 				numRaysAllocated = n;
 			}
 
@@ -692,9 +703,9 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 
 			int minGridSize;
 
-			uint* counter;
-			CudaCheck(cudaMallocManaged((void**)&counter, sizeof(uint)));
-			*counter = 0;
+			int* counter;
+			CudaCheck(cudaMallocManaged((void**)&counter, sizeof(int)));
+			counter[0] = 0;
 
 			//cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, EngineExecute, 0, 0);
 
@@ -710,12 +721,18 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 
 			//return kernel.launchTimed(numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE);
 
-
+			int* hitAtomic;
+			CudaCheck(cudaMallocManaged((void**)&hitAtomic, sizeof(int)));
+			*hitAtomic = 0;
 
 			EngineExecute << <numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
 			CudaCheck(cudaDeviceSynchronize());
 
-			CollectHits << <gridSize, blockSize >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene);
+			CollectHits << <gridSize, blockSize >> >(numActive, jobs, jobsSize, deviceRays, deviceRaysB, WangHash(++raySeedGl), scene, hitAtomic);
+
+			CudaCheck(cudaDeviceSynchronize());
+
+			swap(deviceRays, deviceRaysB);
 
 			for (uint i = 0; i < rayDepth - 1; ++i){
 				CudaCheck(cudaDeviceSynchronize());
@@ -725,11 +742,13 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 				cudaMemGetInfo(&mem_free_0, &mem_tot_0);
 				std::cout << "GPU Memory left: " << mem_free_0 / 1000000000.0f << " GB" << std::endl;
 
-
-				thrust::device_ptr<Ray> newEnd = thrust::remove_if(rayPtr, rayPtr + numActive, is_marked());
 				CudaCheck(cudaDeviceSynchronize());
 
-				numActive = newEnd.get() - rayPtr.get();
+				numActive = hitAtomic[0];
+
+
+
+				hitAtomic[0] = 0;
 
 				blockSize = 64;
 				gridSize = (numActive + blockSize - 1) / blockSize;
@@ -739,8 +758,9 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 				CudaCheck(cudaDeviceSynchronize());
 				EngineExecute << <numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
 				CudaCheck(cudaDeviceSynchronize());
-				CollectHits << <gridSize, blockSize >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene);
+				CollectHits << <gridSize, blockSize >> >(numActive, jobs, jobsSize, deviceRays, deviceRaysB, WangHash(++raySeedGl), scene, hitAtomic);
 				CudaCheck(cudaDeviceSynchronize());
+				swap(deviceRays, deviceRaysB);
 
 			}
 
@@ -748,6 +768,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 			CudaCheck(cudaDeviceSynchronize());
 
 			cudaFree(counter);
+			cudaFree(hitAtomic);
 
 			cudaEventRecord(stop, 0);
 			cudaEventSynchronize(stop);
@@ -760,6 +781,8 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 			CudaCheck(cudaDeviceSynchronize());
 		}
 	}
+
+	cudaFree(jobs);
 
 }
 

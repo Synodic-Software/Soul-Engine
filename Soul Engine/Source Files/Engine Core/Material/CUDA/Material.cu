@@ -1,13 +1,23 @@
 #include "Material.cuh"
 
-Bitmap LoadBmp(const char* filename) {
-	Bitmap bmp = Bitmap::bitmapFromFile(filename);
-	bmp.flipVertically();
-	return bmp;
-}
-
-
 #define MAX(a,b) ((a > b) ? a : b)
+
+
+#pragma pack(push,4)
+struct cuImage
+{
+	void                   *h_data;
+	cudaExtent              size;
+	cudaResourceType        type;
+	cudaArray_t             dataArray;
+	cudaMipmappedArray_t    mipmapArray;
+	cudaTextureObject_t     textureObject;
+
+	cuImage()
+	{
+		memset(this, 0, sizeof(Image));
+	}
+};
 
 uint getMipMapLevels(cudaExtent size)
 {
@@ -165,75 +175,61 @@ void generateMipMaps(cudaMipmappedArray_t mipmapArray, cudaExtent size)
 
 Material::Material( std::string texName){
 
-	//cudaTextureObject_t texObj;
-	//cudaArray* cuArray;
-	//Bitmap bmp;
 
-	//CudaCheck(cudaDeviceSynchronize());
-	//bmp = LoadBmp(texName.c_str());
+	CudaCheck(cudaDeviceSynchronize());
+	image.LoadFromFile(texName.c_str());
 
+	cuImage im;
+	im.size = make_cudaExtent(image.width, image.height, 0);
+	im.size.depth = 0;
+	im.h_data = image.pixels;
+	im.type = cudaResourceTypeMipmappedArray;
 
-	//Image image;
-	//image.size = make_cudaExtent(bmp.width(), bmp.height(), 0);
-	//image.h_data = bmp.pixelBuffer();
+	uint levels = getMipMapLevels(im.size);
 
+	cudaChannelFormatDesc desc = cudaCreateChannelDesc<uchar4>();
+	CudaCheck(cudaMallocMipmappedArray(&im.mipmapArray, &desc, im.size, levels));
 
-	//uint levels = getMipMapLevels(image.size);
+	cudaArray_t level0;
+	CudaCheck(cudaGetMipmappedArrayLevel(&level0, im.mipmapArray, 0));
 
-	//////Allocate CUDA array in device memory 
-	//std::cout << bmp.height() << " " << bmp.width() << " " << sizeof(float) << std::endl;
+	cudaMemcpy3DParms copyParams = { 0 };
+	copyParams.srcPtr = make_cudaPitchedPtr(im.h_data, im.size.width * sizeof(uchar4), im.size.width, im.size.height);
+	copyParams.dstArray = level0;
+	copyParams.extent = im.size;
+	copyParams.extent.depth = 1;
+	copyParams.kind = cudaMemcpyHostToDevice;
+	CudaCheck(cudaMemcpy3D(&copyParams));
 
-	////for (int i = 0; i < bmp.width(); i++){
-	////	for (int c = 0; c < bmp.height(); c++){
-	////		std::cout << (short)bmp.pixelBuffer()[c] << " ";
-	////	}
-	////	std::cout << std::endl;
-	////}
+	// compute rest of mipmaps based on level 0
+	generateMipMaps(im.mipmapArray, im.size);
 
+	// generate bindless texture object
 
-	//cudaChannelFormatDesc desc = cudaCreateChannelDesc<uchar4>();
-	//CudaCheck(cudaMallocMipmappedArray(&image.mipmapArray, &desc, image.size, levels));
+	cudaResourceDesc            resDescr;
+	memset(&resDescr, 0, sizeof(cudaResourceDesc));
 
-	//cudaArray_t level0;
-	//CudaCheck(cudaGetMipmappedArrayLevel(&level0, image.mipmapArray, 0));
+	resDescr.resType = cudaResourceTypeMipmappedArray;
+	resDescr.res.mipmap.mipmap = im.mipmapArray;
 
-	//cudaMemcpy3DParms copyParams = { 0 };
-	//copyParams.srcPtr = make_cudaPitchedPtr(image.h_data, image.size.width * sizeof(uchar4), image.size.width, image.size.height);
-	//copyParams.dstArray = level0;
-	//copyParams.extent = image.size;
-	//copyParams.extent.depth = 1;
-	//copyParams.kind = cudaMemcpyHostToDevice;
-	//CudaCheck(cudaMemcpy3D(&copyParams));
+	cudaTextureDesc             texDescr;
+	memset(&texDescr, 0, sizeof(cudaTextureDesc));
 
-	//// compute rest of mipmaps based on level 0
-	//generateMipMaps(image.mipmapArray, image.size);
+	texDescr.normalizedCoords = true;
+	texDescr.filterMode = cudaFilterModeLinear;
+	texDescr.mipmapFilterMode = cudaFilterModeLinear;
 
-	//// generate bindless texture object
+	texDescr.addressMode[0] = cudaAddressModeWrap;
+	texDescr.addressMode[1] = cudaAddressModeWrap;
+	texDescr.addressMode[2] = cudaAddressModeWrap;
 
-	//cudaResourceDesc            resDescr;
-	//memset(&resDescr, 0, sizeof(cudaResourceDesc));
+	texDescr.maxMipmapLevelClamp = float(levels - 1);
 
-	//resDescr.resType = cudaResourceTypeMipmappedArray;
-	//resDescr.res.mipmap.mipmap = image.mipmapArray;
+	texDescr.readMode = cudaReadModeNormalizedFloat;
 
-	//cudaTextureDesc             texDescr;
-	//memset(&texDescr, 0, sizeof(cudaTextureDesc));
+	CudaCheck(cudaCreateTextureObject(&texObj, &resDescr, &texDescr, NULL));
 
-	//texDescr.normalizedCoords = 1;
-	//texDescr.filterMode = cudaFilterModeLinear;
-	//texDescr.mipmapFilterMode = cudaFilterModeLinear;
-
-	//texDescr.addressMode[0] = cudaAddressModeWrap;
-	//texDescr.addressMode[1] = cudaAddressModeWrap;
-	//texDescr.addressMode[2] = cudaAddressModeWrap;
-
-	//texDescr.maxMipmapLevelClamp = float(levels - 1);
-
-	//texDescr.readMode = cudaReadModeNormalizedFloat;
-
-	//CudaCheck(cudaCreateTextureObject(&texObj, &resDescr, &texDescr, NULL));
-
-	//CudaCheck(cudaDeviceSynchronize());
+	CudaCheck(cudaDeviceSynchronize());
 }
 Material::~Material(){
 

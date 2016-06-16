@@ -13,59 +13,55 @@ __device__ uint HighestBit(uint i, uint64* morton)
 	return morton[i] ^ morton[i + 1];
 }
 
-
-// Sets the bounding box and traverses to root
-__device__ void ProcessParent(const uint nData, Node* currentNode, Node* nodes, uint64* morton, const uint leafOffset, BVH* bvh)
-{
-	// Allow only one thread to process a node
-	if (atomicAdd(&(currentNode->atomic), 1) != 1)
-		return;
-
-	// Set bounding box if the node is no leaf
-	if (currentNode - nodes<leafOffset)
-	{
-
-		currentNode->box.max = glm::max(currentNode->childLeft->box.max, currentNode->childRight->box.max);
-		currentNode->box.min = glm::min(currentNode->childLeft->box.min, currentNode->childRight->box.min);
-
-	}
-
-	uint left = currentNode->rangeLeft;
-	uint right = currentNode->rangeRight;
-
-	if (left == 0 && right == leafOffset){
-		bvh->root = currentNode;
-		return;
-	}
-
-	Node* parent;
-	if (left == 0 || (right < leafOffset && HighestBit(left - 1, morton) > HighestBit(right, morton)))
-	{
-		// parent = right, set parent left child and range to node
-		parent = nodes+right;
-		parent->childLeft = currentNode;
-		parent->rangeLeft = left;
-
-	}
-	else
-	{
-		// parent = left -1, set parent right child and range to node
-		parent = nodes+(left - 1);
-		parent->childRight = currentNode;
-		parent->rangeRight = right;
-	}
-
-	ProcessParent(nData, parent, nodes, morton, leafOffset,bvh);
-}
-
-__global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* mortonCodes, const uint leafOffset,BVH* bvh)
+__global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* mortonCodes, const uint leafOffset, BVH* bvh)
 {
 	uint index = getGlobalIdx_1D_1D();
 	if (index >= n)
 		return;
 
-	ProcessParent(n, nodes + (leafOffset+index), nodes, mortonCodes, leafOffset, bvh);
+	Node* currentNode = nodes + (leafOffset + index);
+
+	while (true){
+		// Allow only one thread to process a node
+		if (atomicAdd(&(currentNode->atomic), 1) != 1)
+			return;
+
+		// Set bounding box if the node is no leaf
+		if (currentNode - nodes < leafOffset)
+		{
+			currentNode->box.max = glm::max(currentNode->childLeft->box.max, currentNode->childRight->box.max);
+			currentNode->box.min = glm::min(currentNode->childLeft->box.min, currentNode->childRight->box.min);
+		}
+
+		uint left = currentNode->rangeLeft;
+		uint right = currentNode->rangeRight;
+
+		if (left == 0 && right == leafOffset){
+			bvh->root = currentNode;
+			return;
+		}
+
+		Node* parent;
+		if (left == 0 || (right < leafOffset && HighestBit(left - 1, mortonCodes) > HighestBit(right, mortonCodes)))
+		{
+			// parent = right, set parent left child and range to node
+			parent = nodes + right;
+			parent->childLeft = currentNode;
+			parent->rangeLeft = left;
+
+		}
+		else
+		{
+			// parent = left -1, set parent right child and range to node
+			parent = nodes + (left - 1);
+			parent->childRight = currentNode;
+			parent->rangeRight = right;
+		}
+
+		currentNode = parent;
+	}
 }
+	
 
 __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes,const uint leafOffset)
 {

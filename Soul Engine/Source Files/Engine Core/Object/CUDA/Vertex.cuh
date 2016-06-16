@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Utility\CUDAIncludes.h"
-
-class __align__(32) Vertex : public Managed
+//__align__(32)
+class  Vertex : public Managed
 {
 public:
 	Vertex();
