@@ -394,8 +394,8 @@ TASK_FUNCTION(Run)
 	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "rebellion.obj", whiteGray);
 	scene->AddObject(obj);
 
-	Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
-	scene->AddObject(sun);
+	//Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
+	//scene->AddObject(sun);
 
 
 
