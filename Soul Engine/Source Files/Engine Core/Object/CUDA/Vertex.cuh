@@ -14,6 +14,8 @@ public:
 	glm::vec3 position;
 	glm::vec2 textureCoord;
 	glm::vec3 normal;
+
+	glm::vec3 velocity;
 private:
 	
 };

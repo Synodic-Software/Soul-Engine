@@ -160,6 +160,15 @@
     <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Scan">
       <UniqueIdentifier>{b1106127-54c1-4727-a4cf-dc983c2fff9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Physics Engine">
+      <UniqueIdentifier>{8c0463eb-f4c7-48a0-b864-7e764e9a55e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Physics Engine\CUDA">
+      <UniqueIdentifier>{e8301984-8842-4dfc-a72a-be9df2188232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Physics Engine\OpenCL">
+      <UniqueIdentifier>{97f4405b-f45d-45c8-b674-a8d23397f18f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -363,6 +372,12 @@
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Image.h">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Physics Engine\PhysicsEngine.h">
+      <Filter>Engine Backend\Physics Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Physics Engine\CUDA\PhysicsEngine.cuh">
+      <Filter>Engine Backend\Physics Engine\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -434,6 +449,9 @@
     <ClCompile Include="Source Files\Engine Core\Material\Texture\Image.cpp">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Physics Engine\PhysicsEngine.cpp">
+      <Filter>Engine Backend\Physics Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu">
@@ -492,6 +510,9 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Engine Core\Material\CUDA\Material.cu">
       <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Physics Engine\CUDA\PhysicsEngine.cu">
+      <Filter>Engine Backend\Physics Engine\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

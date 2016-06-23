@@ -23,6 +23,9 @@ public:
 	CUDA_FUNCTION uint GetSize(){
 		return currentSize;
 	}
+	CUDA_FUNCTION Node* GetLeaf(int test){
+		return bvh+((currentSize - 1) + test);
+	}
 	void Build(uint);
 	Node* root;
 private:

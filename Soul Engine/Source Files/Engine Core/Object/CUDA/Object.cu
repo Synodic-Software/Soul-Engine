@@ -102,6 +102,10 @@ void Object::ExtractFromFile(const char* name){
 	box.max = max;
 	box.min = min;
 	cudaDeviceSynchronize();
+
+	
+
+
 }
 //std::string Object::ResourcePath(std::string fileName) {
 //		return  fileName;
