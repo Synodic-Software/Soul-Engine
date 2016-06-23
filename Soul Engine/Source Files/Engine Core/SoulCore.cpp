@@ -11,6 +11,7 @@
 #include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/Input.h"
 #include "Ray Engine/RayEngine.h"
+#include "Physics Engine\PhysicsEngine.h"
 #include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Engine Core\Scene\Scene.h"
@@ -455,28 +456,33 @@ TASK_FUNCTION(Run)
 			UpdateMouse();
 
 			camera->UpdateVariables();
-		
+
 			//Update();
 
 
 
-		cudaEvent_t start, stop;
-		float time;
-		cudaEventCreate(&start);
-		cudaEventCreate(&stop);
-		cudaEventRecord(start, 0);
+			cudaEvent_t start, stop;
+			float time;
+			cudaEventCreate(&start);
+			cudaEventCreate(&stop);
+			cudaEventRecord(start, 0);
 
-		scene->Build();
+			scene->Build();
 
-		cudaEventRecord(stop, 0);
-		cudaEventSynchronize(stop);
-		cudaEventElapsedTime(&time, start, stop);
-		cudaEventDestroy(start);
-		cudaEventDestroy(stop);
+			cudaEventRecord(stop, 0);
+			cudaEventSynchronize(stop);
+			cudaEventElapsedTime(&time, start, stop);
+			cudaEventDestroy(start);
+			cudaEventDestroy(stop);
 
-		std::cout << "Building Execution: " << time << "ms" << std::endl;
+			std::cout << "Building Execution: " << time << "ms" << std::endl;
 
-			//RunPhysics();
+
+			PhysicsEngine::Process(scene);
+
+
+
+
 			UpdateTimers();
 
 			t += deltaTime;
@@ -489,11 +495,11 @@ TASK_FUNCTION(Run)
 
 		test = !test;
 
-		
 
 
 
-		
+
+
 
 		RayEngine::Clear();
 
