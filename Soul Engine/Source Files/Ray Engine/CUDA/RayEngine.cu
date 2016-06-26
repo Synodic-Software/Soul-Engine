@@ -204,11 +204,6 @@ __global__ void RaySetup(const uint n, RayJob** job, int jobSize, Ray* rays, con
 CUDA_FUNCTION __inline__ glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
 	return glm::vec3(ray.origin.x, ray.origin.y, ray.origin.z) + t * glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z);
 }
-CUDA_FUNCTION __inline__ glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
-	float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
-	return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(0.7f, 0.7f, 1.0f);
-	//return glm::vec3(0.0f, 0.0f, 0.0f);
-}
 
 CUDA_FUNCTION __inline__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
 	const glm::vec3& rayO, const glm::vec3& rayD, const glm::vec3& invDir,
@@ -292,7 +287,7 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 
 	if (faceHit == NULL){
 
-		col = glm::vec3(ray.storage.x, ray.storage.y, ray.storage.z)*computeBackgroundColor(glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z));
+		col = glm::vec3(ray.storage.x, ray.storage.y, ray.storage.z)*scene->sky->ExtractColour({ ray.direction.x, ray.direction.y, ray.direction.z });
 
 	}
 	else{
@@ -339,7 +334,7 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 		//unsigned char green = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 1, localIndex);
 		//unsigned char red = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 2, localIndex);
 
-		float4 PicCol = tex2DLod<float4>(mat->texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
+		float4 PicCol = tex2DLod<float4>(mat->image.texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
 		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
 		ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
 
