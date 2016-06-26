@@ -3,7 +3,6 @@
 #include "Utility\CUDAIncludes.h"
 #include "Utility/OpenGL/ShaderSupport.h"
 #include "Utility/OpenGL/Shader.h"
-#include "Engine Core/Material/Texture/Texture.h"
 #include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/Input.h"
 #include "Engine Core/Material/Material.h"

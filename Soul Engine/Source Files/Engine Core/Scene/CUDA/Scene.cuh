@@ -4,6 +4,7 @@
 #include "Engine Core\Object\CUDA/Object.cuh"
 #include "ObjectSceneAbstraction.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
+#include "Engine Core\Scene\CUDA\Sky.cuh"
 
 #include "Bounding Volume Heirarchy\BVH.h"
 #include <thrust/fill.h>
@@ -32,6 +33,7 @@ public:
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
 	__host__ bool RemoveObject(const uint&);
 BVH* bvh; 
+Sky* sky;
 
 private:
 	//take in all requests for the frame and process them in bulk
@@ -61,5 +63,7 @@ private:
 	bool* objectRemoval;
 	uint objectsSize;
 	uint allocatedObjects;
+
+	
 };
 

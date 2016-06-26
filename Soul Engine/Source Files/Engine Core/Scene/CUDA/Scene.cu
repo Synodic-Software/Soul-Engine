@@ -19,6 +19,8 @@ Scene::Scene()
 
 	//give the addresses for the data
 	bvh = new BVH(&faceIds, &mortonCodes);
+
+	sky = new Sky("Starmap.png");
 }
 
 

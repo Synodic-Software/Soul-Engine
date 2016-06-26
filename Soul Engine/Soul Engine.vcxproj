@@ -194,8 +194,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Engine Core\Frame\Frame.h" />
     <ClInclude Include="Source Files\Engine Core\Material\CUDA\Material.cuh" />
     <ClInclude Include="Source Files\Engine Core\Material\Material.h" />
-    <ClInclude Include="Source Files\Engine Core\Material\Texture\Image.h" />
-    <ClInclude Include="Source Files\Engine Core\Material\Texture\Texture.h" />
+    <ClInclude Include="Source Files\Engine Core\Material\Texture\Image.cuh" />
     <ClInclude Include="Source Files\Engine Core\Object\Character\Character.h" />
     <ClInclude Include="Source Files\Engine Core\Object\CUDA\Face.cuh" />
     <ClInclude Include="Source Files\Engine Core\Object\CUDA\Object.cuh" />
@@ -209,8 +208,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Engine Core\Object\Vertex.h" />
     <ClInclude Include="Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cuh" />
     <ClInclude Include="Source Files\Engine Core\Scene\CUDA\Scene.cuh" />
+    <ClInclude Include="Source Files\Engine Core\Scene\CUDA\Sky.cuh" />
     <ClInclude Include="Source Files\Engine Core\Scene\OpenCL\CLScene.h" />
     <ClInclude Include="Source Files\Engine Core\Scene\Scene.h" />
+    <ClInclude Include="Source Files\Engine Core\Scene\Sky.h" />
     <ClInclude Include="Source Files\Engine Core\Settings.h" />
     <ClInclude Include="Source Files\Input\Input.h" />
     <ClInclude Include="Source Files\Input\InputHelper.h" />
@@ -251,8 +252,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />
-    <ClCompile Include="Source Files\Engine Core\Material\Texture\Image.cpp" />
-    <ClCompile Include="Source Files\Engine Core\Material\Texture\Texture.cpp" />
+    <CudaCompile Include="Source Files\Engine Core\Material\Texture\Image.cu">
+      <FileType>CppCode</FileType>
+    </CudaCompile>
     <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp" />
     <ClCompile Include="Source Files\Engine Core\Object\ObjLoader.cpp" />
     <ClCompile Include="Source Files\Engine Core\Settings.cpp" />
@@ -285,6 +287,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Engine Core\Object\CUDA\Vertex.cu" />
     <CudaCompile Include="Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cu" />
     <CudaCompile Include="Source Files\Engine Core\Scene\CUDA\Scene.cu" />
+    <CudaCompile Include="Source Files\Engine Core\Scene\CUDA\Sky.cu" />
     <CudaCompile Include="Source Files\Physics Engine\CUDA\PhysicsEngine.cu" />
     <CudaCompile Include="Source Files\Ray Engine\CUDA\Ray.cu" />
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu" />
