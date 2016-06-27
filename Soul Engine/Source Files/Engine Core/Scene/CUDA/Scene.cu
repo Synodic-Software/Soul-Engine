@@ -397,7 +397,7 @@ __host__ bool Scene::Compile(){
 }
 
 
-__host__ void Scene::Build(){
+__host__ void Scene::Build(float deltaTime){
 
 	bool b = Compile();
 

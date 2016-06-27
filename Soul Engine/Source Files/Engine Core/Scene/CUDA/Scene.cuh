@@ -23,7 +23,7 @@ public:
 	//__device__ glm::vec3 IntersectColour(Ray& ray, curandState&)const;
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
-	__host__ void Build();
+	__host__ void Build(float deltaTime);
 
 	//signels the scene that an object should be added when the next 'Build()' is called
 	//modifies the global scene bounding box, making the 3D spatial calculation less accurate

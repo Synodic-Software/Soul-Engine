@@ -102,7 +102,6 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget, float scroll){
 
-
 	double oldTime = newTime;
 	newTime = glfwGetTime();
 	double smoothing = 0.85;

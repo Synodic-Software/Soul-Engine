@@ -427,6 +427,10 @@ TASK_FUNCTION(Run)
 	//stop loop when glfw exit is called
 	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
 
+
+	scene->Build(deltaTime);
+
+
 	bool test = true;
 	while (!runShutdown){
 		double newTime = glfwGetTime();
@@ -466,7 +470,7 @@ TASK_FUNCTION(Run)
 			cudaEventCreate(&stop);
 			cudaEventRecord(start, 0);
 
-			scene->Build();
+			scene->Build(deltaTime);
 
 			cudaEventRecord(stop, 0);
 			cudaEventSynchronize(stop);
