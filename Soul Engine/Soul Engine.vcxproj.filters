@@ -169,6 +169,18 @@
     <Filter Include="Engine Backend\Physics Engine\OpenCL">
       <UniqueIdentifier>{97f4405b-f45d-45c8-b674-a8d23397f18f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Engine Core\Material\OpenCL">
+      <UniqueIdentifier>{6aa80e50-cf55-4b4e-b24e-ad144e987b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Material\Colour">
+      <UniqueIdentifier>{09b75f1b-590f-464d-abc6-e2d1d0de5ffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Material\Colour\CUDA">
+      <UniqueIdentifier>{fafa7071-51b7-45c6-b485-e842112a2f81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Material\Colour\OpenCL">
+      <UniqueIdentifier>{0a23ec14-0416-453c-a3fd-e06601ef2c60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -381,6 +393,18 @@
     <ClInclude Include="Source Files\Engine Core\Material\Texture\Image.cuh">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\Colour\CUDA\Colour.cuh">
+      <Filter>Engine Backend\Engine Core\Material\Colour\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\Colour\Colour.h">
+      <Filter>Engine Backend\Engine Core\Material\Colour</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\ShaderNode.h">
+      <Filter>Engine Backend\Engine Core\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cuh">
+      <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -516,6 +540,12 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Engine Core\Material\Texture\Image.cu">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Engine Core\Material\Colour\CUDA\Colour.cu">
+      <Filter>Engine Backend\Engine Core\Material\Colour\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cu">
+      <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

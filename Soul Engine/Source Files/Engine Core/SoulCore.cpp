@@ -391,7 +391,7 @@ TASK_FUNCTION(Run)
 	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 
-	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "rebellion.obj", whiteGray);
+	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "Winged_Victory.obj", whiteGray);
 	scene->AddObject(obj);
 
 	//Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
