@@ -8,7 +8,7 @@
     <ExecutablePath>$(VC_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);$(ExecutablePath)</ExecutablePath>
     <ReferencePath>$(VC_ReferencesPath);$(ReferencePath)</ReferencePath>
     <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <SourcePath>$(ProjectDir)\Libraries\boostFiber\src;$(SourcePath)</SourcePath>
+    <SourcePath>$(ProjectDir)\Libraries\boostFiber\src;$(ProjectDir)\Libraries\fiber\src\fiber_tasking_lib;$(SourcePath)</SourcePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -17,9 +17,9 @@
       <AdditionalLibraryDirectories>$(VC_LibraryPath);$(WindowsSDK_LibraryPath);N:\Work\Libraries\glfw-3.0.4.bin.WIN64\lib-msvc120;N:\Work\Libraries\glew-1.10.0\lib\Release\x64;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\fiber\src;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_MT;_DEBUG;_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\fiber\third_party;$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\fiber\third_party\EASTL\include;$(ProjectDir)\Libraries\fiber\include;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FunctionLevelLinking>
@@ -31,11 +31,10 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\vulkan\Bin;$(ProjectDir)\Libraries\fiber\lib;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw\bin;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(LibraryPath);$(ProjectDir)\Libraries\boost;%(AdditionalLibraryDirectories);$(AMDAPPSDKROOT)\lib\x86_64\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenCL.lib;opengl32.lib;glu32.lib;vulkan-1.lib;glew32.lib;glfw3.lib;FiberTaskingLib.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;vulkan-1.lib;glu32.lib;glfw3.lib;FiberTaskingLib.lib;EASTL.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>LIBCD.lib;LIBC.lib;MSVCRT.lib;LIBCMT.lib;LIBCMTD.lib</IgnoreSpecificDefaultLibraries>
       <ShowProgress>NotSet</ShowProgress>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
@@ -58,6 +57,7 @@
       <RuntimeChecks>InheritFromHost</RuntimeChecks>
       <GPUDebugInfo>false</GPUDebugInfo>
       <PtxAsOptionV>false</PtxAsOptionV>
+      <Runtime>InheritFromHost</Runtime>
     </CudaCompile>
     <CudaLink>
       <Optimization>O3</Optimization>

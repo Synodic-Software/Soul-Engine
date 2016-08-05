@@ -6,7 +6,7 @@ public:
 	int width;
 	int height;
 	int format;
-	unsigned char* pixels;
+	void* pixels;
 
 	cudaTextureObject_t texObj;
 

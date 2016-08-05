@@ -1,24 +1,32 @@
 #include "Scheduler.h"
+#include "fiber_tasking_lib/tagged_heap_backed_linear_allocator.h"
 
-FiberTaskingLib::GlobalArgs *globalArgs;
 
+FiberTaskingLib::TaskScheduler *taskScheduler;
+FiberTaskingLib::TaggedHeap *taggedHeap;
+FiberTaskingLib::TaggedHeapBackedLinearAllocator *allocator;
 // new task submitted to scheduler
 void Scheduler::Start(TASK task) {
 	
-	globalArgs = new FiberTaskingLib::GlobalArgs();
-	globalArgs->g_taskScheduler.Initialize(25, globalArgs);
-	globalArgs->g_allocator.init(&globalArgs->g_heap, 1);
-	
-	std::shared_ptr<FiberTaskingLib::AtomicCounter> counter =globalArgs->g_taskScheduler.AddTasks(1, &task);
+	taskScheduler = new FiberTaskingLib::TaskScheduler();
+	taskScheduler->Initialize(110);
 
-	globalArgs->g_taskScheduler.WaitForCounter(counter, 0);
+	taggedHeap = new FiberTaskingLib::TaggedHeap(2097152);
+	allocator = new FiberTaskingLib::TaggedHeapBackedLinearAllocator();
+	allocator->init(taggedHeap, 1234);
+	
+	std::shared_ptr<FiberTaskingLib::AtomicCounter> counter = taskScheduler->AddTasks(1, &task);
+
+	//taskScheduler->WaitForCounter(counter, 0);
 }
 
 // end task
 void Scheduler::Terminate() {
 	
-	globalArgs->g_taskScheduler.Quit();
-	globalArgs->g_allocator.destroy();
-	delete globalArgs;
+	taskScheduler->Quit();
+	allocator->destroy();
+	delete allocator;
+	delete taggedHeap;
+	delete taskScheduler;
 }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Utility\GLMIncludes.h"
 
 #include "Utility\GLIncludes.h"
