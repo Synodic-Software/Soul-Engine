@@ -21,6 +21,7 @@ Global
 		{BD3E2897-1EFF-406A-A3B7-4B90699BB122}.Release|Win32.Build.0 = Release|Win32
 		{BD3E2897-1EFF-406A-A3B7-4B90699BB122}.Release|x64.ActiveCfg = Release|x64
 		{BD3E2897-1EFF-406A-A3B7-4B90699BB122}.Release|x64.Build.0 = Release|x64
+		{BD3E2897-1EFF-406A-A3B7-4B90699BB122}.Release|x64.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

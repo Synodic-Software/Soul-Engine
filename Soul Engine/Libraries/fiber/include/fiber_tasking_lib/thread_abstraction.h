@@ -27,7 +27,7 @@
  * http://gdcvault.com/play/1022186/Parallelizing-the-Naughty-Dog-Engine
  *
  * FiberTaskingLib is the legal property of Adrian Astley
- * Copyright Adrian Astley 2015
+ * Copyright Adrian Astley 2015 - 2016
  */
 
 #pragma once
@@ -46,8 +46,6 @@
 #include <process.h>
 #include <atomic>
 
-
-#define THREAD_LOCAL __declspec( thread )
 
 namespace FiberTaskingLib {
 
@@ -151,8 +149,6 @@ inline void FTLSignalEvent(EventType eventId) {
 	#include <unistd.h>
 	#include <sys/syscall.h>
 #endif
-
-#define THREAD_LOCAL __thread
 
 
 namespace FiberTaskingLib {

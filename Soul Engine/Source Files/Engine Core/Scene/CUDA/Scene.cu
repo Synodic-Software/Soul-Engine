@@ -195,14 +195,17 @@ __global__ void GenerateMortonCodes(const uint n, uint64* mortonCodes, Face** fa
 
 	uint index = getGlobalIdx_1D_1D();
 
-	if (index < n){
-		Object* current = faceList[index]->objectPointer;
-		Face* face = faceList[index];
-
-		glm::vec3 centroid = (current->vertices[face->indices.x].position + current->vertices[face->indices.y].position + current->vertices[face->indices.z].position) / 3.0f;
-		mortonCodes[index] = mortonEncode_LUT(centroid, box);
-
+	if (index >= n){
+		return;
 	}
+
+
+	Object* current = faceList[index]->objectPointer;
+	Face* face = faceList[index];
+
+	glm::vec3 centroid = (current->vertices[face->indices.x].position + current->vertices[face->indices.y].position + current->vertices[face->indices.z].position) / 3.0f;
+	mortonCodes[index] = mortonEncode_LUT(centroid, box);
+
 }
 
 __global__ void FillBool(const uint n, bool* jobs, bool* fjobs, Face** faces, uint* objIds, Object** objects){

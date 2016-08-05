@@ -6,7 +6,7 @@
  * http://gdcvault.com/play/1022186/Parallelizing-the-Naughty-Dog-Engine
  *
  * FiberTaskingLib is the legal property of Adrian Astley
- * Copyright Adrian Astley 2015
+ * Copyright Adrian Astley 2015 - 2016
  */
 
 #pragma once
@@ -15,55 +15,65 @@
 #include "fiber_tasking_lib/thread_abstraction.h"
 
 
-#if defined(FIBER_IMPL_SUPPORTS_TLS)
+#include "fiber_tasking_lib/read_write_lock.h"
 
-namespace FiberTaskingLib {
+#include <vector>
 
-#define TLS_VARIABLE(type, name) THREAD_LOCAL type name;
-
-template<class T>
-inline T GetTLSData(T &tlsVariable) {
-	return tlsVariable;
-}
-
-template<class T>
-inline void SetTLSData(T &tlsVariable, T value) {
-	tlsVariable = value;
-}
-
-} // End of namespace FiberTaskingLib
-
-#else
-
-#include <unordered_map>
-#include <mutex>
 
 namespace FiberTaskingLib {
 
 template<class T>
 class TlsVariable {
-
 private:
-	std::unordered_map<ThreadId, T> data;
-	std::mutex lock;
+	struct DataPacket {
+		DataPacket() {};
+		DataPacket(ThreadId id, T data)
+			: Id(id),
+			  Data(data) {
+		}
+
+		ThreadId Id;
+		T Data;
+	};
+
+	std::vector<DataPacket> m_data;
+	ReadWriteLock m_lock;
 
 public:
 	T Get() {
 		ThreadId id = FTLGetCurrentThreadId();
 
-		// operator[] is not thread-safe, since it will create a node if one doesn't already exist
-		// So we have to lock on reads as well
-		// We *could* use find() first, then only lock if it doesn't exist, but the
-		// thread-contention should be low enough that it's not worth the extra code
-		std::lock_guard<std::mutex> lockGuard(lock);
-		return data[id];
+		m_lock.LockRead();
+		for (auto &packet : m_data) {
+			if (packet.Id == id) {
+				T temp = packet.Data;
+				m_lock.UnlockRead();
+				return temp;
+			}
+		}
+		m_lock.UnlockRead();
+
+		// If we can't find it, default construct it
+		return T();
 	}
 
 	void Set(T value) {
 		ThreadId id = FTLGetCurrentThreadId();
 
-		std::lock_guard<std::mutex> lockGuard(lock);
-		data[id] = value;
+		m_lock.LockWrite();
+		for (auto &packet : m_data) {
+			if (packet.Id == id) {
+				packet.Data = value;
+
+				m_lock.UnlockWrite();
+				return;
+			}
+		}
+
+		// This thread has not yet set a value.
+		// Create an entry
+		m_data.emplace_back(id, value);
+		m_lock.UnlockWrite();
 	}
 };
 
@@ -80,5 +90,3 @@ inline void SetTLSData(TlsVariable<T> &tlsVariable, T value) {
 }
 
 } // End of namespace FiberTaskingLib
-
-#endif

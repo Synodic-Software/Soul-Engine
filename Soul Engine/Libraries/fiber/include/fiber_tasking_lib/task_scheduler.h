@@ -6,15 +6,15 @@
  * http://gdcvault.com/play/1022186/Parallelizing-the-Naughty-Dog-Engine
  *
  * FiberTaskingLib is the legal property of Adrian Astley
- * Copyright Adrian Astley 2015
+ * Copyright Adrian Astley 2015 - 2016
  */
 
 #pragma once
 
 #include "fiber_tasking_lib/typedefs.h"
-#include "fiber_tasking_lib/portability.h"
 #include "fiber_tasking_lib/thread_abstraction.h"
 #include "fiber_tasking_lib/fiber_abstraction.h"
+#include "fiber_tasking_lib/task.h"
 
 #include "concurrentqueue/blockingconcurrentqueue.h"
 
@@ -26,39 +26,7 @@
 
 namespace FiberTaskingLib {
 
-class TaskScheduler;
-class TaggedHeap;
-class TaggedHeapBackedLinearAllocator;
-struct GlobalArgs;
-
-
-typedef void(*TaskFunction)(FiberTaskingLib::TaskScheduler *g_taskScheduler,
-                            FiberTaskingLib::TaggedHeap *g_heap,
-                            FiberTaskingLib::TaggedHeapBackedLinearAllocator *g_allocator,
-                            void *arg);
-/**
- * Creates the correct function signature for a task entry point
- *
- * The function will have the following args:
- *     TaskScheduler *g_taskScheduler,
- *     TaggedHeap *g_heap,
- *     TaggedHeapBackedLinearAllocator *g_allocator,
- *     void *arg
- * where arg == Task::ArgData
- */
-#define TASK_ENTRY_POINT(functionName) void functionName(FiberTaskingLib::TaskScheduler *g_taskScheduler, \
-                                                         FiberTaskingLib::TaggedHeap *g_heap, \
-                                                         FiberTaskingLib::TaggedHeapBackedLinearAllocator *g_allocator, \
-                                                         void *arg)
-
-
 typedef std::atomic_long AtomicCounter;
-
-
-struct Task {
-	TaskFunction Function;
-	void *ArgData;
-};
 
 
 /**
@@ -125,8 +93,8 @@ private:
 	 * fiber for each thread. Otherwise, two threads could try to switch to the same helper fiber
 	 * at the same time. Again, this leads to stack corruption and/or general undefined behavior.
 	 */
-	std::unordered_map<ThreadId, FiberType> m_fiberSwitchingFibers;
-	std::unordered_map<ThreadId, FiberType> m_counterWaitingFibers;
+	std::vector<FiberType> m_fiberSwitchingFibers;
+	std::vector<FiberType> m_counterWaitingFibers;
 
 	std::atomic_bool m_quit;
 
@@ -134,10 +102,8 @@ public:
 	/**
 	 * Creates the fiber pool and spawns worker threads for each (logical) CPU core. Each worker
 	 * thread is affinity bound to a single core.
-	 *
-	 * @param globalArgs    A valid GlobalArgs instance
 	 */
-	bool Initialize(uint fiberPoolSize, GlobalArgs *globalArgs);
+	bool Initialize(uint fiberPoolSize);
 
 	/**
 	 * Adds a task to the internal queue.
@@ -198,7 +164,7 @@ private:
 	/**
 	 * The fiberProc function for all fibers in the fiber pool
 	 *
-	 * @param arg    An instance of GlobalArgs
+	 * @param arg    An instance of TaskScheduler
 	 */
 	static FIBER_START_FUNCTION(FiberStart);
 	/**

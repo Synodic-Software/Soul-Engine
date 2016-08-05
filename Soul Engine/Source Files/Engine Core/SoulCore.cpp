@@ -33,7 +33,8 @@ Camera* camera;
 
 float scrollUniform;
 
-bool runShutdown;
+volatile std::atomic<bool> runShutdown;
+volatile std::atomic<bool> shutdownComplete;
 bool freeCam;
 
 float timeModifier = 1.0f;
@@ -52,11 +53,14 @@ glm::vec2 mouseChangeDegrees;
 //any other functions relating to the engine.
 void SoulInit(){
 	runShutdown = false;
+	shutdownComplete = false;
 	scrollUniform = 0.05f;
 	seed = GLuint(time(NULL));
 	srand(seed);
 	settings = new Settings("Settings.ini");
 	physicsTimer = 0;
+
+	scene = new Scene();
 
 	runPhysics = false;
 
@@ -142,8 +146,8 @@ void SoulInit(){
 }
 
 //Call to deconstuct both the engine and its dependencies
-void SoulTerminate(){
-	runShutdown = true;
+bool IsRunning(){
+	return !runShutdown;  /////////CHANGE THIS WHEN MEMORY BETWEEN FIBERS WORKS (NOT DELETING BEFORE CLOSING)
 }
 void SoulShutDown(){
 	Scheduler::Terminate();
@@ -152,12 +156,17 @@ void SoulShutDown(){
 	//delete hub;
 	delete settings;
 	glfwTerminate();
+	shutdownComplete = true;
 }
-void AddObject(Object* object){
-	//hub->Add(object);
-
+void SoulTerminate(){
+	runShutdown = true;
+	SoulShutDown();
 }
-void RemoveObject(Object* object){
+void AddObject(glm::vec3& globalPos, const char* file, Material* mat){
+	Object* obj = new Object(globalPos, file, mat);
+	scene->AddObject(obj);
+}
+void RemoveObject(void* object){
 
 
 
@@ -361,59 +370,24 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 	}
 }
 
+
+void SetKey(int key, void(*func)(void)){
+	SetKey(key, std::bind(func));
+}
+
+
 TASK_FUNCTION(Run)
 {
 
 	SoulSynchGPU();
-	SoulInit();
-	SoulSynchGPU();
 	camera = new Camera();
-
-
-
 
 	SoulSynchGPU();
 	SoulCreateWindow(BORDERLESS, SPECTRAL);
 
 
-	scene = new Scene();
 	rend = new Renderer(*camera, SCREEN_SIZE);
 
-	//Hand* hand = new Hand();
-
-
-	Material* light = new Material();
-	light->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	light->emit = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	Material* whiteGray = new Material();
-	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
-	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-
-	Object* obj = new Object(glm::vec3(0.0f, 0.0f, 0.0f), "Winged_Victory.obj", whiteGray);
-	scene->AddObject(obj);
-
-	//Object* sun = new Object(glm::vec3(5.0f*METER, 5.0f*METER, 5.0f*METER), "sphere.obj", light);
-	//scene->AddObject(sun);
-
-
-
-
-
-
-
-	//Hand* hand1 = new Hand(glm::vec3(0.0f, 0.0f, 20*METER));
-	//Object* handObj1 = hand1;
-	//scene->AddObject(handObj1);
-
-	//Hand* hand2 = new Hand(glm::vec3(10*METER, 5*METER, 0.0f));
-	//Object* handObj2 = hand2;
-	//scene->AddObject(handObj2);
-
-
-	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
-	SetKey(GLFW_KEY_SPACE, std::bind(&TogglePhysics));
 
 	glfwSetScrollCallback(mainThread, ScrollCallback);
 
@@ -521,11 +495,9 @@ TASK_FUNCTION(Run)
 	}
 
 	delete camera;
-	delete light;
-	delete whiteGray;
-	delete obj;
 	delete scene;
 	delete rend;
+
 }
 glm::vec2* GetMouseChange(){
 	return &mouseChangeDegrees;
@@ -547,9 +519,11 @@ void TogglePhysics(){
 		physicsTimer = 0.35f;
 	}
 }
-int main(){
-
+void SoulRun(){
 	Scheduler::Start({ Run, nullptr });
-	SoulShutDown();
-	return 0;
 }
+//int main(){
+//	SoulInit();
+//	SoulRun();
+//	return 0;
+//}

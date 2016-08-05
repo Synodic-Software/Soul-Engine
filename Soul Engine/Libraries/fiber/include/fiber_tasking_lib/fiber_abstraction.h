@@ -6,19 +6,18 @@
  * http://gdcvault.com/play/1022186/Parallelizing-the-Naughty-Dog-Engine
  *
  * FiberTaskingLib is the legal property of Adrian Astley
- * Copyright Adrian Astley 2015
+ * Copyright Adrian Astley 2015 - 2016
  */
 
 #pragma once
 
 #include "fiber_tasking_lib/config.h"
-#include "fiber_tasking_lib/portability.h"
 #include "fiber_tasking_lib/tls_abstraction.h"
 
 #include <cstddef>
 
 
-#if defined(WIN32_FIBER_IMPL)
+#if defined(FTL_WIN32_FIBER_IMPL)
 
 // VC++ implementation
 #define WIN32_LEAN_AND_MEAN
@@ -26,9 +25,9 @@
 
 namespace FiberTaskingLib {
 
-typedef void (STDCALL *FiberStartRoutine)(void *arg);
+typedef void (__stdcall *FiberStartRoutine)(void *arg);
 typedef void *fiber_arg_t;
-#define FIBER_START_FUNCTION(functionName) void STDCALL functionName(void *arg)
+#define FIBER_START_FUNCTION(functionName) void __stdcall functionName(void *arg)
 #define FIBER_START_FUNCTION_CLASS_IMPL(className, functionName) void className::functionName(void *arg)
 
 typedef void *FiberType;
@@ -61,7 +60,7 @@ inline void FTLSetCurrentFiber(FiberType currentFiber) {
 
 } // End of namespace FiberTaskingLib
 
-#elif defined(BOOST_CONTEXT_FIBER_IMPL)
+#elif defined(FTL_BOOST_CONTEXT_FIBER_IMPL)
 // Boost.Context implementation
 
 #include <boost/context/fcontext.hpp>
