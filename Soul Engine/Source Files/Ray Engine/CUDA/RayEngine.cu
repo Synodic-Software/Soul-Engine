@@ -358,7 +358,7 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 		//newListwithatomics
 
 
-		raysNew[FastAtomicAdd(nAtomic)] = ray;
+		raysNew[FastAtomicAdd(nAtomic, warpSize)] = ray;
 
 	}
 	col /= job[cur]->GetSampleAmount();
@@ -403,7 +403,7 @@ __global__ void EngineExecute(const uint n, RayJob** job, int jobSize, Ray* rays
 
 	Ray ray;
 
-	__shared__ volatile int nextRayArray[BLOCK_HEIGHT]; // Current ray index in global buffer needs the (max) block height.
+	__shared__ volatile int nextRayArray[4]; // Current ray index in global buffer needs the (max) block height.            BlockHeight(make dynamic latter)
 
 	do{
 		const uint tidx = threadIdx.x;
@@ -706,9 +706,9 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 
 			CudaCheck(cudaDeviceSynchronize());
 
-			dim3 blockSizeE(WARP_SIZE, BLOCK_HEIGHT, 1);
-			int blockWarps = (blockSizeE.x * blockSizeE.y + (WARP_SIZE - 1)) / WARP_SIZE;
-			int numBlocks = (GPU_CORES + blockWarps - 1) / blockWarps;
+			dim3 blockSizeE(Devices::GetWarpSize(), Devices::GetBlockHeight(), 1);
+			int blockWarps = (blockSizeE.x * blockSizeE.y + (Devices::GetWarpSize() - 1)) / Devices::GetWarpSize();
+			int numBlocks = (Devices::GetCoreCount() + blockWarps - 1) / blockWarps;
 
 			// Launch.
 

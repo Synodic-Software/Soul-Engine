@@ -15,6 +15,7 @@
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Engine Core\Scene\Scene.h"
 #include "Resources\Objects\Hand.h"
+#include "Utility\CUDA\CUDADevices.cuh"
 /////////////////////////Variables///////////////////////////////
 
 GLuint seed;
@@ -49,6 +50,21 @@ glm::vec2 mouseChangeDegrees;
 
 /////////////////////////User Interface///////////////////////////
 
+void SoulSynchCPU(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint& size){
+	for (uint i = 0; i < size; i++){
+		sched->WaitForCounter(counter[i], 0);
+	}
+}
+void SoulSynchGPU(){
+	CudaCheck(cudaDeviceSynchronize());
+}
+void SoulSynch(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint& size){
+	SoulSynchCPU(sched, counter, size);
+	SoulSynchGPU();
+}
+
+
+
 //Initializes Soul. This must be called before using variables or 
 //any other functions relating to the engine.
 void SoulInit(){
@@ -59,6 +75,10 @@ void SoulInit(){
 	srand(seed);
 	settings = new Settings("Settings.ini");
 	physicsTimer = 0;
+
+	Devices::ExtractDevices();
+
+	SoulSynchGPU();
 
 	scene = new Scene();
 
@@ -172,18 +192,7 @@ void RemoveObject(void* object){
 
 }
 
-void SoulSynchCPU(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint& size){
-	for (uint i = 0; i < size; i++){
-		sched->WaitForCounter(counter[i], 0);
-	}
-}
-void SoulSynchGPU(){
-	CudaCheck(cudaDeviceSynchronize());
-}
-void SoulSynch(FiberTaskingLib::TaskScheduler* sched, COUNTER* counter, uint& size){
-	SoulSynchCPU(sched, counter, size);
-	SoulSynchGPU();
-}
+
 
 
 void SoulCreateWindow(WindowType windowT, RenderType rendererT){
@@ -522,8 +531,20 @@ void TogglePhysics(){
 void SoulRun(){
 	Scheduler::Start({ Run, nullptr });
 }
-//int main(){
-//	SoulInit();
-//	SoulRun();
-//	return 0;
-//}
+int main()
+{
+	SoulInit();
+	SoulRun();
+
+	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulTerminate));
+
+	Material* whiteGray = new Material();
+	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
+	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	AddObject(glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
+	while (IsRunning()){
+
+	}
+	return 0;
+}

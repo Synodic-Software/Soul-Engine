@@ -405,6 +405,9 @@
     <ClInclude Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cuh">
       <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Utility\CUDA\CUDADevices.cuh">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -546,6 +549,9 @@
     </CudaCompile>
     <CudaCompile Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cu">
       <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\Utility\CUDA\CUDADevices.cu">
+      <Filter>Engine Backend\Utility\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
