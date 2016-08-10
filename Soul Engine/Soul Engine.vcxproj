@@ -31,7 +31,7 @@
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
@@ -44,7 +44,7 @@
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -52,7 +52,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 7.5.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 8.0.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -246,6 +246,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Renderer\Renderer.h" />
     <ClInclude Include="Source Files\Resources\Objects\Hand.h" />
     <ClInclude Include="Source Files\Utility\CUDAIncludes.h" />
+    <ClInclude Include="Source Files\Utility\CUDA\CUDADevices.cuh" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAHelper.cuh" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAManaged.cuh" />
     <ClInclude Include="Source Files\Utility\CUDA\cutil_math.h" />
@@ -307,6 +308,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayEngine.cu" />
     <CudaCompile Include="Source Files\Ray Engine\CUDA\RayJob.cu" />
     <CudaCompile Include="Source Files\Renderer\CUDA\Renderer.cu" />
+    <CudaCompile Include="Source Files\Utility\CUDA\CUDADevices.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAHelper.cu" />
     <CudaCompile Include="Source Files\Utility\CUDA\CUDAManaged.cu" />
     <ClCompile Include="Source Files\Utility\OpenCL\OpenCLHelper.cl">
@@ -319,6 +321,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 7.5.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 8.0.targets" />
   </ImportGroup>
 </Project>

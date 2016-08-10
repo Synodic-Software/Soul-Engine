@@ -14,6 +14,8 @@
 #include <vector_types.h>
 #include <driver_functions.h>
 #include "CUDA\cutil_math.h"
+#include <cuda_profiler_api.h>
+
 
 //#include "thrust\random.h"
 
