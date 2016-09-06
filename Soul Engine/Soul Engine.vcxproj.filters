@@ -181,6 +181,9 @@
     <Filter Include="Engine Backend\Engine Core\Material\Colour\OpenCL">
       <UniqueIdentifier>{0a23ec14-0416-453c-a3fd-e06601ef2c60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Engine Core\Allocator">
+      <UniqueIdentifier>{05e57c49-4656-4425-be25-75d03925d296}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -408,6 +411,9 @@
     <ClInclude Include="Source Files\Utility\CUDA\CUDADevices.cuh">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Allocator\Allocator.h">
+      <Filter>Engine Backend\Engine Core\Allocator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
@@ -475,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Physics Engine\PhysicsEngine.cpp">
       <Filter>Engine Backend\Physics Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Allocator\Allocator.cpp">
+      <Filter>Engine Backend\Engine Core\Allocator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

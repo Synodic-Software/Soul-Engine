@@ -12,20 +12,20 @@ CUDA_FUNCTION uint randHash(uint a) {
 
 
 __device__ int warp_bcast(int v, int leader) { return __shfl(v, leader); }
-__device__ int lane_id(const int warpSize) { return threadIdx.x % warpSize; }
+__device__ int lane_id() { return threadIdx.x % WARP_SIZE; }
 
 // warp-aggregated atomic increment
 __device__
-int FastAtomicAdd(int *ctr, const int warpSize) {
+int FastAtomicAdd(int *ctr) {
 	int mask = __ballot(1);
 	// select the leader
 	int leader = __ffs(mask) - 1;
 	// leader does the update
 	int res;
-	if (lane_id(warpSize) == leader)
+	if (lane_id() == leader)
 		res = atomicAdd(ctr, __popc(mask));
 	// broadcast result
 	res = warp_bcast(res, leader);
 	// each thread computes its own value
-	return res + __popc(mask & ((1 << lane_id(warpSize)) - 1));
+	return res + __popc(mask & ((1 << lane_id()) - 1));
 } // FastAtomicAdd

@@ -77,10 +77,10 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 
 		// Query overlaps a leaf node => report collision.
 		if (overlapL && bvh->IsLeaf(childL))
-			collisions[FastAtomicAdd(sizeCounter, warpSize)] = { test, childL };
+			collisions[FastAtomicAdd(sizeCounter)] = { test, childL };
 
 		if (overlapR && bvh->IsLeaf(childR))
-			collisions[FastAtomicAdd(sizeCounter,warpSize)] = { test, childR };
+			collisions[FastAtomicAdd(sizeCounter)] = { test, childR };
 
 		// Query overlaps an internal node => traverse.
 		bool traverseL = (overlapL && !bvh->IsLeaf(childL));

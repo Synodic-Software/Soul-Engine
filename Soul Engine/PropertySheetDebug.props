@@ -3,12 +3,12 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>$(ProjectDir)\Libraries;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Libraries\boostFiber\include;$(ProjectDir)\Libraries\boost;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(CUDA_INC_PATH);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\Libraries\vulkan\Bin;$(ProjectDir)\Libraries\boost;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw\bin;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\Libraries;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(CUDA_INC_PATH);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\Libraries\vulkan\Bin;$(ProjectDir)\Libraries\boost;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw\bin;$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);$(ExecutablePath)</ExecutablePath>
     <ReferencePath>$(VC_ReferencesPath);$(ReferencePath)</ReferencePath>
     <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <SourcePath>$(ProjectDir)\Libraries\boostFiber\src;$(SourcePath)</SourcePath>
+    <SourcePath>$(SourcePath)</SourcePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -17,9 +17,10 @@
       <AdditionalLibraryDirectories>$(VC_LibraryPath);$(WindowsSDK_LibraryPath);N:\Work\Libraries\glfw-3.0.4.bin.WIN64\lib-msvc120;N:\Work\Libraries\glew-1.10.0\lib\Release\x64;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\fiber\src;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glew-1.12.0\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
@@ -27,16 +28,17 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\vulkan\Bin;$(ProjectDir)\Libraries\fiber\lib;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw\bin;$(ProjectDir)\Libraries\glew-1.12.0\lib\Release\x64;$(LibraryPath);$(ProjectDir)\Libraries\boost;%(AdditionalLibraryDirectories);$(AMDAPPSDKROOT)\lib\x86_64\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenCL.lib;opengl32.lib;glu32.lib;vulkan-1.lib;glew32.lib;glfw3.lib;FiberTaskingLib.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\vulkan\Bin;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)\Libraries\boost;%(AdditionalLibraryDirectories);$(AMDAPPSDKROOT)\lib\x86_64\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;glfw3.lib;cudart.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>LIBCD.lib;LIBC.lib;MSVCRT.lib;LIBCMT.lib;LIBCMTD.lib</IgnoreSpecificDefaultLibraries>
       <ShowProgress>NotSet</ShowProgress>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -48,21 +50,24 @@
       <NvccCompilation>compile</NvccCompilation>
       <GenerateLineInfo>true</GenerateLineInfo>
       <CudaRuntime>Static</CudaRuntime>
-      <CodeGeneration>compute_30,sm_50</CodeGeneration>
+      <CodeGeneration>compute_50,sm_50;compute_52,sm_52;compute_60,sm_60;compute_61,sm_61</CodeGeneration>
       <FastMath>true</FastMath>
       <UseHostInclude>true</UseHostInclude>
-      <Optimization>O3</Optimization>
-      <TypeInfo>InheritFromHost</TypeInfo>
+      <Optimization>O2</Optimization>
+      <TypeInfo>true</TypeInfo>
       <HostDebugInfo>true</HostDebugInfo>
-      <RuntimeChecks>InheritFromHost</RuntimeChecks>
+      <RuntimeChecks>Default</RuntimeChecks>
       <GPUDebugInfo>true</GPUDebugInfo>
       <PtxAsOptionV>false</PtxAsOptionV>
+      <Runtime>InheritFromHost</Runtime>
     </CudaCompile>
     <CudaLink>
-      <Optimization>O3</Optimization>
-      <UseHostLibraryDependencies>true</UseHostLibraryDependencies>
-      <UseHostLibraryDirectories>true</UseHostLibraryDirectories>
+      <Optimization>O2</Optimization>
+      <UseHostLibraryDependencies>false</UseHostLibraryDependencies>
+      <UseHostLibraryDirectories>false</UseHostLibraryDirectories>
       <PerformDeviceLink>true</PerformDeviceLink>
+      <GPUDebugInfo>true</GPUDebugInfo>
+      <AdditionalDependencies>cudart.lib;cudadevrt.lib</AdditionalDependencies>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup />

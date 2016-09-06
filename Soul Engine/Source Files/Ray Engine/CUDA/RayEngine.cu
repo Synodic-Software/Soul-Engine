@@ -358,7 +358,7 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 		//newListwithatomics
 
 
-		raysNew[FastAtomicAdd(nAtomic, warpSize)] = ray;
+		raysNew[FastAtomicAdd(nAtomic)] = ray;
 
 	}
 	col /= job[cur]->GetSampleAmount();
@@ -720,12 +720,46 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 			CudaCheck(cudaMallocManaged((void**)&hitAtomic, sizeof(int)));
 			*hitAtomic = 0;
 
+
+			float EngineExecuteTime=0.0f;
+			float CollectHitsTime = 0.0f;
+
+
+			cudaEvent_t start1, stop1;
+			float time1;
+			cudaEventCreate(&start1);
+			cudaEventCreate(&stop1);
+			cudaEventRecord(start1, 0);
+
 			EngineExecute << <numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
 			CudaCheck(cudaDeviceSynchronize());
+
+			cudaEventRecord(stop1, 0);
+			cudaEventSynchronize(stop1);
+			cudaEventElapsedTime(&time1, start1, stop1);
+			cudaEventDestroy(start1);
+			cudaEventDestroy(stop1);
+			EngineExecuteTime += time1;
+
+
+			cudaEvent_t start3, stop3;
+			float time3;
+			cudaEventCreate(&start3);
+			cudaEventCreate(&stop3);
+			cudaEventRecord(start3, 0);
+
 
 			CollectHits << <gridSize, blockSize >> >(numActive, jobs, jobsSize, deviceRays, deviceRaysB, WangHash(++raySeedGl), scene, hitAtomic);
 
 			CudaCheck(cudaDeviceSynchronize());
+
+
+			cudaEventRecord(stop3, 0);
+			cudaEventSynchronize(stop3);
+			cudaEventElapsedTime(&time3, start3, stop3);
+			cudaEventDestroy(start3);
+			cudaEventDestroy(stop3);
+			CollectHitsTime += time3;
 
 			swap(deviceRays, deviceRaysB);
 
@@ -736,8 +770,6 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 				size_t mem_free_0 = 0;
 				cudaMemGetInfo(&mem_free_0, &mem_tot_0);
 				std::cout << "GPU Memory left: " << mem_free_0 / 1000000000.0f << " GB" << std::endl;
-
-				CudaCheck(cudaDeviceSynchronize());
 
 				numActive = hitAtomic[0];
 
@@ -751,10 +783,42 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 
 				counter[0] = 0;
 				CudaCheck(cudaDeviceSynchronize());
+
+				cudaEvent_t start2, stop2;
+				float time2;
+				cudaEventCreate(&start2);
+				cudaEventCreate(&stop2);
+				cudaEventRecord(start2, 0);
+
 				EngineExecute << <numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
+
 				CudaCheck(cudaDeviceSynchronize());
+
+
+				cudaEventRecord(stop2, 0);
+				cudaEventSynchronize(stop2);
+				cudaEventElapsedTime(&time2, start2, stop2);
+				cudaEventDestroy(start2);
+				cudaEventDestroy(stop2);
+				EngineExecuteTime += time2;
+
+				cudaEvent_t start4, stop4;
+				float time4;
+				cudaEventCreate(&start4);
+				cudaEventCreate(&stop4);
+				cudaEventRecord(start4, 0);
+
+
 				CollectHits << <gridSize, blockSize >> >(numActive, jobs, jobsSize, deviceRays, deviceRaysB, WangHash(++raySeedGl), scene, hitAtomic);
 				CudaCheck(cudaDeviceSynchronize());
+
+				cudaEventRecord(stop4, 0);
+				cudaEventSynchronize(stop4);
+				cudaEventElapsedTime(&time4, start4, stop4);
+				cudaEventDestroy(start4);
+				cudaEventDestroy(stop4);
+				CollectHitsTime += time4;
+
 				swap(deviceRays, deviceRaysB);
 
 			}
@@ -772,6 +836,8 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 			cudaEventDestroy(stop);
 
 			std::cout << "RayEngine Execution: " << time << "ms" << std::endl;
+			std::cout << "     EngineExecute Execution: " << EngineExecuteTime << "ms" << std::endl;
+			std::cout << "     CollectHits Execution: " << CollectHitsTime << "ms" << std::endl;
 
 			CudaCheck(cudaDeviceSynchronize());
 		}
