@@ -25,7 +25,7 @@ Image::~Image() {
 	//cudaFree(cuArray);
 
 	if (pixels != NULL) {
-		delete[] pixels;
+		delete[] (char*)pixels;
 	}
 }
 

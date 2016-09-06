@@ -6,11 +6,12 @@
 class Settings{
 public:
 	Settings(std::string);
-	std::string  Retrieve(std::string);
-	void Set(std::string setting, std::string value);
+	int  Retrieve(std::string setting);
+	int  Retrieve(std::string setting, int defaultSet);
+	void Set(std::string setting, int value);
 
 private:
 	void Update();
-	std::map<std::string, std::string> values;
+	std::map<std::string, int> values;
 	std::string fileName;
 };

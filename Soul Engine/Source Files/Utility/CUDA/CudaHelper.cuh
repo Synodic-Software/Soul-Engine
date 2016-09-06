@@ -6,10 +6,10 @@
 #include "cuda.h"
 
 #define CUDA_FUNCTION __host__ __device__
-
+#define WARP_SIZE 32
 
 #define CudaCheck(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort = true)
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool = true)
 {
 	if (code != cudaSuccess)
 	{
@@ -25,11 +25,11 @@ inline __device__ int getGlobalIdx_1D_1D()
 }
 
 __device__ int warp_bcast(int v, int leader);
-__device__ int lane_id(const int warpSize);
+__device__ int lane_id();
 
 // warp-aggregated atomic increment
 __device__
-int FastAtomicAdd(int *ctr, const int warpSize);
+int FastAtomicAdd(int *ctr);
 
 
 inline int _ConvertSMVer2Cores(int major, int minor)
