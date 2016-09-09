@@ -149,6 +149,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Utility\OpenGL\Shader.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h" />
     <ClInclude Include="Source Files\Utility\GPUUtility.h" />
+    <ClInclude Include="Source Files\Utility\Vulkan\VulkanUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />

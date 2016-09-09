@@ -184,6 +184,9 @@
     <Filter Include="Engine Backend\Engine Core\Allocator">
       <UniqueIdentifier>{05e57c49-4656-4425-be25-75d03925d296}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Utility\Vulkan">
+      <UniqueIdentifier>{3f7284f4-f567-4add-b157-0fb32c9084dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -413,6 +416,9 @@
     </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Allocator\Allocator.h">
       <Filter>Engine Backend\Engine Core\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\Vulkan\VulkanUtility.h">
+      <Filter>Engine Backend\Utility\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
