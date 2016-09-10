@@ -74,6 +74,12 @@ namespace Soul {
 		}
 	};
 
+	struct SwapChainSupportDetails {
+		VkSurfaceCapabilitiesKHR capabilities;
+		std::vector<VkSurfaceFormatKHR> formats;
+		std::vector<VkPresentModeKHR> presentModes;
+	};
+
 	int monitorCount;
 	GLFWmonitor** monitors;
 	Renderer** renderObjects;
