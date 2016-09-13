@@ -342,9 +342,6 @@
     <ClInclude Include="Source Files\Ray Engine\Ray.h">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Utility\GPUIncludes.h">
-      <Filter>Engine Backend\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Utility\CUDAIncludes.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
@@ -352,9 +349,6 @@
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Utility\GLMIncludes.h">
-      <Filter>Engine Backend\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\GLIncludes.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Renderer\CUDA\Renderer.cuh">
@@ -419,6 +413,12 @@
     </ClInclude>
     <ClInclude Include="Source Files\Utility\Vulkan\VulkanUtility.h">
       <Filter>Engine Backend\Utility\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\Vulkan\VulkanBackend.h">
+      <Filter>Engine Backend\Utility\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\GPUIncludes.h">
+      <Filter>Engine Frontend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -490,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Allocator\Allocator.cpp">
       <Filter>Engine Backend\Engine Core\Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp">
+      <Filter>Engine Backend\Utility\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
