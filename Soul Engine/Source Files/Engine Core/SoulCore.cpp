@@ -77,30 +77,30 @@ namespace Soul {
 
 	
 	void InitVulkan() {
-		CreateInstance();
-		SetupDebugCallback();
-		CreateSurface();
-		PickVulkanDevice();
-		CreateVulkanLogical();
-		CreateSwapChain();
-		CreateImageViews();
-		CreateRenderPass();
-		CreateDescriptorSetLayout();
-		CreateGraphicsPipeline();
-		CreateCommandPool();
-		CreateDepthResources();
-		CreateFramebuffers();
-		CreateTextureImage();
-		CreateTextureImageView();
-		CreateTextureSampler();
-		LoadModel();
-		CreateVertexBuffer();
-		CreateIndexBuffer();
-		CreateUniformBuffer();
-		CreateDescriptorPool();
-		CreateDescriptorSet();
-		CreateCommandBuffers();
-		CreateSemaphores();
+		VulkanBackend::CreateInstance();
+		VulkanBackend::SetupDebugCallback();
+		VulkanBackend::CreateSurface();
+		VulkanBackend::PickVulkanDevice();
+		VulkanBackend::CreateVulkanLogical();
+		VulkanBackend::CreateSwapChain();
+		VulkanBackend::CreateImageViews();
+		VulkanBackend::CreateRenderPass();
+		VulkanBackend::CreateDescriptorSetLayout();
+		VulkanBackend::CreateGraphicsPipeline();
+		VulkanBackend::CreateCommandPool();
+		VulkanBackend::CreateDepthResources();
+		VulkanBackend::CreateFramebuffers();
+		VulkanBackend::CreateTextureImage();
+		VulkanBackend::CreateTextureImageView();
+		VulkanBackend::CreateTextureSampler();
+		VulkanBackend::LoadModel();
+		VulkanBackend::CreateVertexBuffer();
+		VulkanBackend::CreateIndexBuffer();
+		VulkanBackend::CreateUniformBuffer();
+		VulkanBackend::CreateDescriptorPool();
+		VulkanBackend::CreateDescriptorSet();
+		VulkanBackend::CreateCommandBuffers();
+		VulkanBackend::CreateSemaphores();
 	}
 	
 	void UpdateMouse(){
