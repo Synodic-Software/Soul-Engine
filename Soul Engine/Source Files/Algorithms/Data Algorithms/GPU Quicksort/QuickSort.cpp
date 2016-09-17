@@ -1,5 +1,5 @@
 #include "QuickSort.h"	
-
+//will be working on this in coming weeks
 #define BITONICSORT_LEN         1024            // Must be power of 2!
 #define QSORT_MAXDEPTH          16              // Will force final bitonic stage at depth QSORT_MAXDEPTH+1
 
