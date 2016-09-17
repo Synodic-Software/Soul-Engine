@@ -1,5 +1,5 @@
 #include "QuickSort.h"	
-//will be working on this in coming weeks
+
 #define BITONICSORT_LEN         1024            // Must be power of 2!
 #define QSORT_MAXDEPTH          16              // Will force final bitonic stage at depth QSORT_MAXDEPTH+1
 
@@ -25,3 +25,28 @@ typedef struct qsortRingbuf_t
 // Stack elem count must be power of 2!
 #define QSORT_STACK_ELEMS   1*1024*1024 // One million stack elements is a HUGE number.
 
+/*
+
+Quicksort(A as array, low as int, high as int){
+    if (low < high){
+        pivot_location = Partition(A,low,high)
+        Quicksort(A,low, pivot_location)
+        Quicksort(A, pivot_location + 1, high)
+    }
+}
+Partition(A as array, low as int, high as int){
+     pivot = A[low]
+     leftwall = low
+
+     for i = low + 1 to high{
+         if (A[i] < pivot) then{
+             swap(A[i], A[leftwall])
+             leftwall = leftwall + 1
+         }
+     }
+     swap(pivot,A[leftwall])
+
+    return (leftwall)}
+
+
+*/
