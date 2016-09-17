@@ -1,10 +1,11 @@
 #include "Scheduler.h"
 //#include "fiber_tasking_lib/tagged_heap_backed_linear_allocator.h"
-//
-//
+
+
 //FiberTaskingLib::TaskScheduler *taskScheduler = NULL;
 //FiberTaskingLib::TaggedHeap *taggedHeap = NULL;
 //FiberTaskingLib::TaggedHeapBackedLinearAllocator *allocator = NULL;
+
 //// new task submitted to scheduler
 //void Scheduler::Start(TASK task) {
 //	
@@ -19,7 +20,7 @@
 //
 //	taskScheduler->WaitForCounter(counter, 0);
 //}
-//
+
 //// end task
 //void Scheduler::Terminate() {
 //	if (allocator != NULL){
@@ -30,4 +31,3 @@
 //		delete taskScheduler;
 //	}
 //}
-//
