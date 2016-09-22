@@ -34,4 +34,4 @@ Completed features:
 Ways to interact with Soul Engine beyond this repository are currently being investigated.
 For your propiertery purposes, an alternate license will be also made available once the project is in a decent enough shape.
 
-
+Check out the currently open issues for opportunities to contribute!
