@@ -31,6 +31,8 @@ namespace Soul {
 	RenderType renderer;
 	WindowType screen;
 
+	std::vector<GLFWwindow*> windows;
+
 	int monitorCount;
 	GLFWmonitor** monitors;
 	Renderer** renderObjects;
