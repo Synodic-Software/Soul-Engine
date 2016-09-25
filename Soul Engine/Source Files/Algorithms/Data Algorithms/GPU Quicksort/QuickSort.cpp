@@ -25,3 +25,59 @@ typedef struct qsortRingbuf_t
 // Stack elem count must be power of 2!
 #define QSORT_STACK_ELEMS   1*1024*1024 // One million stack elements is a HUGE number.
 
+/*
+void quicksort(T* data, int N)
+{
+  int i, j;
+  T v, t;
+ 
+  if( N <= 1 )
+    return;
+ 
+  // Partition elements
+  v = data[0];
+  i = 0;
+  j = N;
+  for(;;)
+  {
+    while(data[++i] < v && i < N) { }
+    while(data[--j] > v) { }
+    if( i >= j )
+      break;
+    t = data[i];
+    data[i] = data[j];
+    data[j] = t;
+  }
+  t = data[i-1];
+  data[i-1] = data[0];
+  data[0] = t;
+  quicksort(data, i-1);
+  quicksort(data+i, N-i);
+}
+*/
+
+/*
+
+Quicksort(A as array, low as int, high as int){
+    if (low < high){
+        pivot_location = Partition(A,low,high)
+        Quicksort(A,low, pivot_location)
+        Quicksort(A, pivot_location + 1, high)
+    }
+}
+Partition(A as array, low as int, high as int){
+     pivot = A[low]
+     leftwall = low
+
+     for i = low + 1 to high{
+         if (A[i] < pivot) then{
+             swap(A[i], A[leftwall])
+             leftwall = leftwall + 1
+         }
+     }
+     swap(pivot,A[leftwall])
+
+    return (leftwall)}
+
+
+*/

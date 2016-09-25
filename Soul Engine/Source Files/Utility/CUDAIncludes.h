@@ -4,7 +4,6 @@
 //#include <cuda_runtime_api.h>
 
 #include "Utility\GLMIncludes.h"
-#include "Utility\GLIncludes.h"
 //#include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
 #include <device_launch_parameters.h>
