@@ -190,7 +190,7 @@ private:
 public:
 	void OnWindowResized(GLFWwindow* window, int width, int height);
 
-	void RecreateSwapChain();
+	void RecreateSwapChain(GLFWwindow * window);
 
 	void CreateInstance();
 
@@ -202,7 +202,7 @@ public:
 
 	void CreateVulkanLogical();
 
-	void CreateSwapChain();
+	void CreateSwapChain(GLFWwindow * window);
 
 	void CreateImageViews();
 
@@ -263,7 +263,7 @@ public:
 
 	void UpdateUniformBuffer();
 
-	void DrawFrame();
+	void DrawFrame(GLFWwindow * window);
 
 	void CreateShaderModule(const std::vector<char>& code, VulkanWrapper<VkShaderModule>& shaderModule);
 
@@ -271,7 +271,7 @@ public:
 
 	VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 
-	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow * window);
 
 	SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
 
