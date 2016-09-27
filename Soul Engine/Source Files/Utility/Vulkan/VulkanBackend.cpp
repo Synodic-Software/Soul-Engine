@@ -11,7 +11,7 @@
 #include <array>
 #include <set>
 #include <unordered_map>
-
+#include <stb_image.h>
 
 
 void VulkanBackend::OnWindowResized(GLFWwindow* window, int width, int height) {
