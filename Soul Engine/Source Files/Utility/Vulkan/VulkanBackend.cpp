@@ -17,13 +17,13 @@
 void VulkanBackend::OnWindowResized(GLFWwindow* window, int width, int height) {
 	if (width == 0 || height == 0) return;
 
-	RecreateSwapChain();
+	RecreateSwapChain(window);
 }
 
-void VulkanBackend::RecreateSwapChain() {
+void VulkanBackend::RecreateSwapChain(GLFWwindow * window) {
 	vkDeviceWaitIdle(device);
 
-	CreateSwapChain();
+	CreateSwapChain(window);
 	CreateImageViews();
 	CreateRenderPass();
 	CreateGraphicsPipeline();
@@ -153,12 +153,12 @@ void VulkanBackend::CreateVulkanLogical() {
 	vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
 }
 
-void VulkanBackend::CreateSwapChain() {
+void VulkanBackend::CreateSwapChain(GLFWwindow * window) {
 	SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(physicalDevice);
 
 	VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
-	VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
+	VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities, window);
 
 	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
@@ -905,7 +905,7 @@ void VulkanBackend::CreateCommandBuffers() {
 		renderPassInfo.renderArea.extent = swapChainExtent;
 
 		std::array<VkClearValue, 2> clearValues = {};
-		clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+		clearValues[0].color = { { 0.0f, 0.0f, 0.0f, 1.0f } };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		renderPassInfo.clearValueCount = clearValues.size();
@@ -964,12 +964,12 @@ void VulkanBackend::UpdateUniformBuffer() {
 	copyBuffer(uniformStagingBuffer, uniformBuffer, sizeof(ubo));
 }
 
-void VulkanBackend::DrawFrame() {
+void VulkanBackend::DrawFrame(GLFWwindow * window) {
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(device, swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-		RecreateSwapChain();
+		RecreateSwapChain(window);
 		return;
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
@@ -1011,7 +1011,7 @@ void VulkanBackend::DrawFrame() {
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-		RecreateSwapChain();
+		RecreateSwapChain(window);
 	}
 	else if (result != VK_SUCCESS) {
 		throw std::runtime_error("failed to present swap chain image!");
@@ -1052,12 +1052,16 @@ VkPresentModeKHR VulkanBackend::ChooseSwapPresentMode(const std::vector<VkPresen
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D VulkanBackend::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
+VkExtent2D VulkanBackend::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window) {
 	if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
 		return capabilities.currentExtent;
 	}
 	else {
-		VkExtent2D actualExtent = { WIDTH, HEIGHT };
+
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		
+		VkExtent2D actualExtent = { width, height };
 
 		actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
 		actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
