@@ -95,7 +95,21 @@ struct UniformBufferObject {
 };
 
 class VulkanBackend{
+
+public:
+	static VulkanBackend& GetInstance()
+	{
+		static VulkanBackend    instance; // Guaranteed to be destroyed.
+		// Instantiated on first use.
+		return instance;
+	}
+
+	VulkanBackend(VulkanBackend const&) = delete;
+	void operator=(VulkanBackend const&) = delete;
+
 private:
+	VulkanBackend() {};
+
 	const std::vector<const char*> validationLayers = {
 		"VK_LAYER_LUNARG_standard_validation"
 	};
