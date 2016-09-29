@@ -81,10 +81,10 @@ namespace Soul {
 	void InitVulkan() {
 		VulkanBackend::GetInstance().CreateInstance();
 		VulkanBackend::GetInstance().SetupDebugCallback();
-		VulkanBackend::GetInstance().CreateSurface();
+		VulkanBackend::GetInstance().CreateSurface(windows[0]);
 		VulkanBackend::GetInstance().PickVulkanDevice();
 		VulkanBackend::GetInstance().CreateVulkanLogical();
-		VulkanBackend::GetInstance().CreateSwapChain();
+		VulkanBackend::GetInstance().CreateSwapChain(windows[0]);
 		VulkanBackend::GetInstance().CreateImageViews();
 		VulkanBackend::GetInstance().CreateRenderPass();
 		VulkanBackend::GetInstance().CreateDescriptorSetLayout();
