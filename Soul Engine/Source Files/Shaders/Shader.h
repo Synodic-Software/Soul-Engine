@@ -116,7 +116,14 @@ public:
 	//Member Functions
 
 	//Returns whether or not a Face was hit by a Ray
-	virtual void isFaceHit() = 0;
+
+	/*
+	This method takes no arguments
+
+	This method returns whether or not the face is hit by the ray.
+	*/
+
+	virtual bool isFaceHit() = 0;
 
 
 
