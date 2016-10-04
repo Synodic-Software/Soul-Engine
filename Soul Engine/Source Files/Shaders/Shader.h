@@ -32,6 +32,20 @@ public:
 	//Constructors and Destructors
 
 	//Default Constructor
+
+	/*
+	This constructor takes no arguments
+
+	Returns:
+	A new shader object initialized with generic arguments.
+
+	Note since this is an abstract base class it can not be instantiated
+	directly.  This is instead intented as a template for drfault constructors
+	in derived classes.
+
+	Note: need for this constructor will be investigated in the future,
+	at which point this constructor may be depricated
+	*/
 	Shader();
 	
 	//Initialize Shader from argument provided data
@@ -86,6 +100,9 @@ public:
 	Returns:
 	A new shader that is equivalent to the provided argument "other", provided
 	that an exception is not thrown by the constructor
+
+	Note: need for this constructor will be investigated in the future, 
+	at which point this constructor may be depricated
 	*/
 
 	Shader(const Shader & other);
