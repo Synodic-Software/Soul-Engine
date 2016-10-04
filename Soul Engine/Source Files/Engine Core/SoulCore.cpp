@@ -25,7 +25,7 @@
 namespace Soul {
 
 
-/////////////////////////Variables and Declarations//////////////////
+	/////////////////////////Variables and Declarations//////////////////
 
 	uint seed;
 	RenderType renderer;
@@ -38,6 +38,7 @@ namespace Soul {
 	Renderer** renderObjects;
 	Settings* settings;
 	Camera** cameras;
+	Camera* mouseCamera;
 
 	int engineRefreshRate;
 
@@ -77,7 +78,7 @@ namespace Soul {
 
 	/////////////////////////Engine Core/////////////////////////////////
 
-	
+
 	void InitVulkan() {
 		VulkanBackend::GetInstance().CreateInstance();
 		VulkanBackend::GetInstance().SetupDebugCallback();
@@ -104,15 +105,30 @@ namespace Soul {
 		VulkanBackend::GetInstance().CreateCommandBuffers();
 		VulkanBackend::GetInstance().CreateSemaphores();
 	}
-	
+
+	static void UpdateMouse(GLFWwindow* window, double xpos, double ypos)
+	{
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		double xPos = xpos - (width / 2.0);
+		double yPos = ypos - (height / 2.0);
+		
+		if (mouseCamera == nullptr){
+			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
+			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
+		}
+
+		glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
+
+	}
+
 	void UpdateMouse(){
 		double xPos;
 		double yPos;
 		glfwGetCursorPos(mainThread, &xPos, &yPos);
 		xPos -= (SCREEN_SIZE.x / 2.0);
 		yPos -= (SCREEN_SIZE.y / 2.0);
-		mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
-		mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
+		
 
 		if (freeMouse){
 			if (freeCam){
@@ -320,7 +336,7 @@ namespace Soul {
 	void SoulRun(){
 		Run();
 	}
-	
+
 }
 
 /////////////////////////User Interface///////////////////////////
@@ -334,7 +350,7 @@ void SoulShutDown(){
 	glfwTerminate();
 }
 
-void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* mat){
+void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat){
 	Object* obj = new Object(globalPos, file, mat);
 	scene->AddObject(obj);
 }
@@ -358,7 +374,7 @@ void SetSetting(std::string rName, int rValue){
 //any other functions relating to the engine.
 void SoulInit(){
 
-	Soul::seed = GLuint(time(NULL));
+	Soul::seed = uint(time(NULL));
 	srand(Soul::seed);
 
 	Soul::settings = new Settings("Settings.ini");
@@ -441,7 +457,7 @@ void SoulCreateWindow(int monitor, float xSize, float ySize){
 	/*glfwSetInputMode(mainThread, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0, SCREEN_SIZE.y / 2.0);
 
-	
+
 	camera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
 	camera->OffsetOrientation(45, 45);
 
@@ -452,20 +468,20 @@ void SoulCreateWindow(int monitor, float xSize, float ySize){
 
 
 int main()
-	{
-		SoulInit();
+{
+	SoulInit();
 
 
-		SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulShutDown));
+	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulShutDown));
 
-		Material* whiteGray = new Material();
-		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
-		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	Material* whiteGray = new Material();
+	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
+	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-		Scene* scene = new Scene();
-		AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
+	Scene* scene = new Scene();
+	AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
 
-		SoulRun();
+	SoulRun();
 
-		return 0;
-	}
+	return 0;
+}
