@@ -4,6 +4,8 @@
 #include "SoulCore.h"
 #include "glm\glm.hpp"
 
+#include <exception>
+
 
 /*
 
@@ -70,6 +72,22 @@ public:
 		const glm::vec2 & tex1, const glm::vec2 & tex2, const glm::vec2 & tex3, void* material);
 
 	//Copy Constructor
+
+	/*
+	Shader constructor takes the following argument:
+	
+	const Shader & other: another shader, whose state will be copied in the new Shader
+
+	Throws:
+	std::invalid_argument if a non-compatiable Shader type is passed as other
+	(Note: will have to further investigate project's exception handling methods
+	to determine best way to handle this error and will likely revise specification)
+	
+	Returns:
+	A new shader that is equivalent to the provided argument "other", provided
+	that an exception is not thrown by the constructor
+	*/
+
 	Shader(const Shader & other);
 	
 	//Destructor
