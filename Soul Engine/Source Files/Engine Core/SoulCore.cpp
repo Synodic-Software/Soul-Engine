@@ -288,20 +288,7 @@ namespace Soul {
 		delete rend;
 
 	}
-	glm::vec2* GetMouseChange(){
-		return &mouseChangeDegrees;
-	}
 
-	void UpdateTimers(){
-		if (physicsTimer > 0){
-			physicsTimer = physicsTimer - deltaTime;
-		}
-	}
-
-	void ClearColor(float r, float g, float b, float a){
-		glClearColor(r, g, b, a);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
 	void SoulRun(){
 		Run();
 	}
