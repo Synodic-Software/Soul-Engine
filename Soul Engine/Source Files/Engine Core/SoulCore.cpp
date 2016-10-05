@@ -37,7 +37,9 @@ namespace Soul {
 	GLFWmonitor** monitors;
 	Renderer** renderObjects;
 	Settings* settings;
-	Camera** cameras;
+
+	bool usingDefaultCamera;
+	std::vector<Camera*> cameras;
 	Camera* mouseCamera;
 
 	int engineRefreshRate;
@@ -120,67 +122,51 @@ namespace Soul {
 
 	}
 
-	void UpdateKeys(){
+	void UpdateDefaultCamera(GLFWwindow* window,double deltaTime){
 		double moveSpeed;
-		if (glfwGetKey(mainThread, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
 			moveSpeed = 9 * METER * deltaTime;
 		}
-		else if (glfwGetKey(mainThread, GLFW_KEY_LEFT_ALT) == GLFW_PRESS){
+		else if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS){
 			moveSpeed = 1 * METER * deltaTime;
 		}
 		else{
 			moveSpeed = 4.5 * METER * deltaTime;
 		}
 
-
-		if (freeCam){
-			if (glfwGetKey(mainThread, GLFW_KEY_S) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
+		//fill with freecam variable
+		if (true){
+			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * -mouseCamera->Forward());
 			}
-			else if (glfwGetKey(mainThread, GLFW_KEY_W) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * camera->Forward());
+			else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * mouseCamera->Forward());
 			}
-			if (glfwGetKey(mainThread, GLFW_KEY_A) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * -camera->Right());
+			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * -mouseCamera->Right());
 			}
-			else if (glfwGetKey(mainThread, GLFW_KEY_D) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * camera->Right());
+			else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * mouseCamera->Right());
 			}
-			if (glfwGetKey(mainThread, GLFW_KEY_Z) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
+			if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
 			}
-			else if (glfwGetKey(mainThread, GLFW_KEY_X) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
+			else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
 			}
 		}
 
-	}
-
-
-	void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-	{
-
-		scrollUniform += (float)(yoffset / 50.0);
-		if (scrollUniform > 1.0f){
-			scrollUniform = 1.0f;
-		}
-		else if (scrollUniform < 0.0f){
-			scrollUniform = 0.0f;
-		}
 	}
 
 
 	void SetKey(int key, void(*func)(void)){
-		SetKey(key, std::bind(func));
+		SoulInput::SetKey(key, std::bind(func));
 	}
 
 	void Run()
 	{
 
-		SoulSynchGPU();
-		camera = new Camera();
-
-		SoulSynchGPU();
+		SynchGPU();
 		SoulCreateWindow(BORDERLESS, SPECTRAL);
 
 
@@ -219,20 +205,22 @@ namespace Soul {
 			//# of updates based on accumulated time
 
 			while (accumulator >= deltaTime){
-				SoulSynchGPU();
+				SynchGPU();
 
 				//loading and updates for multithreading
 
-				//set cursor in center
-
 				glfwPollEvents();
 
-				UpdateKeys();
+				if (usingDefaultCamera){
+					UpdateDefaultCamera(,);
 
-				UpdateMouse();
+				}
 
-				camera->UpdateVariables();
-
+				//apply camera changes to their matrices
+				for (auto const& cam : cameras){
+					cam->UpdateVariables();
+				}
+				
 				//Update();
 
 
@@ -261,12 +249,14 @@ namespace Soul {
 
 				UpdateTimers();
 
+				SoulInput::ResetOffsets();
+
 				t += deltaTime;
 				accumulator -= deltaTime;
 				//SoulSynch();
 			}
 
-			rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
+			rend->RenderSetup(SCREEN_SIZE, camera, deltaTime);
 			//camera->UpdateVariables();
 
 			test = !test;
@@ -371,6 +361,11 @@ void SoulInit(){
 	RenderType  win = static_cast<RenderType>(GetSetting("Renderer", 2));
 
 	Soul::monitors = glfwGetMonitors(&Soul::monitorCount);
+
+	Soul::usingDefaultCamera = true;
+	Soul::mouseCamera = new Camera();
+	Soul::cameras.push_back(Soul::mouseCamera);
+
 }
 
 
@@ -451,7 +446,7 @@ int main()
 	SoulInit();
 
 
-	SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulShutDown));
+	SetKey(GLFW_KEY_ESCAPE, &SoulShutDown);
 
 	Material* whiteGray = new Material();
 	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);

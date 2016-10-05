@@ -40,3 +40,14 @@ void SoulInput::UpdateMouseCallback(GLFWwindow* window, double xpos, double ypos
 		glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
 	}
 }
+
+void SoulInput::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	scrollXOffset = xoffset;
+	scrollYOffset = yoffset;
+}
+
+void SoulInput::ResetOffsets(){
+	scrollXOffset = 0.0f;
+	scrollYOffset = 0.0f;
+}
