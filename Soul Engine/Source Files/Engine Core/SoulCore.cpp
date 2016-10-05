@@ -106,41 +106,6 @@ namespace Soul {
 		VulkanBackend::GetInstance().CreateSemaphores();
 	}
 
-	static void UpdateMouse(GLFWwindow* window, double xpos, double ypos)
-	{
-		int width, height;
-		glfwGetWindowSize(window, &width, &height);
-		double xPos = xpos - (width / 2.0);
-		double yPos = ypos - (height / 2.0);
-		
-		if (mouseCamera == nullptr){
-			mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
-			mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
-		}
-
-		glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
-
-	}
-
-	void UpdateMouse(){
-		double xPos;
-		double yPos;
-		glfwGetCursorPos(mainThread, &xPos, &yPos);
-		xPos -= (SCREEN_SIZE.x / 2.0);
-		yPos -= (SCREEN_SIZE.y / 2.0);
-		
-
-		if (freeMouse){
-			if (freeCam){
-				//set camera for each update
-				camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-			}
-
-
-			glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
-		}
-	}
-
 	void UpdateKeys(){
 		double moveSpeed;
 		if (glfwGetKey(mainThread, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
