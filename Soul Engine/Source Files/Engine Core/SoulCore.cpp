@@ -32,10 +32,14 @@ namespace Soul {
 	WindowType screen;
 
 	std::vector<GLFWwindow*> windows;
+	GLFWwindow* masterWindow;
 
 	int monitorCount;
 	GLFWmonitor** monitors;
+
 	Renderer** renderObjects;
+	float* timeModifiers; //one for each render instance
+
 	Settings* settings;
 
 	bool usingDefaultCamera;
@@ -43,8 +47,6 @@ namespace Soul {
 	Camera* mouseCamera;
 
 	int engineRefreshRate;
-
-	float* timeModifiers; //one for each render instance
 
 	float CurrentDelta();
 	void ClearColor(float, float, float, float);
@@ -167,13 +169,9 @@ namespace Soul {
 	{
 
 		SynchGPU();
-		SoulCreateWindow(BORDERLESS, SPECTRAL);
 
 
 		rend = new Renderer(*camera, SCREEN_SIZE);
-
-
-		glfwSetScrollCallback(mainThread, ScrollCallback);
 
 		//timer info for loop
 		double t = 0.0f;
@@ -212,9 +210,11 @@ namespace Soul {
 				glfwPollEvents();
 
 				if (usingDefaultCamera){
-					UpdateDefaultCamera(,);
-
+					UpdateDefaultCamera(masterWindow,);
+					InputToCamera(masterWindow, mouseCamera);
 				}
+
+
 
 				//apply camera changes to their matrices
 				for (auto const& cam : cameras){
@@ -247,38 +247,27 @@ namespace Soul {
 
 
 
-				UpdateTimers();
 
 				SoulInput::ResetOffsets();
 
 				t += deltaTime;
 				accumulator -= deltaTime;
-				//SoulSynch();
 			}
 
 			rend->RenderSetup(SCREEN_SIZE, camera, deltaTime);
-			//camera->UpdateVariables();
 
 			test = !test;
 
 
-
-
-
-
-
 			RayEngine::Clear();
-
-
-
 			RayEngine::Process(scene);
 
 			//draw
 			ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-			SoulSynchGPU();
+			SynchGPU();
 			rend->Render();
-			SoulSynchGPU();
+			SynchGPU();
 
 			glfwSwapBuffers(mainThread);
 		}
@@ -353,10 +342,14 @@ void SoulInit(){
 	Soul::mouseCamera = new Camera();
 	Soul::cameras.push_back(Soul::mouseCamera);
 
+	glfwSetKeyCallback(Soul::masterWindow, SoulInput::InputKeyboardCallback);
+	glfwSetScrollCallback(Soul::masterWindow, SoulInput::ScrollCallback);
+	glfwSetCursorPosCallback(Soul::masterWindow, SoulInput::UpdateMouseCallback);
+
 }
 
-
-void SoulCreateWindow(int monitor, float xSize, float ySize){
+//the moniter number, and a float from 0-1 of the screen size for each dimension
+GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	GLFWmonitor* monitorIn = Soul::monitors[monitor];
 
@@ -414,6 +407,7 @@ void SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	Soul::windows.push_back(windowOut);
 
+	return windowOut;
 
 	/*glfwSetInputMode(mainThread, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0, SCREEN_SIZE.y / 2.0);
@@ -423,7 +417,7 @@ void SoulCreateWindow(int monitor, float xSize, float ySize){
 	camera->OffsetOrientation(45, 45);
 
 	glfwSetKeyCallback(mainThread, InputKeyboardCallback);
-	SetInputWindow(mainThread);*/
+*/
 
 }
 
@@ -432,8 +426,10 @@ int main()
 {
 	SoulInit();
 
+	//create a Window
+	SoulCreateWindow(BORDERLESS, SPECTRAL);
 
-	SetKey(GLFW_KEY_ESCAPE, &SoulShutDown);
+	SetKey(GLFW_KEY_ESCAPE, SoulShutDown);
 
 	Material* whiteGray = new Material();
 	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);

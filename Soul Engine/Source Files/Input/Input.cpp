@@ -3,7 +3,6 @@
 
 
 std::list<std::function<void()> > keyHash[350];
-GLFWwindow* window;
 
 bool IsKeyAvailable(int key){
 	return keyHash[key].size() == 0;
@@ -21,12 +20,6 @@ bool SoulInput::SetKey(int key, std::function<void()> function){
 	//doesn't currently check for availability, this is bad - talk to me about whats needed here
 	keyHash[key].push_back(function);
 	return true;
-}
-void SoulInput::SetInputWindow(GLFWwindow* windowN){
-	window = windowN;
-}
-GLFWwindow* SoulInput::GetInputWindow(){
-	return window;
 }
 
 void SoulInput::UpdateMouseCallback(GLFWwindow* window, double xpos, double ypos)

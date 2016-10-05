@@ -6,8 +6,6 @@
 namespace SoulInput{
 	bool SetKey(int, std::function<void()>);
 	void InputKeyboardCallback(GLFWwindow*, int, int, int, int);
-	void SetInputWindow(GLFWwindow*);
-	GLFWwindow* GetInputWindow();
 	void UpdateMouseCallback(GLFWwindow*, double, double);
 	void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 	void ResetOffsets();
