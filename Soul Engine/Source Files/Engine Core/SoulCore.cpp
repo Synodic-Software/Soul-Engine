@@ -106,6 +106,20 @@ namespace Soul {
 		VulkanBackend::GetInstance().CreateSemaphores();
 	}
 
+	void InputToCamera(GLFWwindow* window,Camera* camera){
+
+		if (camera != nullptr){
+
+			int width, height;
+			glfwGetWindowSize(window, &width, &height);
+
+			mouseCamera->OffsetOrientation(
+				(float)(SoulInput::xPos / width * camera->FieldOfView().x),
+				(float)(SoulInput::yPos / height * camera->FieldOfView().y));
+		}
+
+	}
+
 	void UpdateKeys(){
 		double moveSpeed;
 		if (glfwGetKey(mainThread, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
