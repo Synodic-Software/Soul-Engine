@@ -268,7 +268,7 @@ namespace Soul {
 			}
 
 			for (auto const& rend : renderObjects){
-				rend.renderer->RenderSetup(SCREEN_SIZE, camera, deltaTime);
+				rend.renderer->RenderSetup({width,height}, camera, deltaTime);
 			}
 
 			test = !test;
