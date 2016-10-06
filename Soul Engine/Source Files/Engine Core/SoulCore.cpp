@@ -28,17 +28,27 @@ namespace Soul {
 	/////////////////////////Variables and Declarations//////////////////
 
 	uint seed;
-	RenderType renderer;
-	WindowType screen;
 
-	std::vector<GLFWwindow*> windows;
+	typedef struct window{
+		GLFWwindow* window;
+		WindowType type;
+	}window;
+
+	typedef struct renderer{
+		Renderer* renderer;
+		RenderType type;
+		float timeModifier;
+	}renderer;
+
+	std::vector<window> windows;
 	GLFWwindow* masterWindow;
 
 	int monitorCount;
 	GLFWmonitor** monitors;
 
-	Renderer** renderObjects;
-	float* timeModifiers; //one for each render instance
+	std::vector<renderer> renderObjects;
+
+	std::list<Scene*> scenes;
 
 	Settings* settings;
 
@@ -86,10 +96,10 @@ namespace Soul {
 	void InitVulkan() {
 		VulkanBackend::GetInstance().CreateInstance();
 		VulkanBackend::GetInstance().SetupDebugCallback();
-		VulkanBackend::GetInstance().CreateSurface(windows[0]);
+		VulkanBackend::GetInstance().CreateSurface(masterWindow);
 		VulkanBackend::GetInstance().PickVulkanDevice();
 		VulkanBackend::GetInstance().CreateVulkanLogical();
-		VulkanBackend::GetInstance().CreateSwapChain(windows[0]);
+		VulkanBackend::GetInstance().CreateSwapChain(masterWindow);
 		VulkanBackend::GetInstance().CreateImageViews();
 		VulkanBackend::GetInstance().CreateRenderPass();
 		VulkanBackend::GetInstance().CreateDescriptorSetLayout();
@@ -170,25 +180,27 @@ namespace Soul {
 
 		SynchGPU();
 
-
-		rend = new Renderer(*camera, SCREEN_SIZE);
-
 		//timer info for loop
 		double t = 0.0f;
 		double currentTime = glfwGetTime();
 		double accumulator = 0.0f;
 
+		int width, height;
+		glfwGetWindowSize(masterWindow, &width, &height);
+		glfwSetCursorPos(masterWindow, width / 2.0f, height / 2.0f);
+
 		glfwPollEvents();
-		//hub->UpdateObjects(deltaTime);
+		
+		double deltaTime = 1.0 / engineRefreshRate;
+
+		for (auto const& scene : scenes){
+			scene->Build(deltaTime);
+		}
+
+		bool test = true;		
+		
 		//stop loop when glfw exit is called
-		glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
-
-
-		scene->Build(deltaTime);
-
-
-		bool test = true;
-		while (!runShutdown){
+		while (!glfwWindowShouldClose(masterWindow)){
 			double newTime = glfwGetTime();
 			double frameTime = newTime - currentTime;
 			//std::cout << "FPS:: " <<1.0f / frameTime << std::endl;
@@ -205,12 +217,14 @@ namespace Soul {
 			while (accumulator >= deltaTime){
 				SynchGPU();
 
+				deltaTime = 1.0 / engineRefreshRate;
+
 				//loading and updates for multithreading
 
 				glfwPollEvents();
 
 				if (usingDefaultCamera){
-					UpdateDefaultCamera(masterWindow,);
+					UpdateDefaultCamera(masterWindow, deltaTime);
 					InputToCamera(masterWindow, mouseCamera);
 				}
 
@@ -223,15 +237,15 @@ namespace Soul {
 				
 				//Update();
 
-
-
 				cudaEvent_t start, stop;
 				float time;
 				cudaEventCreate(&start);
 				cudaEventCreate(&stop);
 				cudaEventRecord(start, 0);
 
-				scene->Build(deltaTime);
+				for (auto const& scene : scenes){
+					scene->Build(deltaTime);
+				}
 
 				cudaEventRecord(stop, 0);
 				cudaEventSynchronize(stop);
@@ -242,10 +256,9 @@ namespace Soul {
 				std::cout << "Building Execution: " << time << "ms" << std::endl;
 
 
-				PhysicsEngine::Process(scene);
-
-
-
+				for (auto const& scene : scenes){
+					PhysicsEngine::Process(scene);
+				}
 
 
 				SoulInput::ResetOffsets();
@@ -254,28 +267,22 @@ namespace Soul {
 				accumulator -= deltaTime;
 			}
 
-			rend->RenderSetup(SCREEN_SIZE, camera, deltaTime);
+			for (auto const& rend : renderObjects){
+				rend.renderer->RenderSetup(SCREEN_SIZE, camera, deltaTime);
+			}
 
 			test = !test;
 
-
-			RayEngine::Clear();
-			RayEngine::Process(scene);
-
-			//draw
-			ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			for (auto const& scene : scenes){
+				RayEngine::Clear();
+				RayEngine::Process(scene);
+			}
 
 			SynchGPU();
-			rend->Render();
-			SynchGPU();
-
-			glfwSwapBuffers(mainThread);
+			for (auto const& rend : renderObjects){
+				rend.renderer->Render();
+			}
 		}
-
-		delete camera;
-		delete scene;
-		delete rend;
-
 	}
 
 	void SoulRun(){
@@ -335,6 +342,8 @@ void SoulInit(){
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	RenderType  win = static_cast<RenderType>(GetSetting("Renderer", 2));
+
+	Soul::engineRefreshRate = GetSetting("Engine Refresh Rate", 60);
 
 	Soul::monitors = glfwGetMonitors(&Soul::monitorCount);
 
@@ -405,7 +414,7 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 	}
 
 
-	Soul::windows.push_back(windowOut);
+	Soul::windows.push_back({ windowOut, win });
 
 	return windowOut;
 
@@ -421,13 +430,20 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 }
 
+void SubmitScene(Scene* scene){
+	Soul::scenes.push_back(scene);
+}
+
+void RemoveScene(Scene* scene){
+	Soul::scenes.remove(scene);
+}
 
 int main()
 {
 	SoulInit();
 
 	//create a Window
-	SoulCreateWindow(BORDERLESS, SPECTRAL);
+	SoulCreateWindow(0,1.0f,1.0f);
 
 	SetKey(GLFW_KEY_ESCAPE, SoulShutDown);
 
