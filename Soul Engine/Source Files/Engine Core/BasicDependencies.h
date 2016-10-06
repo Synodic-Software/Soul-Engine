@@ -2,8 +2,6 @@
 
 #include "Utility\GLMIncludes.h"
 
-#include "Utility\GLIncludes.h"
-
 #include <stdlib.h>
 #include <IOstream>
 #include <vector>
@@ -26,6 +24,3 @@
 #include <future>
 #include <functional>
 #include "Metrics.h"
-
-
-#include "Utility\OpenGL\GLError.h"
