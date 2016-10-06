@@ -146,9 +146,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Utility\GPUIncludes.h" />
     <ClInclude Include="Source Files\Utility\OpenCLIncludes.h" />
     <ClInclude Include="Source Files\Utility\OpenCL\OpenCLHelper.h" />
-    <ClInclude Include="Source Files\Utility\OpenGL\GLError.h" />
-    <ClInclude Include="Source Files\Utility\OpenGL\Shader.h" />
-    <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h" />
     <ClInclude Include="Source Files\Utility\GPUUtility.h" />
     <ClInclude Include="Source Files\Utility\Vulkan\VulkanBackend.h" />
     <ClInclude Include="Source Files\Utility\Vulkan\VulkanUtility.h" />
@@ -179,9 +176,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.cpp" />
     <ClCompile Include="Source Files\Renderer\Renderer.cpp" />
     <ClCompile Include="Source Files\Resources\Objects\Hand.cpp" />
-    <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp" />
-    <ClCompile Include="Source Files\Utility\OpenGL\Shader.cpp" />
-    <ClCompile Include="Source Files\Utility\OpenGL\ShaderSupport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />

@@ -49,9 +49,6 @@
     <Filter Include="Engine Backend\Utility\CUDA">
       <UniqueIdentifier>{b6828cc2-5889-494f-823c-846694d63b55}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Utility\OpenGL">
-      <UniqueIdentifier>{211ab684-d9b4-41c1-9229-68507c40058a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Resources">
       <UniqueIdentifier>{5c12db69-88ac-48db-916a-889519665f63}</UniqueIdentifier>
     </Filter>
@@ -191,15 +188,6 @@
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
       <Filter>Engine Backend\Engine Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\OpenGL\GLError.h">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\OpenGL\Shader.h">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Input\InputHelper.h">
       <Filter>Engine Backend\Input</Filter>
@@ -428,15 +416,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Utility\OpenGL\Shader.cpp">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Utility\OpenGL\ShaderSupport.cpp">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Input\Input.cpp">
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
