@@ -40,7 +40,11 @@ Check out the currently open issues for opportunities to contribute!
 To compile dependancies with the following must be met:
 
   GLFW        - http://www.glfw.org/
+  
   GLM         - http://glm.g-truc.net/0.9.8/index.html
+  
   stb_image.h - https://github.com/nothings/stb
+  
   Vulkan SDK  - (Probably the LunarG SDK)
+  
   Cuda 8.0    - https://developer.nvidia.com/cuda-toolkit
