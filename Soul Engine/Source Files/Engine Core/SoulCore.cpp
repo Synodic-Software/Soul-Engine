@@ -268,7 +268,7 @@ namespace Soul {
 			}
 
 			for (auto const& rend : renderObjects){
-				rend.renderer->RenderSetup({width,height}, camera, deltaTime);
+				rend.renderer->RenderSetup({width,height}, mouseCamera, deltaTime);
 			}
 
 			test = !test;
@@ -280,7 +280,8 @@ namespace Soul {
 
 			SynchGPU();
 			for (auto const& rend : renderObjects){
-				rend.renderer->Render();
+				//integration bool
+				rend.renderer->Render(false);
 			}
 		}
 	}
@@ -351,6 +352,11 @@ void SoulInit(){
 	Soul::mouseCamera = new Camera();
 	Soul::cameras.push_back(Soul::mouseCamera);
 
+	glfwSetInputMode(Soul::masterWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	Soul::mouseCamera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
+	Soul::mouseCamera->OffsetOrientation(45, 45);
+
 	glfwSetKeyCallback(Soul::masterWindow, SoulInput::InputKeyboardCallback);
 	glfwSetScrollCallback(Soul::masterWindow, SoulInput::ScrollCallback);
 	glfwSetCursorPosCallback(Soul::masterWindow, SoulInput::UpdateMouseCallback);
@@ -417,17 +423,6 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 	Soul::windows.push_back({ windowOut, win });
 
 	return windowOut;
-
-	/*glfwSetInputMode(mainThread, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0, SCREEN_SIZE.y / 2.0);
-
-
-	camera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
-	camera->OffsetOrientation(45, 45);
-
-	glfwSetKeyCallback(mainThread, InputKeyboardCallback);
-*/
-
 }
 
 void SubmitScene(Scene* scene){
