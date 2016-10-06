@@ -3,8 +3,6 @@
 #include "Engine Core/Camera/Camera.h"
 #include "Engine Core/BasicDependencies.h"
 #include "Bounding Volume Heirarchy/BVH.h"
-#include "Utility/OpenGL/ShaderSupport.h"
-#include "Utility/OpenGL/Shader.h"
 #include "Ray Engine/RayEngine.h"
 #include "Utility\GPUIncludes.h"
 

@@ -6,7 +6,6 @@
 #include "Settings.h"
 #include "Multithreading\Scheduler.h"
 #include "Engine Core/Frame/Frame.h"
-#include "Utility/OpenGL/ShaderSupport.h"
 #include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/Input.h"
 #include "Ray Engine/RayEngine.h"
