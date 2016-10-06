@@ -3,6 +3,7 @@
 
 Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	iCounter = 1;
+	scroll = 0.0f;
 	debug = false;
 	modifiedScreen = screen;
 	originalScreen = screen;
@@ -100,7 +101,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	newTime = glfwGetTime();
 }
 
-void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget, float scroll){
+void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget){
 
 	double oldTime = newTime;
 	newTime = glfwGetTime();
@@ -110,6 +111,14 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	frameTime = (frameTime * smoothing) + (frameTop * (1.0 - smoothing));
 
 	float aspectRatio = camera->GetAspect();
+
+	scroll += SoulInput::scrollYOffset / 50.0f;
+	if (scroll > 1.0f){
+		scroll = 1.0f;
+	}
+	else if(scroll < 0.0f){
+		scroll = 0;
+	}
 	uint newWidth = (uint)glm::ceil(originalScreen.x*scroll);
 	
 	uint workCalc = RenderJob->GetSampleAmount()*RenderJob->GetRayAmount();
