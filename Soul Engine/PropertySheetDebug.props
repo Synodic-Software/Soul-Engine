@@ -3,9 +3,9 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>$(ProjectDir)\Libraries;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(CUDA_INC_PATH);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\Libraries\vulkan\Bin;$(ProjectDir)\Libraries;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw\bin;$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
-    <ExecutablePath>$(VC_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(ProjectDir)\Libraries;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(CUDA_INC_PATH);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\Libraries\vulkan\Bin;$(ProjectDir)\Libraries;$(ProjectDir)\Libraries\glfw\bin;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(VC_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);$(ExecutablePath)</ExecutablePath>
     <ReferencePath>$(VC_ReferencesPath);$(ReferencePath)</ReferencePath>
     <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <SourcePath>$(SourcePath)</SourcePath>
@@ -18,7 +18,7 @@
     </Lib>
     <ClCompile>
       <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -31,7 +31,7 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\vulkan\Bin;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)\Libraries;%(AdditionalLibraryDirectories);$(AMDAPPSDKROOT)\lib\x86_64\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\vulkan\Bin;$(ProjectDir)\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)\Libraries</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;cudart.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
