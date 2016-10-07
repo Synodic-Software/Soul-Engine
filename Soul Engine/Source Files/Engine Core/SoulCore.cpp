@@ -1,7 +1,9 @@
 
 /////////////////////////Includes/////////////////////////////////
 
+
 #include "Engine Core/BasicDependencies.h"
+#include "Utility\Vulkan\VulkanBackend.h"
 #include "SoulCore.h"
 #include "Settings.h"
 #include "Multithreading\Scheduler.h"
@@ -16,8 +18,6 @@
 #include "Utility\CUDA\CUDADevices.cuh"
 #include <array>
 
-
-#include "Utility\Vulkan\VulkanBackend.h"
 
 
 
