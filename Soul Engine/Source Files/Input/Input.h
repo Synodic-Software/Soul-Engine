@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine Core/BasicDependencies.h"
-#include <GLFW/glfw3.h>
+#include "Utility\Vulkan\VulkanBackend.h"
 
 namespace SoulInput{
 	bool SetKey(int, std::function<void()>);
