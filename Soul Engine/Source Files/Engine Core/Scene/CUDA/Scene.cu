@@ -4,6 +4,14 @@
 #define BVH_STACK_SIZE 64
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 
+#include "Utility\CUDAIncludes.h"
+#include <thrust/fill.h>
+#include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
+#include <thrust/scan.h>
+#include <thrust/sort.h>
+#include <thrust/remove.h>
+#include <thrust/functional.h>
+
 Scene::Scene()
 {
 	objectsSize = 0;
