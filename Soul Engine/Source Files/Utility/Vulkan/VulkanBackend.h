@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "VulkanUtility.h"
 #include "Utility\GLMIncludes.h"
-
+#include <array>
 
 VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback) {
 	auto func = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
