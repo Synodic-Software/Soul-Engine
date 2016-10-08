@@ -7,6 +7,7 @@
 #include "Utility\CUDAIncludes.h"
 #include <thrust/fill.h>
 #include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
+#include <thrust/device_ptr.h>
 #include <thrust/scan.h>
 #include <thrust/sort.h>
 #include <thrust/remove.h>
@@ -274,8 +275,7 @@ __host__ bool Scene::Compile(){
 			bool* faceMarkers;
 			CudaCheck(cudaMallocManaged((void**)&markers, compiledSize * sizeof(bool)));
 			CudaCheck(cudaMallocManaged((void**)&faceMarkers, compiledSize * sizeof(bool)));
-
-
+ 
 			thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(markers);
 			thrust::device_ptr<bool> faceTempPtr = thrust::device_pointer_cast(faceMarkers);
 
