@@ -13,10 +13,6 @@
 #include <driver_functions.h>
 #include "CUDA\cutil_math.h"
 #include <cuda_profiler_api.h>
-
-
-//#include "thrust\random.h"
-
 #include "Metrics.h"
 
 #include "CUDA/CUDAManaged.cuh"

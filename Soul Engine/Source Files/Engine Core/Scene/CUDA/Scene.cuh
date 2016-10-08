@@ -4,7 +4,6 @@
 #include "Engine Core\Object\CUDA/Object.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
 #include "Engine Core\Scene\CUDA\Sky.cuh"
-
 #include "Bounding Volume Heirarchy\BVH.h"
 
 class Scene : public Managed
