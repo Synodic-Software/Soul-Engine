@@ -6,6 +6,7 @@
 #include <IOstream>
 #include <vector>
 #include <list>
+#include <string>
 #include <queue> 
 #include <map>
 #include <cstdlib>

@@ -16,7 +16,6 @@
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Resources\Objects\Hand.h"
 #include "Utility\CUDA\CUDADevices.cuh"
-#include <array>
 
 
 
@@ -371,7 +370,7 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 
 	glfwWindowHint(GLFW_SAMPLES, 0);
-	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+	glfwWindowHint(GLFW_VISIBLE, true);
 
 	const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
 
@@ -379,8 +378,8 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	if (win == FULLSCREEN){
 
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, false);
+		glfwWindowHint(GLFW_DECORATED, false);
 		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
@@ -390,15 +389,15 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 	}
 	else if (win == WINDOWED){
 
-		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+		glfwWindowHint(GLFW_RESIZABLE, true);
 		windowOut = glfwCreateWindow(int(xSize*mode->width), int(ySize*mode->height), "Soul Engine", NULL, NULL);
 
 	}
 
 	else if (win == BORDERLESS){
 
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, false);
+		glfwWindowHint(GLFW_DECORATED, false);
 
 		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
