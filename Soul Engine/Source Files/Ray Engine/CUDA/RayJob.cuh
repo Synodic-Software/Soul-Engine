@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
 #include "Ray Engine\CUDA/Ray.cuh"
 #include "Engine Core\Camera\CUDA/Camera.cuh"
 
@@ -27,26 +26,26 @@ public:
 
 
 	//Returns a reference to a camera pointer. All the ray shooting information is stored here.
-	CUDA_FUNCTION Camera*& GetCamera();
+	__host__ __device__ Camera*& GetCamera();
 
 	//Returns the rayType of the job.
-	CUDA_FUNCTION rayType RayType() const;
+	__host__ __device__ rayType RayType() const;
 
 	//Returns the Ray max of the job as per its initialization params.
-	CUDA_FUNCTION uint RayAmountMax() const;
+	__host__ __device__ uint RayAmountMax() const;
 
 	//Returns the current rayAmount (modifiable)
-	CUDA_FUNCTION uint& GetRayAmount();
+	__host__ __device__ uint& GetRayAmount();
 
 	//Returns the current sample per ray (modifiable)
-	CUDA_FUNCTION uint& GetSampleAmount();
+	__host__ __device__ uint& GetSampleAmount();
 
 
 	//Returns the pointer to the results (modifiable)
-	CUDA_FUNCTION void*& GetResultPointer(uint);
+	__host__ __device__ void*& GetResultPointer(uint);
 	
 	//Returns the pointer to the results (modifiable)
-	CUDA_FUNCTION void SwapResults(uint,uint);
+	__host__ __device__ void SwapResults(uint,uint);
 protected:
 
 private:

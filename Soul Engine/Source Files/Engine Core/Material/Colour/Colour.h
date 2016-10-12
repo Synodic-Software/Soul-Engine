@@ -1,5 +1,4 @@
 #pragma once
-#include "Utility\CUDAIncludes.h"
 
 #include "Cuda\Colour.cuh"
 

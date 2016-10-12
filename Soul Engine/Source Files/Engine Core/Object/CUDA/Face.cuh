@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
 #include "Engine Core/Material/Material.h"
 #include "Engine Core/Object/CUDA/Object.cuh"
 

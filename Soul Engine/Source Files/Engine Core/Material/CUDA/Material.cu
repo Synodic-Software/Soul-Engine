@@ -1,4 +1,5 @@
 #include "Material.cuh"
+#include "Utility\CUDA\CUDAHelper.cuh"
 
 Material::Material( std::string texName){
 

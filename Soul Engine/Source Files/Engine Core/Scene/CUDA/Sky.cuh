@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
 #include "Engine Core/Material/Texture/Image.cuh"
 
 

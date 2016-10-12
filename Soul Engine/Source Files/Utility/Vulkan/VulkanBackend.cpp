@@ -11,7 +11,7 @@
 #include <array>
 #include <set>
 #include <unordered_map>
-#include <stb_image.h>
+#include "Engine Core\Material\Texture\Image.cuh"
 
 
 void VulkanBackend::OnWindowResized(GLFWwindow* window, int width, int height) {
@@ -501,7 +501,7 @@ VkFormat VulkanBackend::FindDepthFormat() {
 
 void VulkanBackend::CreateTextureImage() {
 	int texWidth, texHeight, texChannels;
-	stbi_uc* pixels = stbi_load("SoulDefault.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+	unsigned char* pixels = DirectLoad("SoulDefault.jpg", &texWidth, &texHeight, &texChannels);
 	VkDeviceSize imageSize = texWidth * texHeight * 4;
 
 	if (!pixels) {
@@ -517,7 +517,7 @@ void VulkanBackend::CreateTextureImage() {
 	memcpy(data, pixels, (size_t)imageSize);
 	vkUnmapMemory(device, stagingImageMemory);
 
-	stbi_image_free(pixels);
+	delete pixels;
 
 	CreateImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 

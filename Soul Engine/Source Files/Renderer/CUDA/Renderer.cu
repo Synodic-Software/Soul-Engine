@@ -1,4 +1,5 @@
 #include "Renderer.cuh"
+#include "Utility\CUDA\CUDAHelper.cuh"
 
 __global__ void IntegrateKernal(const uint n, RayJob* job, const uint counter){
 

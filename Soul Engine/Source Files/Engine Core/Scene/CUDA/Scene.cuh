@@ -1,6 +1,6 @@
 #pragma once
+#include <cuda.h>  
 
-#include "Utility\CUDAIncludes.h"
 #include "Engine Core\Object\CUDA/Object.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
 #include "Engine Core\Scene\CUDA\Sky.cuh"
