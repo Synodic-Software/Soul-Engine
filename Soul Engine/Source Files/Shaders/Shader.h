@@ -115,6 +115,17 @@ public:
 
 	//Member Functions
 
+
+
+	//Accessors
+
+	//Simple -- simple member field accessing
+
+
+
+
+	//Derived -- quantities based on member fields
+
 	//Returns whether or not a Face was hit by a Ray
 
 	/*
