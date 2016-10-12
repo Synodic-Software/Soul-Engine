@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
-#include "Utility\CUDA\CudaDevices.cuh"
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
+#include "Metrics.h"
 #include <iostream>
-#include "cuda.h"
 
-#define CUDA_FUNCTION __host__ __device__
 #define WARP_SIZE 32
 
 #define CudaCheck(ans) { gpuAssert((ans), __FILE__, __LINE__); }
@@ -18,7 +17,7 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool = true)
 	}
 }
 
-CUDA_FUNCTION uint randHash(uint a);
+__host__ __device__ uint randHash(uint a);
 inline __device__ int getGlobalIdx_1D_1D()
 {
 	return blockIdx.x *blockDim.x + threadIdx.x;

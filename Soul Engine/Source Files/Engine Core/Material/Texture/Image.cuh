@@ -1,5 +1,7 @@
 #pragma once
-#include "Utility\CUDAIncludes.h"
+
+#include "Utility\CUDA\CUDAManaged.cuh"
+#include <cuda_runtime.h>
 
 class Image: public Managed{
 public:
@@ -17,3 +19,5 @@ public:
 private:
 
 };
+
+unsigned char* DirectLoad(const char*, int*, int*, int*);

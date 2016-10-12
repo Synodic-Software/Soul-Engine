@@ -1,4 +1,4 @@
 #include "Ray Engine\CUDA/Ray.cuh"
 
-CUDA_FUNCTION Ray::Ray(){
+__host__ __device__ Ray::Ray(){
 }

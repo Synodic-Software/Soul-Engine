@@ -1,8 +1,7 @@
 #pragma once
+#include <cuda.h>  
 
-#include "Utility\CUDAIncludes.h"
 #include "Engine Core\Object\CUDA/Object.cuh"
-#include "Ray Engine\CUDA/Ray.cuh"
 #include "Engine Core\Scene\CUDA\Sky.cuh"
 #include "Bounding Volume Heirarchy\BVH.h"
 
@@ -11,8 +10,6 @@ class Scene : public Managed
 public:
 	__host__ Scene();
 	__host__ ~Scene();
-
-	//__device__ glm::vec3 IntersectColour(Ray& ray, curandState&)const;
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
 	__host__ void Build(float deltaTime);

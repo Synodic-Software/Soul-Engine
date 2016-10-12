@@ -1,18 +1,19 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
 #include "Engine Core\Object\CUDA\Face.cuh"
+#include "Metrics.h"
 
 class Face;
+
 //__align__(64)
 class Ray : public Managed
 {
 
 public:
 
-	//CUDA_FUNCTION Ray(glm::vec3 newO, glm::vec3 newD) : origin(newO), direction(newD){}
-	CUDA_FUNCTION Ray();
-	CUDA_FUNCTION Ray::Ray(const Ray &a)
+	//__host__ __device__ Ray(glm::vec3 newO, glm::vec3 newD) : origin(newO), direction(newD){}
+	__host__ __device__ Ray();
+	__host__ __device__ Ray::Ray(const Ray &a)
 	{
 		storage = a.storage;
 		origin = a.origin;
@@ -23,7 +24,7 @@ public:
 		job = a.job;
 	}
 
-	CUDA_FUNCTION Ray& Ray::operator= (const Ray &a)
+	__host__ __device__ Ray& Ray::operator= (const Ray &a)
 	{
 
 		storage = a.storage;
