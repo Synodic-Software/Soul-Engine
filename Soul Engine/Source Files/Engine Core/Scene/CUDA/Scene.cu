@@ -6,7 +6,6 @@
 
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include <thrust/fill.h>
-#include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
 #include <thrust/device_ptr.h>
 #include <thrust/scan.h>
 #include <thrust/sort.h>

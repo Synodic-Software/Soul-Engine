@@ -4,7 +4,7 @@
 #include <stb_image.h>
 
 #include "Metrics.h"
-#include "Utility\CUDA\cutil_math.h"
+#include "Utility\CUDA\CUDAMath.h"
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include <device_launch_parameters.h>
 #include <vector_types.h>
