@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Engine Core/Material/Texture/Image.cuh"
-
+#include <string>
+#include "Utility\GLMIncludes.h"
 
 	
 
