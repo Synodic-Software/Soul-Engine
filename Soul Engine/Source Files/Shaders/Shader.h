@@ -184,9 +184,22 @@ public:
 	
 	Returns:
 	The best intersection point, which is the ray's origin + direction.w * origin
+
 	*/
 
 	virtual glm::vec3 bestIntersectionPoint() = 0;
+
+	/*
+	This medthod takes no arguments
+	
+	Returns:
+	bestNormal() if bestNormal() . ray.direction_x,y,z < 0
+	else -bestNormal() where
+	. represents the dot product
+	*/
+
+	virtual glm::vec3 orientedNormal() = 0;
+
 
 
 
