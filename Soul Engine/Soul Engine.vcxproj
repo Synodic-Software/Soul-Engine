@@ -42,6 +42,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(CUDA_INC_PATH);$(ProjectDir)\Libraries;$(ProjectDir)\Libraries\vulkan\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(CUDA_INC_PATH);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -137,6 +138,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Renderer\Ray Tracer\CUDA\RayTracer.h" />
     <ClInclude Include="Source Files\Renderer\Renderer.h" />
     <ClInclude Include="Source Files\Resources\Objects\Hand.h" />
+    <ClInclude Include="Source Files\Shaders\Shader.h" />
     <ClInclude Include="Source Files\Utility\CUDAIncludes.h" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDADevices.cuh" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAHelper.cuh" />
@@ -156,6 +158,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="Source Files\Engine Core\Allocator\Allocator.cpp" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />
+    <ClCompile Include="Source Files\Shaders\Shader Test.cpp" />
+    <ClCompile Include="Source Files\Shaders\Shader.cpp" />
     <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp" />
     <CudaCompile Include="Source Files\Engine Core\Material\Colour\CUDA\Colour.cu" />
     <CudaCompile Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
