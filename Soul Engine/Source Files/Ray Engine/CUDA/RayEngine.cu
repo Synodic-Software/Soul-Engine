@@ -4,6 +4,12 @@
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 #define RAY_BIAS_DISTANCE 0.0002f 
 
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
+#include <thrust/remove.h>
+#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility\CUDA\CUDADevices.cuh"
+
 struct is_marked
 {
 	__host__ __device__
@@ -20,7 +26,7 @@ uint numRaysAllocated = 0;
 const uint rayDepth = 8;
 
 
-template <class T> CUDA_FUNCTION __inline__ void swap(T& a, T& b)
+template <class T> __host__ __device__ __inline__ void swap(T& a, T& b)
 {
 	T t = a;
 	a = b;
@@ -116,7 +122,7 @@ __device__ __inline__ float spanBeginKepler(float a0, float a1, float b0, float 
 __device__ __inline__ float spanEndKepler(float a0, float a1, float b0, float b1, float c0, float c1, float d)	{ return fmin_fmin(fmaxf(a0, a1), fmaxf(b0, b1), fmax_fmin(c0, c1, d)); }
 
 
-CUDA_FUNCTION __inline__ uint WangHash(uint a) {
+__host__ __device__ __inline__ uint WangHash(uint a) {
 	a = (a ^ 61) ^ (a >> 16);
 	a = a + (a << 3);
 	a = a ^ (a >> 4);
@@ -201,11 +207,11 @@ __global__ void RaySetup(const uint n, RayJob** job, int jobSize, Ray* rays, con
 	rays[index] = ray;
 }
 
-CUDA_FUNCTION __inline__ glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
+__host__ __device__ __inline__ glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
 	return glm::vec3(ray.origin.x, ray.origin.y, ray.origin.z) + t * glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z);
 }
 
-CUDA_FUNCTION __inline__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
+__host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
 	const glm::vec3& rayO, const glm::vec3& rayD, const glm::vec3& invDir,
 	float& t, const float& tMax, float& bary1, float& bary2)
 {
@@ -237,7 +243,7 @@ CUDA_FUNCTION __inline__ bool FindTriangleIntersect(const glm::vec3& a, const gl
 }
 
 
-CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, float& t1){
+__host__ __device__ bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, float& t1){
 
 	float temp1 = (box.min.x - o.x)*dInv.x;
 	float temp2 = (box.max.x - o.x)*dInv.x;

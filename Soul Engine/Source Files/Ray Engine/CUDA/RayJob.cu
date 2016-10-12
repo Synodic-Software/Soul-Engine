@@ -1,4 +1,5 @@
 #include "RayJob.cuh"
+#include "Utility\CUDA\CUDAHelper.cuh"
 
 __host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, uint newSamples, Camera* cameraN, uint numResultBuffersN){
 
@@ -28,36 +29,36 @@ __host__ RayJob::~RayJob(){
 }
 
 //Returns a reference to a camera pointer. All the ray shooting information is stored here.
-CUDA_FUNCTION Camera*& RayJob::GetCamera(){
+__host__ __device__ Camera*& RayJob::GetCamera(){
 	return camera;
 }
 
 //Returns the rayType of the job.
-CUDA_FUNCTION rayType RayJob::RayType() const{
+__host__ __device__ rayType RayJob::RayType() const{
 	return type;
 }
 
 //Returns the Ray max of the job as per its initialization params.
-CUDA_FUNCTION uint RayJob::RayAmountMax() const{
+__host__ __device__ uint RayJob::RayAmountMax() const{
 	return rayBaseAmount;
 }
 
 //Returns the current rayAmount (modifiable)
-CUDA_FUNCTION uint& RayJob::GetRayAmount() {
+__host__ __device__ uint& RayJob::GetRayAmount() {
 	return rayAmount;
 }
 
 //Returns the current sample per ray (modifiable)
-CUDA_FUNCTION uint& RayJob::GetSampleAmount() {
+__host__ __device__ uint& RayJob::GetSampleAmount() {
 	return samples;
 }
 
 //Returns the pointer to the results (modifiable)
-CUDA_FUNCTION void*& RayJob::GetResultPointer(uint x){
+__host__ __device__ void*& RayJob::GetResultPointer(uint x){
 	return results[x];
 }
 
-CUDA_FUNCTION void RayJob::SwapResults(uint a, uint b){
+__host__ __device__ void RayJob::SwapResults(uint a, uint b){
 	void* temp = results[a];
 	results[a] = results[b];
 	results[b] = temp;

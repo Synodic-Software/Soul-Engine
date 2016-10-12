@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Utility\CUDA\CudaHelper.cuh"
-
 class Managed
 {
 public:

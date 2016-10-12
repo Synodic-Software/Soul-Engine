@@ -1,5 +1,6 @@
 #pragma once
-#include "Utility\CUDAIncludes.h"
+
+
 
 class Image: public Managed{
 public:

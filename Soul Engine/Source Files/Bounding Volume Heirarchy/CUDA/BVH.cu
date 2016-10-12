@@ -1,4 +1,5 @@
 #include "BVH.cuh"
+#include "Utility\CUDA\CUDAHelper.cuh"
 
 BVH::BVH( Face*** datan, uint64** mortonCodesn){
 	data = datan;

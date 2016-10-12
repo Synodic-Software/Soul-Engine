@@ -1,5 +1,4 @@
 #pragma once
-#include "Utility\CUDAIncludes.h"
 //#include "Engine Core/BasicDependencies.h"
 //#include "Engine Core/Material/Texture/Texture.h"
 #include "Engine Core/Material/Texture/Image.cuh"
