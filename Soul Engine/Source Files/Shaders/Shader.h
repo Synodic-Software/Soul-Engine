@@ -150,12 +150,23 @@ public:
 	This method takes no arguments
 
 	Returns:
-	The best normal as defined by (n1 - n0) x (n2 - n0)
+	The best normal as defined by (norm2 - norm1) x (norm3 - norm1)
 	where x represents the cross product.
 
 	*/
 
 	virtual glm::vec3 bestNormal() = 0;
+
+	/*
+	This methof takes no arguments
+	
+	Returns:
+	The best UV as defined by: 
+	(1.0f - hitCoord.x - hitCoord.y) * tex1 + hitCoord.x * tex2 + hitCoord.y * tex3
+
+	*/
+
+	virtual glm::vec2 bestUV() = 0;
 
 
 
