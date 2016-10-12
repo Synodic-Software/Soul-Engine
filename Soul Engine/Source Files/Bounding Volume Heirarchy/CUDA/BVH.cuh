@@ -3,7 +3,6 @@
 #include "Utility\CUDAIncludes.h"
 #include "Bounding Volume Heirarchy\CUDA\Node.cuh"
 #include "Bounding Volume Heirarchy\BoundingBox.h"
-#include "Node.cuh"
 #include "Engine Core\Object\Face.h"
 
 class BVH : public Managed{
