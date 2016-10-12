@@ -4,7 +4,7 @@
 #define BVH_STACK_SIZE 64
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 
-#include "Utility\CUDAIncludes.h"
+#include "Utility\CUDA\CUDAHelper.cuh"
 #include <thrust/fill.h>
 #include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
 #include <thrust/device_ptr.h>
@@ -491,16 +491,16 @@ __host__ void Scene::Build(float deltaTime){
 
 }
 
-//CUDA_FUNCTION glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
+//__host__ __device__ glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
 //	return ray.origin + t * ray.direction;
 //}
-//CUDA_FUNCTION glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
+//__host__ __device__ glm::vec3 computeBackgroundColor(const glm::vec3& direction) {
 //	float position = (glm::dot(direction, normalize(glm::vec3(-0.5, 0.5, -1.0))) + 1) / 2.0f;
 //	return (1.0f - position) * glm::vec3(0.5f, 0.5f, 1.0f) + position * glm::vec3(0.7f, 0.7f, 1.0f);
 //	//return glm::vec3(0.0f, 0.0f, 0.0f);
 //}
 
-//CUDA_FUNCTION bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& edge1, const glm::vec3& edge2,
+//__host__ __device__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& edge1, const glm::vec3& edge2,
 //	const Ray& ray, const glm::vec3& invDir, 
 //	float& t, const float& tMax, float& bary1, float& bary2)
 //{
@@ -529,7 +529,7 @@ __host__ void Scene::Build(float deltaTime){
 //	return( t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f));
 //}
 //
-//CUDA_FUNCTION bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, float& t1){
+//__host__ __device__ bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, float& t1){
 //
 //	glm::vec3 boxMax = box.origin + box.extent;
 //	glm::vec3 boxMin = box.origin - box.extent;

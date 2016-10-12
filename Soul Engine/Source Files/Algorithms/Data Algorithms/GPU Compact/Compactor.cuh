@@ -1,13 +1,12 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
 #include <thrust/scan.h>
 #include <thrust/device_vector.h>
 
 
 	__host__ __device__ int divup(int x, int y) { return x / y + (x % y ? 1 : 0); }
 
-	CUDA_FUNCTION int pow2i(int e){
+	__host__ __device__int pow2i(int e){
 		return 1 << e;
 	}
 

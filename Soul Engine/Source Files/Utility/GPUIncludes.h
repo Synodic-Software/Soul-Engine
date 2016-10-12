@@ -2,7 +2,6 @@
 
 //#   if defined(__CUDACC__)
 
-#include "CUDAIncludes.h"
 //#	else
 //
 //#include "OpenCLIncludes.h"

@@ -1,7 +1,7 @@
-#include "Utility\CUDAIncludes.h"
-
 #include "Utility\CUDA\CUDADevices.cuh"
-
+#include <device_launch_parameters.h>
+#include <cuda_runtime_api.h>
+#include "CudaHelper.cuh"
 
 int deviceCount;
 cudaDeviceProp* deviceProp;

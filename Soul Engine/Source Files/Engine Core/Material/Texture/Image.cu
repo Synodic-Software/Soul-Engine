@@ -1,9 +1,13 @@
 #include "Image.cuh"
 
-//uses stb_image to try load files
 #define STB_IMAGE_IMPLEMENTATION
-//#define STBI_FAILURE_USERMSG
 #include <stb_image.h>
+
+#include "Metrics.h"
+#include "Utility\CUDA\cutil_math.h"
+#include "Utility\CUDA\CUDAHelper.cuh"
+#include <device_launch_parameters.h>
+#include <vector_types.h>
 
 #define MAX(a,b) ((a > b) ? a : b)
 
@@ -198,6 +202,12 @@ void generateMipMaps(cudaMipmappedArray_t mipmapArray, cudaExtent size)
 		level++;
 	}
 }
+
+//rgba
+unsigned char* DirectLoad(const char* fileName, int* width, int* height, int*texChannels){
+	return stbi_load(fileName, width, height, texChannels, STBI_rgb_alpha);
+}
+
 
 void Image::LoadFromFile(const char* filepath, bool clamp, bool mipmap) {
 	pixels = stbi_load(filepath, &width, &height, &format, 0);
