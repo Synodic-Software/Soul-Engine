@@ -158,7 +158,7 @@ public:
 	virtual glm::vec3 bestNormal() = 0;
 
 	/*
-	This methof takes no arguments
+	This method takes no arguments
 	
 	Returns:
 	The best UV as defined by: 
@@ -167,6 +167,17 @@ public:
 	*/
 
 	virtual glm::vec2 bestUV() = 0;
+
+	/*
+	This method takes no arguments
+
+	Returns:
+	Bias vector as defined by RAY_BIAS_DISTANCE * bestNormal() where
+	RAY_BIAS_DISTANCE is a constant defined in the implementation
+
+	*/
+
+	virtual glm::vec3 biasVector() = 0;
 
 
 
