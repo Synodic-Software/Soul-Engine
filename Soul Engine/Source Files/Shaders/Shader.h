@@ -196,9 +196,22 @@ public:
 	bestNormal() if bestNormal() . ray.direction_x,y,z < 0
 	else -bestNormal() where
 	. represents the dot product
+	
 	*/
 
 	virtual glm::vec3 orientedNormal() = 0;
+
+
+	/*
+	This method takes no arguments
+	
+	Returns:
+	orientedNormal() x getU() where
+	x represents the cross product
+	
+	*/
+
+	virtual glm::vec3 getV() = 0;
 
 
 
