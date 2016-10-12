@@ -179,6 +179,15 @@ public:
 
 	virtual glm::vec3 biasVector() = 0;
 
+	/*
+	This method takes no arguments
+	
+	Returns:
+	The best intersection point, which is the ray's origin + direction.w * origin
+	*/
+
+	virtual glm::vec3 bestIntersectionPoint() = 0;
+
 
 
 
