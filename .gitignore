@@ -7,6 +7,10 @@
 *.sln.docstates
 
 # Build results
+x64/
+x86/
+[Rr]elease/
+[Rr]eleasePublic/
 [Dd]ebugPublic/
 [Dd]ebug/
 Debug/
@@ -203,7 +207,9 @@ x64/Debug/cudart64_75.dll
 *.idb
 Soul Engine/x64/Debug/Soul Engine/Soul Engine.tlog/CL.read.1.tlog
 Soul Engine/x64/Debug/Soul Engine/Soul Engine.tlog/cl.command.1.tlog
-*.command.1.tlog
+*.command.1.tlog
+
+Libraries/
 *.cu.deps
 x64/Release/cudart32_75.dll
 x64/Release/cudart64_75.dll
