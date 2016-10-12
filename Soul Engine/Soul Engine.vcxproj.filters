@@ -184,6 +184,9 @@
     <Filter Include="Engine Backend\Utility\Vulkan">
       <UniqueIdentifier>{3f7284f4-f567-4add-b157-0fb32c9084dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Shaders">
+      <UniqueIdentifier>{f34f97f2-575f-4386-b987-2d88dcf2f822}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -414,6 +417,12 @@
     <ClInclude Include="Source Files\Engine Core\Object\CUDA\Tet.cuh">
       <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Shaders\Shader.h">
+      <Filter>Engine Backend\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Shaders\Shader.h">
+      <Filter>Engine Backend\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Input\Input.cpp">
@@ -478,6 +487,12 @@
     </ClCompile>
     <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp">
       <Filter>Engine Backend\Utility\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Shaders\Shader.cpp">
+      <Filter>Engine Backend\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Shaders\Shader Test.cpp">
+      <Filter>Engine Backend\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
