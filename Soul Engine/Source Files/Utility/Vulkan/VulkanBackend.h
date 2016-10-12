@@ -5,7 +5,7 @@
 
 #include "VulkanUtility.h"
 #include "Utility\GLMIncludes.h"
-
+#include <array>
 
 VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback) {
 	auto func = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
@@ -95,7 +95,21 @@ struct UniformBufferObject {
 };
 
 class VulkanBackend{
+
+public:
+	static VulkanBackend& GetInstance()
+	{
+		static VulkanBackend    instance; // Guaranteed to be destroyed.
+		// Instantiated on first use.
+		return instance;
+	}
+
+	VulkanBackend(VulkanBackend const&) = delete;
+	void operator=(VulkanBackend const&) = delete;
+
 private:
+	VulkanBackend() {};
+
 	const std::vector<const char*> validationLayers = {
 		"VK_LAYER_LUNARG_standard_validation"
 	};

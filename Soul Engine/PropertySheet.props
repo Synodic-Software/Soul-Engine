@@ -31,8 +31,8 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\vulkan\Bin;$(VC_LibraryPath);$(WindowsSDK_LibraryPath);$(ProjectDir)\Libraries\glfw\bin\Release;$(LibraryPath);$(ProjectDir)\Libraries\boost;%(AdditionalLibraryDirectories);$(AMDAPPSDKROOT)\lib\x86_64\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;glfw3.lib;cudart.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\vulkan\Bin;$(ProjectDir)\Libraries\glfw\bin\Release;$(ProjectDir)\Libraries\glfw\bin;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;cudart.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>LIBCD.lib;LIBC.lib;MSVCRTD.lib;LIBCMT.lib;LIBCMTD.lib</IgnoreSpecificDefaultLibraries>

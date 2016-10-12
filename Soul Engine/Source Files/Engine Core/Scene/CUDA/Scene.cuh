@@ -2,17 +2,9 @@
 
 #include "Utility\CUDAIncludes.h"
 #include "Engine Core\Object\CUDA/Object.cuh"
-#include "ObjectSceneAbstraction.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
 #include "Engine Core\Scene\CUDA\Sky.cuh"
-
 #include "Bounding Volume Heirarchy\BVH.h"
-#include <thrust/fill.h>
-#include "Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h"
-#include <thrust/scan.h>
-#include <thrust/sort.h>
-#include <thrust/remove.h>
-#include <thrust/functional.h>
 
 class Scene : public Managed
 {
