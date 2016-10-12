@@ -201,6 +201,20 @@ public:
 
 	virtual glm::vec3 orientedNormal() = 0;
 
+	/*
+	This method takes no arguments
+	
+	Returns:
+	the normalized version of the vector:
+
+	(0,1,0) x orientedNormal() if |orientedNormal().x| > 0.1
+	else (1,0,0) x orientedNormal()
+
+	where x represents the cross product
+	*/
+
+	virtual glm::vec3 getU() = 0;
+
 
 	/*
 	This method takes no arguments
