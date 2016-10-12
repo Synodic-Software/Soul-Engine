@@ -137,7 +137,7 @@ public:
 	virtual bool isFaceHit() = 0;
 
 	/*
-	This method Takes no arguments
+	This method takes no arguments
 
 	Returns:
 	col vector of the shader.  This may vary depending on whether
@@ -145,6 +145,17 @@ public:
 	*/
 	
 	virtual glm::vec3 getCol() = 0;
+
+	/*
+	This method takes no arguments
+
+	Returns:
+	The best normal as defined by (n1 - n0) x (n2 - n0)
+	where x represents the cross product.
+
+	*/
+
+	virtual glm::vec3 bestNormal() = 0;
 
 
 
