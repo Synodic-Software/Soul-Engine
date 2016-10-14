@@ -2,6 +2,7 @@
 /////////////////////////Includes/////////////////////////////////
 
 #include "SoulCore.h"
+#include "Utility\CUDA\CUDAHelper.cuh"
 #include "Utility\Vulkan\VulkanBackend.h"
 #include "Engine Core/BasicDependencies.h"
 
@@ -92,30 +93,30 @@ namespace Soul {
 
 
 	void InitVulkan() {
-		VulkanBackend::GetInstance().CreateInstance();
-		VulkanBackend::GetInstance().SetupDebugCallback();
-		VulkanBackend::GetInstance().CreateSurface(masterWindow);
-		VulkanBackend::GetInstance().PickVulkanDevice();
-		VulkanBackend::GetInstance().CreateVulkanLogical();
-		VulkanBackend::GetInstance().CreateSwapChain(masterWindow);
-		VulkanBackend::GetInstance().CreateImageViews();
-		VulkanBackend::GetInstance().CreateRenderPass();
-		VulkanBackend::GetInstance().CreateDescriptorSetLayout();
-		VulkanBackend::GetInstance().CreateGraphicsPipeline();
-		VulkanBackend::GetInstance().CreateCommandPool();
-		VulkanBackend::GetInstance().CreateDepthResources();
-		VulkanBackend::GetInstance().CreateFramebuffers();
-		VulkanBackend::GetInstance().CreateTextureImage();
-		VulkanBackend::GetInstance().CreateTextureImageView();
-		VulkanBackend::GetInstance().CreateTextureSampler();
-		VulkanBackend::GetInstance().LoadModel();
-		VulkanBackend::GetInstance().CreateVertexBuffer();
-		VulkanBackend::GetInstance().CreateIndexBuffer();
-		VulkanBackend::GetInstance().CreateUniformBuffer();
-		VulkanBackend::GetInstance().CreateDescriptorPool();
-		VulkanBackend::GetInstance().CreateDescriptorSet();
-		VulkanBackend::GetInstance().CreateCommandBuffers();
-		VulkanBackend::GetInstance().CreateSemaphores();
+		//VulkanBackend::GetInstance().CreateInstance();
+		//VulkanBackend::GetInstance().SetupDebugCallback();
+		//VulkanBackend::GetInstance().CreateSurface(masterWindow);
+		//VulkanBackend::GetInstance().PickVulkanDevice();
+		//VulkanBackend::GetInstance().CreateVulkanLogical();
+		//VulkanBackend::GetInstance().CreateSwapChain(masterWindow);
+		//VulkanBackend::GetInstance().CreateImageViews();
+		//VulkanBackend::GetInstance().CreateRenderPass();
+		//VulkanBackend::GetInstance().CreateDescriptorSetLayout();
+		//VulkanBackend::GetInstance().CreateGraphicsPipeline();
+		//VulkanBackend::GetInstance().CreateCommandPool();
+		//VulkanBackend::GetInstance().CreateDepthResources();
+		//VulkanBackend::GetInstance().CreateFramebuffers();
+		//VulkanBackend::GetInstance().CreateTextureImage();
+		//VulkanBackend::GetInstance().CreateTextureImageView();
+		//VulkanBackend::GetInstance().CreateTextureSampler();
+		//VulkanBackend::GetInstance().LoadModel();
+		//VulkanBackend::GetInstance().CreateVertexBuffer();
+		//VulkanBackend::GetInstance().CreateIndexBuffer();
+		//VulkanBackend::GetInstance().CreateUniformBuffer();
+		//VulkanBackend::GetInstance().CreateDescriptorPool();
+		//VulkanBackend::GetInstance().CreateDescriptorSet();
+		//VulkanBackend::GetInstance().CreateCommandBuffers();
+		//VulkanBackend::GetInstance().CreateSemaphores();
 	}
 
 	void InputToCamera(GLFWwindow* window,Camera* camera){

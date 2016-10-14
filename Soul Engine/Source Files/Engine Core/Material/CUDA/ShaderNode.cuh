@@ -1,6 +1,5 @@
 #pragma once
-//#include "Engine Core/BasicDependencies.h"
-//#include "Engine Core/Material/Texture/Texture.h"
+
 #include "Engine Core/Material/Texture/Image.cuh"
 
 
