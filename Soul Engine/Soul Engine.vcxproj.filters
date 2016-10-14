@@ -485,12 +485,6 @@
     <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp">
       <Filter>Engine Backend\Utility\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Shaders\Shader Test.cpp">
-      <Filter>Engine Backend\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Shaders\Shader.cpp">
-      <Filter>Engine Backend\Shaders</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu">
