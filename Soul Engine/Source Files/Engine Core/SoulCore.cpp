@@ -354,7 +354,8 @@ void SoulInit(){
 
 }
 
-//the moniter number, and a float from 0-1 of the screen size for each dimension
+//the moniter number, and a float from 0-1 of the screen size for each dimension,
+//if its the fisrt, it becomes the master window
 GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	GLFWmonitor* monitorIn = Soul::monitors[monitor];
