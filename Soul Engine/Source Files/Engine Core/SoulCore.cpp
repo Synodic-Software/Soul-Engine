@@ -415,6 +415,8 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	if (Soul::masterWindow == nullptr){
 
+		Soul::masterWindow = windowOut;
+
 		glfwSetInputMode(Soul::masterWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		glfwSetKeyCallback(Soul::masterWindow, Input::KeyCallback);
@@ -440,7 +442,7 @@ int main()
 	SoulInit();
 
 	//create a Window
-	SoulCreateWindow(0, 1.0f, 1.0f);
+	SoulCreateWindow(0, 0.9f, 0.9f);
 
 	SetKey(GLFW_KEY_ESCAPE, SoulShutDown);
 
