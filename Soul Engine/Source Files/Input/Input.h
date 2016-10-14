@@ -1,33 +1,47 @@
 #pragma once
 
-#include "Engine Core/BasicDependencies.h"
 #include "Utility\Vulkan\VulkanBackend.h"
 
-class SoulInput{
+class Input
+{
+
+
+	virtual void InputKeyboardCallback(GLFWwindow*, int, int, int, int) = 0;
+	virtual void InputMouseCallback(GLFWwindow*, double, double) = 0;
+	virtual void InputScrollCallback(GLFWwindow*, double, double) = 0;
+
+	static Input *inputHandle;
 
 public:
-	static SoulInput& GetInstance()
+
+	virtual void setEventHandling() final { inputHandle = this; }
+
+	static void KeyCallback(
+		GLFWwindow *window,
+		int key,
+		int scancode,
+		int action,
+		int mods)
 	{
-		static SoulInput instance; 
-		return instance;
+		if (inputHandle)
+			inputHandle->InputKeyboardCallback(window, key, scancode, action, mods);
 	}
 
-	bool SetKey(int, std::function<void()>);
-	void InputKeyboardCallback(GLFWwindow*, int, int, int, int);
-	void UpdateMouseCallback(GLFWwindow*, double, double);
-	void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-	void ResetOffsets();
+	static void MouseCallback(
+		GLFWwindow* window, 
+		double xoffset,
+		double yoffset)
+	{
+		if (inputHandle)
+			inputHandle->InputMouseCallback(window, xoffset, yoffset);
+	}
 
-	bool ResetMouse;
-	double xPos;
-	double yPos;
-	double scrollXOffset;
-	double scrollYOffset;
-
-private:
-	SoulInput() {}
-
-public:
-	SoulInput(SoulInput const&) = delete;
-	void operator=(SoulInput const&) = delete;
+	static void ScrollCallback(
+		GLFWwindow* window, 
+		double xoffset, 
+		double yoffset)
+	{
+		if (inputHandle)
+			inputHandle->InputScrollCallback(window, xoffset, yoffset);
+	}
 };

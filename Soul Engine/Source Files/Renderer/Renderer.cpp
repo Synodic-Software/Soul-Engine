@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "CUDA/Renderer.cuh"
+#include "Input\InputState.h"
 
 Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	iCounter = 1;
@@ -112,7 +113,7 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 
 	float aspectRatio = camera->GetAspect();
 
-	scroll += SoulInput::GetInstance().scrollYOffset / 50.0f;
+	scroll += InputState::GetInstance().scrollYOffset / 50.0f;
 	if (scroll > 1.0f){
 		scroll = 1.0f;
 	}

@@ -192,9 +192,6 @@
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
       <Filter>Engine Backend\Engine Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Input\InputHelper.h">
-      <Filter>Engine Backend\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Input\Input.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
@@ -420,12 +417,12 @@
     <ClInclude Include="Source Files\Utility\CUDA\CUDAMath.h">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Input\InputState.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Input\Input.cpp">
-      <Filter>Engine Backend\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Input\InputHelper.cpp">
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Settings.cpp">
@@ -484,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp">
       <Filter>Engine Backend\Utility\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Input\InputState.cpp">
+      <Filter>Engine Backend\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
