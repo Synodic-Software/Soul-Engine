@@ -40,7 +40,7 @@ namespace Soul {
 	}renderer;
 
 	std::vector<window> windows;
-	GLFWwindow* masterWindow;
+	GLFWwindow* masterWindow = nullptr;
 
 	int monitorCount;
 	GLFWmonitor** monitors;
@@ -119,7 +119,7 @@ namespace Soul {
 		//VulkanBackend::GetInstance().CreateSemaphores();
 	}
 
-	void InputToCamera(GLFWwindow* window,Camera* camera){
+	void InputToCamera(GLFWwindow* window, Camera* camera){
 
 		if (camera != nullptr){
 
@@ -133,7 +133,7 @@ namespace Soul {
 
 	}
 
-	void UpdateDefaultCamera(GLFWwindow* window,double deltaTime){
+	void UpdateDefaultCamera(GLFWwindow* window, double deltaTime){
 		double moveSpeed;
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
 			moveSpeed = 9 * METER * deltaTime;
@@ -184,15 +184,15 @@ namespace Soul {
 		glfwSetCursorPos(masterWindow, width / 2.0f, height / 2.0f);
 
 		glfwPollEvents();
-		
+
 		double deltaTime = 1.0 / engineRefreshRate;
 
 		for (auto const& scene : scenes){
 			scene->Build(deltaTime);
 		}
 
-		bool test = true;		
-		
+		bool test = true;
+
 		//stop loop when glfw exit is called
 		while (!glfwWindowShouldClose(masterWindow)){
 			double newTime = glfwGetTime();
@@ -228,7 +228,7 @@ namespace Soul {
 				for (auto const& cam : cameras){
 					cam->UpdateVariables();
 				}
-				
+
 				//Update();
 
 				cudaEvent_t start, stop;
@@ -262,7 +262,7 @@ namespace Soul {
 			}
 
 			for (auto const& rend : renderObjects){
-				rend.rendererHandle->RenderSetup({width,height}, mouseCamera, deltaTime);
+				rend.rendererHandle->RenderSetup({ width, height }, mouseCamera, deltaTime);
 			}
 
 			test = !test;
@@ -349,14 +349,8 @@ void SoulInit(){
 	Soul::mouseCamera = new Camera();
 	Soul::cameras.push_back(Soul::mouseCamera);
 
-	glfwSetInputMode(Soul::masterWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 	Soul::mouseCamera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
 	Soul::mouseCamera->OffsetOrientation(45, 45);
-
-	glfwSetKeyCallback(Soul::masterWindow, Input::KeyCallback);
-	glfwSetScrollCallback(Soul::masterWindow, Input::ScrollCallback);
-	glfwSetCursorPosCallback(Soul::masterWindow, Input::MouseCallback);
 
 }
 
@@ -419,6 +413,17 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	Soul::windows.push_back({ windowOut, win });
 
+	if (Soul::masterWindow == nullptr){
+
+		glfwSetInputMode(Soul::masterWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		glfwSetKeyCallback(Soul::masterWindow, Input::KeyCallback);
+		glfwSetScrollCallback(Soul::masterWindow, Input::ScrollCallback);
+		glfwSetCursorPosCallback(Soul::masterWindow, Input::MouseCallback);
+
+	}
+
+
 	return windowOut;
 }
 
@@ -435,7 +440,7 @@ int main()
 	SoulInit();
 
 	//create a Window
-	SoulCreateWindow(0,1.0f,1.0f);
+	SoulCreateWindow(0, 1.0f, 1.0f);
 
 	SetKey(GLFW_KEY_ESCAPE, SoulShutDown);
 

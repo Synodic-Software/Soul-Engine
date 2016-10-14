@@ -18,7 +18,7 @@
     </Lib>
     <ClCompile>
       <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries;C:\VulkanSDK\1.0.30.0\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries;C:\VulkanSDK\1.0.13.0\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -31,7 +31,7 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)\Libraries\glfw\bin;$(ProjectDir)\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)\Libraries</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64;C:\VulkanSDK\1.0.13.0\Bin;$(ProjectDir)\Libraries\glfw\bin;$(ProjectDir)\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)\Libraries</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;cudart.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -67,7 +67,8 @@
       <UseHostLibraryDirectories>false</UseHostLibraryDirectories>
       <PerformDeviceLink>true</PerformDeviceLink>
       <GPUDebugInfo>true</GPUDebugInfo>
-      <AdditionalDependencies>cudart.lib;cudadevrt.lib</AdditionalDependencies>
+      <AdditionalDependencies>cudart64_80.lib;cudadevrt.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CUDA_LIB_PATH)</AdditionalLibraryDirectories>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup />
