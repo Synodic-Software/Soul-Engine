@@ -24,8 +24,10 @@ public:
 	__host__ __device__ Node* GetLeaf(int test){
 		return bvh+((currentSize - 1) + test);
 	}
+
 	void Build(uint);
 	Node* root;
+
 private:
 
 	
