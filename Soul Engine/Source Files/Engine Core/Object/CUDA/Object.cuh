@@ -7,6 +7,7 @@
 #include "Engine Core/Object/CUDA/Face.cuh"
 #include "Engine Core/Object/ObjLoader.h"
 #include "Bounding Volume Heirarchy\BoundingBox.h"
+#include "Metrics.h"
 
 class Face;
 

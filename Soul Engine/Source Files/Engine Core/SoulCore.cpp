@@ -10,7 +10,7 @@
 #include "Multithreading\Scheduler.h"
 #include "Engine Core/Frame/Frame.h"
 #include "Engine Core/Camera/CUDA/Camera.cuh"
-#include "Input/Input.h"
+#include "Input/InputState.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
 #include "Renderer\Renderer.h"
@@ -127,8 +127,8 @@ namespace Soul {
 			glfwGetWindowSize(window, &width, &height);
 
 			mouseCamera->OffsetOrientation(
-				(float)(SoulInput::GetInstance().xPos / width * camera->FieldOfView().x),
-				(float)(SoulInput::GetInstance().yPos / height * camera->FieldOfView().y));
+				(float)(InputState::GetInstance().xPos / width * camera->FieldOfView().x),
+				(float)(InputState::GetInstance().yPos / height * camera->FieldOfView().y));
 		}
 
 	}
@@ -167,11 +167,6 @@ namespace Soul {
 			}
 		}
 
-	}
-
-
-	void SetKey(int key, void(*func)(void)){
-		SoulInput::GetInstance().SetKey(key, std::bind(func));
 	}
 
 	void Run()
@@ -260,7 +255,7 @@ namespace Soul {
 				}
 
 
-				SoulInput::GetInstance().ResetOffsets();
+				InputState::GetInstance().ResetOffsets();
 
 				t += deltaTime;
 				accumulator -= deltaTime;
@@ -284,11 +279,6 @@ namespace Soul {
 			}
 		}
 	}
-
-	void SoulRun(){
-		Run();
-	}
-
 }
 
 /////////////////////////User Interface///////////////////////////
@@ -300,6 +290,14 @@ void SoulShutDown(){
 	CudaCheck(cudaDeviceReset());
 	delete Soul::settings;
 	glfwTerminate();
+}
+
+void SoulRun(){
+	Soul::Run();
+}
+
+void SetKey(int key, void(*func)(void)){
+	InputState::GetInstance().SetKey(key, std::bind(func));
 }
 
 void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat){
@@ -356,9 +354,9 @@ void SoulInit(){
 	Soul::mouseCamera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
 	Soul::mouseCamera->OffsetOrientation(45, 45);
 
-	glfwSetKeyCallback(Soul::masterWindow, SoulInput::GetInstance().InputKeyboardCallback);
-	glfwSetScrollCallback(Soul::masterWindow, SoulInput::GetInstance().ScrollCallback);
-	glfwSetCursorPosCallback(Soul::masterWindow, SoulInput::GetInstance().UpdateMouseCallback);
+	glfwSetKeyCallback(Soul::masterWindow, Input::KeyCallback);
+	glfwSetScrollCallback(Soul::masterWindow, Input::ScrollCallback);
+	glfwSetCursorPosCallback(Soul::masterWindow, Input::MouseCallback);
 
 }
 
