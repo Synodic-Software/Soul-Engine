@@ -12,7 +12,7 @@ void SoulInit();
 void SoulRun();
 //WindowType, RenderType
 GLFWwindow* SoulCreateWindow(int, float,float);
-void SoulShutDown();
+void SoulSignalClose();
 glm::vec2* GetMouseChange();
 //void Run();
 
