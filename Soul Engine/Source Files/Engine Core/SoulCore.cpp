@@ -92,6 +92,20 @@ namespace Soul {
 	/////////////////////////Engine Core/////////////////////////////////
 
 
+	//Call to deconstuct both the engine and its dependencies
+	void SoulShutDown(){
+		Soul::Synch();
+		RayEngine::Clean();
+		CudaCheck(cudaDeviceReset());
+
+		for (auto const& win : windows){
+			glfwDestroyWindow(win.windowHandle);
+		}
+
+		delete Soul::settings;
+		glfwTerminate();
+	}
+
 	void InitVulkan() {
 		//VulkanBackend::GetInstance().CreateInstance();
 		//VulkanBackend::GetInstance().SetupDebugCallback();
@@ -278,18 +292,18 @@ namespace Soul {
 				rend.rendererHandle->Render(false);
 			}
 		}
+
+		SoulShutDown();
+
 	}
 }
 
 /////////////////////////User Interface///////////////////////////
 
-//Call to deconstuct both the engine and its dependencies
-void SoulShutDown(){
-	Soul::Synch();
-	RayEngine::Clean();
-	CudaCheck(cudaDeviceReset());
-	delete Soul::settings;
-	glfwTerminate();
+void SoulSignalClose(){
+
+	glfwSetWindowShouldClose(Soul::masterWindow, GLFW_TRUE);
+
 }
 
 void SoulRun(){
@@ -334,7 +348,7 @@ void SoulInit(){
 	Soul::Synch();
 
 	if (!glfwInit()){
-		SoulShutDown();
+		Soul::SoulShutDown();
 	}
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -445,7 +459,7 @@ int main()
 	//create a Window
 	SoulCreateWindow(0, 0.9f, 0.9f);
 
-	SetKey(GLFW_KEY_ESCAPE, SoulShutDown);
+	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
 	Material* whiteGray = new Material();
 	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
@@ -453,6 +467,8 @@ int main()
 
 	Scene* scene = new Scene();
 	AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
+
+	SubmitScene(scene);
 
 	SoulRun();
 
