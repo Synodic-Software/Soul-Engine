@@ -112,7 +112,7 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 
 	float aspectRatio = camera->GetAspect();
 
-	scroll += SoulInput::scrollYOffset / 50.0f;
+	scroll += SoulInput::GetInstance().scrollYOffset / 50.0f;
 	if (scroll > 1.0f){
 		scroll = 1.0f;
 	}
