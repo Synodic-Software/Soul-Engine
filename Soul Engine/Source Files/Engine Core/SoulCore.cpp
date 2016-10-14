@@ -127,8 +127,8 @@ namespace Soul {
 			glfwGetWindowSize(window, &width, &height);
 
 			mouseCamera->OffsetOrientation(
-				(float)(SoulInput::xPos / width * camera->FieldOfView().x),
-				(float)(SoulInput::yPos / height * camera->FieldOfView().y));
+				(float)(SoulInput::GetInstance().xPos / width * camera->FieldOfView().x),
+				(float)(SoulInput::GetInstance().yPos / height * camera->FieldOfView().y));
 		}
 
 	}
@@ -171,7 +171,7 @@ namespace Soul {
 
 
 	void SetKey(int key, void(*func)(void)){
-		SoulInput::SetKey(key, std::bind(func));
+		SoulInput::GetInstance().SetKey(key, std::bind(func));
 	}
 
 	void Run()
@@ -260,7 +260,7 @@ namespace Soul {
 				}
 
 
-				SoulInput::ResetOffsets();
+				SoulInput::GetInstance().ResetOffsets();
 
 				t += deltaTime;
 				accumulator -= deltaTime;
@@ -356,9 +356,9 @@ void SoulInit(){
 	Soul::mouseCamera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
 	Soul::mouseCamera->OffsetOrientation(45, 45);
 
-	glfwSetKeyCallback(Soul::masterWindow, SoulInput::InputKeyboardCallback);
-	glfwSetScrollCallback(Soul::masterWindow, SoulInput::ScrollCallback);
-	glfwSetCursorPosCallback(Soul::masterWindow, SoulInput::UpdateMouseCallback);
+	glfwSetKeyCallback(Soul::masterWindow, SoulInput::GetInstance().InputKeyboardCallback);
+	glfwSetScrollCallback(Soul::masterWindow, SoulInput::GetInstance().ScrollCallback);
+	glfwSetCursorPosCallback(Soul::masterWindow, SoulInput::GetInstance().UpdateMouseCallback);
 
 }
 
