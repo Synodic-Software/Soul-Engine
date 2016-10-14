@@ -4,6 +4,14 @@
 
 std::list<std::function<void()> > keyHash[350];
 
+namespace SoulInput{
+	bool ResetMouse = false;
+	double xPos = 0.0;
+	double yPos = 0.0;
+	double scrollXOffset = 0.0f;
+	double scrollYOffset = 0.0f;
+};
+
 bool IsKeyAvailable(int key){
 	return keyHash[key].size() == 0;
 }
