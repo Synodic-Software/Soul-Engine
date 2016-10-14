@@ -29,12 +29,12 @@ namespace Soul {
 	uint seed;
 
 	typedef struct window{
-		GLFWwindow* window;
+		GLFWwindow* windowHandle;
 		WindowType type;
 	}window;
 
 	typedef struct renderer{
-		Renderer* renderer;
+		Renderer* rendererHandle;
 		RenderType type;
 		float timeModifier;
 	}renderer;
@@ -267,7 +267,7 @@ namespace Soul {
 			}
 
 			for (auto const& rend : renderObjects){
-				rend.renderer->RenderSetup({width,height}, mouseCamera, deltaTime);
+				rend.rendererHandle->RenderSetup({width,height}, mouseCamera, deltaTime);
 			}
 
 			test = !test;
@@ -280,7 +280,7 @@ namespace Soul {
 			SynchGPU();
 			for (auto const& rend : renderObjects){
 				//integration bool
-				rend.renderer->Render(false);
+				rend.rendererHandle->Render(false);
 			}
 		}
 	}

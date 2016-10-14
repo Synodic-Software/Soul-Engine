@@ -157,8 +157,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="Source Files\Engine Core\Allocator\Allocator.cpp" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />
-    <ClCompile Include="Source Files\Shaders\Shader Test.cpp" />
-    <ClCompile Include="Source Files\Shaders\Shader.cpp" />
     <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp" />
     <CudaCompile Include="Source Files\Engine Core\Material\Colour\CUDA\Colour.cu" />
     <CudaCompile Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
