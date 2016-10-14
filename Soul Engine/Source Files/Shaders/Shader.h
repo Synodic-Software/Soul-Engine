@@ -137,7 +137,7 @@ public:
 	virtual bool isFaceHit() = 0;
 
 	/*
-	This method Takes no arguments
+	This method takes no arguments
 
 	Returns:
 	col vector of the shader.  This may vary depending on whether
@@ -145,6 +145,88 @@ public:
 	*/
 	
 	virtual glm::vec3 getCol() = 0;
+
+	/*
+	This method takes no arguments
+
+	Returns:
+	The best normal as defined by (norm2 - norm1) x (norm3 - norm1)
+	where x represents the cross product.
+
+	*/
+
+	virtual glm::vec3 bestNormal() = 0;
+
+	/*
+	This method takes no arguments
+	
+	Returns:
+	The best UV as defined by: 
+	(1.0f - hitCoord.x - hitCoord.y) * tex1 + hitCoord.x * tex2 + hitCoord.y * tex3
+
+	*/
+
+	virtual glm::vec2 bestUV() = 0;
+
+	/*
+	This method takes no arguments
+
+	Returns:
+	Bias vector as defined by RAY_BIAS_DISTANCE * bestNormal() where
+	RAY_BIAS_DISTANCE is a constant defined in the implementation
+
+	*/
+
+	virtual glm::vec3 biasVector() = 0;
+
+	/*
+	This method takes no arguments
+	
+	Returns:
+	The best intersection point, which is the ray's origin + direction.w * origin
+
+	*/
+
+	virtual glm::vec3 bestIntersectionPoint() = 0;
+
+	/*
+	This medthod takes no arguments
+	
+	Returns:
+	bestNormal() if bestNormal() . ray.direction_x,y,z < 0
+	else -bestNormal() where
+	. represents the dot product
+	
+	*/
+
+	virtual glm::vec3 orientedNormal() = 0;
+
+	/*
+	This method takes no arguments
+	
+	Returns:
+	the normalized version of the vector:
+
+	(0,1,0) x orientedNormal() if |orientedNormal().x| > 0.1
+	else (1,0,0) x orientedNormal()
+
+	where x represents the cross product
+	*/
+
+	virtual glm::vec3 getU() = 0;
+
+
+	/*
+	This method takes no arguments
+	
+	Returns:
+	orientedNormal() x getU() where
+	x represents the cross product
+	
+	*/
+
+	virtual glm::vec3 getV() = 0;
+
 
 
 
