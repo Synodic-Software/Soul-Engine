@@ -27,6 +27,12 @@ typedef struct qsortRingbuf_t
 #define QSORT_STACK_ELEMS   1*1024*1024 // One million stack elements is a HUGE number.
 
 /*
+	REFERENCES:
+	http://www.cse.chalmers.se/~tsigas/papers/GPU-Quicksort-jea.pdf
+	https://software.intel.com/en-us/articles/gpu-quicksort-in-opencl-20-using-nested-parallelism-and-work-group-scan-functions
+	http://onlinelibrary.wiley.com/doi/10.1002/cpe.3611/abstract
+*/
+/*
 void quicksort(T* data, int N)
 {
   int i, j;
@@ -55,30 +61,4 @@ void quicksort(T* data, int N)
   quicksort(data, i-1);
   quicksort(data+i, N-i);
 }
-*/
-
-/*
-
-Quicksort(A as array, low as int, high as int){
-    if (low < high){
-        pivot_location = Partition(A,low,high)
-        Quicksort(A,low, pivot_location)
-        Quicksort(A, pivot_location + 1, high)
-    }
-}
-Partition(A as array, low as int, high as int){
-     pivot = A[low]
-     leftwall = low
-
-     for i = low + 1 to high{
-         if (A[i] < pivot) then{
-             swap(A[i], A[leftwall])
-             leftwall = leftwall + 1
-         }
-     }
-     swap(pivot,A[leftwall])
-
-    return (leftwall)}
-
-
 */
