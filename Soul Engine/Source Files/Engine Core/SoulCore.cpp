@@ -106,32 +106,6 @@ namespace Soul {
 		glfwTerminate();
 	}
 
-	void InitVulkan() {
-		//VulkanBackend::GetInstance().CreateInstance();
-		//VulkanBackend::GetInstance().SetupDebugCallback();
-		//VulkanBackend::GetInstance().CreateSurface(masterWindow);
-		//VulkanBackend::GetInstance().PickVulkanDevice();
-		//VulkanBackend::GetInstance().CreateVulkanLogical();
-		//VulkanBackend::GetInstance().CreateSwapChain(masterWindow);
-		//VulkanBackend::GetInstance().CreateImageViews();
-		//VulkanBackend::GetInstance().CreateRenderPass();
-		//VulkanBackend::GetInstance().CreateDescriptorSetLayout();
-		//VulkanBackend::GetInstance().CreateGraphicsPipeline();
-		//VulkanBackend::GetInstance().CreateCommandPool();
-		//VulkanBackend::GetInstance().CreateDepthResources();
-		//VulkanBackend::GetInstance().CreateFramebuffers();
-		//VulkanBackend::GetInstance().CreateTextureImage();
-		//VulkanBackend::GetInstance().CreateTextureImageView();
-		//VulkanBackend::GetInstance().CreateTextureSampler();
-		//VulkanBackend::GetInstance().LoadModel();
-		//VulkanBackend::GetInstance().CreateVertexBuffer();
-		//VulkanBackend::GetInstance().CreateIndexBuffer();
-		//VulkanBackend::GetInstance().CreateUniformBuffer();
-		//VulkanBackend::GetInstance().CreateDescriptorPool();
-		//VulkanBackend::GetInstance().CreateDescriptorSet();
-		//VulkanBackend::GetInstance().CreateCommandBuffers();
-		//VulkanBackend::GetInstance().CreateSemaphores();
-	}
 
 	void InputToCamera(GLFWwindow* window, Camera* camera){
 
@@ -243,6 +217,9 @@ namespace Soul {
 					cam->UpdateVariables();
 				}
 
+				//UpdateVulkan
+				VulkanBackend::GetInstance().UpdateVulkanProjection();
+
 				//Update();
 
 				cudaEvent_t start, stop;
@@ -291,7 +268,13 @@ namespace Soul {
 				//integration bool
 				rend.rendererHandle->Render(false);
 			}
+
+			VulkanBackend::GetInstance().DrawFrame(masterWindow);
+
 		}
+
+		//Put Vulkan into idle
+		VulkanBackend::GetInstance().IdleDevice();
 
 		SoulShutDown();
 
@@ -351,7 +334,6 @@ void SoulInit(){
 		Soul::SoulShutDown();
 	}
 
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	RenderType  win = static_cast<RenderType>(GetSetting("Renderer", 2));
 
@@ -365,7 +347,6 @@ void SoulInit(){
 
 	Soul::mouseCamera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
 	Soul::mouseCamera->OffsetOrientation(45, 45);
-
 }
 
 //the moniter number, and a float from 0-1 of the screen size for each dimension,
@@ -379,6 +360,7 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	glfwWindowHint(GLFW_SAMPLES, 0);
 	glfwWindowHint(GLFW_VISIBLE, true);
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
 
@@ -388,6 +370,7 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 		glfwWindowHint(GLFW_RESIZABLE, false);
 		glfwWindowHint(GLFW_DECORATED, false);
+
 		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
@@ -411,8 +394,7 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-		//mainThread = glfwCreateWindow(mode->width, mode->height, "Soul Engine", NULL, NULL);   //<---------actual
-		windowOut = glfwCreateWindow(mode->width, mode->height, "Soul Engine", NULL, NULL);
+		windowOut = glfwCreateWindow(int(xSize*mode->width), int(ySize*mode->height), "Soul Engine", NULL, NULL);
 
 	}
 	else{
@@ -432,14 +414,16 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 		Soul::masterWindow = windowOut;
 
-		glfwSetInputMode(Soul::masterWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(windowOut, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		glfwSetKeyCallback(Soul::masterWindow, Input::KeyCallback);
-		glfwSetScrollCallback(Soul::masterWindow, Input::ScrollCallback);
-		glfwSetCursorPosCallback(Soul::masterWindow, Input::MouseCallback);
-
+		glfwSetKeyCallback(windowOut, Input::KeyCallback);
+		glfwSetScrollCallback(windowOut, Input::ScrollCallback);
+		glfwSetCursorPosCallback(windowOut, Input::MouseCallback);
 	}
 
+	glfwSetWindowUserPointer(windowOut, &VulkanBackend::GetInstance());
+	glfwSetWindowSizeCallback(windowOut, VulkanBackend::OnWindowResized);
+	VulkanBackend::GetInstance().AddWindow(windowOut);
 
 	return windowOut;
 }
