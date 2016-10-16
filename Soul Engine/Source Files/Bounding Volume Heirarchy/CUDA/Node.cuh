@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
 #include "BoundingBox.cuh"
 #include "Ray Engine\CUDA/Ray.cuh"
 #include "Engine Core\Object\Face.h"
@@ -24,7 +23,7 @@ public:
 	uint rangeLeft;
 
 
-	//CUDA_FUNCTION void TransformRay(Ray&);
+	//__host__ __device__ void TransformRay(Ray&);
 
 private:
 

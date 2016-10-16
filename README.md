@@ -25,13 +25,28 @@ These are planned features (partial/incomplete implementations) for aid in the v
 # Current Status
 Completed features:
 
-  -The bulk of the main ray engine is complete allowing for any code to request a parrallel ray job near rendertime. Jobs are coalesced, at the cost of minor overhead, and sent into the scene to collect information. 
+  -The ray engine allows for any code to request a parrallel ray job near rendertime. Jobs are coalesced, at the cost of minor overhead, and sent into the scene to collect information. 
   
-  -Basic (and slow) path tracing is available using only diffuse materials.
+  -Basic path tracing is available using only diffuse materials.
   
-  -LBVH implementation is complete with many slow and missing features
+  -LBVH implementation is complete
+  
+  -Scenes can be created and sent for rendering
 
 Ways to interact with Soul Engine beyond this repository are currently being investigated.
 For your propiertery purposes, an alternate license will be also made available once the project is in a decent enough shape.
 
+Check out the currently open issues for opportunities to contribute!
 
+# User (programmer) Setup
+To compile dependancies with the following must be met:
+
+  GLFW        - http://www.glfw.org/
+  
+  GLM         - http://glm.g-truc.net/0.9.8/index.html
+  
+  stb_image.h - https://github.com/nothings/stb
+  
+  Vulkan SDK  - (Probably the LunarG SDK)
+  
+  Cuda 8.0    - https://developer.nvidia.com/cuda-toolkit

@@ -1,49 +1,50 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
 #include "Ray Engine\CUDA\Ray.cuh"
-//#include "thrust\random.h"
+#include <curand_kernel.h>
+#include "Metrics.h"
 
 class Ray;
+
 //forward and right must be normalized!
     class Camera : public Managed {
     public:
-		CUDA_FUNCTION Camera();
-		CUDA_FUNCTION ~Camera();
+		__host__ __device__ Camera();
+		__host__ __device__ ~Camera();
          //The position of the camera.
         
-        CUDA_FUNCTION glm::vec3 Position() const;
-		CUDA_FUNCTION void SetPosition(const glm::vec3& position);
-		CUDA_FUNCTION void OffsetPosition(const glm::vec3& offset);
+        __host__ __device__ glm::vec3 Position() const;
+		__host__ __device__ void SetPosition(const glm::vec3& position);
+		__host__ __device__ void OffsetPosition(const glm::vec3& offset);
 
       
-		CUDA_FUNCTION glm::vec2 FieldOfView() const;
-		CUDA_FUNCTION void SetFieldOfView(glm::vec2 fieldOfView);
+		__host__ __device__ glm::vec2 FieldOfView() const;
+		__host__ __device__ void SetFieldOfView(glm::vec2 fieldOfView);
 
         /** A unit vector representing the direction the camera is facing */
-		CUDA_FUNCTION void SetForward(glm::vec3&);
-		CUDA_FUNCTION glm::vec3 Forward() const;
+		__host__ __device__ void SetForward(glm::vec3&);
+		__host__ __device__ glm::vec3 Forward() const;
 
         /** A unit vector representing the direction to the right of the camera*/
-		CUDA_FUNCTION void SetRight(glm::vec3&);
-		CUDA_FUNCTION glm::vec3 Right() const;
+		__host__ __device__ void SetRight(glm::vec3&);
+		__host__ __device__ glm::vec3 Right() const;
 
 
 		//Given a positive integer, this function fills in the given ray's values based on the camera's position orientation and lens.
-	//	CUDA_FUNCTION void SetupRay(uint&, Ray&, thrust::default_random_engine&, thrust::uniform_real_distribution<float>&);
+	//	__host__ __device__ void SetupRay(uint&, Ray&, thrust::default_random_engine&, thrust::uniform_real_distribution<float>&);
 		__device__ void SetupRay(uint&, Ray&, curandState&);
 
-		CUDA_FUNCTION bool IsViewable() const;
+		__host__ __device__ bool IsViewable() const;
 
-		CUDA_FUNCTION void SetCircle(bool);
+		__host__ __device__ void SetCircle(bool);
 
-		CUDA_FUNCTION void SetAspect(float);
+		__host__ __device__ void SetAspect(float);
 
-		CUDA_FUNCTION float GetAspect();
+		__host__ __device__ float GetAspect();
 
-		CUDA_FUNCTION void OffsetOrientation(float x, float y);
+		__host__ __device__ void OffsetOrientation(float x, float y);
 
-		CUDA_FUNCTION void UpdateVariables();
+		__host__ __device__ void UpdateVariables();
 
 		glm::uvec2 resolution;
 

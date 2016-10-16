@@ -4,7 +4,8 @@
 #define QSORT_MAXDEPTH          16              // Will force final bitonic stage at depth QSORT_MAXDEPTH+1
 
 
-typedef struct __align__(128) qsortAtomicData_t
+//typedef struct __align__(128) qsortAtomicData_t
+typedef struct  qsortAtomicData_t
 {
 	volatile unsigned int lt_offset;    // Current output offset for <pivot
 	volatile unsigned int gt_offset;    // Current output offset for >pivot

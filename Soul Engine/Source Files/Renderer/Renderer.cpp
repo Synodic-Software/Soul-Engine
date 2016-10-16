@@ -1,8 +1,10 @@
 #include "Renderer.h"
 #include "CUDA/Renderer.cuh"
+#include "Input\InputState.h"
 
 Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	iCounter = 1;
+	scroll = 0.0f;
 	debug = false;
 	modifiedScreen = screen;
 	originalScreen = screen;
@@ -14,7 +16,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	samples = 1;  //must be power of 2
 	//samples cannot be a float because finding a constant random number across different threads becomes too time consuming 
 
-	CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
+	/*CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
 							   "fragment-shader[Renderer].txt");
 	cameraUniform = CUDAtoScreen->uniform("camera");
 	modelUniform = CUDAtoScreen->uniform("model");
@@ -97,10 +99,10 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
-	newTime = glfwGetTime();
+	newTime = glfwGetTime();*/
 }
 
-void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget, float scroll){
+void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget){
 
 	double oldTime = newTime;
 	newTime = glfwGetTime();
@@ -110,6 +112,14 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	frameTime = (frameTime * smoothing) + (frameTop * (1.0 - smoothing));
 
 	float aspectRatio = camera->GetAspect();
+
+	scroll += InputState::GetInstance().scrollYOffset / 50.0f;
+	if (scroll > 1.0f){
+		scroll = 1.0f;
+	}
+	else if(scroll < 0.0f){
+		scroll = 0;
+	}
 	uint newWidth = (uint)glm::ceil(originalScreen.x*scroll);
 	
 	uint workCalc = RenderJob->GetSampleAmount()*RenderJob->GetRayAmount();
@@ -136,39 +146,39 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	camera->resolution=modifiedScreen;
 	RayEngine::ChangeJob(RenderJob, (modifiedScreen.x*modifiedScreen.y),
 		samples, camera);
-	//RenderJob->GetSampleAmount()=0.1f;
-	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
-	size_t num_bytes;
-	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
-		cudaBuffer));
+	////RenderJob->GetSampleAmount()=0.1f;
+	//CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
+	//size_t num_bytes;
+	//CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
+	//	cudaBuffer));
 
 }
 
 void Renderer::Render(bool integrate){
 
-	if (integrate){
-		Integrate(RenderJob, iCounter);
-		iCounter++;
-	}
-	else{
-		iCounter = 1;
-	}		
-	
-	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
+	//if (integrate){
+	//	Integrate(RenderJob, iCounter);
+	//	iCounter++;
+	//}
+	//else{
+	//	iCounter = 1;
+	//}		
+	//
+	//CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBufferA);
+	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBufferA);
 
-	CUDAtoScreen->use();
-	glBindVertexArray(vao);
-	CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
-	CUDAtoScreen->setUniform(modelUniform, glm::mat4());
-	CUDAtoScreen->setUniform(screenUniform, originalScreen.x, originalScreen.y);
-	CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
-	//RenderJob->SwapResults(0,1);
-	glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
-	glBindVertexArray(0);
-	CUDAtoScreen->stopUsing();
+	//CUDAtoScreen->use();
+	//glBindVertexArray(vao);
+	//CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
+	//CUDAtoScreen->setUniform(modelUniform, glm::mat4());
+	//CUDAtoScreen->setUniform(screenUniform, originalScreen.x, originalScreen.y);
+	//CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
+	////RenderJob->SwapResults(0,1);
+	//glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
+	//glBindVertexArray(0);
+	//CUDAtoScreen->stopUsing();
 
-	//RenderJob->SwapResults(0, 1);
+	////RenderJob->SwapResults(0, 1);
 
 }
