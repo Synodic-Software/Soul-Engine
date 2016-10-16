@@ -1,14 +1,16 @@
 #pragma once
 
-#include "Utility/CUDAIncludes.h"
-// __align__(32)
+#include "Utility\CUDA\CudaManaged.cuh"
+#include <cuda_runtime.h>
+#include "Utility\GLMIncludes.h"
+
 class BoundingBox : public Managed
 {
 public:
-	CUDA_FUNCTION BoundingBox();
-	CUDA_FUNCTION BoundingBox(glm::vec3, glm::vec3);
+	__host__ __device__ BoundingBox();
+	__host__ __device__ BoundingBox(glm::vec3, glm::vec3);
 
-	CUDA_FUNCTION BoundingBox& BoundingBox::operator= (const BoundingBox &a)
+	__host__ __device__ BoundingBox& BoundingBox::operator= (const BoundingBox &a)
 	{
 
 		min = a.min;
@@ -17,7 +19,7 @@ public:
 		return *this;
 	}
 
-	CUDA_FUNCTION ~BoundingBox();
+	__host__ __device__ ~BoundingBox();
 
 	glm::vec3 min;
 	glm::vec3 max;

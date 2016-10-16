@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
-#include "Utility/OpenGL/ShaderSupport.h"
-#include "Utility/OpenGL/Shader.h"
 #include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/Input.h"
 #include "Engine Core/Material/Material.h"
@@ -10,6 +7,7 @@
 #include "Engine Core/Object/CUDA/Face.cuh"
 #include "Engine Core/Object/ObjLoader.h"
 #include "Bounding Volume Heirarchy\BoundingBox.h"
+#include "Metrics.h"
 
 class Face;
 

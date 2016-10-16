@@ -1,5 +1,5 @@
 #include "Object.cuh"
-
+#include "Utility\CUDA\CUDAHelper.cuh"
 
 Object::Object(){
 

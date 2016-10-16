@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdio>
+
 //takes an .ini filename
 Settings::Settings(std::string file){
 	fileName = file;

@@ -11,8 +11,8 @@ typedef enum WindowType{ WINDOWED, FULLSCREEN, BORDERLESS };
 void SoulInit();
 void SoulRun();
 //WindowType, RenderType
-void SoulCreateWindow(WindowType, RenderType);
-void SoulShutDown();
+GLFWwindow* SoulCreateWindow(int, float,float);
+void SoulSignalClose();
 glm::vec2* GetMouseChange();
 //void Run();
 
@@ -27,5 +27,10 @@ int GetSetting(std::string, int);
 void SetSetting(std::string, std::string);
 
 void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* mat);
+void SubmitScene(Scene*);
+void RemoveScene(Scene*);
+void AddRenderer(Scene*);
+void RemoveRenderer(Scene*);
+
 bool IsRunning();
 void RemoveObject(void*);

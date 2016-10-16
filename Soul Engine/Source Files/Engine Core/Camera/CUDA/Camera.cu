@@ -1,6 +1,7 @@
 #include "Engine Core/Camera/CUDA/Camera.cuh"
+#include <glm/gtx/rotate_vector.hpp>
 
-CUDA_FUNCTION Camera::Camera() :
+__host__ __device__ Camera::Camera() :
 	resolution(0,0),
 	aspectRatio(0),
     position(0.0f,0.0f,0.0f),
@@ -13,49 +14,49 @@ CUDA_FUNCTION Camera::Camera() :
 {	
 }
 
-CUDA_FUNCTION  Camera::~Camera(){
+__host__ __device__  Camera::~Camera(){
 
 }
 
-CUDA_FUNCTION void Camera::SetAspect(float newA){
+__host__ __device__ void Camera::SetAspect(float newA){
 	aspectRatio = newA;
 }
-CUDA_FUNCTION float Camera::GetAspect(){
+__host__ __device__ float Camera::GetAspect(){
 	return aspectRatio;
 }
 
-CUDA_FUNCTION glm::vec3 Camera::Position() const {
+__host__ __device__ glm::vec3 Camera::Position() const {
     return position;
 }
 
-CUDA_FUNCTION void Camera::SetPosition(const glm::vec3& positionN) {
+__host__ __device__ void Camera::SetPosition(const glm::vec3& positionN) {
     position = positionN;
 }
 
-CUDA_FUNCTION void Camera::OffsetPosition(const glm::vec3& offset) {
+__host__ __device__ void Camera::OffsetPosition(const glm::vec3& offset) {
     position += offset;
 }
 
-CUDA_FUNCTION glm::vec2 Camera::FieldOfView() const{
+__host__ __device__ glm::vec2 Camera::FieldOfView() const{
     return fieldOfView;
 }
-CUDA_FUNCTION void Camera::SetFieldOfView(glm::vec2 fieldOfView) {
+__host__ __device__ void Camera::SetFieldOfView(glm::vec2 fieldOfView) {
     fieldOfView = fieldOfView;
 }
 
 
 
-CUDA_FUNCTION glm::vec3 Camera::Forward() const {
+__host__ __device__ glm::vec3 Camera::Forward() const {
     return forward;
 }
-CUDA_FUNCTION void Camera::SetForward(glm::vec3& forN){
+__host__ __device__ void Camera::SetForward(glm::vec3& forN){
 	forward = glm::normalize(forN);
 }
 
-CUDA_FUNCTION glm::vec3 Camera::Right() const {
+__host__ __device__ glm::vec3 Camera::Right() const {
     return right;
 }
-CUDA_FUNCTION void Camera::SetRight(glm::vec3& rightn) {
+__host__ __device__ void Camera::SetRight(glm::vec3& rightn) {
 	right = normalize(rightn);
 }
 
@@ -128,20 +129,20 @@ __device__ void Camera::SetupRay(uint& index, Ray& ray, curandState& rng){
 
 }
 
-CUDA_FUNCTION void Camera::UpdateVariables(){
+__host__ __device__ void Camera::UpdateVariables(){
 	verticalAxis = normalize(cross(right, forward));
 	
 	yHelper=verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f)));
 	xHelper= right * tan(glm::radians(fieldOfView.x * 0.5f));
 }
 
-CUDA_FUNCTION bool Camera::IsViewable() const{
+__host__ __device__ bool Camera::IsViewable() const{
 	return !circularDistribution;
 }
-CUDA_FUNCTION void Camera::SetCircle(bool cir){
+__host__ __device__ void Camera::SetCircle(bool cir){
 	circularDistribution = cir;
 }
-CUDA_FUNCTION void Camera::OffsetOrientation(float x, float y){
+__host__ __device__ void Camera::OffsetOrientation(float x, float y){
 	right = normalize(glm::rotateY(right, glm::radians(x)));
 	forward = normalize(glm::rotateY(forward, glm::radians(x)));
 

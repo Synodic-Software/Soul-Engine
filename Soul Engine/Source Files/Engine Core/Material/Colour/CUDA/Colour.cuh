@@ -1,5 +1,6 @@
 #pragma once
-#include "Utility\CUDAIncludes.h"
+
+#include "Utility\CUDA\CUDAManaged.cuh"
 
 class Colour: public Managed{
 public:

@@ -1,12 +1,12 @@
 #include "PhysicsEngine.cuh"
+#include "Utility\CUDA\CUDAHelper.cuh"
 
-
-struct Collision{
+typedef struct {
 
 	Node* A;
 	Node* B;
 
-};
+}Collision;
 
 uint sizeAllocated = 0;
 Collision* collisions = NULL;

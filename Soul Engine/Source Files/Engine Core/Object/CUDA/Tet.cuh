@@ -2,19 +2,19 @@
 
 #include "Engine Core/Material/Material.h"
 #include "Engine Core/Object/CUDA/Object.cuh"
+#include "Face.cuh"
 
 class Object;
-//__align__(32)
-class Face : public Managed
+
+class Tet : public Managed
 {
 public:
-	Face();
-	Face(glm::uvec3, Material*);
-	~Face();
+	Tet();
+	Tet(glm::uvec4, Material*);
+	~Tet();
 
-	void SetData(glm::uvec3, Material*);
 
-	glm::uvec3 indices;
+	glm::uvec4 indices;
 	Material* materialPointer;
 	Object* objectPointer;
 private:

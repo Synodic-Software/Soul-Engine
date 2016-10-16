@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Utility\CUDAIncludes.h"
-//__align__(32)
+#include "Utility\CUDA\CUDAManaged.cuh"
+#include "Utility\GLMIncludes.h"
+
 class  Vertex : public Managed
 {
 public:

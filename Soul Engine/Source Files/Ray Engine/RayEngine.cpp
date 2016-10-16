@@ -1,5 +1,7 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
+#include "Utility\CUDA\CUDAHelper.cuh"
+
 
 std::vector<RayJob*> jobList = std::vector<RayJob*>(0);
 

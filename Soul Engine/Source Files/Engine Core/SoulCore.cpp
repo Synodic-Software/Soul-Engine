@@ -1,45 +1,61 @@
 
 /////////////////////////Includes/////////////////////////////////
 
-#include "Engine Core/BasicDependencies.h"
 #include "SoulCore.h"
+#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility\Vulkan\VulkanBackend.h"
+#include "Engine Core/BasicDependencies.h"
+
 #include "Settings.h"
 #include "Multithreading\Scheduler.h"
 #include "Engine Core/Frame/Frame.h"
-#include "Utility/OpenGL/ShaderSupport.h"
 #include "Engine Core/Camera/CUDA/Camera.cuh"
-#include "Input/Input.h"
+#include "Input/InputState.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
 #include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Resources\Objects\Hand.h"
 #include "Utility\CUDA\CUDADevices.cuh"
-#include <array>
 
-
-#include "Utility\Vulkan\VulkanBackend.h"
 
 
 
 namespace Soul {
 
 
-/////////////////////////Variables and Declarations//////////////////
+	/////////////////////////Variables and Declarations//////////////////
 
 	uint seed;
-	RenderType renderer;
-	WindowType screen;
+
+	typedef struct window{
+		GLFWwindow* windowHandle;
+		WindowType type;
+	}window;
+
+	typedef struct renderer{
+		Renderer* rendererHandle;
+		RenderType type;
+		float timeModifier;
+	}renderer;
+
+	std::vector<window> windows;
+	GLFWwindow* masterWindow = nullptr;
 
 	int monitorCount;
 	GLFWmonitor** monitors;
-	Renderer** renderObjects;
+
+	std::vector<renderer> renderObjects;
+
+	std::list<Scene*> scenes;
+
 	Settings* settings;
-	Camera** cameras;
+
+	bool usingDefaultCamera;
+	std::vector<Camera*> cameras;
+	Camera* mouseCamera;
 
 	int engineRefreshRate;
-
-	float* timeModifiers; //one for each render instance
 
 	float CurrentDelta();
 	void ClearColor(float, float, float, float);
@@ -75,139 +91,124 @@ namespace Soul {
 
 	/////////////////////////Engine Core/////////////////////////////////
 
-	
-	void InitVulkan() {
-		VulkanBackend::CreateInstance();
-		VulkanBackend::SetupDebugCallback();
-		VulkanBackend::CreateSurface();
-		VulkanBackend::PickVulkanDevice();
-		VulkanBackend::CreateVulkanLogical();
-		VulkanBackend::CreateSwapChain();
-		VulkanBackend::CreateImageViews();
-		VulkanBackend::CreateRenderPass();
-		VulkanBackend::CreateDescriptorSetLayout();
-		VulkanBackend::CreateGraphicsPipeline();
-		VulkanBackend::CreateCommandPool();
-		VulkanBackend::CreateDepthResources();
-		VulkanBackend::CreateFramebuffers();
-		VulkanBackend::CreateTextureImage();
-		VulkanBackend::CreateTextureImageView();
-		VulkanBackend::CreateTextureSampler();
-		VulkanBackend::LoadModel();
-		VulkanBackend::CreateVertexBuffer();
-		VulkanBackend::CreateIndexBuffer();
-		VulkanBackend::CreateUniformBuffer();
-		VulkanBackend::CreateDescriptorPool();
-		VulkanBackend::CreateDescriptorSet();
-		VulkanBackend::CreateCommandBuffers();
-		VulkanBackend::CreateSemaphores();
-	}
-	
-	void UpdateMouse(){
-		double xPos;
-		double yPos;
-		glfwGetCursorPos(mainThread, &xPos, &yPos);
-		xPos -= (SCREEN_SIZE.x / 2.0);
-		yPos -= (SCREEN_SIZE.y / 2.0);
-		mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x * camera->FieldOfView().x);
-		mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y * camera->FieldOfView().y);
 
-		if (freeMouse){
-			if (freeCam){
-				//set camera for each update
-				camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-			}
+	//Call to deconstuct both the engine and its dependencies
+	void SoulShutDown(){
+		Soul::Synch();
+		RayEngine::Clean();
+		CudaCheck(cudaDeviceReset());
 
-
-			glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
+		for (auto const& win : windows){
+			glfwDestroyWindow(win.windowHandle);
 		}
+
+		delete Soul::settings;
+		glfwTerminate();
 	}
 
-	void UpdateKeys(){
+	void InitVulkan() {
+		//VulkanBackend::GetInstance().CreateInstance();
+		//VulkanBackend::GetInstance().SetupDebugCallback();
+		//VulkanBackend::GetInstance().CreateSurface(masterWindow);
+		//VulkanBackend::GetInstance().PickVulkanDevice();
+		//VulkanBackend::GetInstance().CreateVulkanLogical();
+		//VulkanBackend::GetInstance().CreateSwapChain(masterWindow);
+		//VulkanBackend::GetInstance().CreateImageViews();
+		//VulkanBackend::GetInstance().CreateRenderPass();
+		//VulkanBackend::GetInstance().CreateDescriptorSetLayout();
+		//VulkanBackend::GetInstance().CreateGraphicsPipeline();
+		//VulkanBackend::GetInstance().CreateCommandPool();
+		//VulkanBackend::GetInstance().CreateDepthResources();
+		//VulkanBackend::GetInstance().CreateFramebuffers();
+		//VulkanBackend::GetInstance().CreateTextureImage();
+		//VulkanBackend::GetInstance().CreateTextureImageView();
+		//VulkanBackend::GetInstance().CreateTextureSampler();
+		//VulkanBackend::GetInstance().LoadModel();
+		//VulkanBackend::GetInstance().CreateVertexBuffer();
+		//VulkanBackend::GetInstance().CreateIndexBuffer();
+		//VulkanBackend::GetInstance().CreateUniformBuffer();
+		//VulkanBackend::GetInstance().CreateDescriptorPool();
+		//VulkanBackend::GetInstance().CreateDescriptorSet();
+		//VulkanBackend::GetInstance().CreateCommandBuffers();
+		//VulkanBackend::GetInstance().CreateSemaphores();
+	}
+
+	void InputToCamera(GLFWwindow* window, Camera* camera){
+
+		if (camera != nullptr){
+
+			int width, height;
+			glfwGetWindowSize(window, &width, &height);
+
+			mouseCamera->OffsetOrientation(
+				(float)(InputState::GetInstance().xPos / width * camera->FieldOfView().x),
+				(float)(InputState::GetInstance().yPos / height * camera->FieldOfView().y));
+		}
+
+	}
+
+	void UpdateDefaultCamera(GLFWwindow* window, double deltaTime){
 		double moveSpeed;
-		if (glfwGetKey(mainThread, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
 			moveSpeed = 9 * METER * deltaTime;
 		}
-		else if (glfwGetKey(mainThread, GLFW_KEY_LEFT_ALT) == GLFW_PRESS){
+		else if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS){
 			moveSpeed = 1 * METER * deltaTime;
 		}
 		else{
 			moveSpeed = 4.5 * METER * deltaTime;
 		}
 
-
-		if (freeCam){
-			if (glfwGetKey(mainThread, GLFW_KEY_S) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
+		//fill with freecam variable
+		if (true){
+			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * -mouseCamera->Forward());
 			}
-			else if (glfwGetKey(mainThread, GLFW_KEY_W) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * camera->Forward());
+			else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * mouseCamera->Forward());
 			}
-			if (glfwGetKey(mainThread, GLFW_KEY_A) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * -camera->Right());
+			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * -mouseCamera->Right());
 			}
-			else if (glfwGetKey(mainThread, GLFW_KEY_D) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * camera->Right());
+			else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * mouseCamera->Right());
 			}
-			if (glfwGetKey(mainThread, GLFW_KEY_Z) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
+			if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
 			}
-			else if (glfwGetKey(mainThread, GLFW_KEY_X) == GLFW_PRESS){
-				camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
+			else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS){
+				mouseCamera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
 			}
 		}
 
-	}
-
-
-	void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-	{
-
-		scrollUniform += (float)(yoffset / 50.0);
-		if (scrollUniform > 1.0f){
-			scrollUniform = 1.0f;
-		}
-		else if (scrollUniform < 0.0f){
-			scrollUniform = 0.0f;
-		}
-	}
-
-
-	void SetKey(int key, void(*func)(void)){
-		SetKey(key, std::bind(func));
 	}
 
 	void Run()
 	{
 
-		SoulSynchGPU();
-		camera = new Camera();
-
-		SoulSynchGPU();
-		SoulCreateWindow(BORDERLESS, SPECTRAL);
-
-
-		rend = new Renderer(*camera, SCREEN_SIZE);
-
-
-		glfwSetScrollCallback(mainThread, ScrollCallback);
+		SynchGPU();
 
 		//timer info for loop
 		double t = 0.0f;
 		double currentTime = glfwGetTime();
 		double accumulator = 0.0f;
 
+		int width, height;
+		glfwGetWindowSize(masterWindow, &width, &height);
+		glfwSetCursorPos(masterWindow, width / 2.0f, height / 2.0f);
+
 		glfwPollEvents();
-		//hub->UpdateObjects(deltaTime);
-		//stop loop when glfw exit is called
-		glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
 
+		double deltaTime = 1.0 / engineRefreshRate;
 
-		scene->Build(deltaTime);
-
+		for (auto const& scene : scenes){
+			scene->Build(deltaTime);
+		}
 
 		bool test = true;
-		while (!runShutdown){
+
+		//stop loop when glfw exit is called
+		while (!glfwWindowShouldClose(masterWindow)){
 			double newTime = glfwGetTime();
 			double frameTime = newTime - currentTime;
 			//std::cout << "FPS:: " <<1.0f / frameTime << std::endl;
@@ -222,23 +223,27 @@ namespace Soul {
 			//# of updates based on accumulated time
 
 			while (accumulator >= deltaTime){
-				SoulSynchGPU();
+				SynchGPU();
+
+				deltaTime = 1.0 / engineRefreshRate;
 
 				//loading and updates for multithreading
 
-				//set cursor in center
-
 				glfwPollEvents();
 
-				UpdateKeys();
+				if (usingDefaultCamera){
+					UpdateDefaultCamera(masterWindow, deltaTime);
+					InputToCamera(masterWindow, mouseCamera);
+				}
 
-				UpdateMouse();
 
-				camera->UpdateVariables();
+
+				//apply camera changes to their matrices
+				for (auto const& cam : cameras){
+					cam->UpdateVariables();
+				}
 
 				//Update();
-
-
 
 				cudaEvent_t start, stop;
 				float time;
@@ -246,7 +251,9 @@ namespace Soul {
 				cudaEventCreate(&stop);
 				cudaEventRecord(start, 0);
 
-				scene->Build(deltaTime);
+				for (auto const& scene : scenes){
+					scene->Build(deltaTime);
+				}
 
 				cudaEventRecord(stop, 0);
 				cudaEventSynchronize(stop);
@@ -257,82 +264,57 @@ namespace Soul {
 				std::cout << "Building Execution: " << time << "ms" << std::endl;
 
 
-				PhysicsEngine::Process(scene);
+				for (auto const& scene : scenes){
+					PhysicsEngine::Process(scene);
+				}
 
 
-
-
-				UpdateTimers();
+				InputState::GetInstance().ResetOffsets();
 
 				t += deltaTime;
 				accumulator -= deltaTime;
-				//SoulSynch();
 			}
 
-			rend->RenderSetup(SCREEN_SIZE, camera, deltaTime, scrollUniform);
-			//camera->UpdateVariables();
+			for (auto const& rend : renderObjects){
+				rend.rendererHandle->RenderSetup({ width, height }, mouseCamera, deltaTime);
+			}
 
 			test = !test;
 
+			for (auto const& scene : scenes){
+				RayEngine::Clear();
+				RayEngine::Process(scene);
+			}
 
-
-
-
-
-
-			RayEngine::Clear();
-
-
-
-			RayEngine::Process(scene);
-
-			//draw
-			ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-			SoulSynchGPU();
-			rend->Render();
-			SoulSynchGPU();
-
-			glfwSwapBuffers(mainThread);
+			SynchGPU();
+			for (auto const& rend : renderObjects){
+				//integration bool
+				rend.rendererHandle->Render(false);
+			}
 		}
 
-		delete camera;
-		delete scene;
-		delete rend;
+		SoulShutDown();
 
 	}
-	glm::vec2* GetMouseChange(){
-		return &mouseChangeDegrees;
-	}
-
-	void UpdateTimers(){
-		if (physicsTimer > 0){
-			physicsTimer = physicsTimer - deltaTime;
-		}
-	}
-
-	void ClearColor(float r, float g, float b, float a){
-		glClearColor(r, g, b, a);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-	void SoulRun(){
-		Run();
-	}
-	
 }
 
 /////////////////////////User Interface///////////////////////////
 
-//Call to deconstuct both the engine and its dependencies
-void SoulShutDown(){
-	Soul::Synch();
-	RayEngine::Clean();
-	CudaCheck(cudaDeviceReset());
-	delete Soul::settings;
-	glfwTerminate();
+void SoulSignalClose(){
+
+	glfwSetWindowShouldClose(Soul::masterWindow, GLFW_TRUE);
+
 }
 
-void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* mat){
+void SoulRun(){
+	Soul::Run();
+}
+
+void SetKey(int key, void(*func)(void)){
+	InputState::GetInstance().SetKey(key, std::bind(func));
+}
+
+void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat){
 	Object* obj = new Object(globalPos, file, mat);
 	scene->AddObject(obj);
 }
@@ -356,7 +338,7 @@ void SetSetting(std::string rName, int rValue){
 //any other functions relating to the engine.
 void SoulInit(){
 
-	Soul::seed = GLuint(time(NULL));
+	Soul::seed = uint(time(NULL));
 	srand(Soul::seed);
 
 	Soul::settings = new Settings("Settings.ini");
@@ -366,18 +348,29 @@ void SoulInit(){
 	Soul::Synch();
 
 	if (!glfwInit()){
-		SoulShutDown();
+		Soul::SoulShutDown();
 	}
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	RenderType  win = static_cast<RenderType>(GetSetting("Renderer", 2));
 
+	Soul::engineRefreshRate = GetSetting("Engine Refresh Rate", 60);
+
 	Soul::monitors = glfwGetMonitors(&Soul::monitorCount);
+
+	Soul::usingDefaultCamera = true;
+	Soul::mouseCamera = new Camera();
+	Soul::cameras.push_back(Soul::mouseCamera);
+
+	Soul::mouseCamera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
+	Soul::mouseCamera->OffsetOrientation(45, 45);
+
 }
 
-
-void SoulCreateWindow(int monitor, float xSize, float ySize){
+//the moniter number, and a float from 0-1 of the screen size for each dimension,
+//if its the fisrt, it becomes the master window
+GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	GLFWmonitor* monitorIn = Soul::monitors[monitor];
 
@@ -385,7 +378,7 @@ void SoulCreateWindow(int monitor, float xSize, float ySize){
 
 
 	glfwWindowHint(GLFW_SAMPLES, 0);
-	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+	glfwWindowHint(GLFW_VISIBLE, true);
 
 	const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
 
@@ -393,8 +386,8 @@ void SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	if (win == FULLSCREEN){
 
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, false);
+		glfwWindowHint(GLFW_DECORATED, false);
 		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
@@ -404,15 +397,15 @@ void SoulCreateWindow(int monitor, float xSize, float ySize){
 	}
 	else if (win == WINDOWED){
 
-		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+		glfwWindowHint(GLFW_RESIZABLE, true);
 		windowOut = glfwCreateWindow(int(xSize*mode->width), int(ySize*mode->height), "Soul Engine", NULL, NULL);
 
 	}
 
 	else if (win == BORDERLESS){
 
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, false);
+		glfwWindowHint(GLFW_DECORATED, false);
 
 		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
@@ -433,37 +426,51 @@ void SoulCreateWindow(int monitor, float xSize, float ySize){
 	}
 
 
-	Soul::windows.push_back(windowOut);
+	Soul::windows.push_back({ windowOut, win });
+
+	if (Soul::masterWindow == nullptr){
+
+		Soul::masterWindow = windowOut;
+
+		glfwSetInputMode(Soul::masterWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		glfwSetKeyCallback(Soul::masterWindow, Input::KeyCallback);
+		glfwSetScrollCallback(Soul::masterWindow, Input::ScrollCallback);
+		glfwSetCursorPosCallback(Soul::masterWindow, Input::MouseCallback);
+
+	}
 
 
-	/*glfwSetInputMode(mainThread, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0, SCREEN_SIZE.y / 2.0);
-
-	
-	camera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
-	camera->OffsetOrientation(45, 45);
-
-	glfwSetKeyCallback(mainThread, InputKeyboardCallback);
-	SetInputWindow(mainThread);*/
-
+	return windowOut;
 }
 
+void SubmitScene(Scene* scene){
+	Soul::scenes.push_back(scene);
+}
+
+void RemoveScene(Scene* scene){
+	Soul::scenes.remove(scene);
+}
 
 int main()
-	{
-		SoulInit();
+{
+	SoulInit();
 
+	//create a Window
+	SoulCreateWindow(0, 0.9f, 0.9f);
 
-		SetKey(GLFW_KEY_ESCAPE, std::bind(&SoulShutDown));
+	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
-		Material* whiteGray = new Material();
-		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
-		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	Material* whiteGray = new Material();
+	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
+	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-		Scene* scene = new Scene();
-		AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
+	Scene* scene = new Scene();
+	AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
 
-		SoulRun();
+	SubmitScene(scene);
 
-		return 0;
-	}
+	SoulRun();
+
+	return 0;
+}
