@@ -240,6 +240,15 @@ public:
 
 	virtual glm::vec3 getV() = 0;
 
+	/*
+	This method takes no arguments
+
+	Returns:
+	The biased best intersection point, with 0 appended to the end
+	*/
+
+	virtual glm::vec4 getOrigin() = 0;
+
 
 
 
