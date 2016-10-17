@@ -1,9 +1,15 @@
 #pragma once
 
+// Header Files
 #include "Metrics.h"
 #include "SoulCore.h"
-#include "glm\glm.hpp"
 
+// 3rd Party Libraries
+#include "glm\glm.hpp"
+#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility\CUDA\CUDADevices.cuh"
+
+// Standard C++ Libraries
 #include <exception>
 
 
@@ -90,7 +96,7 @@ public:
 	Shader(glm::vec4 & storage, glm::vec4 & direction, glm::vec3 & origin, 
 		glm::vec2 & hitCoord, const glm::vec3 & p1, const glm::vec3 & p2,
 		const glm::vec3 & p3, const glm::vec3 & norm1, const glm::vec3 & norm2, const glm::vec3 & norm3,
-		const glm::vec2 & tex1, const glm::vec2 & tex2, const glm::vec2 & tex3, void* material);
+		const glm::vec2 & tex1, const glm::vec2 & tex2, const glm::vec2 & tex3, Material* material);
 
 	//Copy Constructor
 
@@ -248,5 +254,5 @@ protected:
 	const glm::vec3 &p1, &p2, &p3;
 	const glm::vec3 &norm1, &norm2, &norm3;
 	const glm::vec2 &tex1, &tex2, &tex3;
-	void *material;
+	Material *material;
 };
