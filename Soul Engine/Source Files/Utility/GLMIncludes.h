@@ -2,6 +2,7 @@
 
 //#  if defined(__CUDACC__)
 #include <cuda.h>  
+
 #define GLM_FORCE_CUDA
 //#endif
 #define GLM_FORCE_RADIANS

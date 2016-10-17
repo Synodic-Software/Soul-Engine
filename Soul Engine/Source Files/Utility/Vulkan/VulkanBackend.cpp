@@ -1061,7 +1061,6 @@ void VulkanBackend::DrawFrame(GLFWwindow * window) {
 
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	presentInfo.pNext = NULL;
 	presentInfo.waitSemaphoreCount = 1;
 	presentInfo.pWaitSemaphores = signalSemaphores;
 
@@ -1070,7 +1069,6 @@ void VulkanBackend::DrawFrame(GLFWwindow * window) {
 	presentInfo.pSwapchains = swapChains;
 
 	presentInfo.pImageIndices = &imageIndex;
-	presentInfo.pResults = NULL;
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
