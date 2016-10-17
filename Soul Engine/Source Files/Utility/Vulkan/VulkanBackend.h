@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -7,7 +9,6 @@
 
 #include "Utility\GLMIncludes.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/hash.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -20,6 +21,8 @@
 #include <array>
 #include <set>
 #include <unordered_map>
+
+
 
 VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback);
 
@@ -79,12 +82,28 @@ struct VulkanVertex {
 	bool operator==(const VulkanVertex& other) const {
 		return pos == other.pos && color == other.color && texCoord == other.texCoord;
 	}
+
+	friend void swap(VulkanVertex& a, VulkanVertex& b)
+	{
+		using std::swap; // bring in swap for built-in types
+
+		swap(a.pos, b.pos);
+		swap(a.color, b.color);
+		swap(a.texCoord, b.texCoord);
+	}
 };
 
 namespace std {
 	template<> struct hash<VulkanVertex> {
 		size_t operator()(VulkanVertex const& vertex) const {
-			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
+			return ((hash<float>()(vertex.pos.x) ^
+				hash<float>()(vertex.pos.y) ^
+				hash<float>()(vertex.pos.z) ^
+				(hash<float>()(vertex.color.x) << 1) ^
+				(hash<float>()(vertex.color.y) << 1) ^
+				(hash<float>()(vertex.color.z) << 1)) >> 1) ^
+				(hash<float>()(vertex.texCoord.x) << 1) ^
+				(hash<float>()(vertex.texCoord.y) << 1);
 		}
 	};
 }
