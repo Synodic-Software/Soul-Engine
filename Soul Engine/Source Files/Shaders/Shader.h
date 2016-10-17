@@ -249,6 +249,15 @@ public:
 
 	virtual glm::vec4 getOrigin() = 0;
 
+	/*
+	This method takes no arguments
+
+	Returns:
+	A pseudo-random combination of U and V, with an appended constant
+	*/
+
+	virtual glm::vec4 getDirection() = 0;
+
 
 
 
