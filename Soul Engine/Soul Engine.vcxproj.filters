@@ -195,9 +195,6 @@
     <ClInclude Include="Source Files\Input\Input.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Settings.h">
-      <Filter>Engine Backend</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Object\Character\Character.h">
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
     </ClInclude>
@@ -420,13 +417,13 @@
     <ClInclude Include="Source Files\Input\InputState.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Settings.h">
+      <Filter>Engine Backend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Input\Input.cpp">
       <Filter>Engine Backend\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Settings.cpp">
-      <Filter>Engine Backend</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp">
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
@@ -484,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Input\InputState.cpp">
       <Filter>Engine Backend\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Settings.cpp">
+      <Filter>Engine Backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
