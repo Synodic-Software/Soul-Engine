@@ -93,7 +93,7 @@ public:
 	A new Shader object initialized with the above values
 	*/
 
-	Shader(glm::vec4 & storage, glm::vec4 & direction, glm::vec3 & origin, 
+	Shader(glm::vec4 & storage, glm::vec4 & direction, glm::vec4 & origin, 
 		glm::vec2 & hitCoord, const glm::vec3 & p1, const glm::vec3 & p2,
 		const glm::vec3 & p3, const glm::vec3 & norm1, const glm::vec3 & norm2, const glm::vec3 & norm3,
 		const glm::vec2 & tex1, const glm::vec2 & tex2, const glm::vec2 & tex3, Material* material);
@@ -248,8 +248,7 @@ public:
 protected:
 
 	//Initialized at Object Creation
-	glm::vec4 &storage, &direction;
-	glm::vec3 &origin;
+	glm::vec4 &storage, &direction, &origin;
 	glm::vec2 &hitCoord;
 	const glm::vec3 &p1, &p2, &p3;
 	const glm::vec3 &norm1, &norm2, &norm3;
