@@ -27,7 +27,7 @@ public:
 			inputHandle->InputKeyboardCallback(window, key, scancode, action, mods);
 	}
 
-	static void MouseCallback(
+	static void MouseCallback(//mouse position?
 		GLFWwindow* window, 
 		double xoffset,
 		double yoffset)
