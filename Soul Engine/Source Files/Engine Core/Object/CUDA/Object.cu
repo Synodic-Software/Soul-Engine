@@ -1,21 +1,24 @@
 #include "Object.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+
 Object::Object(){
 
-	verticeAmount=0;
-	faceAmount=0;
+	verticeAmount = 0;
+	faceAmount = 0;
 	materialSize = 0;
 	localSceneIndex = 0;
 	ready = false;
 
 	xyzPosition = glm::vec3(0);
 
-	vertices=NULL;
+	vertices = NULL;
 	faces = NULL;
 	materialP = NULL;
 }
-Object::Object(glm::vec3 pos,std::string name, Material* mat){
+Object::Object(glm::vec3 pos, std::string name, Material* mat){
 
 	verticeAmount = 0;
 	faceAmount = 0;
@@ -35,20 +38,71 @@ Object::Object(glm::vec3 pos,std::string name, Material* mat){
 }
 
 void Object::AddVertices(Vertex* vertices, uint vSize){
-	
+
 }
 void Object::AddFaces(Face* vertices, uint fSize){
 
 }
 void Object::ExtractFromFile(const char* name){
+
+
+
+	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
-	std::string err = tinyobj::LoadObj(shapes, materials, name, NULL);
+	std::string err;
 
-	if (!err.empty()) {
-		std::cerr << err << std::endl;
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, name)) {
+		throw std::runtime_error(err);
 	}
-	
+
+	std::unordered_map<Vertex, int> uniqueVertices = {};
+
+	for (const auto& shape : shapes) {
+		for (const auto& index : shape.mesh.indices) {
+			Vertex vertex = {};
+
+			vertex.pos = {
+				attrib.vertices[3 * index.vertex_index + 0],
+				attrib.vertices[3 * index.vertex_index + 1],
+				attrib.vertices[3 * index.vertex_index + 2]
+			};
+
+			vertex.texCoord = {
+				attrib.texcoords[2 * index.texcoord_index + 0],
+				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+			};
+
+			if (uniqueVertices.count(vertex) == 0) {
+				uniqueVertices[vertex] = vertices.size();
+				vertices.push_back(vertex);
+			}
+
+			indices.push_back(uniqueVertices[vertex]);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	uint overallSize = 0;
 	uint faceOverallSize = 0;
 	for (uint i = 0; i < shapes.size(); i++){
@@ -58,7 +112,7 @@ void Object::ExtractFromFile(const char* name){
 
 
 	verticeAmount = overallSize;
-	faceAmount = faceOverallSize/3;
+	faceAmount = faceOverallSize / 3;
 
 	glm::vec3 max = glm::vec3(shapes[0].mesh.positions[0], shapes[0].mesh.positions[1], shapes[0].mesh.positions[2]);
 	glm::vec3 min = glm::vec3(shapes[0].mesh.positions[0], shapes[0].mesh.positions[1], shapes[0].mesh.positions[2]);
@@ -94,7 +148,7 @@ void Object::ExtractFromFile(const char* name){
 			faces[faceOffset + f].SetData(
 				glm::uvec3(shapes[i].mesh.indices[3 * f + 0], shapes[i].mesh.indices[3 * f + 1], shapes[i].mesh.indices[3 * f + 2]),
 				materialP[0]);
-				//shapes[i].mesh.material_ids[f]);
+			//shapes[i].mesh.material_ids[f]);
 		}
 		faceOffset += shapes[i].mesh.indices.size();
 	}
@@ -103,7 +157,7 @@ void Object::ExtractFromFile(const char* name){
 	box.min = min;
 	cudaDeviceSynchronize();
 
-	
+
 
 
 }

@@ -441,7 +441,7 @@ int main()
 	SoulInit();
 
 	//create a Window
-	SoulCreateWindow(0, 0.9f, 0.9f);
+	SoulCreateWindow(0, 0.95f, 0.95f);
 
 	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 

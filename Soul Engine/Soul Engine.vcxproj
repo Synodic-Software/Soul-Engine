@@ -105,7 +105,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Engine Core\Object\CUDA\Vertex.cuh" />
     <ClInclude Include="Source Files\Engine Core\Object\Face.h" />
     <ClInclude Include="Source Files\Engine Core\Object\Object.h" />
-    <ClInclude Include="Source Files\Engine Core\Object\ObjLoader.h" />
     <ClInclude Include="Source Files\Engine Core\Object\OpenCL\CLFace.h" />
     <ClInclude Include="Source Files\Engine Core\Object\OpenCL\CLObject.h" />
     <ClInclude Include="Source Files\Engine Core\Object\OpenCL\CLVertex.h" />
@@ -164,7 +163,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <FileType>CppCode</FileType>
     </CudaCompile>
     <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp" />
-    <ClCompile Include="Source Files\Engine Core\Object\ObjLoader.cpp" />
     <ClCompile Include="Source Files\Engine Core\Settings.cpp" />
     <ClCompile Include="Source Files\Engine Core\SoulCore.cpp" />
     <ClCompile Include="Source Files\Input\Input.cpp" />
