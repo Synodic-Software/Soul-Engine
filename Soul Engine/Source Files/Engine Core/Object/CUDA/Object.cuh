@@ -25,14 +25,6 @@ class Object: public Managed{
 		glm::vec3 velocity;
 		glm::vec3 acceleration;
 
-		/*	virtual void GetVertices(GLuint& buffer, GLuint& sizeVert);
-			virtual void GetIndices(GLuint& buffer, GLuint& sizeIn);
-			virtual void GetTextureCoords(GLuint& buffer, GLuint& sizeVert);
-			virtual void GetNormals(GLuint& buffer, GLuint& sizeVert);
-			virtual void GetMaterials(std::list<Material*>& material);
-			virtual void GetPhysics(glm::vec3&, glm::vec3&,bool&);
-			virtual void SetPhysics(glm::vec3&, glm::vec3&, bool&);*/
-
 		void AddVertices(Vertex*,uint);
 		void AddFaces(Face*, uint);
 		void ExtractFromFile(const char*);
