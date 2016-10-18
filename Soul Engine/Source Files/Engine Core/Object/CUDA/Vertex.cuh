@@ -17,6 +17,20 @@ public:
 	glm::vec3 normal;
 
 	glm::vec3 velocity;
+
+
+	bool operator==(const Vertex& other) const {
+		return position == other.position && normal == other.normal && textureCoord == other.textureCoord;
+	}
+
+	friend void swap(Vertex& a, Vertex& b)
+	{
+		using std::swap; // bring in swap for built-in types
+
+		swap(a.position, b.position);
+		swap(a.normal, b.normal);
+		swap(a.textureCoord, b.textureCoord);
+	}
 private:
 	
 };

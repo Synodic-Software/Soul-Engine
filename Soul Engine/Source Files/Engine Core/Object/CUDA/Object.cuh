@@ -10,6 +10,22 @@
 
 class Face;
 
+
+namespace std {
+	template<> struct hash<Vertex> {
+		size_t operator()(Vertex const& vertex) const {
+			return ((hash<float>()(vertex.position.x) ^
+				hash<float>()(vertex.position.y) ^
+				hash<float>()(vertex.position.z) ^
+				(hash<float>()(vertex.normal.x) << 1) ^
+				(hash<float>()(vertex.normal.y) << 1) ^
+				(hash<float>()(vertex.normal.z) << 1)) >> 1) ^
+				(hash<float>()(vertex.textureCoord.x) << 1) ^
+				(hash<float>()(vertex.textureCoord.y) << 1);
+		}
+	};
+}
+
 class Object: public Managed{
 	public:
 
