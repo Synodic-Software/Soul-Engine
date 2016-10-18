@@ -6,6 +6,6 @@ Soul Engine Documentation
 void SoulInit();
 ```
 
-* Requires: None
-* Effects: Initializes SoulEngine
-* Returns: None
+> Requires: None
+> Effects: Initializes SoulEngine
+> Returns: None
