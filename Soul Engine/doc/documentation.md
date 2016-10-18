@@ -7,8 +7,8 @@ Soul Engine Documentation
 void SoulInit();
 ```
 
-Requires: None
+**Requires:** None
 
-Effects: Initializes SoulEngine
+**Effects:** Initializes SoulEngine
 
-Returns: None
+**Returns:** None
