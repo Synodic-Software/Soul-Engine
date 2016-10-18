@@ -5,3 +5,7 @@ Soul Engine Documentation
 ```C++
 void SoulInit();
 ```
+
+* Requires: None
+* Effects: Initializes SoulEngine
+* Returns: None
