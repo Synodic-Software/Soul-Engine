@@ -94,7 +94,7 @@ void VulkanBackend::CreateInstance() {
 
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = "Hello Triangle";
+	appInfo.pApplicationName = "Soul Engine";
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.pEngineName = "Soul Engine";
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -1281,7 +1281,7 @@ std::vector<char> VulkanBackend::ReadFile(const std::string& filename) {
 }
 
 VKAPI_ATTR VkBool32 VKAPI_CALL VulkanBackend::DebugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char* layerPrefix, const char* msg, void* userData) {
-	std::cerr << "validation layer: " << msg << std::endl;
+	std::cout << "validation layer: " << msg << std::endl;
 
 	return VK_FALSE;
 }

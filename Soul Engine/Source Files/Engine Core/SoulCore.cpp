@@ -162,11 +162,6 @@ namespace Soul {
 
 		SynchGPU();
 
-		//timer info for loop
-		double t = 0.0f;
-		double currentTime = glfwGetTime();
-		double accumulator = 0.0f;
-
 		int width, height;
 		glfwGetWindowSize(masterWindow, &width, &height);
 		glfwSetCursorPos(masterWindow, width / 2.0f, height / 2.0f);
@@ -178,6 +173,11 @@ namespace Soul {
 		for (auto const& scene : scenes){
 			scene->Build(deltaTime);
 		}
+
+		//timer info for loop
+		double t = 0.0f;
+		double currentTime = glfwGetTime();
+		double accumulator = 0.0f;
 
 		bool test = true;
 
