@@ -36,7 +36,7 @@ public:
 			inputHandle->InputMouseCallback(window, xoffset, yoffset);
 	}
 
-	static void ScrollCallback(
+	static void ScrollCallback(//monitoring scrolling?
 		GLFWwindow* window, 
 		double xoffset, 
 		double yoffset)
