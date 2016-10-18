@@ -240,9 +240,6 @@
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Object\ObjLoader.h">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Resources\Objects\Hand.h">
       <Filter>Engine Backend\Resources\Objects</Filter>
     </ClInclude>
@@ -454,9 +451,6 @@
     </ClCompile>
     <ClCompile Include="Source Files\Multithreading\Scheduler.cpp">
       <Filter>Engine Backend\Multithreading</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Object\ObjLoader.cpp">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Resources\Objects\Hand.cpp">
       <Filter>Engine Backend\Resources\Objects</Filter>

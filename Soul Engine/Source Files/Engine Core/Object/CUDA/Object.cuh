@@ -5,7 +5,6 @@
 #include "Engine Core/Material/Material.h"
 #include "Engine Core/Object/CUDA/Vertex.cuh"
 #include "Engine Core/Object/CUDA/Face.cuh"
-#include "Engine Core/Object/ObjLoader.h"
 #include "Bounding Volume Heirarchy\BoundingBox.h"
 #include "Metrics.h"
 
