@@ -17,11 +17,11 @@ public:
 	bool SetKey(int, std::function<void()>);
 	void ResetOffsets();
 
-	bool ResetMouse;
-	double xPos;
-	double yPos;
-	double scrollXOffset;
-	double scrollYOffset;
+	bool ResetMouse; //boolean for if mouse should be reset
+	double xPos; //x position of mouse
+	double yPos; //y position of mouse
+	double scrollXOffset; //x offset of scroll
+	double scrollYOffset; //y offset of scroll
 
 private:
 	InputState() {}
