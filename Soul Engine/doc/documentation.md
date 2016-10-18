@@ -7,5 +7,7 @@ void SoulInit();
 ```
 
 > Requires: None
+>
 > Effects: Initializes SoulEngine
+>
 > Returns: None
