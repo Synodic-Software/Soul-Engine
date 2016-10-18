@@ -159,7 +159,7 @@ private:
 		{ { -0.5f, 0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } },
 	};
 
-	const std::vector<uint16_t> indices = std::vector<uint16_t> {
+	const std::vector<uint32_t> indices = std::vector<uint32_t> {
 		0, 1, 2, 2, 3, 0,
 	};
 
@@ -167,55 +167,104 @@ private:
 
 
 	VulkanWrapper<VkInstance> instance{ vkDestroyInstance };
+
 	VulkanWrapper<VkDebugReportCallbackEXT> callback{ instance, DestroyDebugReportCallbackEXT };
+
 	VulkanWrapper<VkSurfaceKHR> surface{ instance, vkDestroySurfaceKHR };
 
+
+
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
 	VulkanWrapper<VkDevice> device{ vkDestroyDevice };
 
+
+
 	VkQueue graphicsQueue;
+
 	VkQueue presentQueue;
 
+
+
 	VulkanWrapper<VkSwapchainKHR> swapChain{ device, vkDestroySwapchainKHR };
+
 	std::vector<VkImage> swapChainImages;
+
 	VkFormat swapChainImageFormat;
+
 	VkExtent2D swapChainExtent;
+
 	std::vector<VulkanWrapper<VkImageView>> swapChainImageViews;
+
 	std::vector<VulkanWrapper<VkFramebuffer>> swapChainFramebuffers;
 
+
+
 	VulkanWrapper<VkRenderPass> renderPass{ device, vkDestroyRenderPass };
+
 	VulkanWrapper<VkDescriptorSetLayout> descriptorSetLayout{ device, vkDestroyDescriptorSetLayout };
+
 	VulkanWrapper<VkPipelineLayout> pipelineLayout{ device, vkDestroyPipelineLayout };
+
 	VulkanWrapper<VkPipeline> graphicsPipeline{ device, vkDestroyPipeline };
+
+
 
 	VulkanWrapper<VkCommandPool> commandPool{ device, vkDestroyCommandPool };
 
+
+
 	VulkanWrapper<VkImage> depthImage{ device, vkDestroyImage };
+
 	VulkanWrapper<VkDeviceMemory> depthImageMemory{ device, vkFreeMemory };
+
 	VulkanWrapper<VkImageView> depthImageView{ device, vkDestroyImageView };
 
+
+
 	VulkanWrapper<VkImage> textureImage{ device, vkDestroyImage };
+
 	VulkanWrapper<VkDeviceMemory> textureImageMemory{ device, vkFreeMemory };
+
 	VulkanWrapper<VkImageView> textureImageView{ device, vkDestroyImageView };
+
 	VulkanWrapper<VkSampler> textureSampler{ device, vkDestroySampler };
 
+
 	VulkanWrapper<VkBuffer> vertexBuffer{ device, vkDestroyBuffer };
+
 	VulkanWrapper<VkDeviceMemory> vertexBufferMemory{ device, vkFreeMemory };
+
 	VulkanWrapper<VkBuffer> indexBuffer{ device, vkDestroyBuffer };
+
 	VulkanWrapper<VkDeviceMemory> indexBufferMemory{ device, vkFreeMemory };
 
+
+
 	VulkanWrapper<VkBuffer> uniformStagingBuffer{ device, vkDestroyBuffer };
+
 	VulkanWrapper<VkDeviceMemory> uniformStagingBufferMemory{ device, vkFreeMemory };
+
 	VulkanWrapper<VkBuffer> uniformBuffer{ device, vkDestroyBuffer };
+
 	VulkanWrapper<VkDeviceMemory> uniformBufferMemory{ device, vkFreeMemory };
 
+
+
 	VulkanWrapper<VkDescriptorPool> descriptorPool{ device, vkDestroyDescriptorPool };
+
 	VkDescriptorSet descriptorSet;
+
+
 
 	std::vector<VkCommandBuffer> commandBuffers;
 
+
+
 	VulkanWrapper<VkSemaphore> imageAvailableSemaphore{ device, vkDestroySemaphore };
+
 	VulkanWrapper<VkSemaphore> renderFinishedSemaphore{ device, vkDestroySemaphore };
+
 
 	void InitVulkan();
 
