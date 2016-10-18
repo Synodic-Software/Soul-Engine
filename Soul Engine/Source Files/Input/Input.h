@@ -16,7 +16,7 @@ public:
 
 	virtual void setEventHandling() final { inputHandle = this; }
 
-	static void KeyCallback(
+	static void KeyCallback(//key presses?
 		GLFWwindow *window,
 		int key,
 		int scancode,
