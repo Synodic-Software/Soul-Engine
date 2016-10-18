@@ -50,3 +50,5 @@ To compile dependancies with the following must be met:
   Vulkan SDK  - (Probably the LunarG SDK)
   
   Cuda 8.0    - https://developer.nvidia.com/cuda-toolkit
+  
+  tinyobjloader - https://github.com/syoyo/tinyobjloader
