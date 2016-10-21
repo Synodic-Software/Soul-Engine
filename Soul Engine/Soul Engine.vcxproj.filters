@@ -187,6 +187,12 @@
     <Filter Include="Engine Backend\Shaders">
       <UniqueIdentifier>{f34f97f2-575f-4386-b987-2d88dcf2f822}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Display">
+      <UniqueIdentifier>{2f2ed3b7-3058-4e14-939f-a6241027892f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Display\Window">
+      <UniqueIdentifier>{d83e4226-21c4-4d38-a224-ca699c0015b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -417,6 +423,9 @@
     <ClInclude Include="Source Files\Engine Core\Settings.h">
       <Filter>Engine Backend</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Display\Window\WindowManager.h">
+      <Filter>Engine Backend\Display\Window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Input\Input.cpp">
@@ -478,6 +487,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Engine Core\Settings.cpp">
       <Filter>Engine Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Display\Window\WindowManager.cpp">
+      <Filter>Engine Backend\Display\Window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

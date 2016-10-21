@@ -181,6 +181,8 @@ namespace Soul {
 
 		bool test = true;
 
+
+
 		//stop loop when glfw exit is called
 		while (!glfwWindowShouldClose(masterWindow)){
 			double newTime = glfwGetTime();
@@ -441,7 +443,7 @@ int main()
 	SoulInit();
 
 	//create a Window
-	SoulCreateWindow(0, 0.95f, 0.95f);
+	GLFWwindow* win=SoulCreateWindow(0, 0.95f, 0.95f);
 
 	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
