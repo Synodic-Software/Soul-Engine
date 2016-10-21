@@ -13,41 +13,43 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	frameTime = 0.0f;
 	changeCutoff = 0.05f;
 	targetFPS = 60.0f;
+
 	samples = 1;  //must be power of 2
 	//samples cannot be a float because finding a constant random number across different threads becomes too time consuming 
 
-	/*CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
-							   "fragment-shader[Renderer].txt");
-	cameraUniform = CUDAtoScreen->uniform("camera");
-	modelUniform = CUDAtoScreen->uniform("model");
-	screenUniform = CUDAtoScreen->uniform("screen");
-	screenModUniform = CUDAtoScreen->uniform("screenMod");
+	//CUDAtoScreen = LoadShaders("vertex-shader[Renderer].txt",
+	//						   "fragment-shader[Renderer].txt");
+	//cameraUniform = CUDAtoScreen->uniform("camera");
+	//modelUniform = CUDAtoScreen->uniform("model");
+	//screenUniform = CUDAtoScreen->uniform("screen");
+	//screenModUniform = CUDAtoScreen->uniform("screenMod");
 
-	glGenBuffers(1, &renderBufferA);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBufferA);
-	glBufferData(GL_SHADER_STORAGE_BUFFER,
-		originalScreen.x*originalScreen.y*sizeof(glm::vec4),
-		NULL, GL_STATIC_DRAW);
+	//glGenBuffers(1, &renderBufferA);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBufferA);
+	//glBufferData(GL_SHADER_STORAGE_BUFFER,
+	//	originalScreen.x*originalScreen.y*sizeof(glm::vec4),
+	//	NULL, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
-		, renderBufferA
-		, cudaGraphicsRegisterFlagsWriteDiscard));
+	//CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
+	//	, renderBufferA
+	//	, cudaGraphicsRegisterFlagsWriteDiscard));
 
 
-	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
+	cudaGraphicsMapResources(1, &cudaBuffer, 0);
 	size_t num_bytes;
-	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
-		cudaBuffer));
+	cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
+		cudaBuffer);
 
-	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
+	cudaGraphicsUnmapResources(1, &cudaBuffer, 0);
+
 	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, &camera,2);
 
-	CudaCheck(cudaFree(RenderJob->GetResultPointer(0)));
+	cudaFree(RenderJob->GetResultPointer(0));
 	RenderJob->GetResultPointer(0) = bufferData;
 
-	Vertices[0] = 0.0f;
+	/*Vertices[0] = 0.0f;
 	Vertices[1] = 0.0f;
 	Vertices[2] = 0.0f;
 	Vertices[3] = 1.0f;
@@ -98,8 +100,8 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 
-	glBindVertexArray(0);
-	newTime = glfwGetTime();*/
+	glBindVertexArray(0);*/
+	newTime = glfwGetTime();
 }
 
 void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget){

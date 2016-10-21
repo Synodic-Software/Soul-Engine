@@ -85,6 +85,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
+    <ClInclude Include="Source Files\Display\Window\WindowManager.h" />
     <ClInclude Include="Source Files\Engine Core\Allocator\Allocator.h" />
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h" />
     <ClInclude Include="Source Files\Engine Core\Camera\Camera.h" />
@@ -154,6 +155,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
+    <ClCompile Include="Source Files\Display\Window\WindowManager.cpp" />
     <ClCompile Include="Source Files\Engine Core\Allocator\Allocator.cpp" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />
     <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp" />

@@ -25,11 +25,19 @@ public:
 
 	friend void swap(Vertex& a, Vertex& b)
 	{
-		using std::swap; // bring in swap for built-in types
 
-		swap(a.position, b.position);
-		swap(a.normal, b.normal);
-		swap(a.textureCoord, b.textureCoord);
+		glm::vec3 temp = a.position;
+		a.position = b.position;
+		b.position = temp;
+
+		temp = a.normal;
+		a.normal = b.normal;
+		b.normal = temp;
+
+		glm::vec2 temp1 = a.textureCoord;
+		a.textureCoord = b.textureCoord;
+		b.textureCoord = temp1;
+
 	}
 private:
 	

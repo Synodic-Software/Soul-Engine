@@ -198,6 +198,7 @@ private:
 
 	std::vector<VulkanWrapper<VkFramebuffer>> swapChainFramebuffers;
 
+	void VulkanBackend::CreateFrameBufferTextures(char* deviceM,int,int);
 
 
 	VulkanWrapper<VkRenderPass> renderPass{ device, vkDestroyRenderPass };
