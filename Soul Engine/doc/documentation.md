@@ -92,3 +92,13 @@ typedef enum RenderType {SPECTRAL, PATH};
 **PATH**: desc
 
 <br/>
+
+```C++
+typedef enum WindowType{ WINDOWED, FULLSCREEN, BORDERLESS };
+```
+
+**WINDOWED**: Run application in windowed mode
+
+**FULLSCREEN**: Run application in fullscreen mode
+
+**BORDERLESS**: Run application in borderless mode
