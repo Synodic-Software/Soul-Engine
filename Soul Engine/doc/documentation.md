@@ -158,6 +158,22 @@ int GetSetting(std::string);
 
 <br/>
 
+```C++
+int GetSetting(std::string, int);
+```
+
+**Requires:** Existing setting to get
+
+**Params:**
+- std::string **param1:** Setting to get
+- int **param2:** more info, desc
+
+**Effects:** Gets specified setting if possible
+
+**Returns:** int desc...
+
+<br/>
+
 
 
 <br/> <br/>
