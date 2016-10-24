@@ -125,6 +125,23 @@ bool RequestScreenSize(glm::uvec2);
 
 <br/>
 
+```C++
+void SetKey(int, void(*func)(void));
+```
+
+**Requires:** None
+
+**Params:**
+- int **param1:**Key to bind action to
+
+- void(*func)(void) **param1:** An action to be bound to this key
+
+**Effects:** Binds the argument provided key and action
+
+**Returns:** None
+
+<br/>
+
 
 
 <br/> <br/>
