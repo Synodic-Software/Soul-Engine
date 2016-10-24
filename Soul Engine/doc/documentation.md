@@ -4,6 +4,9 @@ Soul Engine Documentation
 
 <br/>
 
+Method Calls
+----
+
 ```C++
 void SoulInit();
 ```
@@ -29,7 +32,7 @@ void SoulRun();
 <br/>
 
 ```C++
-GLFWwindow* SoulCreateWindow(int, float,float);
+GLFWwindow* SoulCreateWindow(int, float, float);
 ```
 
 **Requires:** None
@@ -68,3 +71,6 @@ void GetMouseChange();
 **Returns:** A pointer to a glm::vec2
 
 <br/>
+
+Custom Types
+----
