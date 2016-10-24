@@ -91,7 +91,7 @@ bool RequestRenderSwitch(RenderType);
 
 **Effects:** Changes RenderType to argument specificed RenderType if possible
 
-**Returns:** True if switch was successfull, else false
+**Returns:** True if switch was successful, else false
 
 <br/>
 
@@ -106,7 +106,7 @@ bool RequestWindowSwitch(WindowType);
 
 **Effects:** Changes WindowType to argument specificed WindowType if possible
 
-**Returns:** True if switch was successfull, else false
+**Returns:** True if switch was successful, else false
 
 <br/>
 
