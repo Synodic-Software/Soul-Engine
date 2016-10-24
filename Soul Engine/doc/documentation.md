@@ -134,7 +134,7 @@ void SetKey(int, void(*func)(void));
 **Params:**
 - int **param1:**Key to bind action to
 
-- void(*func)(void) **param1:** An action to be bound to this key
+- void(*func)(void) __param2:__ An action to be bound to this key
 
 **Effects:** Binds the argument provided key and action
 
