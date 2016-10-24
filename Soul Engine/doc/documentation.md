@@ -82,3 +82,13 @@ glm::vec2* GetMouseChange();
 
 Custom Types
 ----
+
+```C++
+typedef enum RenderType {SPECTRAL, PATH};
+```
+
+**SPECTRAL**: desc
+
+**PATH**: desc
+
+<br/>
