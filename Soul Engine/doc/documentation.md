@@ -3,6 +3,11 @@ Soul Engine Documentation
 ###Please Note this is a work in progress
 
 <br/>
+Sections:
+1. [Method Calls](#method-calls)
+2. [Custom Types](#custom-types)
+
+<br/>
 
 Method Calls
 ----
