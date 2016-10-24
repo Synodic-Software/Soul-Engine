@@ -69,7 +69,7 @@ void SoulSignalClose();
 <br/>
 
 ```C++
-void GetMouseChange();
+glm::vec2* GetMouseChange();
 ```
 
 **Requires:** Mouse change to capture
