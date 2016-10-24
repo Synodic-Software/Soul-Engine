@@ -95,6 +95,21 @@ bool RequestRenderSwitch(RenderType);
 
 <br/>
 
+```C++
+bool RequestWindowSwitch(WindowType);
+```
+
+**Requires:** A currently open SoulEngine application with previously specified WindowType
+
+**Params:**
+- enum WindowType **param1:** New type of window.  See [here](#custom-types) for more info on WindowType
+
+**Effects:** Changes WindowType to argument specificed WindowType if possible
+
+**Returns:** True if switch was successfull, else false
+
+<br/>
+
 
 
 <br/> <br/>
