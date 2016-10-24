@@ -78,6 +78,8 @@ glm::vec2* GetMouseChange();
 
 **Returns:** A pointer to a glm::vec2
 
+<br/>
+
 ```C++
 bool RequestRenderSwitch(RenderType);
 ```
