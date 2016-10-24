@@ -49,10 +49,22 @@ GLFWwindow* SoulCreateWindow(int, float,float);
 void SoulSignalClose();
 ```
 
-**Requires:** Open SoulEngine Application
+**Requires:** A currently open SoulEngine application
 
 **Effects:** Signals a close of open SoulEngine application
 
 **Returns:** None
+
+<br/>
+
+```C++
+void GetMouseChange();
+```
+
+**Requires:** Mouse change to capture
+
+**Effects:** Signals a close of open SoulEngine application
+
+**Returns:** A pointer to a glm::vec2
 
 <br/>
