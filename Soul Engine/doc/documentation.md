@@ -110,6 +110,21 @@ bool RequestWindowSwitch(WindowType);
 
 <br/>
 
+```C++
+bool RequestScreenSize(glm::uvec2);
+```
+
+**Requires:** A currently open SoulEngine application with previously specified screen size
+
+**Params:**
+- glm::uvec2 **param1:** New screen size
+
+**Effects:** Changes screen size to argument specificed screen size if possible
+
+**Returns:** True if change was successful, else false
+
+<br/>
+
 
 
 <br/> <br/>
