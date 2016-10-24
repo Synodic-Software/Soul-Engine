@@ -42,3 +42,17 @@ GLFWwindow* SoulCreateWindow(int, float,float);
 **Effects:** Crestes a Window
 
 **Returns:** GLFWwindow pointer to newly created window
+
+<br/>
+
+```C++
+void SoulSignalClose();
+```
+
+**Requires:** Open SoulEngine Application
+
+**Effects:** Signals a close of open SoulEngine application
+
+**Returns:** None
+
+<br/>
