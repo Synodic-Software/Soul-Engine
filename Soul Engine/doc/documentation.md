@@ -174,6 +174,21 @@ int GetSetting(std::string, int);
 
 <br/>
 
+```C++
+void SetSetting(std::string, std::string);
+```
+
+**Requires:** None
+
+**Params:**
+- std::string **param1:** desc
+- std::string **param2:** desc
+
+**Effects:** Sets setting to the specificed value
+
+**Returns:** None
+<br/>
+
 
 
 <br/> <br/>
