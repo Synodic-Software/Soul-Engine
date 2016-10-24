@@ -8,7 +8,9 @@ Soul Engine Documentation
 
 2. [Custom Types](#custom-types)
 
-<br/>
+<br/> <br/>
+
+
 
 Method Calls
 ----
@@ -76,7 +78,7 @@ void GetMouseChange();
 
 **Returns:** A pointer to a glm::vec2
 
-<br/>
+<br/> <br/>
 
 Custom Types
 ----
