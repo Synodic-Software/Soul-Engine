@@ -142,6 +142,22 @@ void SetKey(int, void(*func)(void));
 
 <br/>
 
+```C++
+int GetSetting(std::string);
+```
+
+**Requires:** Existing setting to get
+
+**Params:**
+- std::string **param1:** Setting to get
+
+
+**Effects:** Gets specified setting if possible
+
+**Returns:** int desc...
+
+<br/>
+
 
 
 <br/> <br/>
