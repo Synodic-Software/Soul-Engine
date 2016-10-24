@@ -2,6 +2,7 @@ Soul Engine Documentation
 =====
 ###Please Note this is a work in progress
 
+<br/>
 
 ```C++
 void SoulInit();
@@ -13,6 +14,7 @@ void SoulInit();
 
 **Returns:** None
 
+<br/>
 
 ```C++
 void SoulRun();
@@ -23,6 +25,8 @@ void SoulRun();
 **Effects:** Runs SoulEngine
 
 **Returns:** None
+
+<br/>
 
 ```C++
 GLFWwindow* SoulCreateWindow(int, float,float);
