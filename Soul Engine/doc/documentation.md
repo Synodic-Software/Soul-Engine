@@ -78,6 +78,23 @@ glm::vec2* GetMouseChange();
 
 **Returns:** A pointer to a glm::vec2
 
+```C++
+bool RequestRenderSwitch(RenderType);
+```
+
+**Requires:** A currently open SoulEngine application with previously specified RenderType
+
+**Params:**
+- enum RenderType **param1:** How to render the frames.  See [here](#custom-types) for more info on RenderType
+
+**Effects:** Changes RenderType to argument specificed RenderType if possible
+
+**Returns:** True if switch was successfull, else false
+
+<br/>
+
+
+
 <br/> <br/>
 
 Custom Types
