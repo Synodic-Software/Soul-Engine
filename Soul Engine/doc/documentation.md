@@ -228,6 +228,22 @@ void SubmitScene(Scene*);
 
 <br/>
 
+```C++
+void RemoveScene(Scene*);
+```
+
+**Requires:** None
+
+**Params:**
+- Scene* __param1:__ Scene to remove
+
+
+**Effects:** Remove specified scene if possible
+
+**Returns:** None
+
+<br/>
+
 
 
 <br/> <br/>
