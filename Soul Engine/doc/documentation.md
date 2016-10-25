@@ -207,7 +207,7 @@ void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* m
 
 - Material* __mat:__ Material of object
 
-**Effects:** Sets setting to the specificed value
+**Effects:** Ads object to scene at specified position with specified material
 
 **Returns:** None
 <br/>
