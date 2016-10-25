@@ -212,6 +212,22 @@ void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* m
 **Returns:** None
 <br/>
 
+```C++
+void SubmitScene(Scene*);
+```
+
+**Requires:** None
+
+**Params:**
+- Scene* __param1:__ Scene to set
+
+
+**Effects:** Submits specified scene
+
+**Returns:** None
+
+<br/>
+
 
 
 <br/> <br/>
