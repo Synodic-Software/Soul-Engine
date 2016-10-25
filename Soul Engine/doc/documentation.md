@@ -189,6 +189,7 @@ void SetSetting(std::string, std::string);
 **Effects:** Sets setting to the specificed value
 
 **Returns:** None
+
 <br/>
 
 ```C++
