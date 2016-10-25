@@ -4,6 +4,7 @@
 #include "Engine Core\Object\CUDA/Object.cuh"
 #include "Engine Core\Scene\CUDA\Sky.cuh"
 #include "Bounding Volume Heirarchy\BVH.h"
+#include <vector>
 
 class Scene : public Managed
 {

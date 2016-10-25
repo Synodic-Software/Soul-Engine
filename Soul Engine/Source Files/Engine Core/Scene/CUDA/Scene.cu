@@ -41,7 +41,7 @@ Scene::~Scene()
 	CudaCheck(cudaFree(mortonCodes));
 
 	//Variables concerning object storage
-	
+
 	CudaCheck(cudaFree(objectList));
 	CudaCheck(cudaFree(objectRemoval));
 
@@ -274,7 +274,7 @@ __host__ bool Scene::Compile(){
 			bool* faceMarkers;
 			CudaCheck(cudaMallocManaged((void**)&markers, compiledSize * sizeof(bool)));
 			CudaCheck(cudaMallocManaged((void**)&faceMarkers, compiledSize * sizeof(bool)));
- 
+
 			thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(markers);
 			thrust::device_ptr<bool> faceTempPtr = thrust::device_pointer_cast(faceMarkers);
 
@@ -420,8 +420,12 @@ __host__ void Scene::Build(float deltaTime){
 
 	GenerateMortonCodes << <gridSize, blockSize >> >(compiledSize, mortonCodes, faceIds, objectList, sceneBox);
 
+
+
+	CudaCheck(cudaDeviceSynchronize());
 	thrust::device_ptr<uint64_t> keys = thrust::device_pointer_cast(mortonCodes);
 	thrust::device_ptr<Face*> values = thrust::device_pointer_cast(faceIds);
+
 
 	CudaCheck(cudaDeviceSynchronize());
 

@@ -2,6 +2,7 @@
 
 #include "Engine Core/Object/Object.h"
 #include "Engine Core/Camera/CUDA/Camera.cuh"
+#include <vector>
 void IncrementTime(float);
 
 class Character : public Object{
