@@ -166,6 +166,7 @@ int GetSetting(std::string, int);
 
 **Params:**
 - std::string **param1:** Setting to get
+
 - int **param2:** more info, desc
 
 **Effects:** Gets specified setting if possible
@@ -182,7 +183,29 @@ void SetSetting(std::string, std::string);
 
 **Params:**
 - std::string **param1:** desc
+
 - std::string **param2:** desc
+
+**Effects:** Sets setting to the specificed value
+
+**Returns:** None
+<br/>
+
+```C++
+void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat);
+```
+
+**Requires:** None
+
+**Params:**
+
+- Scene* __scene:__ Scene to add object to
+
+- glm::vec3& __param2:__ Global position coordinates to add obbject at
+
+- const char* __file:__ Filename containing object
+
+- Material* __mat:__ Material of object
 
 **Effects:** Sets setting to the specificed value
 
