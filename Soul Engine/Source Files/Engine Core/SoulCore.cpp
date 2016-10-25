@@ -212,15 +212,18 @@ namespace Soul {
 					InputToCamera(masterWindow, mouseCamera);
 				}
 
+				SynchGPU();
 
 
 				//apply camera changes to their matrices
 				for (auto const& cam : cameras){
 					cam->UpdateVariables();
 				}
+				SynchGPU();
+				glfwGetWindowSize(masterWindow, &width, &height);
 
 				//UpdateVulkan
-				VulkanBackend::GetInstance().UpdateVulkanProjection();
+				//VulkanBackend::GetInstance().UpdateVulkanProjection();
 
 				//Update();
 
@@ -241,7 +244,7 @@ namespace Soul {
 				cudaEventDestroy(stop);
 
 				std::cout << "Building Execution: " << time << "ms" << std::endl;
-
+				SynchGPU();
 
 				for (auto const& scene : scenes){
 					PhysicsEngine::Process(scene);
@@ -253,6 +256,7 @@ namespace Soul {
 				t += deltaTime;
 				accumulator -= deltaTime;
 			}
+			SynchGPU();
 
 			for (auto const& rend : renderObjects){
 				rend.rendererHandle->RenderSetup({ width, height }, mouseCamera, deltaTime);
@@ -270,13 +274,19 @@ namespace Soul {
 				//integration bool
 				rend.rendererHandle->Render(false);
 			}
+			SynchGPU();
 
-			VulkanBackend::GetInstance().DrawFrame(masterWindow);
+			///////////////////////////////////////////////////////////////////////until vulkan
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glfwSwapBuffers(masterWindow);
+			////////////////////////////////////////////////////////////////////////////////////
+		//	VulkanBackend::GetInstance().DrawFrame(masterWindow, width, height);
 
 		}
 
 		//Put Vulkan into idle
-		VulkanBackend::GetInstance().IdleDevice();
+		//VulkanBackend::GetInstance().IdleDevice();
 
 		SoulShutDown();
 
@@ -336,6 +346,8 @@ void SoulInit(){
 		Soul::SoulShutDown();
 	}
 
+	
+
 
 	RenderType  win = static_cast<RenderType>(GetSetting("Renderer", 2));
 
@@ -362,8 +374,10 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 	glfwWindowHint(GLFW_SAMPLES, 0);
 	glfwWindowHint(GLFW_VISIBLE, true);
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
+	//////////////////////////////////////////////////for vulkan
+	//glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	///////////////////////////////////////////////////
 	const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
 
 	GLFWwindow* windowOut;
@@ -416,6 +430,8 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 
 		Soul::masterWindow = windowOut;
 
+		glfwMakeContextCurrent(Soul::masterWindow);
+
 		glfwSetInputMode(windowOut, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		glfwSetKeyCallback(windowOut, Input::KeyCallback);
@@ -423,9 +439,37 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 		glfwSetCursorPosCallback(windowOut, Input::MouseCallback);
 	}
 
-	glfwSetWindowUserPointer(windowOut, &VulkanBackend::GetInstance());
-	glfwSetWindowSizeCallback(windowOut, VulkanBackend::OnWindowResized);
-	VulkanBackend::GetInstance().AddWindow(windowOut);
+
+	////////////////////////////////////////////////////remove for vulkan
+	// start GLEW extension handler
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK){
+		throw std::runtime_error("glewInit failed");
+	}
+
+	glEnable(GL_DEPTH_TEST); // enable depth-testing
+	glDepthMask(GL_TRUE);  // turn on
+	glDepthFunc(GL_LEQUAL);
+	glDepthRange(0.0f, 1.0f);
+	glEnable(GL_TEXTURE_2D);
+	/////////////////////////////////////////////////////////////////////
+
+	//glfwSetWindowUserPointer(windowOut, &VulkanBackend::GetInstance());
+	//glfwSetWindowSizeCallback(windowOut, VulkanBackend::OnWindowResized);
+
+	//////////////////////////
+
+	Soul::renderer rend = {
+		new Renderer(*Soul::mouseCamera, glm::uvec2(int(xSize*mode->width), int(ySize*mode->height))),
+		SPECTRAL,
+		1.0f
+	};
+
+	Soul::renderObjects.push_back(rend);
+
+	//////////////////////////
+
+	//VulkanBackend::GetInstance().AddWindow(windowOut, int(xSize*mode->width), int(ySize*mode->height), Soul::renderObjects[0].rendererHandle->targetData);
 
 	return windowOut;
 }

@@ -5,6 +5,13 @@
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Ray Engine/RayEngine.h"
 
+/////////////
+#include "Utility\OpenGL\ShaderSupport.h"
+#include <cuda_gl_interop.h>
+#include <glm/gtc/matrix_transform.hpp>
+
+//////////
+
 class Renderer{
 public:
 
@@ -12,6 +19,7 @@ public:
 
 	void RenderSetup(const glm::uvec2&, Camera*, double);
 	void Render(bool);
+	std::vector<void*> targetData;
 
 
 private:
@@ -40,10 +48,15 @@ private:
 	int screenModUniform;
 
 	bool debug;
-	//shading::ShaderSupport* CUDAtoScreen;
+	shading::ShaderSupport* CUDAtoScreen;
 
 	uint renderBufferA;
 	uint renderBufferB;
+
+	GLuint vao;
+	GLuint vbo;
+	GLuint ibo;
+
 	struct cudaGraphicsResource *cudaBuffer;
 	glm::vec4 *bufferData;
 	double newTime;
