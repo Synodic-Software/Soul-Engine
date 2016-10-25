@@ -1,9 +1,10 @@
-<!--- 
+
+[comment]: # (
 If background color support is added to github, may wwant to use below:
 <style>
 	background-color: #F0F8FF;
 </style>
--->
+)
 
 Soul Engine Documentation
 =====
