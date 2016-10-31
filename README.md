@@ -49,6 +49,8 @@ To compile dependancies with the following must be met:
   
   Vulkan SDK  - (Probably the LunarG SDK)
   
+  GLEW - http://glew.sourceforge.net/ (This is temperary until CUDA supports Vulkan)
+  
   Cuda 8.0    - https://developer.nvidia.com/cuda-toolkit
   
   tinyobjloader - https://github.com/syoyo/tinyobjloader
