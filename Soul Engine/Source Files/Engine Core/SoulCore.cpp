@@ -179,8 +179,6 @@ namespace Soul {
 		double currentTime = glfwGetTime();
 		double accumulator = 0.0f;
 
-		bool test = true;
-
 
 
 		//stop loop when glfw exit is called
@@ -262,12 +260,14 @@ namespace Soul {
 				rend.rendererHandle->RenderSetup({ width, height }, mouseCamera, deltaTime);
 			}
 
-			test = !test;
-
 			for (auto const& scene : scenes){
 				RayEngine::Clear();
 				RayEngine::Process(scene);
 			}
+
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			SynchGPU();
 			for (auto const& rend : renderObjects){
@@ -276,9 +276,9 @@ namespace Soul {
 			}
 			SynchGPU();
 
-			///////////////////////////////////////////////////////////////////////until vulkan
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			///////////////////////////////////////////////////////////////////////until vulkan
+
+
 			glfwSwapBuffers(masterWindow);
 			////////////////////////////////////////////////////////////////////////////////////
 		//	VulkanBackend::GetInstance().DrawFrame(masterWindow, width, height);
@@ -443,14 +443,20 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize){
 	////////////////////////////////////////////////////remove for vulkan
 	// start GLEW extension handler
 	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK){
-		throw std::runtime_error("glewInit failed");
+	if (glewInit() != GLEW_OK){
+
+		throw std::runtime_error("glewInit failed");
+
 	}
 
-	glEnable(GL_DEPTH_TEST); // enable depth-testing
-	glDepthMask(GL_TRUE);  // turn on
-	glDepthFunc(GL_LEQUAL);
-	glDepthRange(0.0f, 1.0f);
+	glEnable(GL_DEPTH_TEST); // enable depth-testing
+
+	glDepthMask(GL_TRUE);  // turn on
+
+	glDepthFunc(GL_LEQUAL);
+
+	glDepthRange(0.0f, 1.0f);
+
 	glEnable(GL_TEXTURE_2D);
 	/////////////////////////////////////////////////////////////////////
 

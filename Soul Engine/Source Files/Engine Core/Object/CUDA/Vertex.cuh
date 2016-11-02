@@ -10,8 +10,6 @@ public:
 	Vertex(glm::vec3, glm::vec2, glm::vec3);
 	~Vertex();
 
-	void SetData(glm::vec3, glm::vec2, glm::vec3);
-
 	glm::vec3 position;
 	glm::vec2 textureCoord;
 	glm::vec3 normal;
@@ -22,7 +20,7 @@ public:
 	bool operator==(const Vertex& other) const {
 		return position == other.position && normal == other.normal && textureCoord == other.textureCoord;
 	}
-
+	
 	friend void swap(Vertex& a, Vertex& b)
 	{
 
@@ -38,6 +36,15 @@ public:
 		a.textureCoord = b.textureCoord;
 		b.textureCoord = temp1;
 
+	}
+	Vertex& operator=(Vertex arg)
+	{
+		this->position = arg.position;
+		this->textureCoord = arg.textureCoord;
+		this->normal = arg.normal;
+		this->velocity = arg.velocity;
+
+		return *this;
 	}
 private:
 	

@@ -15,13 +15,7 @@ Vertex::Vertex(glm::vec3 posTemp, glm::vec2 uvTemp, glm::vec3 normTemp)
 	normal = normTemp;
 	velocity = glm::vec3(0, 0, 0);
 }
-void Vertex::SetData(glm::vec3 posTemp, glm::vec2 uvTemp, glm::vec3 normTemp)
-{
-	position = posTemp;
-	textureCoord = uvTemp;
-	normal = normTemp;
-	velocity = glm::vec3(0, 0, 0);
-}
+
 Vertex::~Vertex()
 {
 }

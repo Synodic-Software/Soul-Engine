@@ -211,9 +211,16 @@ __global__ void GenerateMortonCodes(const uint n, uint64* mortonCodes, Face** fa
 	Object* current = faceList[index]->objectPointer;
 	Face* face = faceList[index];
 
-	glm::vec3 centroid = (current->vertices[face->indices.x].position + current->vertices[face->indices.y].position + current->vertices[face->indices.z].position) / 3.0f;
-	mortonCodes[index] = mortonEncode_LUT(centroid, box);
+	glm::vec3 centroid;
+	glm::uvec3 ind = face->indices;
 
+	Vertex* x = &current->vertices[ind.x];
+	Vertex* y = &current->vertices[ind.y];
+	Vertex* z = &current->vertices[ind.z];
+	centroid = (x->position + y->position + z->position) / 3.0f;
+	
+	mortonCodes[index] = mortonEncode_LUT(centroid, box);
+	//mortonCodes[index] = index;
 }
 
 __global__ void FillBool(const uint n, bool* jobs, bool* fjobs, Face** faces, uint* objIds, Object** objects){
@@ -435,6 +442,8 @@ __host__ void Scene::Build(float deltaTime){
 	cudaEventCreate(&stop);
 	cudaEventRecord(start, 0);
 
+	CudaCheck(cudaDeviceSynchronize());
+	//std::cout << compiledSize << std::endl;
 	//thrust::sort_by_key(keys, keys + compiledSize, values);            //I assume this is broken with this build setup, is ok though, will try to phase out thrust in a final build
 
 	//simple bubblesort to bide the time

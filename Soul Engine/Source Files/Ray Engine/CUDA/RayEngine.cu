@@ -737,6 +737,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 			cudaEventCreate(&stop1);
 			cudaEventRecord(start1, 0);
 
+
 			EngineExecute << <numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
 			CudaCheck(cudaDeviceSynchronize());
 
