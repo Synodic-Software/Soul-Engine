@@ -47,6 +47,12 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, &camera,2);
 
 	cudaFree(RenderJob->GetResultPointer(0));
+	RenderJob->GetResultPointer(0) = bufferData;
+
+
+
+
+	//cudaFree(RenderJob->GetResultPointer(0));
 	//cudaFree(RenderJob->GetResultPointer(1));
 	//targetData.push_back(NULL);
 	//targetData.push_back(NULL);
