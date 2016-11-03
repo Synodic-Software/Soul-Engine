@@ -227,19 +227,19 @@ namespace Soul {
 
 				cudaEvent_t start, stop;
 				float time;
-				cudaEventCreate(&start);
-				cudaEventCreate(&stop);
-				cudaEventRecord(start, 0);
+				CudaCheck(cudaEventCreate(&start));
+				CudaCheck(cudaEventCreate(&stop));
+				CudaCheck(cudaEventRecord(start, 0));
 
 				for (auto const& scene : scenes){
 					scene->Build(deltaTime);
 				}
 
-				cudaEventRecord(stop, 0);
-				cudaEventSynchronize(stop);
-				cudaEventElapsedTime(&time, start, stop);
-				cudaEventDestroy(start);
-				cudaEventDestroy(stop);
+				CudaCheck(cudaEventRecord(stop, 0));
+				CudaCheck(cudaEventSynchronize(stop));
+				CudaCheck(cudaEventElapsedTime(&time, start, stop));
+				CudaCheck(cudaEventDestroy(start));
+				CudaCheck(cudaEventDestroy(stop));
 
 				std::cout << "Building Execution: " << time << "ms" << std::endl;
 				SynchGPU();
@@ -247,9 +247,6 @@ namespace Soul {
 				for (auto const& scene : scenes){
 					PhysicsEngine::Process(scene);
 				}
-
-
-				InputState::GetInstance().ResetOffsets();
 
 				t += deltaTime;
 				accumulator -= deltaTime;
@@ -278,6 +275,7 @@ namespace Soul {
 
 			///////////////////////////////////////////////////////////////////////until vulkan
 
+			InputState::GetInstance().ResetOffsets();
 
 			glfwSwapBuffers(masterWindow);
 			////////////////////////////////////////////////////////////////////////////////////

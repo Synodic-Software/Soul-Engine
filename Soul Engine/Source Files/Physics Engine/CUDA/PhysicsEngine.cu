@@ -131,6 +131,7 @@ __host__ void ProcessScene(const Scene* scene){
 	int gridSize = (n + blockSize - 1) / blockSize;
 	BroadPhase << <gridSize, blockSize >> >(n, scene, collisions, sizeCounter);
 
+	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
 
 	n = sizeCounter[0];
@@ -145,8 +146,9 @@ __host__ void ProcessScene(const Scene* scene){
 
 
 
+	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
 
-	cudaFree(sizeCounter);
+	CudaCheck(cudaFree(sizeCounter));
 
 }

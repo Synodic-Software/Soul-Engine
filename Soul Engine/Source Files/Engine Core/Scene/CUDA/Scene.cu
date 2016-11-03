@@ -5,6 +5,7 @@
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 
 #include "Utility\CUDA\CUDAHelper.cuh"
+
 #include <thrust/fill.h>
 #include <thrust/device_ptr.h>
 #include <thrust/scan.h>
@@ -219,8 +220,8 @@ __global__ void GenerateMortonCodes(const uint n, uint64* mortonCodes, Face** fa
 	Vertex* z = &current->vertices[ind.z];
 	centroid = (x->position + y->position + z->position) / 3.0f;
 	
-	mortonCodes[index] = mortonEncode_LUT(centroid, box);
-	//mortonCodes[index] = index;
+	//mortonCodes[index] = mortonEncode_LUT(centroid, box);
+	mortonCodes[index] = index;
 }
 
 __global__ void FillBool(const uint n, bool* jobs, bool* fjobs, Face** faces, uint* objIds, Object** objects){
@@ -279,8 +280,8 @@ __host__ bool Scene::Compile(){
 
 			bool* markers;
 			bool* faceMarkers;
-			CudaCheck(cudaMallocManaged((void**)&markers, compiledSize * sizeof(bool)));
-			CudaCheck(cudaMallocManaged((void**)&faceMarkers, compiledSize * sizeof(bool)));
+			CudaCheck(cudaMalloc((void**)&markers, compiledSize * sizeof(bool)));
+			CudaCheck(cudaMalloc((void**)&faceMarkers, compiledSize * sizeof(bool)));
 
 			thrust::device_ptr<bool> tempPtr = thrust::device_pointer_cast(markers);
 			thrust::device_ptr<bool> faceTempPtr = thrust::device_pointer_cast(faceMarkers);
@@ -293,7 +294,7 @@ __host__ bool Scene::Compile(){
 
 			//fill the mask with 1s or 0s
 			FillBool << <gridSize, blockSize >> >(compiledSize, markers, faceMarkers, faceIds, objIds, objectList);
-
+			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
 
@@ -336,21 +337,21 @@ __host__ bool Scene::Compile(){
 
 				allocatedSize = glm::max(uint(allocatedSize * 1.5f), newSize);
 
-				CudaCheck(cudaMallocManaged((void**)&faceTemp, allocatedSize * sizeof(Face*)));
-				CudaCheck(cudaMallocManaged((void**)&objTemp, allocatedSize * sizeof(uint)));
-				CudaCheck(cudaMallocManaged((void**)&objectBitSetupTemp, allocatedSize * sizeof(bool)));
+				CudaCheck(cudaMalloc((void**)&faceTemp, allocatedSize * sizeof(Face*)));
+				CudaCheck(cudaMalloc((void**)&objTemp, allocatedSize * sizeof(uint)));
+				CudaCheck(cudaMalloc((void**)&objectBitSetupTemp, allocatedSize * sizeof(bool)));
 				CudaCheck(cudaFree(mortonCodes));
-				CudaCheck(cudaMallocManaged((void**)&mortonCodes, allocatedSize * sizeof(uint64)));
+				CudaCheck(cudaMalloc((void**)&mortonCodes, allocatedSize * sizeof(uint64)));
 
-				cudaMemcpy(faceTemp, faceIds, compiledSize*sizeof(Face*), cudaMemcpyDefault);
+				CudaCheck(cudaMemcpy(faceTemp, faceIds, compiledSize*sizeof(Face*), cudaMemcpyDeviceToDevice));
 				CudaCheck(cudaFree(faceIds));
 				faceIds = faceTemp;
 
-				cudaMemcpy(objTemp, objIds, compiledSize*sizeof(uint), cudaMemcpyDefault);
+				CudaCheck(cudaMemcpy(objTemp, objIds, compiledSize*sizeof(uint), cudaMemcpyDeviceToDevice));
 				CudaCheck(cudaFree(objIds));
 				objIds = objTemp;
 
-				cudaMemcpy(objectBitSetupTemp, objectBitSetup, compiledSize*sizeof(bool), cudaMemcpyDefault);
+				CudaCheck(cudaMemcpy(objectBitSetupTemp, objectBitSetup, compiledSize*sizeof(bool), cudaMemcpyDeviceToDevice));
 				CudaCheck(cudaFree(objectBitSetup));
 				objectBitSetup = objectBitSetupTemp;
 
@@ -373,7 +374,7 @@ __host__ bool Scene::Compile(){
 		uint l = 0;
 		for (uint i = 0; i < objectsSize; i++){
 			if (!objectList[i]->ready){
-				objectBitSetup[l] = true;
+				CudaCheck(cudaMemset(objectBitSetup + l, true, sizeof(bool)));
 				objectList[i]->ready = true;
 			}
 			objectList[i]->localSceneIndex = l;
@@ -394,6 +395,7 @@ __host__ bool Scene::Compile(){
 			uint gridSize = ((newSize - removedOffset) + blockSize - 1) / blockSize;
 
 			GetFace << <gridSize, blockSize >> >(newSize - removedOffset, objIds, objectList, faceIds, removedOffset);
+			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
 		}
@@ -416,6 +418,12 @@ __host__ bool Scene::Compile(){
 
 __host__ void Scene::Build(float deltaTime){
 
+	int device;
+	CudaCheck(cudaGetDevice(&device));
+
+	//CudaCheck(cudaMemAdvise(objectList, objectsSize*sizeof(Object*)*sizeof(Vertex), cudaMemAdviseSetAccessedBy, device));
+	//CudaCheck(cudaMemPrefetchAsync(objectList, objectsSize*sizeof(Object*)*sizeof(Vertex), device, 0));
+
 	bool b = Compile();
 
 	//calculate the morton code for each triangle
@@ -425,59 +433,37 @@ __host__ void Scene::Build(float deltaTime){
 
 	CudaCheck(cudaDeviceSynchronize());
 
+	//CudaCheck(cudaMemAdvise(objectList, objectsSize*sizeof(Object*)*sizeof(Vertex), cudaMemAdviseSetAccessedBy, device));
+	//CudaCheck(cudaMemPrefetchAsync(objectList, objectsSize*sizeof(Object*)*sizeof(Vertex), device, 0));
+
 	GenerateMortonCodes << <gridSize, blockSize >> >(compiledSize, mortonCodes, faceIds, objectList, sceneBox);
 
 
-
+	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
-	thrust::device_ptr<uint64_t> keys = thrust::device_pointer_cast(mortonCodes);
-	thrust::device_ptr<Face*> values = thrust::device_pointer_cast(faceIds);
+	thrust::device_ptr<uint64_t> keys(mortonCodes);
+	thrust::device_ptr<Face*> values(faceIds);
 
 
 	CudaCheck(cudaDeviceSynchronize());
 
 	cudaEvent_t start, stop;
 	float time;
-	cudaEventCreate(&start);
-	cudaEventCreate(&stop);
-	cudaEventRecord(start, 0);
-
-	CudaCheck(cudaDeviceSynchronize());
-	//std::cout << compiledSize << std::endl;
-	//thrust::sort_by_key(keys, keys + compiledSize, values);            //I assume this is broken with this build setup, is ok though, will try to phase out thrust in a final build
-
-	//simple bubblesort to bide the time
-	bool swapped = true;
-	int j = 0;
-	uint64 tmp;
-	Face* ftmp;
-	while (swapped) {
-		swapped = false;
-		j++;
-
-		for (int i = 0; i < compiledSize - j; i++) {
-			if (mortonCodes[i] > mortonCodes[i + 1]) {
-				tmp = mortonCodes[i];
-				mortonCodes[i] = mortonCodes[i + 1];
-				mortonCodes[i + 1] = tmp;
-
-				ftmp = faceIds[i];
-				faceIds[i] = faceIds[i + 1];
-				faceIds[i + 1] = ftmp;
-
-				swapped = true;
-			}
-		}
-	}
-
+	CudaCheck(cudaEventCreate(&start));
+	CudaCheck(cudaEventCreate(&stop));
+	CudaCheck(cudaEventRecord(start, 0));
 
 	CudaCheck(cudaDeviceSynchronize());
 
-	cudaEventRecord(stop, 0);
-	cudaEventSynchronize(stop);
-	cudaEventElapsedTime(&time, start, stop);
-	cudaEventDestroy(start);
-	cudaEventDestroy(stop);
+	thrust::sort_by_key(keys, keys + compiledSize, values);           
+
+	CudaCheck(cudaDeviceSynchronize());
+
+	CudaCheck(cudaEventRecord(stop, 0));
+	CudaCheck(cudaEventSynchronize(stop));
+	CudaCheck(cudaEventElapsedTime(&time, start, stop));
+	CudaCheck(cudaEventDestroy(start));
+	CudaCheck(cudaEventDestroy(stop));
 
 	std::cout << "     Sorting Execution: " << time << "ms" << std::endl;
 
@@ -500,7 +486,7 @@ __host__ uint Scene::AddObject(Object* obj){
 
 		CudaCheck(cudaMallocManaged((void**)&objectsTemp, allocatedObjects * sizeof(Object*)));
 
-		cudaMemcpy(objectsTemp, objectList, objectsSize*sizeof(Object*), cudaMemcpyDefault);
+		CudaCheck(cudaMemcpy(objectsTemp, objectList, objectsSize*sizeof(Object*), cudaMemcpyDeviceToDevice));
 		CudaCheck(cudaFree(objectList));
 		objectList = objectsTemp;
 	}

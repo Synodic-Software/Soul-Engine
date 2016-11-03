@@ -12,7 +12,7 @@ __host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, uint newSamples, Cam
 
 	CudaCheck(cudaMallocManaged((void**)&results, numResultBuffers*sizeof(glm::vec4*)));
 	for (int i = 0; i < numResultBuffers; i++){
-		CudaCheck(cudaMallocManaged((void**)&results[i], rayBaseAmount*sizeof(glm::vec4)));
+		CudaCheck(cudaMalloc((void**)&results[i], rayBaseAmount*sizeof(glm::vec4)));
 	}
 
 }
@@ -21,10 +21,10 @@ __host__ RayJob::~RayJob(){
 	if (results != NULL){
 		for (int i = 0; i < numResultBuffers; i++){
 			if (results[i] != NULL){
-				cudaFree(results[i]);
+				CudaCheck(cudaFree(results[i]));
 			}
 		}
-		cudaFree(results);
+		CudaCheck(cudaFree(results));
 	}
 }
 

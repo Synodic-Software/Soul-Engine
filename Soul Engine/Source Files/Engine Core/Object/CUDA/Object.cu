@@ -5,6 +5,7 @@
 #include <tiny_obj_loader.h>
 
 #include <unordered_map>
+
 Object::Object(){
 
 	verticeAmount = 0;
@@ -65,7 +66,7 @@ void Object::ExtractFromFile(const char* name){
 	glm::vec3 max = glm::vec3(attrib.vertices[0], attrib.vertices[1], attrib.vertices[2]);
 	glm::vec3 min = max;
 
-	cudaDeviceSynchronize();
+	CudaCheck(cudaDeviceSynchronize());
 
 	CudaCheck(cudaMallocManaged((void**)&vertices,
 		verticeAmount*sizeof(Vertex)));
@@ -73,7 +74,7 @@ void Object::ExtractFromFile(const char* name){
 	CudaCheck(cudaMallocManaged((void**)&faces,
 		faceAmount*sizeof(Face)));
 
-	cudaDeviceSynchronize();
+	CudaCheck(cudaDeviceSynchronize());
 
 
 
@@ -179,6 +180,13 @@ void Object::ExtractFromFile(const char* name){
 
 	box.max = max;
 	box.min = min;
-	cudaDeviceSynchronize();
 
+	int device=0;
+	CudaCheck(cudaGetDevice(&device));
+
+	//CudaCheck(cudaMemAdvise(vertices, verticeAmount*sizeof(Vertex), cudaMemAdviseSetAccessedBy, device));
+	//CudaCheck(cudaMemPrefetchAsync(vertices, verticeAmount*sizeof(Vertex), device));
+
+	//CudaCheck(cudaMemAdvise(faces, faceAmount*sizeof(Face), cudaMemAdviseSetAccessedBy, device));
+	//CudaCheck(cudaMemPrefetchAsync(faces, faceAmount*sizeof(Face), device));
 }

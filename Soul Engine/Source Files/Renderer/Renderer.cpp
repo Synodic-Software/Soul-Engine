@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "CUDA/Renderer.cuh"
 #include "Input\InputState.h"
+#include "Utility\CUDA\CUDAHelper.cuh"
 
 Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	iCounter = 1;
@@ -32,21 +33,21 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	cudaGraphicsGLRegisterBuffer(&cudaBuffer
+	CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
 		, renderBufferA
-		, cudaGraphicsRegisterFlagsWriteDiscard);
+		, cudaGraphicsRegisterFlagsWriteDiscard));
 
 
-	cudaGraphicsMapResources(1, &cudaBuffer, 0);
+	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
 	size_t num_bytes;
-	cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
-		cudaBuffer);
+	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
+		cudaBuffer));
 
-	cudaGraphicsUnmapResources(1, &cudaBuffer, 0);
+	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 
 	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, &camera,2);
 
-	cudaFree(RenderJob->GetResultPointer(0));
+	CudaCheck(cudaFree(RenderJob->GetResultPointer(0)));
 	RenderJob->GetResultPointer(0) = bufferData;
 
 
@@ -158,10 +159,10 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	RayEngine::ChangeJob(RenderJob, (modifiedScreen.x*modifiedScreen.y),
 		samples, camera);
 	//RenderJob->GetSampleAmount()=0.1f;
-	cudaGraphicsMapResources(1, &cudaBuffer, 0);
+	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
 	size_t num_bytes;
-	cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
-		cudaBuffer);
+	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
+		cudaBuffer));
 
 }
 
@@ -175,7 +176,7 @@ void Renderer::Render(bool integrate){
 		iCounter = 1;
 	}		
 	
-	cudaGraphicsUnmapResources(1, &cudaBuffer, 0);
+	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, renderBufferA);
 

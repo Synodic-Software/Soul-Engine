@@ -23,7 +23,7 @@ Image::Image()
 
 Image::~Image() {
 
-	cudaDestroyTextureObject(texObj); 
+	CudaCheck(cudaDestroyTextureObject(texObj));
 
 	// Free device memory 
 	//cudaFree(cuArray);
@@ -192,6 +192,7 @@ void generateMipMaps(cudaMipmappedArray_t mipmapArray, cudaExtent size)
 
 		d_mipmap << <gridSize, blockSize >> >(surfOutput, texInput, (uint)width, (uint)height);
 
+		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 		CudaCheck(cudaGetLastError());
 

@@ -116,9 +116,9 @@ __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes
 void BVH::Build(uint size){
 	cudaEvent_t start, stop;
 	float time;
-	cudaEventCreate(&start);
-	cudaEventCreate(&stop);
-	cudaEventRecord(start, 0);
+	CudaCheck(cudaEventCreate(&start));
+	CudaCheck(cudaEventCreate(&stop));
+	CudaCheck(cudaEventRecord(start, 0));
 
 	currentSize = size;
 	if (currentSize > allocatedSize){
@@ -142,17 +142,19 @@ void BVH::Build(uint size){
 	CudaCheck(cudaDeviceSynchronize());
 
 	Reset << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1);
+	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
 
 	BuildTree << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1,this);
 
-	cudaDeviceSynchronize();
+	CudaCheck(cudaPeekAtLastError());
+	CudaCheck(cudaDeviceSynchronize());
 
-	cudaEventRecord(stop, 0);
-	cudaEventSynchronize(stop);
-	cudaEventElapsedTime(&time, start, stop);
-	cudaEventDestroy(start);
-	cudaEventDestroy(stop);
+	CudaCheck(cudaEventRecord(stop, 0));
+	CudaCheck(cudaEventSynchronize(stop));
+	CudaCheck(cudaEventElapsedTime(&time, start, stop));
+	CudaCheck(cudaEventDestroy(start));
+	CudaCheck(cudaEventDestroy(stop));
 
 	std::cout << "     BVH Creation Execution: " << time << "ms" << std::endl;
 
