@@ -9,5 +9,7 @@ namespace Devices{
 
 	int GetWarpSize();
 
+	int GetSMCount();
+
 	int GetBlockHeight();
 }

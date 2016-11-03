@@ -29,9 +29,20 @@ void Devices::ExtractDevices(){
 int Devices::GetCoreCount(){
 	int device;
 	CudaCheck(cudaGetDevice(&device));
-
 	return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) * deviceProp[device].multiProcessorCount;
 }
+
+int Devices::GetSMCount(){
+	int device;
+	CudaCheck(cudaGetDevice(&device));
+	return deviceProp[device].multiProcessorCount;
+}
+//
+//int Devices::GetBlockPerSMCount(){
+//	int device;
+//	CudaCheck(cudaGetDevice(&device));
+//	return deviceProp[device].max;
+//}
 
 int Devices::GetWarpSize(){
 	int device;

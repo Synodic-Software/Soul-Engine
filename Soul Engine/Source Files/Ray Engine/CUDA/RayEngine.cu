@@ -7,6 +7,7 @@
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <thrust/remove.h>
+#include <cuda_runtime.h>
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "Utility\CUDA\CUDADevices.cuh"
 
@@ -685,20 +686,22 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 			CudaCheck(cudaDeviceSynchronize());
 			uint numActive = n;
 
-			int minGridSize;
+			int GridSize;
+			int BlockSize;
 
 			int* counter;
 			CudaCheck(cudaMallocManaged((void**)&counter, sizeof(int)));
 			counter[0] = 0;
 
-			//cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, EngineExecute, 0, 0);
+			cudaOccupancyMaxPotentialBlockSize(&GridSize, &BlockSize, EngineExecute, 0, 0);
 
 			CudaCheck(cudaDeviceSynchronize());
 
 			dim3 blockSizeE(Devices::GetWarpSize(), Devices::GetBlockHeight(), 1);
 			int blockWarps = (blockSizeE.x * blockSizeE.y + (Devices::GetWarpSize() - 1)) / Devices::GetWarpSize();
-			int numBlocks = (Devices::GetCoreCount() + blockWarps - 1) / blockWarps;
-
+			//int numBlocks = (Devices::GetCoreCount() + blockWarps - 1) / blockWarps;
+			int numBlocks = Devices::GetSMCount();
+		//	std::cout << GridSize << " " << BlockSize << std::endl;
 			// Launch.
 
 
@@ -721,7 +724,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 			CudaCheck(cudaEventRecord(start1, 0));
 
 
-			EngineExecute << <numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
+			EngineExecute << <GridSize, BlockSize >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
 			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -775,7 +778,7 @@ __host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
 				CudaCheck(cudaEventCreate(&stop2));
 				CudaCheck(cudaEventRecord(start2, 0));
 
-				EngineExecute << <numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
+				EngineExecute << <GridSize, BlockSize >> >(numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
