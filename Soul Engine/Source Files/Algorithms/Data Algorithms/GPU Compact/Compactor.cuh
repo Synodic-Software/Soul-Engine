@@ -86,14 +86,16 @@
 		//phase1
 		computeBlockCounts << <numBlocks, BLOCK_HEIGHT >> >(d_input, length, d_BlocksCount, predicate);
 		//phase2
-		cudaDeviceSynchronize();
+		CudaCheck(cudaPeekAtLastError());
+		CudaCheck(cudaDeviceSynchronize());
 		thrust::exclusive_scan(thrustPrt_bCount, thrustPrt_bCount + numBlocks, thrustPrt_bOffset);
 		//phase3
-		cudaDeviceSynchronize();
+		CudaCheck(cudaDeviceSynchronize());
 		compactK << <numBlocks, BLOCK_HEIGHT, sizeof(int)*(BLOCK_HEIGHT / WARP_SIZE) >> >(d_input, length, d_output, d_BlocksOffset, predicate);
 
+		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 
-		cudaFree(d_BlocksCount);
-		cudaFree(d_BlocksOffset);
+		CudaCheck(cudaFree(d_BlocksCount));
+		CudaCheck(cudaFree(d_BlocksOffset));
 	}

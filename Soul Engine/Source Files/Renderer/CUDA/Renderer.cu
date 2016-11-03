@@ -22,17 +22,18 @@ __host__ void Integrate(RayJob* RenderJob,const uint counter){
 
 	cudaEvent_t start, stop;
 	float time;
-	cudaEventCreate(&start);
-	cudaEventCreate(&stop);
-	cudaEventRecord(start, 0);
+	CudaCheck(cudaEventCreate(&start));
+	CudaCheck(cudaEventCreate(&stop));
+	CudaCheck(cudaEventRecord(start, 0));
 
 	IntegrateKernal << <gridSize, blockSize >> >(n, RenderJob, counter);
-
+	CudaCheck(cudaPeekAtLastError());
+	CudaCheck(cudaDeviceSynchronize());
 	CudaCheck(cudaEventRecord(stop, 0));
-	cudaEventSynchronize(stop);
-	cudaEventElapsedTime(&time, start, stop);
-	cudaEventDestroy(start);
-	cudaEventDestroy(stop);
+	CudaCheck(cudaEventSynchronize(stop));
+	CudaCheck(cudaEventElapsedTime(&time, start, stop));
+	CudaCheck(cudaEventDestroy(start));
+	CudaCheck(cudaEventDestroy(stop));
 
 	std::cout << "Colour Merge Execution: " << time << "ms" << std::endl;
 }

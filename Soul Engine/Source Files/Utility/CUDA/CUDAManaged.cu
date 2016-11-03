@@ -1,15 +1,16 @@
 #include "Utility\CUDA\CUDAManaged.cuh"
 #include <cuda_runtime.h>
+#include "Utility\CUDA\CUDAHelper.cuh" 
 
 void* Managed::operator new(size_t len){
 	void *ptr;
-	cudaMallocManaged((void**)&ptr, len);
-	cudaDeviceSynchronize();
+	CudaCheck(cudaMallocManaged((void**)&ptr, len));
+	CudaCheck(cudaDeviceSynchronize());
 	return ptr;
 }
 
 void Managed::operator delete(void *ptr) {
-	cudaDeviceSynchronize();
-	cudaFree(ptr);
+	CudaCheck(cudaDeviceSynchronize());
+	CudaCheck(cudaFree(ptr));
 }
 

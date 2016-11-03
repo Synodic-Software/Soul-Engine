@@ -18,31 +18,31 @@ void Devices::ExtractDevices(){
 
 	for (int dev = 0; dev < deviceCount; ++dev){
 
-		cudaSetDevice(dev);
-		cudaGetDeviceProperties(&deviceProp[dev], dev);
+		CudaCheck(cudaSetDevice(dev));
+		CudaCheck(cudaGetDeviceProperties(&deviceProp[dev], dev));
 
 	}
 
-	cudaSetDevice(0);
+	CudaCheck(cudaSetDevice(0));
 }
 
 int Devices::GetCoreCount(){
 	int device;
-	cudaGetDevice(&device);
+	CudaCheck(cudaGetDevice(&device));
 
 	return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) * deviceProp[device].multiProcessorCount;
 }
 
 int Devices::GetWarpSize(){
 	int device;
-	cudaGetDevice(&device);
+	CudaCheck(cudaGetDevice(&device));
 
 	return deviceProp[device].warpSize;
 }
 
 int Devices::GetBlockHeight(){
 	int device;
-	cudaGetDevice(&device);
+	CudaCheck(cudaGetDevice(&device));
 
 	return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) / GetWarpSize();
 }
