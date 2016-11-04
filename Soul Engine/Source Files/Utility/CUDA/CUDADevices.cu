@@ -23,6 +23,8 @@ void Devices::ExtractDevices(){
 
 	}
 
+	///REMEMBER CUDA_VISIBLE_DEVICS="0" in command line c++ settings
+
 	CudaCheck(cudaSetDevice(0));
 }
 

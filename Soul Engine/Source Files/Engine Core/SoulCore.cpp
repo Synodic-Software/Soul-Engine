@@ -220,10 +220,6 @@ namespace Soul {
 				SynchGPU();
 				glfwGetWindowSize(masterWindow, &width, &height);
 
-				//UpdateVulkan
-				//VulkanBackend::GetInstance().UpdateVulkanProjection();
-
-				//Update();
 
 				cudaEvent_t start, stop;
 				float time;
@@ -329,7 +325,7 @@ void SetSetting(std::string rName, int rValue){
 
 //Initializes Soul. This must be called before using variables or 
 //any other functions relating to the engine.
-void SoulInit(){
+void SoulInit(GraphicsAPI api){
 
 	Soul::seed = uint(time(NULL));
 	srand(Soul::seed);
@@ -488,7 +484,7 @@ void RemoveScene(Scene* scene){
 
 int main()
 {
-	SoulInit();
+	SoulInit(OPENGL);
 
 	//create a Window
 	GLFWwindow* win=SoulCreateWindow(0, 0.95f, 0.95f);

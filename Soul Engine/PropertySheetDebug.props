@@ -60,7 +60,6 @@
       <GPUDebugInfo>true</GPUDebugInfo>
       <PtxAsOptionV>false</PtxAsOptionV>
       <Runtime>InheritFromHost</Runtime>
-      <AdditionalOptions>-DTHRUST_DEBUG %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <CudaLink>
       <Optimization>O2</Optimization>
@@ -70,7 +69,6 @@
       <GPUDebugInfo>true</GPUDebugInfo>
       <AdditionalDependencies>cudart64_80.lib;cudadevrt.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(CUDA_LIB_PATH)</AdditionalLibraryDirectories>
-      <AdditionalOptions>-DTHRUST_DEBUG %(AdditionalOptions)</AdditionalOptions>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup />

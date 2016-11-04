@@ -1,4 +1,9 @@
 #include "Scheduler.h"
+#include <boost/fiber/all.hpp>
+
+using namespace boost::fibers;
+using namespace boost::this_fiber;
+
 
 //let's do something with this 
 

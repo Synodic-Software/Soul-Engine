@@ -7,14 +7,15 @@
 
 typedef enum RenderType {SPECTRAL, PATH};
 typedef enum WindowType{ WINDOWED, FULLSCREEN, BORDERLESS };
+typedef enum GraphicsAPI{ OPENGL,VULKAN };
 
-void SoulInit();
+void SoulInit(GraphicsAPI);
 void SoulRun();
-//WindowType, RenderType
+
+
 GLFWwindow* SoulCreateWindow(int, float,float);
 void SoulSignalClose();
 glm::vec2* GetMouseChange();
-//void Run();
 
 bool RequestRenderSwitch(RenderType);
 bool RequestWindowSwitch(WindowType);

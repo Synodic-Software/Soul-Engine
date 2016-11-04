@@ -49,7 +49,9 @@ class Object: public Managed{
 		uint faceAmount;
 
 		Vertex* vertices;
+		Vertex* verticesCPU;
 		Face* faces;
+		Face* facesCPU;
 
 	void Update(double);
 	void UpdateLate(double);
