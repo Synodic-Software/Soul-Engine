@@ -103,9 +103,6 @@
     <Filter Include="Engine Backend\Resources\Shaders">
       <UniqueIdentifier>{f0ff9397-db0b-4e92-b4a1-82cce5ddc33e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Libraries">
-      <UniqueIdentifier>{b4a743ac-78ad-41e9-8c6f-52fc907857f4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Resources\Objects">
       <UniqueIdentifier>{23d6bac7-65bf-4c51-8994-5201316238cd}</UniqueIdentifier>
     </Filter>

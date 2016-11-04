@@ -184,9 +184,9 @@ void Object::ExtractFromFile(const char* name){
 	int device=0;
 	CudaCheck(cudaGetDevice(&device));
 
-	//CudaCheck(cudaMemAdvise(vertices, verticeAmount*sizeof(Vertex), cudaMemAdviseSetAccessedBy, device));
-	//CudaCheck(cudaMemPrefetchAsync(vertices, verticeAmount*sizeof(Vertex), device));
+	/*CudaCheck(cudaMemAdvise(vertices, verticeAmount*sizeof(Vertex), cudaMemAdviseSetAccessedBy, device));
+	CudaCheck(cudaMemPrefetchAsync(vertices, verticeAmount*sizeof(Vertex), device));
 
-	//CudaCheck(cudaMemAdvise(faces, faceAmount*sizeof(Face), cudaMemAdviseSetAccessedBy, device));
-	//CudaCheck(cudaMemPrefetchAsync(faces, faceAmount*sizeof(Face), device));
+	CudaCheck(cudaMemAdvise(faces, faceAmount*sizeof(Face), cudaMemAdviseSetAccessedBy, device));
+	CudaCheck(cudaMemPrefetchAsync(faces, faceAmount*sizeof(Face), device));*/
 }
