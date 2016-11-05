@@ -41,16 +41,18 @@ Check out the currently open issues for opportunities to contribute!
 # User (programmer) Setup
 To compile dependancies with the following must be met:
 
-  GLFW        - http://www.glfw.org/
+  GLFW          - http://www.glfw.org/
   
-  GLM         - http://glm.g-truc.net/0.9.8/index.html
+  GLM           - http://glm.g-truc.net/0.9.8/index.html
   
-  stb_image.h - https://github.com/nothings/stb
+  stb_image.h   - https://github.com/nothings/stb
   
-  Vulkan SDK  - (Probably the LunarG SDK)
+  Vulkan SDK    - https://lunarg.com/vulkan-sdk/
   
-  GLEW - http://glew.sourceforge.net/ (This is temperary until CUDA supports Vulkan)
+  Boost         - http://www.boost.org/
   
-  Cuda 8.0    - https://developer.nvidia.com/cuda-toolkit
+  GLEW          - http://glew.sourceforge.net/ 
+  
+  Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
   
   tinyobjloader - https://github.com/syoyo/tinyobjloader
