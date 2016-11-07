@@ -1,5 +1,10 @@
 #pragma once
 
+namespace Timer {
+
+
+
+}
 
 namespace Devices{
 
