@@ -215,24 +215,10 @@ namespace Soul {
 					cam->UpdateVariables();
 				}
 
-
-				cudaEvent_t start, stop;
-				float time;
-				CudaCheck(cudaEventCreate(&start));
-				CudaCheck(cudaEventCreate(&stop));
-				CudaCheck(cudaEventRecord(start, 0));
-
 				for (auto const& scene : scenes){
 					scene->Build(deltaTime);
 				}
 
-				CudaCheck(cudaEventRecord(stop, 0));
-				CudaCheck(cudaEventSynchronize(stop));
-				CudaCheck(cudaEventElapsedTime(&time, start, stop));
-				CudaCheck(cudaEventDestroy(start));
-				CudaCheck(cudaEventDestroy(stop));
-
-				std::cout << "Building Execution: " << time << "ms" << std::endl;
 				SynchGPU();
 
 				for (auto const& scene : scenes){
