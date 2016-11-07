@@ -26,8 +26,6 @@ namespace Soul {
 
 	/////////////////////////Variables and Declarations//////////////////
 
-	uint seed;
-
 	typedef struct window{
 		GLFWwindow* windowHandle;
 		WindowType type;
@@ -57,9 +55,6 @@ namespace Soul {
 
 	int engineRefreshRate;
 
-	float CurrentDelta();
-	void ClearColor(float, float, float, float);
-
 	/////////////////////////Synchronization///////////////////////////
 
 	void SynchCPU(){
@@ -68,7 +63,7 @@ namespace Soul {
 	void SynchGPU(){
 		CudaCheck(cudaDeviceSynchronize());
 	}
-	void Synch(){
+	void SynchSystem(){
 		SynchCPU();
 		SynchGPU();
 	}
@@ -94,7 +89,7 @@ namespace Soul {
 
 	//Call to deconstuct both the engine and its dependencies
 	void SoulShutDown(){
-		Soul::Synch();
+		Soul::SynchSystem();
 		RayEngine::Clean();
 		CudaCheck(cudaDeviceReset());
 
@@ -157,10 +152,9 @@ namespace Soul {
 
 	}
 
-	void Run()
-	{
+	void Warmup() {
 
-		SynchGPU();
+		double deltaTime = 1.0 / engineRefreshRate;
 
 		int width, height;
 		glfwGetWindowSize(masterWindow, &width, &height);
@@ -168,36 +162,40 @@ namespace Soul {
 
 		glfwPollEvents();
 
-		double deltaTime = 1.0 / engineRefreshRate;
-
-		for (auto const& scene : scenes){
+		for (auto const& scene : scenes) {
 			scene->Build(deltaTime);
 		}
 
-		//timer info for loop
+	}
+
+	void Run()
+	{
+
+		Warmup();
+
+		double deltaTime = 1.0 / engineRefreshRate;
+
+
+		//setup timer info
 		double t = 0.0f;
 		double currentTime = glfwGetTime();
 		double accumulator = 0.0f;
 
-
-
 		//stop loop when glfw exit is called
 		while (!glfwWindowShouldClose(masterWindow)){
+
+			//start frame timers
 			double newTime = glfwGetTime();
 			double frameTime = newTime - currentTime;
-			//std::cout << "FPS:: " <<1.0f / frameTime << std::endl;
 
-			//setting up timers
 			if (frameTime > 0.25){
 				frameTime = 0.25;
 			}
 			currentTime = newTime;
 			accumulator += frameTime;
 
-			//# of updates based on accumulated time
-
+			//consumes time created by the renderer
 			while (accumulator >= deltaTime){
-				SynchGPU();
 
 				deltaTime = 1.0 / engineRefreshRate;
 
@@ -210,15 +208,12 @@ namespace Soul {
 					InputToCamera(masterWindow, mouseCamera);
 				}
 
-				SynchGPU();
 
 
 				//apply camera changes to their matrices
 				for (auto const& cam : cameras){
 					cam->UpdateVariables();
 				}
-				SynchGPU();
-				glfwGetWindowSize(masterWindow, &width, &height);
 
 
 				cudaEvent_t start, stop;
@@ -290,9 +285,7 @@ namespace Soul {
 /////////////////////////User Interface///////////////////////////
 
 void SoulSignalClose(){
-
 	glfwSetWindowShouldClose(Soul::masterWindow, GLFW_TRUE);
-
 }
 
 void SoulRun(){
@@ -327,14 +320,11 @@ void SetSetting(std::string rName, int rValue){
 //any other functions relating to the engine.
 void SoulInit(GraphicsAPI api){
 
-	Soul::seed = uint(time(NULL));
-	srand(Soul::seed);
-
 	Soul::settings = new Settings("Settings.ini");
 
 	Devices::ExtractDevices();
 
-	Soul::Synch();
+	Soul::SynchSystem();
 
 	if (!glfwInit()){
 		Soul::SoulShutDown();

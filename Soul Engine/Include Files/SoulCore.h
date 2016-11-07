@@ -15,7 +15,6 @@ void SoulRun();
 
 GLFWwindow* SoulCreateWindow(int, float,float);
 void SoulSignalClose();
-glm::vec2* GetMouseChange();
 
 bool RequestRenderSwitch(RenderType);
 bool RequestWindowSwitch(WindowType);
@@ -27,11 +26,11 @@ int GetSetting(std::string);
 int GetSetting(std::string, int);
 void SetSetting(std::string, std::string);
 
-void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* mat);
 void SubmitScene(Scene*);
 void RemoveScene(Scene*);
+
 void AddRenderer(Scene*);
 void RemoveRenderer(Scene*);
 
-bool IsRunning();
+void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* mat);
 void RemoveObject(void*);
