@@ -112,6 +112,8 @@ namespace Soul {
 			mouseCamera->OffsetOrientation(
 				(float)(InputState::GetInstance().xPos / width * camera->FieldOfView().x),
 				(float)(InputState::GetInstance().yPos / height * camera->FieldOfView().y));
+
+			glfwSetCursorPos(masterWindow, width / 2.0f, height / 2.0f);
 		}
 
 	}
@@ -191,6 +193,7 @@ namespace Soul {
 			if (frameTime > 0.25){
 				frameTime = 0.25;
 			}
+
 			currentTime = newTime;
 			accumulator += frameTime;
 
@@ -200,7 +203,6 @@ namespace Soul {
 				deltaTime = 1.0 / engineRefreshRate;
 
 				//loading and updates for multithreading
-
 				glfwPollEvents();
 
 				if (usingDefaultCamera){
@@ -219,8 +221,6 @@ namespace Soul {
 					scene->Build(deltaTime);
 				}
 
-				SynchGPU();
-
 				for (auto const& scene : scenes){
 					PhysicsEngine::Process(scene);
 				}
@@ -228,7 +228,6 @@ namespace Soul {
 				t += deltaTime;
 				accumulator -= deltaTime;
 			}
-			SynchGPU();
 
 			for (auto const& rend : renderObjects){
 				rend.rendererHandle->RenderSetup({ width, height }, mouseCamera, deltaTime);
