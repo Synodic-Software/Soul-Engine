@@ -112,8 +112,6 @@ namespace Soul {
 			mouseCamera->OffsetOrientation(
 				(float)(InputState::GetInstance().xPos / width * camera->FieldOfView().x),
 				(float)(InputState::GetInstance().yPos / height * camera->FieldOfView().y));
-
-			glfwSetCursorPos(masterWindow, width / 2.0f, height / 2.0f);
 		}
 
 	}
@@ -463,6 +461,8 @@ int main()
 
 	//create a Window
 	GLFWwindow* win=SoulCreateWindow(0, 0.95f, 0.95f);
+
+	InputState::GetInstance().ResetMouse = true;
 
 	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
