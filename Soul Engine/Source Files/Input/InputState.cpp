@@ -36,12 +36,13 @@ void InputState::InputMouseCallback(GLFWwindow* window, double xpos, double ypos
 {
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
-	xPos = xpos - (width / 2.0);
-	yPos = ypos - (height / 2.0);
 
-	if (ResetMouse){
+	if (ResetMouse) {
 		glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
 	}
+
+	xPos = xpos - (width / 2.0);
+	yPos = ypos - (height / 2.0);
 }
 
 void InputState::InputScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
@@ -53,4 +54,8 @@ void InputState::InputScrollCallback(GLFWwindow* window, double xoffset, double 
 void InputState::ResetOffsets(){
 	scrollXOffset = 0.0f;
 	scrollYOffset = 0.0f;
+	if (ResetMouse) {
+		xPos = 0;
+		yPos = 0;
+	}
 }
