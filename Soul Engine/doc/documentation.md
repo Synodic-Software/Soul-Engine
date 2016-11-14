@@ -201,28 +201,6 @@ void SetSetting(std::string, std::string);
 <br/>
 
 ```C++
-void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat);
-```
-
-**Requires:** None
-
-**Params:**
-
-- Scene* __scene:__ Scene to add object to
-
-- glm::vec3& __param2:__ Global position coordinates to add obbject at
-
-- const char* __file:__ Filename containing object
-
-- Material* __mat:__ Material of object
-
-**Effects:** Ads object to scene at specified position with specified material
-
-**Returns:** None
-
-<br/>
-
-```C++
 void SubmitScene(Scene*);
 ```
 
