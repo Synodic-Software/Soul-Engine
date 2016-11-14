@@ -286,6 +286,25 @@ void RemoveRenderer(Scene*);
 
 <br/>
 
+```C++
+void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* mat);
+```
+
+**Requires:** None
+
+**Params:**
+- Scene* __scene:__ Scene to add object to
+- Scene* __globalPos:__ Global position in scene to add object to
+- Scene* __file:__ Name of file containing the object
+- Scene* __mat:__ Material of the object
+
+
+**Effects:** Adds object from file to specified scene at globalPos in material mat if possible
+
+**Returns:** None
+
+<br/>
+
 
 
 <br/> <br/>
