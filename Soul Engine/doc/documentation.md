@@ -254,6 +254,22 @@ void RemoveScene(Scene*);
 
 <br/>
 
+```C++
+void AddRenderer(Scene*);
+```
+
+**Requires:** None
+
+**Params:**
+- Scene* __param1:__ Scene to add renderer to
+
+
+**Effects:** Add renderer to specified scene if possible
+
+**Returns:** None
+
+<br/>
+
 
 
 <br/> <br/>
