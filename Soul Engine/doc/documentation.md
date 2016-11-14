@@ -270,6 +270,22 @@ void AddRenderer(Scene*);
 
 <br/>
 
+```C++
+void RemoveRenderer(Scene*);
+```
+
+**Requires:** None
+
+**Params:**
+- Scene* __param1:__ Scene to remove renderer from
+
+
+**Effects:** Remove renderer from specified scene if possible
+
+**Returns:** None
+
+<br/>
+
 
 
 <br/> <br/>
