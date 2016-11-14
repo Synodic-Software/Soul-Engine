@@ -305,7 +305,19 @@ void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* ma
 
 <br/>
 
+```C++
+void RemoveObject(void*);
+```
 
+**Requires:** None
+
+**Params:**
+- void* __param1:__ Object to remove
+
+
+**Effects:** Remove specified object from it's scene if possible
+
+**Returns:** None
 
 <br/> <br/>
 
