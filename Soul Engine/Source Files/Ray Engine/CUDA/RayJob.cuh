@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Ray Engine\CUDA/Ray.cuh"
-#include "Engine Core\Camera\CUDA/Camera.cuh"
+#include "Ray.cuh"
+#include "Engine Core\Camera\Camera.h"
 
 
-enum rayType{ 
-	  RayCOLOUR				//RayCOLOUR: A vec3 of RGB values to be displayed
+enum rayType {
+	RayCOLOUR				//RayCOLOUR: A vec3 of RGB values to be displayed
 	, RayCOLOUR_SPECTRAL	//RayCOLOUR_SPECTRAL: Uses additional processing time to perform spectral operations and returns the result in vec3 RGB space.
 	, RayDISTANCE			//RayDISTANCE: A float of the specific ray's distance travelled.
 	, RayOBJECT_ID			//RayOBJECT_ID: A unique ID of the first Object hit in a uint.
@@ -13,7 +13,8 @@ enum rayType{
 	, RayUV					//RayUV: The UV at the first point hit in a vec2.
 };
 
-class RayJob : public Managed{
+class RayJob
+{
 public:
 
 	//@param The information to be retreiving from the job.
@@ -21,9 +22,8 @@ public:
 	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
 	//@param The amount of buffers used for result storage.
-	__host__ RayJob(rayType, uint, uint, Camera* camera, uint);
+	__host__ RayJob(rayType, uint, uint, Camera* camera, void* resultsIn);
 	__host__ ~RayJob();
-
 
 	//Returns a reference to a camera pointer. All the ray shooting information is stored here.
 	__host__ __device__ Camera*& GetCamera();
@@ -40,12 +40,10 @@ public:
 	//Returns the current sample per ray (modifiable)
 	__host__ __device__ uint& GetSampleAmount();
 
+	//result variables
 
-	//Returns the pointer to the results (modifiable)
-	__host__ __device__ void*& GetResultPointer(uint);
-	
-	//Returns the pointer to the results (modifiable)
-	__host__ __device__ void SwapResults(uint,uint);
+	void* results;
+
 protected:
 
 private:
@@ -55,13 +53,9 @@ private:
 
 	//common variables
 	Camera* camera;
-    rayType type;
+	rayType type;
 	uint rayAmount;
 	uint rayBaseAmount;
 	uint samples;
 
-	uint numResultBuffers;
-
-	//result variables
-	void** results;
 };

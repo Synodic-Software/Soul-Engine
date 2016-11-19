@@ -1,19 +1,19 @@
 #include "Renderer.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
 
-__global__ void IntegrateKernal(const uint n, RayJob* job, const uint counter){
+__global__ void IntegrateKernal(const uint n, glm::vec4* A, glm::vec4* B, const uint counter){
 
 
 	uint index = getGlobalIdx_1D_1D();
 
 	if (index < n){
-		((glm::vec4*)job->GetResultPointer(1))[index] = glm::mix(((glm::vec4*)job->GetResultPointer(1))[index], ((glm::vec4*)job->GetResultPointer(0))[index], 1.0f / counter);
-		((glm::vec4*)job->GetResultPointer(0))[index] = ((glm::vec4*)job->GetResultPointer(1))[index];
+		B[index] = glm::mix(B[index], A[index], 1.0f / counter);
+		A[index] = B[index];
 	}
 }
 
 
-__host__ void Integrate(RayJob* RenderJob,const uint counter){
+__host__ void Integrate(RayJob* RenderJob, glm::vec4* A, glm::vec4* B,const uint counter){
 	//RenderJob->SwapResults(0, 1);
 
 	uint n = RenderJob->GetRayAmount();
@@ -26,7 +26,7 @@ __host__ void Integrate(RayJob* RenderJob,const uint counter){
 	CudaCheck(cudaEventCreate(&stop));
 	CudaCheck(cudaEventRecord(start, 0));
 
-	IntegrateKernal << <gridSize, blockSize >> >(n, RenderJob, counter);
+	IntegrateKernal << <gridSize, blockSize >> >(n, A,B, counter);
 	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
 	CudaCheck(cudaEventRecord(stop, 0));
