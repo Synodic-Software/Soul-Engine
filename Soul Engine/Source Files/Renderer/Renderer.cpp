@@ -43,21 +43,8 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
 		cudaBuffer));
 
+	CudaCheck(cudaMalloc((void**)&integrationBuffer, originalScreen.x*originalScreen.y * sizeof(glm::vec4)));
 	CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
-
-	RenderJob = RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, &camera,2);
-
-	CudaCheck(cudaFree(RenderJob->GetResultPointer(0)));
-	RenderJob->GetResultPointer(0) = bufferData;
-
-
-
-
-	//cudaFree(RenderJob->GetResultPointer(0));
-	//cudaFree(RenderJob->GetResultPointer(1));
-	//targetData.push_back(NULL);
-	//targetData.push_back(NULL);
-	//targetData.push_back(NULL);
 
 	Vertices[0] = 0.0f;
 	Vertices[1] = 0.0f;
@@ -134,7 +121,7 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	}
 	uint newWidth = (uint)glm::ceil(originalScreen.x*scroll);
 	
-	uint workCalc = RenderJob->GetSampleAmount()*RenderJob->GetRayAmount();
+	uint workCalc = samples*screen.x*screen.y;
 
 	uint workTarget = (1000.0f / timeTarget) / frameTime;
 
@@ -156,8 +143,9 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 	uint newHeight = (uint) glm::ceil(newWidth / aspectRatio);
 	modifiedScreen = glm::uvec2(newWidth, newHeight);
 	camera->resolution=modifiedScreen;
-	RayEngine::ChangeJob(RenderJob, (modifiedScreen.x*modifiedScreen.y),
-		samples, camera);
+
+	RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, camera, bufferData);
+
 	//RenderJob->GetSampleAmount()=0.1f;
 	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
 	size_t num_bytes;
@@ -169,7 +157,7 @@ void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double time
 void Renderer::Render(bool integrate){
 
 	if (integrate){
-		Integrate(RenderJob, iCounter);
+		Integrate(RenderJob, bufferData, integrationBuffer, iCounter);
 		iCounter++;
 	}
 	else{

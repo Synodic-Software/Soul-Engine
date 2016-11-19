@@ -59,6 +59,8 @@ private:
 
 	struct cudaGraphicsResource *cudaBuffer;
 	glm::vec4 *bufferData;
+	glm::vec4 *integrationBuffer;
+
 	double newTime;
 	std::list<double> fiveFrame;
 };

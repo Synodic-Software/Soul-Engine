@@ -132,11 +132,11 @@ __host__ __device__ __inline__ uint WangHash(uint a) {
 	return a;
 }
 
-__device__ __inline__ int GetCurrentJob(RayJob** jobs, int& jobSize, const uint& index, const uint& startIndex){
+__device__ __inline__ int GetCurrentJob(RayJob* jobs, int& jobSize, const uint& index, const uint& startIndex){
 
 	int i = 0;
 	for (;
-		i < jobSize && !(index < startIndex + jobs[i]->GetRayAmount()*jobs[i]->GetSampleAmount());
+		i < jobSize && !(index < startIndex + jobs[i].GetRayAmount()*jobs[i].GetSampleAmount());
 		++i){
 
 	}
@@ -147,11 +147,11 @@ __device__ __inline__ int GetCurrentJob(RayJob** jobs, int& jobSize, const uint&
 	//}
 
 }
-__device__ __inline__ int GetCurrentJobNoSample(RayJob** jobs, int& jobSize, const uint& index, const uint& startIndex){
+__device__ __inline__ int GetCurrentJobNoSample(RayJob* jobs, int& jobSize, const uint& index, const uint& startIndex){
 
 	int i = 0;
 	for (;
-		i < jobSize && !(index < startIndex + jobs[i]->GetRayAmount());
+		i < jobSize && !(index < startIndex + jobs[i].GetRayAmount());
 		++i){
 
 	}
@@ -163,7 +163,7 @@ __device__ __inline__ int GetCurrentJobNoSample(RayJob** jobs, int& jobSize, con
 
 }
 
-__global__ void EngineResultClear(const uint n, RayJob** jobs, int jobSize){
+__global__ void EngineResultClear(const uint n, RayJob* jobs, int jobSize){
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -176,10 +176,10 @@ __global__ void EngineResultClear(const uint n, RayJob** jobs, int jobSize){
 
 	int cur = GetCurrentJobNoSample(jobs, jobSize, index, startIndex);
 
-	((glm::vec4*)jobs[cur]->GetResultPointer(0))[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	((glm::vec4*)jobs[cur].results)[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-__global__ void RaySetup(const uint n, RayJob** job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene){
+__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene){
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -198,12 +198,12 @@ __global__ void RaySetup(const uint n, RayJob** job, int jobSize, Ray* rays, con
 	curandState randState;
 	curand_init(raySeed + index, 0, 0, &randState);
 
-	uint localIndex = (index - startIndex) / job[cur]->GetSampleAmount();
+	uint localIndex = (index - startIndex) / job[cur].GetSampleAmount();
 
 	Ray ray;
 	ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ray.resultOffset = localIndex;
-	job[cur]->GetCamera()->SetupRay(localIndex, ray, randState);
+	job[cur].GetCamera()->SetupRay(localIndex, ray, randState);
 
 	rays[index] = ray;
 }
@@ -270,7 +270,7 @@ __host__ __device__ bool AABBIntersect(const BoundingBox& box, const glm::vec3& 
 }
 
 
-__global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, Ray* raysNew, const uint raySeed, const Scene* scene, int * nAtomic){
+__global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const uint raySeed, const Scene* scene, int * nAtomic){
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -368,11 +368,11 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 		raysNew[FastAtomicAdd(nAtomic)] = ray;
 
 	}
-	col /= job[cur]->GetSampleAmount();
+	col /= job[cur].GetSampleAmount();
 
 	//rays[index] = ray;
 
-	glm::vec4* pt = &((glm::vec4*)job[cur]->GetResultPointer(0))[localIndex];
+	glm::vec4* pt = &((glm::vec4*)job[cur].results)[localIndex];
 
 	atomicAdd(&(pt->x), col.x);
 
@@ -386,7 +386,7 @@ __global__ void CollectHits(const uint n, RayJob** job, int jobSize, Ray* rays, 
 
 
 
-__global__ void EngineExecute(const uint n, RayJob** job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene, int* counter){
+__global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene, int* counter){
 
 
 	Node * traversalStack[STACK_SIZE];
@@ -587,19 +587,20 @@ __global__ void EngineExecute(const uint n, RayJob** job, int jobSize, Ray* rays
 }
 
 
-__host__ void ClearResults(std::vector<RayJob*>& hjobs){
+__host__ void ClearResults(std::vector<RayJob>& hjobs){
 
 	CudaCheck(cudaDeviceSynchronize());
-	RayJob** jobs;
+	RayJob* jobs;
+	CudaCheck(cudaMalloc((void**)&jobs, hjobs.size() * sizeof(RayJob)));
+	CudaCheck(cudaMemcpy(jobs, hjobs.data(), hjobs.size() * sizeof(RayJob), cudaMemcpyHostToDevice));
+
 	uint jobsSize = hjobs.size();
-	CudaCheck(cudaMalloc((void**)&jobs, jobsSize*sizeof(RayJob*)));
-	CudaCheck(cudaMemcpy(jobs, hjobs.data(), jobsSize*sizeof(RayJob*), cudaMemcpyHostToDevice));
 
 	if (jobsSize > 0){
 
 		uint n = 0;
 		for (int i = 0; i < jobsSize; ++i){
-			n += hjobs[i]->GetRayAmount();
+			n += hjobs[i].GetRayAmount();
 		}
 		CudaCheck(cudaDeviceSynchronize());
 
@@ -632,21 +633,22 @@ __host__ void ClearResults(std::vector<RayJob*>& hjobs){
 
 	CudaCheck(cudaFree(jobs));
 }
-__host__ void ProcessJobs(std::vector<RayJob*>& hjobs, const Scene* scene){
+__host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* scene){
 	CudaCheck(cudaDeviceSynchronize());
-	RayJob** jobs;
+	RayJob* jobs;
+	CudaCheck(cudaMalloc((void**)&jobs, hjobs.size() * sizeof(RayJob)));
+	CudaCheck(cudaMemcpy(jobs, hjobs.data(), hjobs.size() * sizeof(RayJob), cudaMemcpyHostToDevice));
+
 	uint jobsSize = hjobs.size();
-	CudaCheck(cudaMalloc((void**)&jobs, jobsSize*sizeof(RayJob*)));
-	CudaCheck(cudaMemcpy(jobs, hjobs.data(), jobsSize*sizeof(RayJob*), cudaMemcpyHostToDevice));
 
 	if (jobsSize > 0){
 
 		uint n = 0;
 		uint samplesMax = 0;
 		for (int i = 0; i < jobsSize; ++i){
-			n += hjobs[i]->GetRayAmount()* hjobs[i]->GetSampleAmount();
-			if (hjobs[i]->GetSampleAmount()>samplesMax){
-				samplesMax = hjobs[i]->GetSampleAmount();
+			n += hjobs[i].GetRayAmount()* hjobs[i].GetSampleAmount();
+			if (hjobs[i].GetSampleAmount()>samplesMax){
+				samplesMax = hjobs[i].GetSampleAmount();
 			}
 		}
 

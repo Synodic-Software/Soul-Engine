@@ -228,6 +228,8 @@ namespace Soul {
 			}
 
 			for (auto const& rend : renderObjects){
+				int width, height;
+				glfwGetWindowSize(masterWindow, &width, &height);
 				rend.rendererHandle->RenderSetup({ width, height }, mouseCamera, deltaTime);
 			}
 
@@ -246,7 +248,7 @@ namespace Soul {
 				rend.rendererHandle->Render(false);
 			}
 			SynchGPU();
-
+			RayEngine::Clear();
 			///////////////////////////////////////////////////////////////////////until vulkan
 
 			InputState::GetInstance().ResetOffsets();
