@@ -56,3 +56,32 @@ To compile dependancies with the following must be met:
   Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
   
   tinyobjloader - https://github.com/syoyo/tinyobjloader
+  
+# Example Usage
+
+```c++
+int main()
+{
+	SoulInit(OPENGL);
+
+	//create a Window
+	GLFWwindow* win=SoulCreateWindow(0, 0.95f, 0.95f);
+
+	InputState::GetInstance().ResetMouse = true;
+
+	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
+
+	Material* whiteGray = new Material();
+	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
+	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	Scene* scene = new Scene();
+	AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
+
+	SubmitScene(scene);
+
+	SoulRun();
+
+	return 0;
+}
+```
