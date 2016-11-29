@@ -9,6 +9,7 @@ If background color support is added to github, may wwant to use below:
 Soul Engine Documentation
 =====
 ###Please Note this is a work in progress
+######Our full documentation resides in our Wiki [here](https://github.com/Behemyth/Soul-Engine/wiki/Documentation).  This file is included to ensure documentaation availability offline.
 
 <br/>
 ##Table of Contents
@@ -54,9 +55,9 @@ GLFWwindow* SoulCreateWindow(int, float, float);
 **Requires:** None
 
 **Params:**
-- int **param1:** param1 desc
-- float **param2:** param2 desc
-- float **param2:** param2 desc
+- int **param1:** Integer of the attached moniter. 0 is the default.
+- float **param2:** A float [0,1.0f] describing the window width
+- float **param3:** A float [0,1.0f] describing the window height
 
 **Effects:** Crestes a Window
 
@@ -162,7 +163,7 @@ int GetSetting(std::string);
 
 **Effects:** Gets specified setting if possible
 
-**Returns:** int desc...
+**Returns:** The value related to the setting
 
 <br/>
 
@@ -175,11 +176,11 @@ int GetSetting(std::string, int);
 **Params:**
 - std::string **param1:** Setting to get
 
-- int **param2:** more info, desc
+- int **param2:** Default parameter to set if one is not found
 
 **Effects:** Gets specified setting if possible
 
-**Returns:** int desc...
+**Returns:** The value related to the setting
 
 <br/>
 
@@ -187,16 +188,7 @@ int GetSetting(std::string, int);
 void SetSetting(std::string, std::string);
 ```
 
-**Requires:** None
-
-**Params:**
-- std::string **param1:** desc
-
-- std::string **param2:** desc
-
-**Effects:** Sets setting to the specificed value
-
-**Returns:** None
+This method had been deprecated and is no longer supported.
 
 <br/>
 
@@ -265,19 +257,22 @@ void RemoveRenderer(Scene*);
 <br/>
 
 ```C++
-void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* mat);
+void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat);
 ```
 
 **Requires:** None
 
 **Params:**
+
 - Scene* __scene:__ Scene to add object to
-- Scene* __globalPos:__ Global position in scene to add object to
-- Scene* __file:__ Name of file containing the object
-- Scene* __mat:__ Material of the object
 
+- glm::vec3& __globalPos:__ Global position coordinates to add obbject at
 
-**Effects:** Adds object from file to specified scene at globalPos in material mat if possible
+- const char* __file:__ Filename containing object
+
+- Material* __mat:__ Material of object
+
+**Effects:** Adds object to scene at specified position with specified material
 
 **Returns:** None
 
@@ -306,9 +301,9 @@ Custom Types
 typedef enum RenderType {SPECTRAL, PATH};
 ```
 
-**SPECTRAL**: desc
+**SPECTRAL**: Path tracing with spectral colour output
 
-**PATH**: desc
+**PATH**: Path tracing
 
 <br/>
 
