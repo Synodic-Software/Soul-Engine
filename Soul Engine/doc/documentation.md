@@ -9,7 +9,7 @@ If background color support is added to github, may wwant to use below:
 Soul Engine Documentation
 =====
 ###Please Note this is a work in progress
-######Our full documentation resides in our Wiki [here](https://github.com/Behemyth/Soul-Engine/wiki/Documentation).  This file is included to ensure documentaation availability offline.
+######Our full documentation resides in our Wiki [here](https://github.com/Behemyth/Soul-Engine/wiki/Documentation).  This file is included to ensure documentation availability offline.
 
 <br/>
 ##Table of Contents
