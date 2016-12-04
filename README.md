@@ -85,3 +85,5 @@ int main()
 	return 0;
 }
 ```
+
+The documentation Wiki for Soul Engine can be found [here](https://github.com/Behemyth/Soul-Engine/wiki/Documentation).
