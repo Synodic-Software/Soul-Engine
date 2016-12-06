@@ -8,7 +8,7 @@ system with CUDA (primary) or OpenCL (secondary) support.
 #Features
 These are planned features (partial/incomplete implementations) for aid in the vision of the final application.
 
-  -S pectral bidirectional path tracer
+  - Spectral bidirectional path tracer
   
   - GPU physics pipeline which includes an FEM solver for all objects
   
@@ -35,7 +35,7 @@ Completed features:
 Ways to interact with Soul Engine beyond this repository are currently being investigated.
 For your propiertery purposes, an alternate license will be also made available once the project is in a decent enough shape.
 
-Check out the currently open issues for opportunities to contribute!
+Check out the currently open [issues](https://github.com/Behemyth/Soul-Engine/issues) for opportunities to contribute!
 
 # User (programmer) Setup
 To compile dependancies with the following must be met:
