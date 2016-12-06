@@ -40,21 +40,23 @@ Check out the currently open [issues](https://github.com/Behemyth/Soul-Engine/is
 # User (programmer) Setup
 To compile dependancies with the following must be met:
 
-  GLFW          - http://www.glfw.org/
+  - GLFW          - http://www.glfw.org/
   
-  GLM           - http://glm.g-truc.net/0.9.8/index.html
+  - GLM           - http://glm.g-truc.net/0.9.8/index.html
   
-  stb_image.h   - https://github.com/nothings/stb
+  - stb_image.h   - https://github.com/nothings/stb
   
-  Vulkan SDK    - https://lunarg.com/vulkan-sdk/
+  - Vulkan SDK    - https://lunarg.com/vulkan-sdk/
   
-  Boost         - http://www.boost.org/
+  - Boost         - http://www.boost.org/
   
-  GLEW          - http://glew.sourceforge.net/ 
+  - GLEW          - http://glew.sourceforge.net/ 
   
-  Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
+  - Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
   
-  tinyobjloader - https://github.com/syoyo/tinyobjloader
+  - tinyobjloader - https://github.com/syoyo/tinyobjloader
+  
+Soul Engine can be compiled in Microsoft Visual Studio 2015.
   
 # Example Usage
 
