@@ -8,30 +8,29 @@ system with CUDA (primary) or OpenCL (secondary) support.
 #Features
 These are planned features (partial/incomplete implementations) for aid in the vision of the final application.
 
-  -Spectral bidirectional path tracer
+  -S pectral bidirectional path tracer
   
-  -GPU physics pipeline which includes an FEM solver for all objects
+  - GPU physics pipeline which includes an FEM solver for all objects
   
-  -A ray engine which handles ray requests and processes them in bulk.
+  - A ray engine which handles ray requests and processes them in bulk.
   
-  -Sound path tracing with a multi-listener setup.
+  - Sound path tracing with a multi-listener setup.
   
-  -Shader system allowing for immediate artist controlled changes.
+  - Shader system allowing for immediate artist controlled changes.
   
-  -Fiber implementation for task based CPU processing.
+  - Fiber implementation for task based CPU processing.
   
-  -Calculation determinism allowing for lockstep networking.
+  - Calculation determinism allowing for lockstep networking.
   
-# Current Status
 Completed features:
 
-  -The ray engine allows for any code to request a parrallel ray job near rendertime. Jobs are coalesced, at the cost of minor overhead, and sent into the scene to collect information. 
+  - The ray engine allows for any code to request a parrallel ray job near rendertime. Jobs are coalesced, at the cost of minor overhead, and sent into the scene to collect information. 
   
-  -Basic path tracing is available using only diffuse materials.
+  - Basic path tracing is available using only diffuse materials.
   
-  -LBVH implementation is complete
+  - LBVH implementation is complete
   
-  -Scenes can be created and sent for rendering
+  - Scenes can be created and sent for rendering
 
 Ways to interact with Soul Engine beyond this repository are currently being investigated.
 For your propiertery purposes, an alternate license will be also made available once the project is in a decent enough shape.
@@ -60,6 +59,9 @@ To compile dependancies with the following must be met:
 # Example Usage
 
 ```c++
+
+#include "SoulCore.h"
+
 int main()
 {
 	SoulInit(OPENGL);
