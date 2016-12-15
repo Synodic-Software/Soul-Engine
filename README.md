@@ -8,58 +8,62 @@ system with CUDA (primary) or OpenCL (secondary) support.
 #Features
 These are planned features (partial/incomplete implementations) for aid in the vision of the final application.
 
-  -Spectral bidirectional path tracer
+  - Spectral bidirectional path tracer
   
-  -GPU physics pipeline which includes an FEM solver for all objects
+  - GPU physics pipeline which includes an FEM solver for all objects
   
-  -A ray engine which handles ray requests and processes them in bulk.
+  - A ray engine which handles ray requests and processes them in bulk.
   
-  -Sound path tracing with a multi-listener setup.
+  - Sound path tracing with a multi-listener setup.
   
-  -Shader system allowing for immediate artist controlled changes.
+  - Shader system allowing for immediate artist controlled changes.
   
-  -Fiber implementation for task based CPU processing.
+  - Fiber implementation for task based CPU processing.
   
-  -Calculation determinism allowing for lockstep networking.
+  - Calculation determinism allowing for lockstep networking.
   
-# Current Status
 Completed features:
 
-  -The ray engine allows for any code to request a parrallel ray job near rendertime. Jobs are coalesced, at the cost of minor overhead, and sent into the scene to collect information. 
+  - The ray engine allows for any code to request a parrallel ray job near rendertime. Jobs are coalesced, at the cost of minor overhead, and sent into the scene to collect information. 
   
-  -Basic path tracing is available using only diffuse materials.
+  - Basic path tracing is available using only diffuse materials.
   
-  -LBVH implementation is complete
+  - LBVH implementation is complete
   
-  -Scenes can be created and sent for rendering
+  - Scenes can be created and sent for rendering
 
 Ways to interact with Soul Engine beyond this repository are currently being investigated.
 For your propiertery purposes, an alternate license will be also made available once the project is in a decent enough shape.
 
-Check out the currently open issues for opportunities to contribute!
+Check out the currently open [issues](https://github.com/Behemyth/Soul-Engine/issues) for opportunities to contribute!
 
 # User (programmer) Setup
 To compile dependancies with the following must be met:
 
-  GLFW          - http://www.glfw.org/
+  - GLFW          - http://www.glfw.org/
   
-  GLM           - http://glm.g-truc.net/0.9.8/index.html
+  - GLM           - http://glm.g-truc.net/0.9.8/index.html
   
-  stb_image.h   - https://github.com/nothings/stb
+  - stb_image.h   - https://github.com/nothings/stb
   
-  Vulkan SDK    - https://lunarg.com/vulkan-sdk/
+  - Vulkan SDK    - https://lunarg.com/vulkan-sdk/
   
-  Boost         - http://www.boost.org/
+  - Boost         - http://www.boost.org/
   
-  GLEW          - http://glew.sourceforge.net/ 
+  - GLEW          - http://glew.sourceforge.net/ 
   
-  Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
+  - Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
   
-  tinyobjloader - https://github.com/syoyo/tinyobjloader
+  - tinyobjloader - https://github.com/syoyo/tinyobjloader
+  
+Soul Engine can be compiled in Microsoft Visual Studio 2015.
   
 # Example Usage
 
 ```c++
+
+#include "SoulCore.h"
+
 int main()
 {
 	SoulInit(OPENGL);
@@ -85,3 +89,5 @@ int main()
 	return 0;
 }
 ```
+
+The documentation Wiki for Soul Engine can be found [here](https://github.com/Behemyth/Soul-Engine/wiki/Documentation).
