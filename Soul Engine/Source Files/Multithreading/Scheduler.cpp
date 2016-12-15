@@ -1,6 +1,7 @@
 #include "Scheduler.h"
 #include <boost/fiber/all.hpp>
 #include <thread>
+#include <condition_variable>
 
 std::thread* threads;
 unsigned int threadCount;
@@ -10,35 +11,35 @@ static bool shouldRun{ true };
 
 static std::mutex fiberMutex{};
 static boost::fibers::condition_variable_any condition{};
-typedef std::unique_lock< std::mutex > lock_t;
 
 void ThreadRun() {
 	boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
 
-
-	lock_t lk(fiberMutex);
-	condition.wait(lk, []() { return 0 == fiberCount && !shouldRun; });
+	std::unique_lock<std::mutex> lock(fiberMutex);
+	condition.wait(lock, []() { return 0 == fiberCount && !shouldRun; });
 }
 
 namespace Scheduler {
 
 	void Terminate() {
-		
 
-		lock_t lk(fiberMutex);
+
+		std::unique_lock<std::mutex> lock(fiberMutex);
 		shouldRun = false;
-		if (0 == --fiberCount) { 
-			lk.unlock();
+		if (0 == --fiberCount) {
+			lock.unlock();
 			condition.notify_all(); //notify all fibers waiting 
 		}
 
-		condition.wait(lk, []() { return 0 == fiberCount && !shouldRun; });
+		while (fiberCount!=0) {
+			boost::this_fiber::yield();
+		}
 
 		for (int i = 0; i < threadCount; ++i) {
 			threads[i].join();
 		}
 
-		delete threads;
+		delete[] threads;
 
 	}
 
@@ -46,7 +47,7 @@ namespace Scheduler {
 
 		boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
 
-		threadCount = std::thread::hardware_concurrency()-1;  //the main thread takes up one slot.
+		threadCount = std::thread::hardware_concurrency() - 1;  //the main thread takes up one slot.
 
 		threads = new std::thread[threadCount];
 
