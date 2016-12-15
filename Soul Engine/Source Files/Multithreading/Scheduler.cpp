@@ -1,41 +1,61 @@
 #include "Scheduler.h"
 #include <boost/fiber/all.hpp>
+#include <thread>
 
-using namespace boost::fibers;
-using namespace boost::this_fiber;
+std::thread* threads;
+unsigned int threadCount;
+
+static std::size_t fiberCount{ 0 };
+static bool shouldRun{ true };
+
+static std::mutex fiberMutex{};
+static boost::fibers::condition_variable_any condition{};
+typedef std::unique_lock< std::mutex > lock_t;
+
+void ThreadRun() {
+	boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
 
 
-//let's do something with this 
+	lock_t lk(fiberMutex);
+	condition.wait(lk, []() { return 0 == fiberCount && !shouldRun; });
+}
 
-//#include "fiber_tasking_lib/tagged_heap_backed_linear_allocator.h"
+namespace Scheduler {
 
+	void Terminate() {
+		
 
-//FiberTaskingLib::TaskScheduler *taskScheduler = NULL;
-//FiberTaskingLib::TaggedHeap *taggedHeap = NULL;
-//FiberTaskingLib::TaggedHeapBackedLinearAllocator *allocator = NULL;
+		lock_t lk(fiberMutex);
+		shouldRun = false;
+		if (0 == --fiberCount) { 
+			lk.unlock();
+			condition.notify_all(); //notify all fibers waiting 
+		}
 
-//// new task submitted to scheduler
-//void Scheduler::Start(TASK task) {
-//	
-//	taskScheduler = new FiberTaskingLib::TaskScheduler();
-//	taskScheduler->Initialize(10);
-//
-//	taggedHeap = new FiberTaskingLib::TaggedHeap(2097152);
-//	allocator = new FiberTaskingLib::TaggedHeapBackedLinearAllocator();
-//	allocator->init(taggedHeap, 1234);
-//	
-//	std::shared_ptr<FiberTaskingLib::AtomicCounter> counter = taskScheduler->AddTasks(1, &task);
-//
-//	taskScheduler->WaitForCounter(counter, 0);
-//}
+		condition.wait(lk, []() { return 0 == fiberCount && !shouldRun; });
 
-//// end task
-//void Scheduler::Terminate() {
-//	if (allocator != NULL){
-//		taskScheduler->Quit();
-//		allocator->destroy();
-//		delete allocator;
-//		delete taggedHeap;
-//		delete taskScheduler;
-//	}
-//}
+		for (int i = 0; i < threadCount; ++i) {
+			threads[i].join();
+		}
+
+		delete threads;
+
+	}
+
+	void Init() {
+
+		boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
+
+		threadCount = std::thread::hardware_concurrency()-1;  //the main thread takes up one slot.
+
+		threads = new std::thread[threadCount];
+
+		fiberCount++;
+
+		for (int i = 0; i < threadCount; ++i) {
+			threads[i] = std::thread(ThreadRun);
+		}
+
+	}
+
+}

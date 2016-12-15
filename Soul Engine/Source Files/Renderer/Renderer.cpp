@@ -103,48 +103,48 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 
 void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget){
 
-	double oldTime = newTime;
-	newTime = glfwGetTime();
-	double smoothing = 0.85;
+	//double oldTime = newTime;
+	//newTime = glfwGetTime();
+	//double smoothing = 0.85;
 
-	double frameTop=newTime - oldTime;
-	frameTime = (frameTime * smoothing) + (frameTop * (1.0 - smoothing));
+	//double frameTop=newTime - oldTime;
+	//frameTime = (frameTime * smoothing) + (frameTop * (1.0 - smoothing));
 
-	float aspectRatio = camera->GetAspect();
+	//float aspectRatio = camera->GetAspect();
 
-	scroll += InputState::GetInstance().scrollYOffset / 50.0f;
-	if (scroll > 1.0f){
-		scroll = 1.0f;
-	}
-	else if(scroll < 0.0f){
-		scroll = 0;
-	}
-	uint newWidth = (uint)glm::ceil(originalScreen.x*scroll);
-	
-	uint workCalc = samples*screen.x*screen.y;
+	//scroll += InputState::GetInstance().scrollYOffset / 50.0f;
+	//if (scroll > 1.0f){
+	//	scroll = 1.0f;
+	//}
+	//else if(scroll < 0.0f){
+	//	scroll = 0;
+	//}
+	//uint newWidth = (uint)glm::ceil(originalScreen.x*scroll);
+	//
+	//uint workCalc = samples*screen.x*screen.y;
 
-	uint workTarget = (1000.0f / timeTarget) / frameTime;
+	//uint workTarget = (1000.0f / timeTarget) / frameTime;
 
-	/*if (workTarget - (workTarget*changeCutoff) > workCalc){
-		newWidth = newWidth*(1.0+changeCutoff);
-	}
-	else if (workTarget + (workTarget*changeCutoff) < workCalc){
-		newWidth = newWidth/(1.0 + changeCutoff);
-	}*/
+	///*if (workTarget - (workTarget*changeCutoff) > workCalc){
+	//	newWidth = newWidth*(1.0+changeCutoff);
+	//}
+	//else if (workTarget + (workTarget*changeCutoff) < workCalc){
+	//	newWidth = newWidth/(1.0 + changeCutoff);
+	//}*/
 
 
-	if (newWidth<32){
-		newWidth = 32;
-	}
-	else if (newWidth>originalScreen.x){
-		newWidth = originalScreen.x;
-	}
+	//if (newWidth<32){
+	//	newWidth = 32;
+	//}
+	//else if (newWidth>originalScreen.x){
+	//	newWidth = originalScreen.x;
+	//}
 
-	uint newHeight = (uint) glm::ceil(newWidth / aspectRatio);
-	modifiedScreen = glm::uvec2(newWidth, newHeight);
-	camera->resolution=modifiedScreen;
+	//uint newHeight = (uint) glm::ceil(newWidth / aspectRatio);
+	//modifiedScreen = glm::uvec2(newWidth, newHeight);
+	//camera->resolution=modifiedScreen;
 
-	RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, camera, bufferData);
+	//RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, camera, bufferData);
 
 	//RenderJob->GetSampleAmount()=0.1f;
 	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));

@@ -620,6 +620,8 @@ __host__ void ClearResults(std::vector<RayJob>& hjobs){
 
 			EngineResultClear << <gridSize, blockSize >> >(n, jobs, jobsSize);
 			CudaCheck(cudaPeekAtLastError());
+			CudaCheck(cudaDeviceSynchronize());
+
 			CudaCheck(cudaEventRecord(stop, 0));
 			CudaCheck(cudaEventSynchronize(stop));
 			CudaCheck(cudaEventElapsedTime(&time, start, stop));
