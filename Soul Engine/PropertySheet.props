@@ -33,12 +33,13 @@
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\glew\lib\Release\x64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)\Libraries\glfw\bin\Release;$(ProjectDir)\Libraries\glfw\bin;$(LibraryPath);$(ProjectDir)\Libraries\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;cudart.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>NotSet</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>LIBCD.lib;LIBC.lib;MSVCRTD.lib;LIBCMT.lib;LIBCMTD.lib</IgnoreSpecificDefaultLibraries>
       <ShowProgress>NotSet</ShowProgress>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
