@@ -334,7 +334,7 @@ void SetSetting(std::string rName, int rValue) {
 //any other functions relating to the engine.
 void SoulInit(GraphicsAPI api) {
 	Scheduler::Init();
-	Soul::Init();
+	Scheduler::AddTask(IMMEDIATE, []() {Soul::Init(); });
 }
 
 //the moniter number, and a float from 0-1 of the screen size for each dimension,
