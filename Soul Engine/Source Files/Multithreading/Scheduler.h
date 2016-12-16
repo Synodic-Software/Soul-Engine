@@ -14,24 +14,7 @@ namespace Scheduler {
 
 	namespace detail {
 		extern std::size_t fiberCount;
-
-		template< typename Fn, typename ... Fns >
-		void WaitAllHelper(boost::fibers::launch policy, std::shared_ptr< boost::fibers::barrier > barrier,
-			Fn && function, Fns && ... functions) {
-			boost::fibers::fiber(
-				policy,
-				std::bind(
-					[](std::shared_ptr< boost::fibers::barrier > & barrier,
-						typename std::decay< Fn >::type & function) mutable {
-				function();
-				barrier->wait();
-			},
-					barrier,
-				std::forward< Fn >(function)
-				)).detach();
-			WaitAllHelper(barrier, std::forward< Fns >(functions) ...);
-		}
-
+		extern std::mutex fiberMutex;
 
 		template< typename Fn, typename ... Fns >
 		void RunAllHelper(boost::fibers::launch policy,
@@ -86,8 +69,34 @@ namespace Scheduler {
 		typename ... Args>
 		void AddTask(FiberPolicy policy, Fn && fn, Args && ... args) {
 
-		boost::fibers::fiber((boost::fibers::launch)policy, std::forward< Fn >(fn), std::forward< Args >(args) ...).detach();
-		detail::fiberCount++;
+
+		boost::fibers::fiber(
+			policy,
+			std::bind(
+				[](std::shared_ptr< std::mutex > & mutex,
+					typename std::decay< Fn >::type & fn,
+					typename std::decay< Args >::type & args ...) mutable {
+
+			std::unique_lock<std::mutex> lock(mutex);
+			detail::fiberCount++;
+			lock.unlock();
+
+			function(std::forward< Args >(args) ...);
+
+			lock.lock();
+			detail::fiberCount--;
+			lock.unlock();
+		},
+				detail::fiberMutex,
+			std::forward< Fn >(function),
+			std::forward< Args >(args) ...
+			)).detach();
+
+		//boost::fibers::fiber((boost::fibers::launch)policy, std::forward< Fn >(fn), std::forward< Args >(args) ...).detach();
 
 	}
+
+	//Blocks the fiber intil all recent tasks with the IMMEDIATE policy have been executed
+	void Wait();
+
 };
