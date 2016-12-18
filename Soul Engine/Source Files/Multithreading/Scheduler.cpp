@@ -7,22 +7,24 @@ static std::size_t threadCount{ 0 };
 
 static bool shouldRun{ true };
 
-static boost::fibers::condition_variable_any condition{};
+static boost::fibers::condition_variable_any threadCondition{};
+static boost::fibers::condition_variable_any blockCondition{};
+
 
 void ThreadRun() {
 	boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
 
 	std::unique_lock<std::mutex> lock(Scheduler::detail::fiberMutex);
-	condition.wait(lock, []() { return 0 == Scheduler::detail::fiberCount && !shouldRun; });
+	threadCondition.wait(lock, []() { return 0 == Scheduler::detail::fiberCount && !shouldRun; });
 }
 
 namespace Scheduler {
 
 	namespace detail {
 		std::size_t fiberCount =0;
-		std::mutex fiberMutex{};
-
-
+		std::mutex fiberMutex;
+		std::size_t holdCount=0;
+		std::mutex holdMutex;
 	}
 
 	void Terminate() {
@@ -30,7 +32,7 @@ namespace Scheduler {
 		shouldRun = false;
 		if (0 == --detail::fiberCount) {
 			lock.unlock();
-			condition.notify_all(); //notify all fibers waiting 
+			threadCondition.notify_all(); //notify all fibers waiting 
 		}
 
 		while (detail::fiberCount!=0) {
@@ -59,7 +61,8 @@ namespace Scheduler {
 
 
 	void Wait() {
-
+		std::unique_lock<std::mutex> lock(detail::holdMutex);
+		blockCondition.wait(lock, []() { return 0 == detail::holdCount; });
 	}
 
 };
