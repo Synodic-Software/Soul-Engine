@@ -17,10 +17,10 @@ namespace Scheduler {
 		extern std::mutex fiberMutex;
 
 		//blocker for the holding count
-		extern std::size_t holdCount;
-		extern std::mutex holdMutex;
+		extern boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
+		extern boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
+		extern boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
 	}
-
 
 	void Init();
 	void Terminate();
@@ -31,34 +31,50 @@ namespace Scheduler {
 		void AddTask(FiberPolicy policy, Fn && fn, Args && ... args) {
 
 
-		std::unique_lock<std::mutex> lock(detail::fiberMutex);
+		detail::fiberMutex.lock();
 		detail::fiberCount++;
-		lock.unlock();
+		detail::fiberMutex.unlock();
 
 		if (policy == IMMEDIATE) {
 
-			std::unique_lock<std::mutex> hlock(detail::holdMutex);
-			detail::holdCount++;
-			hlock.unlock();
+			if (!detail::holdMutex.get()) {
+				detail::holdMutex.reset(new std::mutex);
+			}
+
+			if (!detail::holdCount.get()) {
+				detail::holdCount.reset(new std::size_t(0));
+			}
+
+			if (!detail::blockCondition.get()) {
+				detail::blockCondition.reset(new boost::fibers::condition_variable_any);
+			}
+
+			std::mutex* holdLock = detail::holdMutex.get();
+			std::size_t* holdSize = detail::holdCount.get();
+			boost::fibers::condition_variable_any* holdConditional = detail::blockCondition.get();
+
+			holdLock->lock();
+			(*holdSize)++;
+			holdLock->unlock();
 
 			boost::fibers::fiber(
-				[&]() mutable {
+				[&, holdLock, holdSize, holdConditional]() mutable {
 
 				//prefix code
-
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
 				///////////////////////////////////////////
 
 				//suffix code
-				lock.lock();
+				detail::fiberMutex.lock();
 				detail::fiberCount--;
-				lock.unlock();
+				detail::fiberMutex.unlock();
 
-				hlock.lock();
-				detail::fiberCount--;
-				hlock.unlock();
+				holdLock->lock();
+				(*holdSize)--;
+				holdLock->unlock();
+				holdConditional->notify_all();
 
 			}).detach();
 		}
@@ -73,15 +89,15 @@ namespace Scheduler {
 				///////////////////////////////////////////
 
 				//suffix code
-				lock.lock();
+				detail::fiberMutex.lock();
 				detail::fiberCount--;
-				lock.unlock();
+				detail::fiberMutex.unlock();
 
 			}).detach();
 		}
 	}
 
-	//Blocks the fiber untill all tasks with the IMMEDIATE policy have been executed
+	//Blocks the fiber until all tasks with the IMMEDIATE policy have been executed
 	void Wait();
 
 };

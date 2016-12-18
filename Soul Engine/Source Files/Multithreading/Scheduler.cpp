@@ -8,8 +8,6 @@ static std::size_t threadCount{ 0 };
 static bool shouldRun{ true };
 
 static boost::fibers::condition_variable_any threadCondition{};
-static boost::fibers::condition_variable_any blockCondition{};
-
 
 void ThreadRun() {
 	boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
@@ -23,20 +21,23 @@ namespace Scheduler {
 	namespace detail {
 		std::size_t fiberCount =0;
 		std::mutex fiberMutex;
-		std::size_t holdCount=0;
-		std::mutex holdMutex;
+
+		boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
+		boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
+		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
 	}
 
 	void Terminate() {
-		std::unique_lock<std::mutex> lock(detail::fiberMutex);
+		detail::fiberMutex.lock();
 		shouldRun = false;
 		if (0 == --detail::fiberCount) {
-			lock.unlock();
+			detail::fiberMutex.unlock();
 			threadCondition.notify_all(); //notify all fibers waiting 
 		}
 
 		while (detail::fiberCount!=0) {
 			boost::this_fiber::yield();
+			threadCondition.notify_all(); //notify all fibers waiting 
 		}
 		 
 		for (uint i = 0; i < threadCount; ++i) {
@@ -61,8 +62,8 @@ namespace Scheduler {
 
 
 	void Wait() {
-		std::unique_lock<std::mutex> lock(detail::holdMutex);
-		blockCondition.wait(lock, []() { return 0 == detail::holdCount; });
+		std::unique_lock<std::mutex> lock(*detail::holdMutex);
+		detail::blockCondition->wait(lock, []() { return 0 == *detail::holdCount; });
 	}
 
 };
