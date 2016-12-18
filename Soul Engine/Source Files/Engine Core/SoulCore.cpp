@@ -335,6 +335,7 @@ void SetSetting(std::string rName, int rValue) {
 void SoulInit(GraphicsAPI api) {
 	Scheduler::Init();
 	Scheduler::AddTask(IMMEDIATE, []() {Soul::Init(); });
+	Scheduler::Wait();
 }
 
 //the moniter number, and a float from 0-1 of the screen size for each dimension,
