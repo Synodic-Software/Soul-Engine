@@ -4,11 +4,30 @@
 #include <boost/fiber/all.hpp>
 
 
-//IMMEDIATE: Run the fiber immediatly with no context switch 
-//Use Case: You will execute 100 tasks and will wait till they complete
-//CONTINUE: Keep the current context and add the fiber to the queue 
-//Use Case: You want to process other things while this function gets executed elsewhere
-enum FiberPolicy { IMMEDIATE, CONTINUE };
+
+
+
+
+
+
+
+
+
+
+
+/*
+IMMEDIATE: Run the fiber immediatly with no context switch 
+Use Case: You will execute 100 tasks and will wait till they complete
+CONTINUE: Keep the current context and add the fiber to the queue 
+Use Case: You want to process other things while this function gets executed elsewhere
+*/
+enum FiberPolicy { LAUNCH_IMMEDIATE, LAUNCH_CONTINUE };
+
+/*
+FIBER_HIGH: A high priority task.
+FIBER_LOW: A comparitivley low priority task.
+*/
+enum FiberPriority { FIBER_HIGH, FIBER_LOW };
 
 namespace Scheduler {
 
@@ -20,23 +39,36 @@ namespace Scheduler {
 		extern boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
 		extern boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
 		extern boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
+
+		//initializes all fiber_specific_ptrs if they havnt been initialized
 		void InitCheck();
 	}
 
+	//Initialize the multithreaded scheduler
 	void Init();
+
+	//Terminate the multithreaded scheduler
 	void Terminate();
 
+	/*
+	Add a task to the fiber system to be executed concurrently
 
+	policy: The fiber policy after running the segment
+	priority: Fiber execution priority
+	runsOnMain: Requirement that this function runs on the main thread
+	Fn && fn, Args && ... args:  The lambda to be executed.
+	*/
 	template<typename Fn,
 		typename ... Args>
-		void AddTask(FiberPolicy policy, Fn && fn, Args && ... args) {
+		void AddTask(FiberPolicy policy, FiberPriority priority, bool runsOnMain, Fn && fn, Args && ... args) {
 
-
+		//this thread increments the locks, the launched fiber implements the decrement
 		detail::fiberMutex.lock();
 		detail::fiberCount++;
 		detail::fiberMutex.unlock();
 
-		if (policy == IMMEDIATE) {
+		//only difference is the hold lock increment
+		if (policy == LAUNCH_IMMEDIATE) {
 
 			detail::InitCheck();
 
@@ -48,6 +80,7 @@ namespace Scheduler {
 			(*holdSize)++;
 			holdLock->unlock();
 
+			//lambda wrapping the called function with other information
 			boost::fibers::fiber(
 				[&, holdLock, holdSize, holdConditional]() mutable {
 
@@ -88,7 +121,10 @@ namespace Scheduler {
 		}
 	}
 
-	//Blocks the fiber until all tasks with the IMMEDIATE policy have been executed
+	//Blocks the fiber until all tasks with the LAUNCH_IMMEDIATE policy have been executed
 	void Wait();
+
+	//Yields the current fiber to the scheduler
+	void Defer();
 
 };

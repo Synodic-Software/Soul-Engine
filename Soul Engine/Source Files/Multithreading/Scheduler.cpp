@@ -9,6 +9,7 @@ static bool shouldRun{ true };
 
 static boost::fibers::condition_variable_any threadCondition{};
 
+//launches a thread that waits with a fiber conditional, meaning it still executes fibers despite waiting for a notify release
 void ThreadRun() {
 	boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
 
@@ -19,7 +20,7 @@ void ThreadRun() {
 namespace Scheduler {
 
 	namespace detail {
-		std::size_t fiberCount =0;
+		std::size_t fiberCount = 0;
 		std::mutex fiberMutex;
 
 		boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
@@ -39,7 +40,6 @@ namespace Scheduler {
 				detail::blockCondition.reset(new boost::fibers::condition_variable_any);
 			}
 		}
-
 	}
 
 	void Terminate() {
@@ -50,11 +50,13 @@ namespace Scheduler {
 			threadCondition.notify_all(); //notify all fibers waiting 
 		}
 
-		while (detail::fiberCount!=0) {
+		//yield this fiber until all the remaining work is done
+		while (detail::fiberCount != 0) {
 			boost::this_fiber::yield();
-			threadCondition.notify_all(); //notify all fibers waiting 
+			threadCondition.notify_all();
 		}
-		 
+
+		//join all complete threads
 		for (uint i = 0; i < threadCount; ++i) {
 			threads[i].join();
 		}
@@ -65,7 +67,8 @@ namespace Scheduler {
 	void Init() {
 		boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
 
-		threadCount = std::thread::hardware_concurrency() - 1;  //the main thread takes up one slot.
+		//the main thread takes up one slot.
+		threadCount = std::thread::hardware_concurrency() - 1;
 		threads = new std::thread[threadCount];
 
 		detail::fiberCount++;
@@ -77,10 +80,15 @@ namespace Scheduler {
 
 
 	void Wait() {
+		//could not be initialized if wait is called before an addTask
 		detail::InitCheck();
 
 		std::unique_lock<std::mutex> lock(*detail::holdMutex);
 		detail::blockCondition->wait(lock, []() { return 0 == *detail::holdCount; });
+	}
+
+	void Defer() {
+		boost::this_fiber::yield();
 	}
 
 };
