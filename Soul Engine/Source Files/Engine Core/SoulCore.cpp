@@ -46,8 +46,6 @@ namespace Soul {
 
 	std::list<Scene*> scenes;
 
-	Settings* settings;
-
 	bool usingDefaultCamera;
 	std::vector<Camera*> cameras;
 	Camera* mouseCamera;
@@ -57,7 +55,7 @@ namespace Soul {
 	/////////////////////////Synchronization///////////////////////////
 
 	void SynchCPU() {
-
+		Scheduler::Wait();
 	}
 	void SynchGPU() {
 		CudaCheck(cudaDeviceSynchronize());
@@ -99,12 +97,13 @@ namespace Soul {
 			glfwDestroyWindow(win.windowHandle);
 		}
 
-		delete Soul::settings;
+		//delete Soul::settings;
 		glfwTerminate();
 	}
 
 	void Init() {
-		settings = new Settings("Settings.ini");
+
+		//settings = new Settings("Settings.ini");
 
 		Devices::ExtractDevices();
 
@@ -114,12 +113,10 @@ namespace Soul {
 			ShutDown();
 		}
 
+		//RenderType  win = static_cast<RenderType>(GetSetting("Renderer", 2));
 
-
-
-		RenderType  win = static_cast<RenderType>(GetSetting("Renderer", 2));
-
-		engineRefreshRate = GetSetting("Engine Refresh Rate", 60);
+		//engineRefreshRate = GetSetting("Engine Refresh Rate", 60);
+		engineRefreshRate = 60;
 
 		monitors = glfwGetMonitors(&monitorCount);
 
@@ -318,24 +315,22 @@ void RemoveObject(void* object) {
 
 }
 
-int GetSetting(std::string request) {
-	return Soul::settings->Retrieve(request);
-}
+//int GetSetting(std::string request) {
+//	return Soul::settings->Retrieve(request);
+//}
+//
+//int GetSetting(std::string request, int defaultSet) {
+//	return Soul::settings->Retrieve(request, defaultSet);
+//}
+//
+//void SetSetting(std::string rName, int rValue) {
+//	Soul::settings->Set(rName, rValue);
+//}
 
-int GetSetting(std::string request, int defaultSet) {
-	return Soul::settings->Retrieve(request, defaultSet);
-}
-
-void SetSetting(std::string rName, int rValue) {
-	Soul::settings->Set(rName, rValue);
-}
-
-//Initializes Soul. This must be called before using variables or 
-//any other functions relating to the engine.
-void SoulInit(GraphicsAPI api) {
+//Initializes Soul. This should be the first command in a program.
+void SoulInit() {
 	Scheduler::Init();
-	Scheduler::AddTask(IMMEDIATE, []() {Soul::Init(); });
-	Scheduler::Wait();
+	Soul::Init();
 }
 
 //the moniter number, and a float from 0-1 of the screen size for each dimension,
@@ -344,8 +339,8 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize) {
 
 	GLFWmonitor* monitorIn = Soul::monitors[monitor];
 
-	WindowType  win = static_cast<WindowType>(GetSetting("Window", 2));
-
+//	WindowType  win = static_cast<WindowType>(GetSetting("Window", 2));
+	WindowType  win = BORDERLESS;
 
 	glfwWindowHint(GLFW_SAMPLES, 0);
 	glfwWindowHint(GLFW_VISIBLE, true);
@@ -465,7 +460,7 @@ void RemoveScene(Scene* scene) {
 
 int main()
 {
-	SoulInit(OPENGL);
+	SoulInit();
 
 	//create a Window
 	GLFWwindow* win = SoulCreateWindow(0, 0.95f, 0.95f);
