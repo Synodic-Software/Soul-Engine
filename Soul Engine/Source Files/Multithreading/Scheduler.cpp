@@ -25,6 +25,21 @@ namespace Scheduler {
 		boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
 		boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
 		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
+
+		void InitCheck() {
+			if (!detail::holdMutex.get()) {
+				detail::holdMutex.reset(new std::mutex);
+			}
+
+			if (!detail::holdCount.get()) {
+				detail::holdCount.reset(new std::size_t(0));
+			}
+
+			if (!detail::blockCondition.get()) {
+				detail::blockCondition.reset(new boost::fibers::condition_variable_any);
+			}
+		}
+
 	}
 
 	void Terminate() {
@@ -62,6 +77,8 @@ namespace Scheduler {
 
 
 	void Wait() {
+		detail::InitCheck();
+
 		std::unique_lock<std::mutex> lock(*detail::holdMutex);
 		detail::blockCondition->wait(lock, []() { return 0 == *detail::holdCount; });
 	}
