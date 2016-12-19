@@ -20,6 +20,7 @@ namespace Scheduler {
 		extern boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
 		extern boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
 		extern boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
+		void InitCheck();
 	}
 
 	void Init();
@@ -37,17 +38,7 @@ namespace Scheduler {
 
 		if (policy == IMMEDIATE) {
 
-			if (!detail::holdMutex.get()) {
-				detail::holdMutex.reset(new std::mutex);
-			}
-
-			if (!detail::holdCount.get()) {
-				detail::holdCount.reset(new std::size_t(0));
-			}
-
-			if (!detail::blockCondition.get()) {
-				detail::blockCondition.reset(new boost::fibers::condition_variable_any);
-			}
+			detail::InitCheck();
 
 			std::mutex* holdLock = detail::holdMutex.get();
 			std::size_t* holdSize = detail::holdCount.get();
