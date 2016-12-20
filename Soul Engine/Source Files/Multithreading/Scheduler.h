@@ -2,7 +2,7 @@
 
 #include "Engine Core\BasicDependencies.h"
 #include <boost/fiber/all.hpp>
-
+#include <boost/fiber/algo/algorithm.hpp>
 
 
 
@@ -16,9 +16,9 @@
 
 
 /*
-IMMEDIATE: Run the fiber immediatly with no context switch 
+IMMEDIATE: Run the fiber immediatly with no context switch
 Use Case: You will execute 100 tasks and will wait till they complete
-CONTINUE: Keep the current context and add the fiber to the queue 
+CONTINUE: Keep the current context and add the fiber to the queue
 Use Case: You want to process other things while this function gets executed elsewhere
 */
 enum FiberPolicy { LAUNCH_IMMEDIATE, LAUNCH_CONTINUE };
@@ -42,6 +42,8 @@ namespace Scheduler {
 
 		//initializes all fiber_specific_ptrs if they havnt been initialized
 		void InitCheck();
+
+
 	}
 
 	//Initialize the multithreaded scheduler
