@@ -12,6 +12,8 @@ static boost::fibers::condition_variable_any threadCondition{};
 namespace Scheduler {
 
 	namespace detail {
+		std::thread::id mainID;
+
 		std::size_t fiberCount = 0;
 		std::mutex fiberMutex;
 
@@ -33,31 +35,7 @@ namespace Scheduler {
 			}
 		}
 
-		//property class for the custom scheduler
-		class priority_props : public boost::fibers::fiber_properties {
-		public:
-			priority_props(boost::fibers::context * context) :
-				fiber_properties(context),
-				priority(0) {
-			}
-
-			int GetPriority() const {
-				return priority;
-			}
-
-			//setting the priority needs a notify update
-			void SetPriority(int p) {
-				if (p != priority) {
-					priority = p;
-					notify();
-				}
-			}
-
-		private:
-			int priority;
-		};
-
-		class shared_priority : 
+		class shared_priority :
 			public boost::fibers::algo::algorithm_with_properties< priority_props > {
 		private:
 			typedef std::deque< boost::fibers::context * >  rqueue_t;
@@ -86,29 +64,40 @@ namespace Scheduler {
 			shared_priority & operator=(shared_priority &&) = delete;
 
 			virtual void awakened(boost::fibers::context * ctx, priority_props & props) noexcept {
-				if (ctx->is_context(boost::fibers::type::pinned_context)) { 
+
+				//dont push fiber when helper or the main fiber is passed in
+				if (ctx->is_context(boost::fibers::type::pinned_context)) {
 					lqueue_.push_back(*ctx);
 				}
 				else {
 					ctx->detach();
 					std::unique_lock< std::mutex > lk(rqueue_mtx_);
-					rqueue_.push_back(ctx);
+
+					int ctx_priority = props.get_priority();
+
+					rqueue_t::iterator i(std::find_if(rqueue_.begin(), rqueue_.end(),
+						[ctx_priority, this](boost::fibers::context* c)
+					{ return properties(c).get_priority() < ctx_priority; }));
+
+					rqueue_.insert(i, ctx);
 				}
 			}
 
 			virtual boost::fibers::context * pick_next() noexcept {
 				boost::fibers::context * ctx(nullptr);
+				std::thread::id thisID = std::this_thread::get_id();
+
 				std::unique_lock< std::mutex > lk(rqueue_mtx_);
-				if (!rqueue_.empty()) { 
+				if (!rqueue_.empty()/*&&!properties(rqueue_.front())(thisID == mainID)*/) {
 					ctx = rqueue_.front();
 					rqueue_.pop_front();
 					lk.unlock();
 					BOOST_ASSERT(nullptr != ctx);
-					boost::fibers::context::active()->attach(ctx); 
+					boost::fibers::context::active()->attach(ctx);
 				}
 				else {
 					lk.unlock();
-					if (!lqueue_.empty()) { 
+					if (!lqueue_.empty()) {
 						ctx = &lqueue_.front();
 						lqueue_.pop_front();
 					}
@@ -119,6 +108,16 @@ namespace Scheduler {
 			virtual bool has_ready_fibers() const noexcept {
 				std::unique_lock< std::mutex > lock(rqueue_mtx_);
 				return !rqueue_.empty() || !lqueue_.empty();
+			}
+
+			virtual void property_change(boost::fibers::context * ctx, priority_props & props) noexcept {
+				if (!ctx->ready_is_linked()) {
+					return;
+				}
+
+				// Found ctx: unlink it
+				ctx->ready_unlink();
+				awakened(ctx, props);
 			}
 
 			void suspend_until(std::chrono::steady_clock::time_point const& time_point) noexcept {
@@ -184,6 +183,9 @@ namespace Scheduler {
 	}
 
 	void Init() {
+
+		detail::mainID = std::this_thread::get_id();
+
 		boost::fibers::use_scheduling_algorithm< detail::shared_priority >();
 
 		//the main thread takes up one slot.

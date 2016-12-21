@@ -331,6 +331,8 @@ void RemoveObject(void* object) {
 void SoulInit() {
 	Scheduler::Init();
 	Soul::Init();
+	/*Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH,true, []() {Soul::Init(); });
+	Scheduler::Wait();*/
 }
 
 //the moniter number, and a float from 0-1 of the screen size for each dimension,
