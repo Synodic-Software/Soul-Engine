@@ -32,6 +32,7 @@ enum FiberPriority { FIBER_HIGH, FIBER_LOW };
 namespace Scheduler {
 
 	namespace detail {
+
 		extern std::size_t fiberCount;
 		extern std::mutex fiberMutex;
 
@@ -43,6 +44,36 @@ namespace Scheduler {
 		//initializes all fiber_specific_ptrs if they havnt been initialized
 		void InitCheck();
 
+		//property class for the custom scheduler
+		class priority_props : public boost::fibers::fiber_properties {
+		public:
+			priority_props(boost::fibers::context * context) :
+				fiber_properties(context),
+				priority(0),
+				runMain(false){
+			}
+
+			int get_priority() const {
+				return priority;
+			}
+
+			bool get_main() const {
+				return runMain;
+			}
+
+			//setting the priority needs a notify update
+			void set_priority(int p,bool m) {
+				if (p != priority||m!= runMain) {
+					priority = p;
+					runMain = m;
+					notify();
+				}
+			}
+
+		private:
+			int priority;
+			int runMain;
+		};
 
 	}
 
@@ -83,7 +114,7 @@ namespace Scheduler {
 			holdLock->unlock();
 
 			//lambda wrapping the called function with other information
-			boost::fibers::fiber(
+			boost::fibers::fiber fiber(
 				[&, holdLock, holdSize, holdConditional]() mutable {
 
 				//prefix code
@@ -102,7 +133,11 @@ namespace Scheduler {
 				holdLock->unlock();
 				holdConditional->notify_all();
 
-			}).detach();
+			});
+
+			detail::priority_props & props(fiber.properties< detail::priority_props >());
+			props.set_priority(priority, runsOnMain);
+			fiber.detach();
 		}
 		else {
 			boost::fibers::fiber(
