@@ -15,9 +15,9 @@
 class Renderer{
 public:
 
-	Renderer(Camera&, glm::uvec2);
+	Renderer( glm::uvec2);
 
-	void RenderSetup(const glm::uvec2&, Camera*, double);
+	void RenderSetup(const glm::uvec2&, double);
 	void Render(bool);
 	std::vector<void*> targetData;
 

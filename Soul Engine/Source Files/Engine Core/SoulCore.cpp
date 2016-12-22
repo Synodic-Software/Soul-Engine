@@ -47,8 +47,8 @@ namespace Soul {
 	std::list<Scene*> scenes;
 
 	bool usingDefaultCamera;
-	std::vector<Camera*> cameras;
-	Camera* mouseCamera;
+	/*std::vector<Camera*> cameras;
+	Camera* mouseCamera;*/
 
 	int engineRefreshRate;
 
@@ -121,11 +121,11 @@ namespace Soul {
 		monitors = glfwGetMonitors(&monitorCount);
 
 		usingDefaultCamera = true;
-		mouseCamera = new Camera();
+		/*mouseCamera = new Camera();
 		cameras.push_back(mouseCamera);
 
 		mouseCamera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
-		mouseCamera->OffsetOrientation(45, 45);
+		mouseCamera->OffsetOrientation(45, 45);*/
 
 	}
 
@@ -136,9 +136,9 @@ namespace Soul {
 			int width, height;
 			glfwGetWindowSize(window, &width, &height);
 
-			mouseCamera->OffsetOrientation(
+			/*mouseCamera->OffsetOrientation(
 				(float)(InputState::GetInstance().xPos / width * camera->FieldOfView().x),
-				(float)(InputState::GetInstance().yPos / height * camera->FieldOfView().y));
+				(float)(InputState::GetInstance().yPos / height * camera->FieldOfView().y));*/
 		}
 
 	}
@@ -156,7 +156,7 @@ namespace Soul {
 		}
 
 		//fill with freecam variable
-		if (true) {
+	/*	if (true) {
 			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 				mouseCamera->OffsetPosition(float(moveSpeed) * -mouseCamera->Forward());
 			}
@@ -175,7 +175,7 @@ namespace Soul {
 			else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
 				mouseCamera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
 			}
-		}
+		}*/
 
 	}
 
@@ -256,7 +256,7 @@ namespace Soul {
 			for (auto const& rend : renderObjects) {
 				int width, height;
 				glfwGetWindowSize(masterWindow, &width, &height);
-				rend.rendererHandle->RenderSetup({ width, height }, mouseCamera, deltaTime);
+				rend.rendererHandle->RenderSetup({ width, height }, deltaTime);
 			}
 
 			/*	for (auto const& scene : scenes){
@@ -438,7 +438,7 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize) {
 	//////////////////////////
 
 	Soul::renderer rend = {
-		new Renderer(*Soul::mouseCamera, glm::uvec2(int(xSize*mode->width), int(ySize*mode->height))),
+		new Renderer(glm::uvec2(int(xSize*mode->width), int(ySize*mode->height))),
 		SPECTRAL,
 		1.0f
 	};
@@ -471,14 +471,14 @@ int main()
 
 	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
-	Material* whiteGray = new Material();
+	/*Material* whiteGray = new Material();
 	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
 	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	Scene* scene = new Scene();
 	AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
 
-	SubmitScene(scene);
+	SubmitScene(scene);*/
 
 	SoulRun();
 

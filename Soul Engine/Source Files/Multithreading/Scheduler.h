@@ -4,17 +4,6 @@
 #include <boost/fiber/all.hpp>
 #include <boost/fiber/algo/algorithm.hpp>
 
-
-
-
-
-
-
-
-
-
-
-
 /*
 IMMEDIATE: Run the fiber immediatly with no context switch
 Use Case: You will execute 100 tasks and will wait till they complete

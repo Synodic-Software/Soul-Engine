@@ -3,14 +3,14 @@
 #include "Input\InputState.h"
 #include "Utility\CUDA\CUDAHelper.cuh"
 
-Renderer::Renderer(Camera& camera, glm::uvec2 screen){
+Renderer::Renderer( glm::uvec2 screen){
 	iCounter = 1;
 	scroll = 0.0f;
 	debug = false;
 	modifiedScreen = screen;
 	originalScreen = screen;
-	camera.SetAspect((float)(screen.x) / (float)(screen.y));
-	camera.resolution=screen;
+	//camera.SetAspect((float)(screen.x) / (float)(screen.y));
+	//camera.resolution=screen;
 	frameTime = 0.0f;
 	changeCutoff = 0.05f;
 	targetFPS = 60.0f;
@@ -101,7 +101,7 @@ Renderer::Renderer(Camera& camera, glm::uvec2 screen){
 	newTime = glfwGetTime();
 }
 
-void Renderer::RenderSetup(const glm::uvec2& screen, Camera* camera, double timeTarget){
+void Renderer::RenderSetup(const glm::uvec2& screen, double timeTarget){
 
 	//double oldTime = newTime;
 	//newTime = glfwGetTime();
