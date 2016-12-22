@@ -43,6 +43,7 @@ namespace Scheduler {
 
 			static rqueue_t     	rqueue_;
 			static std::mutex   	rqueue_mtx_;
+			static rqueue_t     	rmqueue_;
 
 			lqueue_t            	lqueue_{};
 			std::mutex              mtx_{};
@@ -74,12 +75,23 @@ namespace Scheduler {
 					std::unique_lock< std::mutex > lk(rqueue_mtx_);
 
 					int ctx_priority = props.get_priority();
+					std::thread::id thisID = std::this_thread::get_id();
 
-					rqueue_t::iterator i(std::find_if(rqueue_.begin(), rqueue_.end(),
-						[ctx_priority, this](boost::fibers::context* c)
-					{ return properties(c).get_priority() < ctx_priority; }));
+					//if it needs to run on the main thread
+					if (props.get_main() && thisID == mainID) {
+						rqueue_t::iterator i(std::find_if(rmqueue_.begin(), rmqueue_.end(),
+							[ctx_priority, this](boost::fibers::context* c)
+						{ return properties(c).get_priority() < ctx_priority; }));
 
-					rqueue_.insert(i, ctx);
+						rmqueue_.insert(i, ctx);
+					}
+					else {
+						rqueue_t::iterator i(std::find_if(rqueue_.begin(), rqueue_.end(),
+							[ctx_priority, this](boost::fibers::context* c)
+						{ return properties(c).get_priority() < ctx_priority; }));
+
+						rqueue_.insert(i, ctx);
+					}
 				}
 			}
 
@@ -88,7 +100,15 @@ namespace Scheduler {
 				std::thread::id thisID = std::this_thread::get_id();
 
 				std::unique_lock< std::mutex > lk(rqueue_mtx_);
-				if (!rqueue_.empty()/*&&!properties(rqueue_.front())(thisID == mainID)*/) {
+
+				if (!rmqueue_.empty() && thisID == mainID) {
+					ctx = rmqueue_.front();
+					rmqueue_.pop_front();
+					lk.unlock();
+					BOOST_ASSERT(nullptr != ctx);
+					boost::fibers::context::active()->attach(ctx);
+				}
+				else if (!rqueue_.empty()) {
 					ctx = rqueue_.front();
 					rqueue_.pop_front();
 					lk.unlock();
@@ -107,7 +127,7 @@ namespace Scheduler {
 
 			virtual bool has_ready_fibers() const noexcept {
 				std::unique_lock< std::mutex > lock(rqueue_mtx_);
-				return !rqueue_.empty() || !lqueue_.empty();
+				return !rmqueue_.empty() || !rqueue_.empty() || !lqueue_.empty();
 			}
 
 			virtual void property_change(boost::fibers::context * ctx, priority_props & props) noexcept {
@@ -146,6 +166,7 @@ namespace Scheduler {
 		};
 
 		shared_priority::rqueue_t shared_priority::rqueue_{};
+		shared_priority::rqueue_t shared_priority::rmqueue_{};
 		std::mutex shared_priority::rqueue_mtx_{};
 
 
