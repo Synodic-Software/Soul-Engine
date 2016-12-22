@@ -117,7 +117,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Engine Core\Scene\OpenCL\CLScene.h" />
     <ClInclude Include="Source Files\Engine Core\Scene\Scene.h" />
     <ClInclude Include="Source Files\Engine Core\Scene\Sky.h" />
-    <ClInclude Include="Source Files\Engine Core\Settings.h" />
     <ClInclude Include="Source Files\Input\Input.h" />
     <ClInclude Include="Source Files\Input\InputState.h" />
     <ClInclude Include="Source Files\Multithreading\Scheduler.h" />
@@ -145,12 +144,14 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Utility\CUDA\CUDAManaged.cuh" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAMath.h" />
     <ClInclude Include="Source Files\Utility\GLMIncludes.h" />
+    <ClInclude Include="Source Files\Utility\Logger.h" />
     <ClInclude Include="Source Files\Utility\OpenCLIncludes.h" />
     <ClInclude Include="Source Files\Utility\OpenCL\OpenCLHelper.h" />
     <ClInclude Include="Source Files\Utility\GPUUtility.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\GLError.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\Shader.h" />
     <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h" />
+    <ClInclude Include="Source Files\Utility\Settings.h" />
     <ClInclude Include="Source Files\Utility\Vulkan\VulkanBackend.h" />
     <ClInclude Include="Source Files\Utility\Vulkan\VulkanUtility.h" />
   </ItemGroup>
@@ -161,9 +162,11 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Display\Window\WindowManager.cpp" />
     <ClCompile Include="Source Files\Engine Core\Allocator\Allocator.cpp" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />
+    <ClCompile Include="Source Files\Utility\Logger.cpp" />
     <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp" />
     <ClCompile Include="Source Files\Utility\OpenGL\Shader.cpp" />
     <ClCompile Include="Source Files\Utility\OpenGL\ShaderSupport.cpp" />
+    <ClCompile Include="Source Files\Utility\Settings.cpp" />
     <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp" />
     <CudaCompile Include="Source Files\Engine Core\Material\Colour\CUDA\Colour.cu" />
     <CudaCompile Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
@@ -171,7 +174,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <FileType>CppCode</FileType>
     </CudaCompile>
     <ClCompile Include="Source Files\Engine Core\Object\Character\Character.cpp" />
-    <ClCompile Include="Source Files\Engine Core\Settings.cpp" />
     <ClCompile Include="Source Files\Engine Core\SoulCore.cpp" />
     <ClCompile Include="Source Files\Input\Input.cpp" />
     <ClCompile Include="Source Files\Input\InputState.cpp" />

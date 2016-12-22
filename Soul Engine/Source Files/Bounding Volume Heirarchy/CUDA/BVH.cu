@@ -1,5 +1,6 @@
 #include "BVH.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility/Logger.h"
 
 BVH::BVH( Face*** datan, uint64** mortonCodesn){
 	data = datan;
@@ -156,47 +157,5 @@ void BVH::Build(uint size){
 	CudaCheck(cudaEventDestroy(start));
 	CudaCheck(cudaEventDestroy(stop));
 
-	std::cout << "     BVH Creation Execution: " << time << "ms" << std::endl;
-
-	//Node* stack[256];
-	//uint stackIdx = 0;
-
-	//stack[stackIdx++] = root;
-
-
-	/*for (int i = currentSize - 1; i < (currentSize * 2) - 1; i++){
-		if ((bvh + i)->childLeft != NULL|| (bvh + i)->childRight != NULL){
-			std::cout << i - (currentSize - 1) << ": " << (bvh + i)->childLeft << " " << (bvh + i)->childRight << std::endl;
-		}
-	}
-
-	for (int i = 0; i < currentSize - 1; i++){
-		if ((bvh + i)->atomic >2 ){
-			std::cout << i << std::endl;
-		}
-	}
-	std::cout << "root: "<<root-bvh << std::endl;*/
-	//while (stackIdx>0){
-	//	Node* node = stack[--stackIdx];
-
-	//	if (node->childRight != NULL){
-	//		Node* first = node->childRight;
-	//		first->atomic = 0;
-	//		//std::cout << stackIdx << std::endl;
-	//		stack[stackIdx++] = first; 
-	//	}
-	//	if (node->childLeft != NULL){
-	//		Node* second = node->childLeft;
-	//		second->atomic = 0;
-	//		//std::cout << stackIdx << std::endl;
-	//		stack[stackIdx++] = second;
-	//	}
-
-	//}
-
-	//for (int i = currentSize - 1; i < currentSize * 2 - 1; i++){
-	//	if ((bvh + i)->atomic!=0){
-	//		std::cout << (bvh + i)->atomic << std::endl;
-	//	}
-	//}
+	Logger::Log(TRACE, "     BVH Creation Execution: " , time , "ms" );
 }

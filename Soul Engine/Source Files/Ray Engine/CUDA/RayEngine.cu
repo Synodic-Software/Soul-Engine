@@ -628,7 +628,7 @@ __host__ void ClearResults(std::vector<RayJob>& hjobs){
 			CudaCheck(cudaEventDestroy(start));
 			CudaCheck(cudaEventDestroy(stop));
 
-			std::cout << "RayClear Execution: " << time << "ms" << std::endl;
+			//Logger::Log(TRACE, "RayClear Execution: " , time , "ms");
 		}
 		CudaCheck(cudaDeviceSynchronize());
 	}
@@ -705,7 +705,6 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* scene){
 			int blockWarps = (blockSizeE.x * blockSizeE.y + (Devices::GetWarpSize() - 1)) / Devices::GetWarpSize();
 			//int numBlocks = (Devices::GetCoreCount() + blockWarps - 1) / blockWarps;
 			int numBlocks = Devices::GetSMCount();
-		//	std::cout << GridSize << " " << BlockSize << std::endl;
 			// Launch.
 
 
@@ -762,12 +761,8 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* scene){
 			swap(deviceRays, deviceRaysB);
 
 			for (uint i = 0; i < rayDepth - 1 && numActive>0; ++i){
+
 				hitAtomic[0] = 0;
-				size_t mem_tot_0 = 0;
-				size_t mem_free_0 = 0;
-				CudaCheck(cudaMemGetInfo(&mem_free_0, &mem_tot_0));
-				std::cout << "GPU Memory left: " << mem_free_0 / 1000000000.0f << " GB" << std::endl;
-				
 
 				blockSize = 64;
 				gridSize = (numActive + blockSize - 1) / blockSize;
@@ -800,7 +795,6 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* scene){
 				CudaCheck(cudaEventCreate(&stop4));
 				CudaCheck(cudaEventRecord(start4, 0));
 
-				std::cout << gridSize << " " << blockSize << std::endl;
 				CollectHits << <gridSize, blockSize >> >(numActive, jobs, jobsSize, deviceRays, deviceRaysB, WangHash(++raySeedGl), scene, hitAtomic);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
@@ -831,9 +825,9 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* scene){
 			CudaCheck(cudaEventDestroy(start));
 			CudaCheck(cudaEventDestroy(stop));
 
-			std::cout << "RayEngine Execution: " << time << "ms" << std::endl;
-			std::cout << "     EngineExecute Execution: " << EngineExecuteTime << "ms" << std::endl;
-			std::cout << "     CollectHits Execution: " << CollectHitsTime << "ms" << std::endl;
+			/*Logger::Log(TRACE, "RayEngine Execution: " << time << "ms" << std::endl;
+			Logger::Log(TRACE, "     EngineExecute Execution: " << EngineExecuteTime << "ms" << std::endl;
+			Logger::Log(TRACE, "     CollectHits Execution: " << CollectHitsTime << "ms" << std::endl;*/
 
 			CudaCheck(cudaDeviceSynchronize());
 		}

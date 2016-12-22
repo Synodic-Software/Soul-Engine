@@ -1,13 +1,14 @@
 #include "Scheduler.h"
 #include <thread>
 
-
+//Scheduler Variables//
 static std::thread* threads;
 static std::size_t threadCount{ 0 };
 
 static bool shouldRun{ true };
-
 static boost::fibers::condition_variable_any threadCondition{};
+
+
 
 namespace Scheduler {
 
