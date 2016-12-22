@@ -6,7 +6,8 @@
 #include "Utility\Vulkan\VulkanBackend.h"
 #include "Engine Core/BasicDependencies.h"
 
-#include "Settings.h"
+#include "Utility/Settings.h"
+#include "Utility/Logger.h"
 #include "Multithreading\Scheduler.h"
 #include "Engine Core/Frame/Frame.h"
 #include "Engine Core/Camera/CUDA/Camera.cuh"

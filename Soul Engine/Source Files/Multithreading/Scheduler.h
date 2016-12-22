@@ -4,6 +4,8 @@
 #include <boost/fiber/all.hpp>
 #include <boost/fiber/algo/algorithm.hpp>
 
+//TODO: Implement boost 1.63 Fiber: Work_stealing
+
 /*
 IMMEDIATE: Run the fiber immediatly with no context switch
 Use Case: You will execute 100 tasks and will wait till they complete
@@ -20,6 +22,7 @@ enum FiberPriority { FIBER_HIGH, FIBER_LOW };
 
 namespace Scheduler {
 
+	//User: Do Not Touch
 	namespace detail {
 
 		extern std::size_t fiberCount;
@@ -42,10 +45,12 @@ namespace Scheduler {
 				runMain(false){
 			}
 
+			//read priority
 			int get_priority() const {
 				return priority;
 			}
 
+			//read shouldRunOnMAin
 			bool get_main() const {
 				return runMain;
 			}

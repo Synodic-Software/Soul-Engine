@@ -2,6 +2,7 @@
 #include <device_launch_parameters.h>
 #include <cuda_runtime_api.h>
 #include "CudaHelper.cuh"
+#include "Utility\Logger.h"
 
 int deviceCount;
 cudaDeviceProp* deviceProp;
@@ -11,7 +12,7 @@ void Devices::ExtractDevices(){
 
 	if (deviceCount == 0)
 	{
-		printf("There are no available device(s) that support CUDA\n");
+		Logger::Log(TRACE, "There are no available device(s) that support CUDA\n");
 	}
 
 	deviceProp = new cudaDeviceProp[deviceCount];

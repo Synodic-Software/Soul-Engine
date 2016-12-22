@@ -5,6 +5,8 @@
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 
 #include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility\Logger.h"
+
 
 #include <thrust/fill.h>
 #include <thrust/device_ptr.h>
@@ -12,6 +14,7 @@
 #include <thrust/sort.h>
 #include <thrust/remove.h>
 #include <thrust/functional.h>
+
 
 Scene::Scene()
 {
@@ -465,7 +468,7 @@ __host__ void Scene::Build(float deltaTime){
 	CudaCheck(cudaEventDestroy(start));
 	CudaCheck(cudaEventDestroy(stop));
 
-	std::cout << "     Sorting Execution: " << time << "ms" << std::endl;
+	Logger::Log(TRACE,"     Sorting Execution: " , time , "ms");
 
 	bvh->Build(compiledSize);
 

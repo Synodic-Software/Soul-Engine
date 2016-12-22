@@ -420,9 +420,6 @@
     <ClInclude Include="Source Files\Input\InputState.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Engine Core\Settings.h">
-      <Filter>Engine Backend</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Display\Window\WindowManager.h">
       <Filter>Engine Backend\Display\Window</Filter>
     </ClInclude>
@@ -434,6 +431,12 @@
     </ClInclude>
     <ClInclude Include="Source Files\Utility\OpenGL\Shader.h">
       <Filter>Engine Backend\Utility\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\Settings.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\Logger.h">
+      <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -494,9 +497,6 @@
     <ClCompile Include="Source Files\Input\InputState.cpp">
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Engine Core\Settings.cpp">
-      <Filter>Engine Backend</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Display\Window\WindowManager.cpp">
       <Filter>Engine Backend\Display\Window</Filter>
     </ClCompile>
@@ -508,6 +508,12 @@
     </ClCompile>
     <ClCompile Include="Source Files\Utility\OpenGL\ShaderSupport.cpp">
       <Filter>Engine Backend\Utility\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Utility\Settings.cpp">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Utility\Logger.cpp">
+      <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
