@@ -88,8 +88,9 @@ namespace Soul {
 
 
 	//Call to deconstuct both the engine and its dependencies
-	void ShutDown() {
+	void Terminate() {
 		Scheduler::Terminate();
+		Settings::Write();
 		Soul::SynchSystem();
 		RayEngine::Clean();
 		CudaCheck(cudaDeviceReset());
@@ -98,26 +99,22 @@ namespace Soul {
 			glfwDestroyWindow(win.windowHandle);
 		}
 
-		//delete Soul::settings;
 		glfwTerminate();
 	}
 
 	void Init() {
 
-		//settings = new Settings("Settings.ini");
+		Settings::Read("Settings.ini");
 
 		Devices::ExtractDevices();
 
 		SynchSystem();
 
 		if (!glfwInit()) {
-			ShutDown();
+			Terminate();
 		}
 
-		//RenderType  win = static_cast<RenderType>(GetSetting("Renderer", 2));
-
-		//engineRefreshRate = GetSetting("Engine Refresh Rate", 60);
-		engineRefreshRate = 60;
+		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60);
 
 		monitors = glfwGetMonitors(&monitorCount);
 
@@ -289,7 +286,7 @@ namespace Soul {
 		//Put Vulkan into idle
 		//VulkanBackend::GetInstance().IdleDevice();
 
-		ShutDown();
+		Terminate();
 
 	}
 }
