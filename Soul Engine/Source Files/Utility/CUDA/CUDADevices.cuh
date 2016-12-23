@@ -1,20 +1,13 @@
 #pragma once
 
-namespace Timer {
+void ExtractDevices();
 
+int GetCoreCount();
 
+int GetWarpSize();
 
-}
+int GetSMCount();
 
-namespace Devices{
+int GetBlockHeight();
 
-	void ExtractDevices();
-
-	int GetCoreCount();
-
-	int GetWarpSize();
-
-	int GetSMCount();
-
-	int GetBlockHeight();
-}
+void Terminate();

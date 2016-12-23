@@ -698,13 +698,13 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* scene){
 			counter[0] = 0;
 
 			cudaOccupancyMaxPotentialBlockSize(&GridSize, &BlockSize, EngineExecute, 0, 0);
-			dim3 blockSizeDim(BlockSize/Devices::GetBlockHeight(), Devices::GetBlockHeight(), 1);
+			dim3 blockSizeDim(BlockSize/GetBlockHeight(), GetBlockHeight(), 1);
 			CudaCheck(cudaDeviceSynchronize());
 
-			dim3 blockSizeE(Devices::GetWarpSize(), Devices::GetBlockHeight(), 1);
-			int blockWarps = (blockSizeE.x * blockSizeE.y + (Devices::GetWarpSize() - 1)) / Devices::GetWarpSize();
-			//int numBlocks = (Devices::GetCoreCount() + blockWarps - 1) / blockWarps;
-			int numBlocks = Devices::GetSMCount();
+			dim3 blockSizeE(GetWarpSize(), GetBlockHeight(), 1);
+			int blockWarps = (blockSizeE.x * blockSizeE.y + (GetWarpSize() - 1)) / GetWarpSize();
+			//int numBlocks = (GetCoreCount() + blockWarps - 1) / blockWarps;
+			int numBlocks = GetSMCount();
 			// Launch.
 
 

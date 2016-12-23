@@ -190,9 +190,6 @@
     <Filter Include="Engine Backend\Display\Window">
       <UniqueIdentifier>{d83e4226-21c4-4d38-a224-ca699c0015b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Utility\OpenGL">
-      <UniqueIdentifier>{e6bdba1e-64cc-47a1-a848-78c13e2f314c}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -423,19 +420,13 @@
     <ClInclude Include="Source Files\Display\Window\WindowManager.h">
       <Filter>Engine Backend\Display\Window</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Utility\OpenGL\ShaderSupport.h">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\OpenGL\GLError.h">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\OpenGL\Shader.h">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Utility\Settings.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Utility\Logger.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Utility\Devices.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
   </ItemGroup>
@@ -500,19 +491,13 @@
     <ClCompile Include="Source Files\Display\Window\WindowManager.cpp">
       <Filter>Engine Backend\Display\Window</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Utility\OpenGL\GLError.cpp">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Utility\OpenGL\Shader.cpp">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Utility\OpenGL\ShaderSupport.cpp">
-      <Filter>Engine Backend\Utility\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Utility\Settings.cpp">
       <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Utility\Logger.cpp">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Utility\Devices.cpp">
       <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
   </ItemGroup>

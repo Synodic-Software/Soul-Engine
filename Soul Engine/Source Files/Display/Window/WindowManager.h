@@ -1,2 +1,7 @@
 #pragma once
 
+namespace WindowManager {
+
+
+
+}
