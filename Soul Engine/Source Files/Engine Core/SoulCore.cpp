@@ -14,10 +14,10 @@
 #include "Input/InputState.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
-#include "Renderer\Renderer.h"
+//#include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Resources\Objects\Hand.h"
-#include "Utility\CUDA\CUDADevices.cuh"
+#include "Utility\Devices.h"
 #include "Multithreading\Scheduler.h"
 
 
@@ -31,11 +31,11 @@ namespace Soul {
 		WindowType type;
 	}window;
 
-	typedef struct renderer {
-		Renderer* rendererHandle;
-		RenderType type;
-		float timeModifier;
-	}renderer;
+	//typedef struct renderer {
+	//	Renderer* rendererHandle;
+	//	RenderType type;
+	//	float timeModifier;
+	//}renderer;
 
 	std::vector<window> windows;
 	GLFWwindow* masterWindow = nullptr;
@@ -43,11 +43,11 @@ namespace Soul {
 	int monitorCount;
 	GLFWmonitor** monitors;
 
-	std::vector<renderer> renderObjects;
+	//std::vector<renderer> renderObjects;
 
 	std::list<Scene*> scenes;
 
-	bool usingDefaultCamera;
+	//bool usingDefaultCamera;
 	/*std::vector<Camera*> cameras;
 	Camera* mouseCamera;*/
 
@@ -59,7 +59,7 @@ namespace Soul {
 		Scheduler::Wait();
 	}
 	void SynchGPU() {
-		CudaCheck(cudaDeviceSynchronize());
+		//CudaCheck(cudaDeviceSynchronize());
 	}
 	void SynchSystem() {
 		SynchCPU();
@@ -89,11 +89,10 @@ namespace Soul {
 
 	//Call to deconstuct both the engine and its dependencies
 	void Terminate() {
+		Soul::SynchSystem();
 		Scheduler::Terminate();
 		Settings::Write();
-		Soul::SynchSystem();
-		RayEngine::Clean();
-		CudaCheck(cudaDeviceReset());
+	//	RayEngine::Clean();
 
 		for (auto const& win : windows) {
 			glfwDestroyWindow(win.windowHandle);
@@ -102,28 +101,37 @@ namespace Soul {
 		glfwTerminate();
 	}
 
+	//Initializes the engine
 	void Init() {
 
-		Settings::Read("Settings.ini");
+		//setup the multithreader
+		Scheduler::Init();
 
-		Devices::ExtractDevices();
+		//open the config file for the duration of the runtime
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,
+			[]() {
+			Settings::Read("config.ini");
+		}
+		);
 
-		SynchSystem();
+		//extract all available GPU devices
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,
+			[]() {
+			Devices::ExtractDevices();
+		}
+		);
 
-		if (!glfwInit()) {
+		//Init glfw context for Window handling
+		auto didInit = glfwInit();
+
+		Scheduler::Wait();
+
+		if (!didInit) {
 			Terminate();
 		}
 
 		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60);
-
 		monitors = glfwGetMonitors(&monitorCount);
-
-		usingDefaultCamera = true;
-		/*mouseCamera = new Camera();
-		cameras.push_back(mouseCamera);
-
-		mouseCamera->SetPosition(glm::vec3(-(METER * 2), METER * 2 * 2, -(METER * 2)));
-		mouseCamera->OffsetOrientation(45, 45);*/
 
 	}
 
@@ -251,33 +259,33 @@ namespace Soul {
 				accumulator -= deltaTime;
 			}
 
-			for (auto const& rend : renderObjects) {
+		/*	for (auto const& rend : renderObjects) {
 				int width, height;
 				glfwGetWindowSize(masterWindow, &width, &height);
 				rend.rendererHandle->RenderSetup({ width, height }, deltaTime);
-			}
+			}*/
 
 			/*	for (auto const& scene : scenes){
 					RayEngine::Clear();
 					RayEngine::Process(scene);
 				}*/
 
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			/*glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
 
+			//SynchGPU();
+			//for (auto const& rend : renderObjects) {
+			//	//integration bool
+			//	rend.rendererHandle->Render(false);
+			//}
 			SynchGPU();
-			for (auto const& rend : renderObjects) {
-				//integration bool
-				rend.rendererHandle->Render(false);
-			}
-			SynchGPU();
-			RayEngine::Clear();
+			//RayEngine::Clear();
 			///////////////////////////////////////////////////////////////////////until vulkan
 
-			InputState::GetInstance().ResetOffsets();
+			/*InputState::GetInstance().ResetOffsets();
 
-			glfwSwapBuffers(masterWindow);
+			glfwSwapBuffers(masterWindow);*/
 			////////////////////////////////////////////////////////////////////////////////////
 		//	VulkanBackend::GetInstance().DrawFrame(masterWindow, width, height);
 
@@ -327,10 +335,7 @@ void RemoveObject(void* object) {
 
 //Initializes Soul. This should be the first command in a program.
 void SoulInit() {
-	Scheduler::Init();
 	Soul::Init();
-	/*Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH,true, []() {Soul::Init(); });
-	Scheduler::Wait();*/
 }
 
 //the moniter number, and a float from 0-1 of the screen size for each dimension,
@@ -339,7 +344,7 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize) {
 
 	GLFWmonitor* monitorIn = Soul::monitors[monitor];
 
-//	WindowType  win = static_cast<WindowType>(GetSetting("Window", 2));
+	//	WindowType  win = static_cast<WindowType>(GetSetting("Window", 2));
 	WindowType  win = BORDERLESS;
 
 	glfwWindowHint(GLFW_SAMPLES, 0);
@@ -412,22 +417,22 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize) {
 
 	////////////////////////////////////////////////////remove for vulkan
 	// start GLEW extension handler
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) {
+	//glewExperimental = GL_TRUE;
+	//if (glewInit() != GLEW_OK) {
 
-		throw std::runtime_error("glewInit failed");
+	//	throw std::runtime_error("glewInit failed");
 
-	}
+	//}
 
-	glEnable(GL_DEPTH_TEST); // enable depth-testing
+	//glEnable(GL_DEPTH_TEST); // enable depth-testing
 
-	glDepthMask(GL_TRUE);  // turn on
+	//glDepthMask(GL_TRUE);  // turn on
 
-	glDepthFunc(GL_LEQUAL);
+	//glDepthFunc(GL_LEQUAL);
 
-	glDepthRange(0.0f, 1.0f);
+	//glDepthRange(0.0f, 1.0f);
 
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 	/////////////////////////////////////////////////////////////////////
 
 	//glfwSetWindowUserPointer(windowOut, &VulkanBackend::GetInstance());
@@ -435,13 +440,13 @@ GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize) {
 
 	//////////////////////////
 
-	Soul::renderer rend = {
+	/*Soul::renderer rend = {
 		new Renderer(glm::uvec2(int(xSize*mode->width), int(ySize*mode->height))),
 		SPECTRAL,
 		1.0f
 	};
 
-	Soul::renderObjects.push_back(rend);
+	Soul::renderObjects.push_back(rend);*/
 
 	//////////////////////////
 
