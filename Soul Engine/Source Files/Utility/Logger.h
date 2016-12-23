@@ -24,7 +24,7 @@ namespace Logger {
 		}
 
 		template<typename T, typename... Args>
-		void LogHelp(std::ostream& o, T t, Args... args) // recursive variadic function
+		void LogHelp(std::ostream& o, T t, Args... args)
 		{
 			LogHelp(o, t);
 			LogHelp(o, args...);
@@ -42,10 +42,7 @@ namespace Logger {
 		}LogI;
 
 		extern std::deque<LogI> storage;
-
-
 	}
-
 
 	//Logs a message of the specified type
 	template<typename... Args>
