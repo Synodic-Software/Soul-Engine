@@ -5,6 +5,23 @@
 #include "Metrics.h"
 #include <iostream>
 
+
+//#include <cuda.h>  
+////#include <cuda_runtime_api.h>
+//
+//#include "Utility\Includes\GLMIncludes.h"
+////#include <cuda_runtime.h>
+////#include <device_launch_parameters.h>
+////#include <device_functions.h>
+//#include <curand.h>
+//#include <curand_kernel.h>
+//#include <vector_types.h>
+//#include <driver_functions.h>
+//#include "CUDA\CUDAMath.h"
+//#include <cuda_profiler_api.h>
+//#include "Metrics.h"
+
+
 #define WARP_SIZE 32
 
 #define CudaCheck(ans) { gpuAssert((ans), __FILE__, __LINE__); }

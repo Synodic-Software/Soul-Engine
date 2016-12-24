@@ -178,9 +178,6 @@
     <Filter Include="Engine Backend\Engine Core\Allocator">
       <UniqueIdentifier>{05e57c49-4656-4425-be25-75d03925d296}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Utility\Vulkan">
-      <UniqueIdentifier>{3f7284f4-f567-4add-b157-0fb32c9084dd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Shaders">
       <UniqueIdentifier>{f34f97f2-575f-4386-b987-2d88dcf2f822}</UniqueIdentifier>
     </Filter>
@@ -192,6 +189,21 @@
     </Filter>
     <Filter Include="Engine Backend\Utility\Includes">
       <UniqueIdentifier>{e0129b18-9a19-4e06-b5d7-1d5733558dbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Raster">
+      <UniqueIdentifier>{2370f259-f5db-4ef6-8523-3d27335db55d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Raster\Vulkan">
+      <UniqueIdentifier>{83669d3f-e93e-4050-a1f4-823eb387e589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\GPUDevices">
+      <UniqueIdentifier>{52c0f97e-6e78-4379-bd14-1eab391eb1f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\GPUDevices\CUDA">
+      <UniqueIdentifier>{77ded8df-e204-4661-bf1b-3fcbecd9ef57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\GPUDevices\OpenCL">
+      <UniqueIdentifier>{33877070-e8a6-4abf-b2bd-218b48b7ca45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -257,9 +269,6 @@
     </ClInclude>
     <ClInclude Include="Source Files\Utility\OpenCL\OpenCLHelper.h">
       <Filter>Engine Backend\Utility\OpenCL</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\GPUUtility.h">
-      <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Utility\CUDA\CUDAHelper.cuh">
       <Filter>Engine Backend\Utility\CUDA</Filter>
@@ -330,9 +339,6 @@
     <ClInclude Include="Source Files\Ray Engine\Ray.h">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Utility\CUDAIncludes.h">
-      <Filter>Engine Backend\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Renderer\CUDA\Renderer.cuh">
       <Filter>Engine Backend\Renderer\CUDA</Filter>
     </ClInclude>
@@ -384,17 +390,8 @@
     <ClInclude Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cuh">
       <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Utility\CUDA\CUDADevices.cuh">
-      <Filter>Engine Backend\Utility\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Allocator\Allocator.h">
       <Filter>Engine Backend\Engine Core\Allocator</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\Vulkan\VulkanUtility.h">
-      <Filter>Engine Backend\Utility\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Utility\Vulkan\VulkanBackend.h">
-      <Filter>Engine Backend\Utility\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Engine Core\Object\Tet.h">
       <Filter>Engine Backend\Engine Core\Object</Filter>
@@ -423,9 +420,6 @@
     <ClInclude Include="Source Files\Utility\Logger.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Utility\Devices.h">
-      <Filter>Engine Backend\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Utility\Includes\OpenCLIncludes.h">
       <Filter>Engine Backend\Utility\Includes</Filter>
     </ClInclude>
@@ -437,6 +431,21 @@
     </ClInclude>
     <ClInclude Include="Source Files\Display\Window\Window.h">
       <Filter>Engine Backend\Display\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Raster\RasterBackend.h">
+      <Filter>Engine Backend\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Raster\Vulkan\VulkanUtility.h">
+      <Filter>Engine Backend\Raster\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Raster\Vulkan\VulkanBackend.h">
+      <Filter>Engine Backend\Raster\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\GPUDevices\Devices.h">
+      <Filter>Engine Backend\GPUDevices</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\GPUDevices\CUDA\CUDADevices.cuh">
+      <Filter>Engine Backend\GPUDevices\CUDA</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -491,9 +500,6 @@
     <ClCompile Include="Source Files\Engine Core\Allocator\Allocator.cpp">
       <Filter>Engine Backend\Engine Core\Allocator</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Utility\Vulkan\VulkanBackend.cpp">
-      <Filter>Engine Backend\Utility\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Input\InputState.cpp">
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
@@ -506,11 +512,17 @@
     <ClCompile Include="Source Files\Utility\Logger.cpp">
       <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Utility\Devices.cpp">
-      <Filter>Engine Backend\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Display\Window\Window.cpp">
       <Filter>Engine Backend\Display\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Raster\RasterBackend.cpp">
+      <Filter>Engine Backend\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Raster\Vulkan\VulkanBackend.cpp">
+      <Filter>Engine Backend\Raster\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\GPUDevices\Devices.cpp">
+      <Filter>Engine Backend\GPUDevices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -586,11 +598,11 @@
     <CudaCompile Include="Source Files\Engine Core\Material\CUDA\ShaderNode.cu">
       <Filter>Engine Backend\Engine Core\Material\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="Source Files\Utility\CUDA\CUDADevices.cu">
-      <Filter>Engine Backend\Utility\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="Source Files\Engine Core\Object\CUDA\Tet.cu">
       <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Source Files\GPUDevices\CUDA\CUDADevices.cu">
+      <Filter>Engine Backend\GPUDevices\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

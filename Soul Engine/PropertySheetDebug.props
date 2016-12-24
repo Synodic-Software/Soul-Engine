@@ -17,7 +17,7 @@
       <AdditionalLibraryDirectories>$(VC_LibraryPath);$(WindowsSDK_LibraryPath);N:\Work\Libraries\glfw-3.0.4.bin.WIN64\lib-msvc120;N:\Work\Libraries\glew-1.10.0\lib\Release\x64;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ClCompile>
-      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\tinyObj;$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries;C:\VulkanSDK\1.0.30.0\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(AMDAPPSDKROOT)/include;$(ProjectDir)\Libraries\stb;$(IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>MaxSpeed</Optimization>

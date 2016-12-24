@@ -33,7 +33,7 @@ namespace WindowManager {
 		glfwSetWindowShouldClose(masterWindow->windowHandle, GLFW_TRUE);
 	}
 
-	//the moniter number, and a float from 0-1 of the screen size for each dimension
+	//the moniter number
 	void SoulCreateWindow(int monitor, uint x, uint y,uint width, uint height) {
 		if (monitor>detail::monitorCount) {
 			Logger::Log(ERROR, "The specified moniter '", monitor, "' needs to be less than ", detail::monitorCount);
