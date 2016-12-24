@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Utility\Logger.h"
 #include "Input\Input.h"
+#include "Raster Engine\RasterBackend.h"
 
 Window::Window( uint x, uint y, uint width, uint height, GLFWmonitor* monitorIn)
 {
@@ -45,12 +46,14 @@ Window::Window( uint x, uint y, uint width, uint height, GLFWmonitor* monitorIn)
 
 	}
 	else {
-		Logger::Log(ERROR,"No Window setting found");
+		LOG(ERROR,"No Window setting found");
 	}
 
 	if (!windowHandle) {
-		Logger::Log(ERROR, "Window creation failed");
+		LOG(ERROR, "Window creation failed");
 	}
+
+	glfwSetWindowPos(windowHandle,x,y);
 
 	glfwSetWindowUserPointer(windowHandle, this);
 
@@ -59,6 +62,7 @@ Window::Window( uint x, uint y, uint width, uint height, GLFWmonitor* monitorIn)
 	glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
 
 
+	RasterBackend::CreateWindow(*this);
 	//glfwSetWindowUserPointer(windowOut, &VulkanBackend::GetInstance());
 	//glfwSetWindowSizeCallback(windowOut, VulkanBackend::OnWindowResized);
 

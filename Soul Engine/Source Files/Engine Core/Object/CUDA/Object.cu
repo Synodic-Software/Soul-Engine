@@ -150,32 +150,32 @@ void Object::ExtractFromFile(const char* name){
 
 
 
-	//Logger::Log(TRACE, "\nINDICES: " << faceAmount << std::endl;
+	//LOG(TRACE, "\nINDICES: " << faceAmount << std::endl;
 	//for (int i = 0; i < faceAmount; i++){
-	//	Logger::Log(TRACE,("%i ", faces[i].indices.x);
-	//	Logger::Log(TRACE,("%i ", faces[i].indices.y);
-	//	Logger::Log(TRACE,("%i \n", faces[i].indices.z);
+	//	LOG(TRACE,("%i ", faces[i].indices.x);
+	//	LOG(TRACE,("%i ", faces[i].indices.y);
+	//	LOG(TRACE,("%i \n", faces[i].indices.z);
 	//}
 
-	//Logger::Log(TRACE, "\nVERTICES: " << verticeAmount << std::endl;
+	//LOG(TRACE, "\nVERTICES: " << verticeAmount << std::endl;
 
 	//for (int i = 0; i < verticeAmount; i++){
-	//	Logger::Log(TRACE, "\n	Positions: "  << std::endl;
+	//	LOG(TRACE, "\n	Positions: "  << std::endl;
 
-	//	Logger::Log(TRACE,("%f ", vertices[i].position.x);
-	//	Logger::Log(TRACE,("%f ", vertices[i].position.y);
-	//	Logger::Log(TRACE,("%f \n", vertices[i].position.z);
+	//	LOG(TRACE,("%f ", vertices[i].position.x);
+	//	LOG(TRACE,("%f ", vertices[i].position.y);
+	//	LOG(TRACE,("%f \n", vertices[i].position.z);
 
-	//	Logger::Log(TRACE,"\n	Normals: " << std::endl;
+	//	LOG(TRACE,"\n	Normals: " << std::endl;
 
-	//	Logger::Log(TRACE,("%f ", vertices[i].normal.x);
-	//	Logger::Log(TRACE,("%f ", vertices[i].normal.y);
-	//	Logger::Log(TRACE,("%f \n", vertices[i].normal.z);
+	//	LOG(TRACE,("%f ", vertices[i].normal.x);
+	//	LOG(TRACE,("%f ", vertices[i].normal.y);
+	//	LOG(TRACE,("%f \n", vertices[i].normal.z);
 
-	//	Logger::Log(TRACE, "\n	TexCoords: " << std::endl;
+	//	LOG(TRACE, "\n	TexCoords: " << std::endl;
 
-	//	Logger::Log(TRACE,("%f ", vertices[i].textureCoord.x);
-	//	Logger::Log(TRACE,("%f \n", vertices[i].textureCoord.y);
+	//	LOG(TRACE,("%f ", vertices[i].textureCoord.x);
+	//	LOG(TRACE,("%f \n", vertices[i].textureCoord.y);
 	//}
 
 	box.max = max;

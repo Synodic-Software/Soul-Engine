@@ -4,8 +4,6 @@
 //Scheduler Variables//
 static std::thread* threads;
 static std::size_t threadCount{ 0 };
-
-static bool shouldRun{ true };
 static boost::fibers::condition_variable_any threadCondition{};
 
 
@@ -13,6 +11,9 @@ static boost::fibers::condition_variable_any threadCondition{};
 namespace Scheduler {
 
 	namespace detail {
+
+		bool shouldRun = true;
+
 		std::thread::id mainID;
 
 		std::size_t fiberCount = 0;
@@ -176,7 +177,7 @@ namespace Scheduler {
 			boost::fibers::use_scheduling_algorithm<shared_priority >();
 
 			std::unique_lock<std::mutex> lock(Scheduler::detail::fiberMutex);
-			threadCondition.wait(lock, []() { return 0 == Scheduler::detail::fiberCount && !shouldRun; });
+			threadCondition.wait(lock, []() { return 0 == Scheduler::detail::fiberCount && !detail::shouldRun; });
 		}
 
 
@@ -184,11 +185,12 @@ namespace Scheduler {
 
 	void Terminate() {
 		detail::fiberMutex.lock();
-		shouldRun = false;
+		detail::shouldRun = false;
 		if (0 == --detail::fiberCount) {
 			detail::fiberMutex.unlock();
 			threadCondition.notify_all(); //notify all fibers waiting 
 		}
+		detail::fiberMutex.unlock();
 
 		//yield this fiber until all the remaining work is done
 		while (detail::fiberCount != 0) {
@@ -232,6 +234,10 @@ namespace Scheduler {
 
 	void Defer() {
 		boost::this_fiber::yield();
+	}
+
+	bool Running(){
+		return detail::shouldRun;
 	}
 
 };

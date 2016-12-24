@@ -9,7 +9,7 @@
 #include <thrust/remove.h>
 #include <cuda_runtime.h>
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "Utility\CUDA\CUDADevices.cuh"
+#include "GPGPU\CUDA\CUDADevices.cuh"
 
 struct is_marked
 {
@@ -628,7 +628,7 @@ __host__ void ClearResults(std::vector<RayJob>& hjobs){
 			CudaCheck(cudaEventDestroy(start));
 			CudaCheck(cudaEventDestroy(stop));
 
-			//Logger::Log(TRACE, "RayClear Execution: " , time , "ms");
+			//LOG(TRACE, "RayClear Execution: " , time , "ms");
 		}
 		CudaCheck(cudaDeviceSynchronize());
 	}
@@ -825,9 +825,9 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* scene){
 			CudaCheck(cudaEventDestroy(start));
 			CudaCheck(cudaEventDestroy(stop));
 
-			/*Logger::Log(TRACE, "RayEngine Execution: " << time << "ms" << std::endl;
-			Logger::Log(TRACE, "     EngineExecute Execution: " << EngineExecuteTime << "ms" << std::endl;
-			Logger::Log(TRACE, "     CollectHits Execution: " << CollectHitsTime << "ms" << std::endl;*/
+			/*LOG(TRACE, "RayEngine Execution: " << time << "ms" << std::endl;
+			LOG(TRACE, "     EngineExecute Execution: " << EngineExecuteTime << "ms" << std::endl;
+			LOG(TRACE, "     CollectHits Execution: " << CollectHitsTime << "ms" << std::endl;*/
 
 			CudaCheck(cudaDeviceSynchronize());
 		}

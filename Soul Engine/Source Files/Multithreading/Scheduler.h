@@ -25,6 +25,8 @@ namespace Scheduler {
 	//User: Do Not Touch
 	namespace detail {
 
+		extern bool shouldRun;
+
 		extern std::size_t fiberCount;
 		extern std::mutex fiberMutex;
 
@@ -158,4 +160,6 @@ namespace Scheduler {
 	//Yields the current fiber to the scheduler
 	void Defer();
 
+	//returns the desired running state of the scheduler. Useful for functions that want to run the lifespan of the engine
+	bool Running();
 };

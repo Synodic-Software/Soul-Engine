@@ -36,7 +36,7 @@ namespace WindowManager {
 	//the moniter number
 	void SoulCreateWindow(int monitor, uint x, uint y,uint width, uint height) {
 		if (monitor>detail::monitorCount) {
-			Logger::Log(ERROR, "The specified moniter '", monitor, "' needs to be less than ", detail::monitorCount);
+			LOG(ERROR, "The specified moniter '", monitor, "' needs to be less than ", detail::monitorCount);
 		}
 
 		GLFWmonitor* monitorIn = detail::monitors[monitor];
