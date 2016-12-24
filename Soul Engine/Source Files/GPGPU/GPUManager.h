@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace Devices {
+namespace GPUManager {
 
 	void ExtractDevices();
 

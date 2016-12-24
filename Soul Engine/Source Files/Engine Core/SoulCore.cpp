@@ -3,7 +3,7 @@
 
 #include "SoulCore.h"
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "Raster/RasterBackend.h"
+#include "Raster Engine/RasterBackend.h"
 #include "Engine Core/BasicDependencies.h"
 
 #include "Utility/Settings.h"
@@ -16,7 +16,7 @@
 #include "Physics Engine\PhysicsEngine.h"
 //#include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
-#include "GPUDevices\Devices.h"
+#include "GPGPU\GPUManager.h"
 #include "Multithreading\Scheduler.h"
 #include "Display\Window\WindowManager.h"
 
@@ -109,7 +109,7 @@ namespace Soul {
 
 		//extract all available GPU devices
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
-			Devices::ExtractDevices();
+			GPUManager::ExtractDevices();
 		});
 
 		//Init glfw context for Window handling

@@ -172,19 +172,19 @@
     <Filter Include="Engine Backend\Utility\Includes">
       <UniqueIdentifier>{e0129b18-9a19-4e06-b5d7-1d5733558dbb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Raster">
+    <Filter Include="Engine Backend\Raster Engine">
       <UniqueIdentifier>{2370f259-f5db-4ef6-8523-3d27335db55d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Raster\Vulkan">
+    <Filter Include="Engine Backend\Raster Engine\Vulkan">
       <UniqueIdentifier>{83669d3f-e93e-4050-a1f4-823eb387e589}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\GPUDevices">
+    <Filter Include="Engine Backend\GPGPU">
       <UniqueIdentifier>{52c0f97e-6e78-4379-bd14-1eab391eb1f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\GPUDevices\CUDA">
+    <Filter Include="Engine Backend\GPGPU\CUDA">
       <UniqueIdentifier>{77ded8df-e204-4661-bf1b-3fcbecd9ef57}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\GPUDevices\OpenCL">
+    <Filter Include="Engine Backend\GPGPU\OpenCL">
       <UniqueIdentifier>{33877070-e8a6-4abf-b2bd-218b48b7ca45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -408,20 +408,20 @@
     <ClInclude Include="Source Files\Display\Window\Window.h">
       <Filter>Engine Backend\Display\Window</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Raster\RasterBackend.h">
-      <Filter>Engine Backend\Raster</Filter>
+    <ClInclude Include="Source Files\GPGPU\GPUManager.h">
+      <Filter>Engine Backend\GPGPU</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Raster\Vulkan\VulkanUtility.h">
-      <Filter>Engine Backend\Raster\Vulkan</Filter>
+    <ClInclude Include="Source Files\GPGPU\CUDA\CUDADevices.cuh">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Raster\Vulkan\VulkanBackend.h">
-      <Filter>Engine Backend\Raster\Vulkan</Filter>
+    <ClInclude Include="Source Files\Raster Engine\RasterBackend.h">
+      <Filter>Engine Backend\Raster Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\GPUDevices\Devices.h">
-      <Filter>Engine Backend\GPUDevices</Filter>
+    <ClInclude Include="Source Files\Raster Engine\Vulkan\VulkanUtility.h">
+      <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\GPUDevices\CUDA\CUDADevices.cuh">
-      <Filter>Engine Backend\GPUDevices\CUDA</Filter>
+    <ClInclude Include="Source Files\Raster Engine\Vulkan\VulkanBackend.h">
+      <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -488,14 +488,14 @@
     <ClCompile Include="Source Files\Display\Window\Window.cpp">
       <Filter>Engine Backend\Display\Window</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Raster\RasterBackend.cpp">
-      <Filter>Engine Backend\Raster</Filter>
+    <ClCompile Include="Source Files\GPGPU\GPUManager.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Raster\Vulkan\VulkanBackend.cpp">
-      <Filter>Engine Backend\Raster\Vulkan</Filter>
+    <ClCompile Include="Source Files\Raster Engine\RasterBackend.cpp">
+      <Filter>Engine Backend\Raster Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\GPUDevices\Devices.cpp">
-      <Filter>Engine Backend\GPUDevices</Filter>
+    <ClCompile Include="Source Files\Raster Engine\Vulkan\VulkanBackend.cpp">
+      <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -574,8 +574,8 @@
     <CudaCompile Include="Source Files\Engine Core\Object\CUDA\Tet.cu">
       <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="Source Files\GPUDevices\CUDA\CUDADevices.cu">
-      <Filter>Engine Backend\GPUDevices\CUDA</Filter>
+    <CudaCompile Include="Source Files\GPGPU\CUDA\CUDADevices.cu">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>
