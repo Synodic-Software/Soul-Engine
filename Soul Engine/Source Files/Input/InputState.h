@@ -3,7 +3,7 @@
 #include "Utility\Vulkan\VulkanBackend.h"
 #include <functional>
 #include "Input.h"
-//just some basic defs for use with InputState.cpp
+
 class InputState : Input{
 
 public:

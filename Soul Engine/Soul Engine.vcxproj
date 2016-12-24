@@ -85,6 +85,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
+    <ClInclude Include="Source Files\Display\Window\Window.h" />
     <ClInclude Include="Source Files\Display\Window\WindowManager.h" />
     <ClInclude Include="Source Files\Engine Core\Allocator\Allocator.h" />
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h" />
@@ -144,9 +145,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Utility\CUDA\CUDAManaged.cuh" />
     <ClInclude Include="Source Files\Utility\CUDA\CUDAMath.h" />
     <ClInclude Include="Source Files\Utility\Devices.h" />
-    <ClInclude Include="Source Files\Utility\GLMIncludes.h" />
+    <ClInclude Include="Source Files\Utility\Includes\GLFWIncludes.h" />
+    <ClInclude Include="Source Files\Utility\Includes\GLMIncludes.h" />
+    <ClInclude Include="Source Files\Utility\Includes\OpenCLIncludes.h" />
     <ClInclude Include="Source Files\Utility\Logger.h" />
-    <ClInclude Include="Source Files\Utility\OpenCLIncludes.h" />
     <ClInclude Include="Source Files\Utility\OpenCL\OpenCLHelper.h" />
     <ClInclude Include="Source Files\Utility\GPUUtility.h" />
     <ClInclude Include="Source Files\Utility\Settings.h" />
@@ -157,6 +159,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
+    <ClCompile Include="Source Files\Display\Window\Window.cpp" />
     <ClCompile Include="Source Files\Display\Window\WindowManager.cpp" />
     <ClCompile Include="Source Files\Engine Core\Allocator\Allocator.cpp" />
     <ClCompile Include="Source Files\Engine Core\Frame\Frame.cpp" />

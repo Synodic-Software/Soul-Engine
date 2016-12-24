@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine Core/Material/Texture/Image.cuh"
-#include "Utility\GLMIncludes.h"
+#include "Utility\Includes\GLMIncludes.h"
 #include <string>
 
 class Material : public Managed{

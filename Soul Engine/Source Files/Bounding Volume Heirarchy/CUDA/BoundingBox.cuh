@@ -2,7 +2,7 @@
 
 #include "Utility\CUDA\CudaManaged.cuh"
 #include <cuda_runtime.h>
-#include "Utility\GLMIncludes.h"
+#include "Utility\Includes\GLMIncludes.h"
 
 class BoundingBox : public Managed
 {

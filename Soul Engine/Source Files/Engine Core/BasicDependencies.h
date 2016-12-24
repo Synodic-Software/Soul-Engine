@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utility\GLMIncludes.h"
+#include "Utility\Includes\GLMIncludes.h"
 
 #include <stdlib.h>
 #include <IOstream>
