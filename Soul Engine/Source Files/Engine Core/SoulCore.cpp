@@ -3,7 +3,7 @@
 
 #include "SoulCore.h"
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "Utility\Vulkan\VulkanBackend.h"
+#include "Raster/RasterBackend.h"
 #include "Engine Core/BasicDependencies.h"
 
 #include "Utility/Settings.h"
@@ -17,7 +17,7 @@
 //#include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "Resources\Objects\Hand.h"
-#include "Utility\Devices.h"
+#include "GPUDevices\Devices.h"
 #include "Multithreading\Scheduler.h"
 #include "Display\Window\WindowManager.h"
 
@@ -103,8 +103,22 @@ namespace Soul {
 			Terminate();
 		}
 
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,
+			[]() {
+			RasterBackend::Init();
+		}
+		);
+
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,
+			[]() {
+			WindowManager::Init();
+		}
+		);
+
 		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60);
-		WindowManager::Init();
+
+		Scheduler::Wait();
+
 	}
 
 	void InputToCamera(GLFWwindow* window, Camera* camera) {
