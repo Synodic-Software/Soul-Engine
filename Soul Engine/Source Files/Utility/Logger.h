@@ -4,6 +4,9 @@
 #include <sstream>
 #include <deque>
 #include <mutex>
+#include <iostream>
+#include <boost/filesystem.hpp>
+
 
 enum LogSeverity {
 	TRACE,
@@ -11,6 +14,12 @@ enum LogSeverity {
 	ERROR,
 	FATAL
 };
+
+#define LOG(SEVERITY,...) Logger::detail::Log(SEVERITY,__FILE__, __LINE__, __VA_ARGS__)
+#define LOG_TRACE(...) Logger::detail::Log(TRACE,__FILE__, __LINE__, __VA_ARGS__)
+#define LOG_WARNING(...) Logger::detail::Log(WARNING,__FILE__, __LINE__, __VA_ARGS__)
+#define LOG_ERROR(...) Logger::detail::Log(ERROR,__FILE__, __LINE__, __VA_ARGS__)
+#define LOG_FATAL(...) Logger::detail::Log(FATAL,__FILE__, __LINE__, __VA_ARGS__)
 
 namespace Logger {
 
@@ -20,7 +29,7 @@ namespace Logger {
 		template <typename T>
 		void LogHelp(std::ostream& o, T t)
 		{
-			o << t << std::endl;
+			o << t;
 		}
 
 		template<typename T, typename... Args>
@@ -38,38 +47,32 @@ namespace Logger {
 
 			std::string msg;
 			LogSeverity severity;
+			int luneNumber;
+			const char* filename;
 
 		}LogI;
 
 		extern std::deque<LogI> storage;
+
+		//Setters for logging messages. Interfaced by macros
+
+		void WriteInfo(std::ostream& oss, const char* file, int line);
+
+
+		//Logs a message of the specified type
+		template<typename... Args>
+		void Log(LogSeverity logType, const char* file, int line, Args... args)
+		{
+			std::ostringstream oss;
+			WriteInfo(oss, file, line);
+			detail::LogHelp(oss, args...);
+
+			detail::logMut.lock();
+			detail::storage.push_back({ oss.str() ,logType ,line,file });
+			detail::logMut.unlock();
+		}
 	}
 
-	//Logs a message of the specified type
-	template<typename... Args>
-	void Log(LogSeverity logType, Args... args)
-	{
-		std::ostringstream oss;
-		detail::LogHelp(oss, args...);
-
-		detail::logMut.lock();
-		detail::storage.push_back({ oss.str() ,logType });
-		detail::logMut.unlock();
-	}
-
-
-	//Logs a message with a TRACE type
-	template<typename... Args>
-	void Log(Args... args)
-	{
-		std::ostringstream oss;
-		detail::LogHelp(oss, args...);
-
-		detail::logMut.lock();
-		detail::storage.push_back({ oss.str() ,TRACE });
-		detail::logMut.unlock();
-	}
-
-	//Get the next available string to write
+	//Get the next available string to write. Empty string if none written
 	std::string Get();
-
 }

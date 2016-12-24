@@ -468,7 +468,7 @@ __host__ void Scene::Build(float deltaTime){
 	CudaCheck(cudaEventDestroy(start));
 	CudaCheck(cudaEventDestroy(stop));
 
-	Logger::Log(TRACE,"     Sorting Execution: " , time , "ms");
+	LOG(TRACE,"     Sorting Execution: " , time , "ms");
 
 	bvh->Build(compiledSize);
 

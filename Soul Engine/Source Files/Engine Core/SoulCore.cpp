@@ -102,6 +102,13 @@ namespace Soul {
 		//setup the multithreader
 		Scheduler::Init();
 
+		//log errors to the console for now
+		Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_LOW, false, []() {
+			while (Scheduler::Running()) {
+				std::cout << Logger::Get();
+			}
+		});
+
 		//open the config file for the duration of the runtime
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
 			Settings::Read("config.ini");
@@ -235,7 +242,6 @@ namespace Soul {
 				//loading and updates for multithreading
 				glfwPollEvents();
 
-
 				//if (usingDefaultCamera){
 				//	UpdateDefaultCamera(masterWindow, deltaTime);
 				//	InputToCamera(masterWindow, mouseCamera);
@@ -340,8 +346,9 @@ int main()
 {
 	SoulInit();
 
+
 	//create a Window
-	WindowManager::SoulCreateWindow(0, 0, 0, 100, 100);
+	WindowManager::SoulCreateWindow(0, 0, 0, 1024, 720);
 
 	InputState::GetInstance().ResetMouse = true;
 

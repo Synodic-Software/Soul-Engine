@@ -5,11 +5,10 @@
 #include "Raster Engine\RasterBackend.h"
 
 
-
-class VulkanBackend : public RasterBackend::Backend {
+class OpenGLBackend : public RasterBackend::Backend {
 public:
-	VulkanBackend();
-	~VulkanBackend();
+	OpenGLBackend();
+	~OpenGLBackend();
 
 	void Init();
 	void CreateWindow(Window&);

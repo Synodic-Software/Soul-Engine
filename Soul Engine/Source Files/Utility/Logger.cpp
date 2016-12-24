@@ -2,7 +2,7 @@
 
 namespace Logger {
 
-	namespace detail{
+	namespace detail {
 		std::string LogSeverityStrings[4]{
 			"TRACE",
 			"WARNING",
@@ -12,15 +12,27 @@ namespace Logger {
 
 		std::mutex logMut;
 		std::deque<LogI> storage;
+
+		void WriteInfo(std::ostream& oss, const char* file, int line) {
+			std::string baseName = boost::filesystem::path(file).filename().string();
+			oss << "File: " << baseName << " Line: " << line << " | ";
+		}
 	}
 
 	std::string Get() {
 		detail::logMut.lock();
-		detail::LogI temp = detail::storage.front();
-		detail::storage.pop_front();
-		detail::logMut.unlock();
+		if (detail::storage.size() > 0) {
 
-		return detail::LogSeverityStrings[temp.severity] +": "+temp.msg;
-		
+			detail::LogI temp = detail::storage.front();
+			detail::storage.pop_front();
+			detail::logMut.unlock();
+
+			return ("[" + detail::LogSeverityStrings[temp.severity] + "] " + temp.msg+"\n");
+		}
+		else {
+			detail::logMut.unlock();
+			return std::string();
+		}
+
 	}
 }

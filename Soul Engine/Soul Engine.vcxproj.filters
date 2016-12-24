@@ -187,6 +187,9 @@
     <Filter Include="Engine Backend\GPGPU\OpenCL">
       <UniqueIdentifier>{33877070-e8a6-4abf-b2bd-218b48b7ca45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Raster Engine\OpenGL">
+      <UniqueIdentifier>{d704523a-5da0-4051-8078-7201a209513f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -378,9 +381,6 @@
     <ClInclude Include="Source Files\Engine Core\Object\CUDA\Tet.cuh">
       <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Shaders\Shader.h">
-      <Filter>Engine Backend\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\Utility\CUDA\CUDAMath.h">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
@@ -422,6 +422,12 @@
     </ClInclude>
     <ClInclude Include="Source Files\Raster Engine\Vulkan\VulkanBackend.h">
       <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Raster Engine\OpenGL\OpenGLUtility.h">
+      <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Raster Engine\OpenGL\OpenGLBackend.h">
+      <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -496,6 +502,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Raster Engine\Vulkan\VulkanBackend.cpp">
       <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Raster Engine\OpenGL\OpenGLBackend.cpp">
+      <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

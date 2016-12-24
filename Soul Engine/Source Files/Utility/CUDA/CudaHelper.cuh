@@ -87,7 +87,7 @@ inline int _ConvertSMVer2Cores(int major, int minor)
 	}
 
 	// If we don't find the values, we default use the previous one to run properly
-	//Logger::Log(TRACE, "MapSMtoCores for SM %d.%d is undefined.  Default to use %d Cores/SM\n", major, minor, nGpuArchCoresPerSM[index - 1].Cores);
+	//LOG(TRACE, "MapSMtoCores for SM %d.%d is undefined.  Default to use %d Cores/SM\n", major, minor, nGpuArchCoresPerSM[index - 1].Cores);
 	return nGpuArchCoresPerSM[index - 1].Cores;
 }
 // end of GPU Architecture definitions
