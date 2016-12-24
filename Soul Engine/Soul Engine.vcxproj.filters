@@ -49,15 +49,6 @@
     <Filter Include="Engine Backend\Utility\CUDA">
       <UniqueIdentifier>{b6828cc2-5889-494f-823c-846694d63b55}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Resources">
-      <UniqueIdentifier>{5c12db69-88ac-48db-916a-889519665f63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Resources\Textures">
-      <UniqueIdentifier>{1c993365-900c-4d6f-b6c3-9e0658cc249c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Resources\Models">
-      <UniqueIdentifier>{15bc74d5-64bc-4138-bf8f-c3cc58c68e1d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Renderer">
       <UniqueIdentifier>{1ce2842a-1809-4937-b9bc-08963762038d}</UniqueIdentifier>
     </Filter>
@@ -99,12 +90,6 @@
     </Filter>
     <Filter Include="Engine Backend\Engine Core\Camera\CUDA">
       <UniqueIdentifier>{c202798d-1fc2-49c9-83f0-52a2549fb6a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Resources\Shaders">
-      <UniqueIdentifier>{f0ff9397-db0b-4e92-b4a1-82cce5ddc33e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Resources\Objects">
-      <UniqueIdentifier>{23d6bac7-65bf-4c51-8994-5201316238cd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Engine Core\Scene">
       <UniqueIdentifier>{ec1089d9-4d17-4dad-ba40-fc00454f755b}</UniqueIdentifier>
@@ -177,9 +162,6 @@
     </Filter>
     <Filter Include="Engine Backend\Engine Core\Allocator">
       <UniqueIdentifier>{05e57c49-4656-4425-be25-75d03925d296}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Shaders">
-      <UniqueIdentifier>{f34f97f2-575f-4386-b987-2d88dcf2f822}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Display">
       <UniqueIdentifier>{2f2ed3b7-3058-4e14-939f-a6241027892f}</UniqueIdentifier>
@@ -257,9 +239,6 @@
     </ClInclude>
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Resources\Objects\Hand.h">
-      <Filter>Engine Backend\Resources\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Ray Engine\RayEngine.h">
       <Filter>Engine Backend\Ray Engine</Filter>
@@ -400,9 +379,6 @@
       <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Shaders\Shader.h">
-      <Filter>Engine Backend\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Shaders\Shader.h">
       <Filter>Engine Backend\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Utility\CUDA\CUDAMath.h">
@@ -481,9 +457,6 @@
     </ClCompile>
     <ClCompile Include="Source Files\Multithreading\Scheduler.cpp">
       <Filter>Engine Backend\Multithreading</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Resources\Objects\Hand.cpp">
-      <Filter>Engine Backend\Resources\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Ray Engine\RayEngine.cpp">
       <Filter>Engine Backend\Ray Engine</Filter>
@@ -604,13 +577,5 @@
     <CudaCompile Include="Source Files\GPUDevices\CUDA\CUDADevices.cu">
       <Filter>Engine Backend\GPUDevices\CUDA</Filter>
     </CudaCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="vertex-shader[Renderer].txt">
-      <Filter>Engine Backend\Resources\Shaders</Filter>
-    </Text>
-    <Text Include="fragment-shader[Renderer].txt">
-      <Filter>Engine Backend\Resources\Shaders</Filter>
-    </Text>
   </ItemGroup>
 </Project>

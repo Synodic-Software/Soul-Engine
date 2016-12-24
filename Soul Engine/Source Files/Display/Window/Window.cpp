@@ -52,29 +52,12 @@ Window::Window( uint x, uint y, uint width, uint height, GLFWmonitor* monitorIn)
 		Logger::Log(ERROR, "Window creation failed");
 	}
 
+	glfwSetWindowUserPointer(windowHandle, this);
+
 	glfwSetKeyCallback(windowHandle, Input::KeyCallback);
 	glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
 	glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
 
-	////////////////////////////////////////////////////remove for vulkan
-	// start GLEW extension handler
-	//glewExperimental = GL_TRUE;
-	//if (glewInit() != GLEW_OK) {
-
-	//	throw std::runtime_error("glewInit failed");
-
-	//}
-
-	//glEnable(GL_DEPTH_TEST); // enable depth-testing
-
-	//glDepthMask(GL_TRUE);  // turn on
-
-	//glDepthFunc(GL_LEQUAL);
-
-	//glDepthRange(0.0f, 1.0f);
-
-	//glEnable(GL_TEXTURE_2D);
-	/////////////////////////////////////////////////////////////////////
 
 	//glfwSetWindowUserPointer(windowOut, &VulkanBackend::GetInstance());
 	//glfwSetWindowSizeCallback(windowOut, VulkanBackend::OnWindowResized);
