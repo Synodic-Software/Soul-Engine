@@ -16,7 +16,6 @@
 #include "Physics Engine\PhysicsEngine.h"
 //#include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
-#include "Resources\Objects\Hand.h"
 #include "GPUDevices\Devices.h"
 #include "Multithreading\Scheduler.h"
 #include "Display\Window\WindowManager.h"
@@ -47,9 +46,11 @@ namespace Soul {
 	void SynchCPU() {
 		Scheduler::Wait();
 	}
+
 	void SynchGPU() {
 		//CudaCheck(cudaDeviceSynchronize());
 	}
+
 	void SynchSystem() {
 		SynchCPU();
 		SynchGPU();
