@@ -67,11 +67,32 @@ namespace Soul {
 	//Call to deconstuct both the engine and its dependencies
 	void Terminate() {
 		Soul::SynchSystem();
+
+		//Write the settings into a file
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			Settings::Write();
+		});
+
+		//Clean the RayEngine from stray data
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			//	RayEngine::Clean();
+		});
+
+		//destroy all windows
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			WindowManager::Terminate();
+		});
+
+		Scheduler::Wait();
+
+		//destroy glfw, needs to wait on the window manager
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			glfwTerminate();
+		});
+
+		Scheduler::Wait();
+
 		Scheduler::Terminate();
-		Settings::Write();
-	//	RayEngine::Clean();
-		WindowManager::Terminate();
-		glfwTerminate();
 	}
 
 	//Initializes the engine
@@ -81,21 +102,20 @@ namespace Soul {
 		Scheduler::Init();
 
 		//open the config file for the duration of the runtime
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,
-			[]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
 			Settings::Read("config.ini");
-		}
-		);
+		});
 
 		//extract all available GPU devices
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,
-			[]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
 			Devices::ExtractDevices();
-		}
-		);
+		});
 
 		//Init glfw context for Window handling
-		auto didInit = glfwInit();
+		int didInit;
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true,[&]() {
+			didInit = glfwInit();
+		});
 
 		Scheduler::Wait();
 
@@ -103,17 +123,13 @@ namespace Soul {
 			Terminate();
 		}
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,
-			[]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
 			RasterBackend::Init();
-		}
-		);
+		});
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,
-			[]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
 			WindowManager::Init();
-		}
-		);
+		});
 
 		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60);
 
@@ -241,26 +257,26 @@ namespace Soul {
 				accumulator -= deltaTime;
 			}
 
-		/*	for (auto const& rend : renderObjects) {
-				int width, height;
-				glfwGetWindowSize(masterWindow, &width, &height);
-				rend.rendererHandle->RenderSetup({ width, height }, deltaTime);
-			}*/
-
-			/*	for (auto const& scene : scenes){
-					RayEngine::Clear();
-					RayEngine::Process(scene);
+			/*	for (auto const& rend : renderObjects) {
+					int width, height;
+					glfwGetWindowSize(masterWindow, &width, &height);
+					rend.rendererHandle->RenderSetup({ width, height }, deltaTime);
 				}*/
 
-			/*glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+				/*	for (auto const& scene : scenes){
+						RayEngine::Clear();
+						RayEngine::Process(scene);
+					}*/
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
+					/*glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-			//SynchGPU();
-			//for (auto const& rend : renderObjects) {
-			//	//integration bool
-			//	rend.rendererHandle->Render(false);
-			//}
+					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
+
+					//SynchGPU();
+					//for (auto const& rend : renderObjects) {
+					//	//integration bool
+					//	rend.rendererHandle->Render(false);
+					//}
 			SynchGPU();
 			//RayEngine::Clear();
 			///////////////////////////////////////////////////////////////////////until vulkan
@@ -270,7 +286,7 @@ namespace Soul {
 			glfwSwapBuffers(masterWindow);*/
 			////////////////////////////////////////////////////////////////////////////////////
 
-	
+
 			WindowManager::Draw();
 
 
@@ -324,7 +340,7 @@ int main()
 	SoulInit();
 
 	//create a Window
-	WindowManager::SoulCreateWindow(0, 0, 0,100,100);
+	WindowManager::SoulCreateWindow(0, 0, 0, 100, 100);
 
 	InputState::GetInstance().ResetMouse = true;
 
