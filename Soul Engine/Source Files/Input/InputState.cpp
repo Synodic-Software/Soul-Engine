@@ -2,18 +2,9 @@
 #include <list>
 
 std::list<std::function<void()> > keyHash[350];
-/*
-gonna need to go through a lot of this old code
-not very much is well documented
-a lot of it is entirely uncommented
-let me know what does what if you want me to do so
-some of it seems pretty similar/redundant too
--Connor
 
-.
-.
-*/
-bool IsKeyAvailable(int key){//check if key is available
+
+bool IsKeyAvailable(int key){
 	return keyHash[key].size() == 0;
 }
 
@@ -26,8 +17,7 @@ void InputState::InputKeyboardCallback(GLFWwindow* window, int key, int scancode
 }
 
 bool InputState::SetKey(int key, std::function<void()> function){
-	//doesn't currently check for availability, this is bad - talk to me about whats needed here
-	//who is me?
+	
 	keyHash[key].push_back(function);
 	return true;
 }

@@ -19,29 +19,18 @@
 #include "Resources\Objects\Hand.h"
 #include "Utility\Devices.h"
 #include "Multithreading\Scheduler.h"
-
+#include "Display\Window\WindowManager.h"
 
 
 namespace Soul {
 
 	/////////////////////////Variables and Declarations//////////////////
 
-	typedef struct window {
-		GLFWwindow* windowHandle;
-		WindowType type;
-	}window;
-
 	//typedef struct renderer {
 	//	Renderer* rendererHandle;
 	//	RenderType type;
 	//	float timeModifier;
 	//}renderer;
-
-	std::vector<window> windows;
-	GLFWwindow* masterWindow = nullptr;
-
-	int monitorCount;
-	GLFWmonitor** monitors;
 
 	//std::vector<renderer> renderObjects;
 
@@ -70,18 +59,6 @@ namespace Soul {
 
 
 
-
-
-	bool RequestRenderSwitch(RenderType newR) {
-		return true;
-	}
-	bool RequestWindowSwitch(WindowType newW) {
-		return true;
-	}
-	bool RequestScreenSize(glm::uvec2 newScreen) {
-		return true;
-	}
-
 	/////////////////////////Engine Core/////////////////////////////////
 
 
@@ -93,11 +70,7 @@ namespace Soul {
 		Scheduler::Terminate();
 		Settings::Write();
 	//	RayEngine::Clean();
-
-		for (auto const& win : windows) {
-			glfwDestroyWindow(win.windowHandle);
-		}
-
+		WindowManager::Terminate();
 		glfwTerminate();
 	}
 
@@ -131,8 +104,7 @@ namespace Soul {
 		}
 
 		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60);
-		monitors = glfwGetMonitors(&monitorCount);
-
+		WindowManager::Init();
 	}
 
 	void InputToCamera(GLFWwindow* window, Camera* camera) {
@@ -189,10 +161,6 @@ namespace Soul {
 
 		double deltaTime = 1.0 / engineRefreshRate;
 
-		int width, height;
-		glfwGetWindowSize(masterWindow, &width, &height);
-		glfwSetCursorPos(masterWindow, width / 2.0f, height / 2.0f);
-
 		glfwPollEvents();
 
 		for (auto const& scene : scenes) {
@@ -215,7 +183,7 @@ namespace Soul {
 		double accumulator = 0.0f;
 
 		//stop loop when glfw exit is called
-		while (!glfwWindowShouldClose(masterWindow)) {
+		while (!WindowManager::ShouldClose()) {
 
 			//start frame timers
 			double newTime = glfwGetTime();
@@ -287,7 +255,10 @@ namespace Soul {
 
 			glfwSwapBuffers(masterWindow);*/
 			////////////////////////////////////////////////////////////////////////////////////
-		//	VulkanBackend::GetInstance().DrawFrame(masterWindow, width, height);
+
+	
+			WindowManager::Draw();
+
 
 		}
 
@@ -302,7 +273,7 @@ namespace Soul {
 /////////////////////////User Interface///////////////////////////
 
 void SoulSignalClose() {
-	glfwSetWindowShouldClose(Soul::masterWindow, GLFW_TRUE);
+	WindowManager::SignelClose();
 }
 
 void SoulRun() {
@@ -321,138 +292,9 @@ void RemoveObject(void* object) {
 
 }
 
-//int GetSetting(std::string request) {
-//	return Soul::settings->Retrieve(request);
-//}
-//
-//int GetSetting(std::string request, int defaultSet) {
-//	return Soul::settings->Retrieve(request, defaultSet);
-//}
-//
-//void SetSetting(std::string rName, int rValue) {
-//	Soul::settings->Set(rName, rValue);
-//}
-
 //Initializes Soul. This should be the first command in a program.
 void SoulInit() {
 	Soul::Init();
-}
-
-//the moniter number, and a float from 0-1 of the screen size for each dimension,
-//if its the fisrt, it becomes the master window
-GLFWwindow* SoulCreateWindow(int monitor, float xSize, float ySize) {
-
-	GLFWmonitor* monitorIn = Soul::monitors[monitor];
-
-	//	WindowType  win = static_cast<WindowType>(GetSetting("Window", 2));
-	WindowType  win = BORDERLESS;
-
-	glfwWindowHint(GLFW_SAMPLES, 0);
-	glfwWindowHint(GLFW_VISIBLE, true);
-
-	//////////////////////////////////////////////////for vulkan
-	//glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	///////////////////////////////////////////////////
-	const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
-
-	GLFWwindow* windowOut;
-
-	if (win == FULLSCREEN) {
-
-		glfwWindowHint(GLFW_RESIZABLE, false);
-		glfwWindowHint(GLFW_DECORATED, false);
-
-		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-		windowOut = glfwCreateWindow(mode->width, mode->height, "Soul Engine", monitorIn, NULL);
-
-	}
-	else if (win == WINDOWED) {
-
-		glfwWindowHint(GLFW_RESIZABLE, true);
-		windowOut = glfwCreateWindow(int(xSize*mode->width), int(ySize*mode->height), "Soul Engine", NULL, NULL);
-
-	}
-
-	else if (win == BORDERLESS) {
-
-		glfwWindowHint(GLFW_RESIZABLE, false);
-		glfwWindowHint(GLFW_DECORATED, false);
-
-		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-		windowOut = glfwCreateWindow(int(xSize*mode->width), int(ySize*mode->height), "Soul Engine", NULL, NULL);
-
-	}
-	else {
-		throw std::runtime_error("NO Window setting found");
-	}
-
-
-
-	if (!windowOut) {
-		throw std::runtime_error("GLFW window failed");
-	}
-
-
-	Soul::windows.push_back({ windowOut, win });
-
-	if (Soul::masterWindow == nullptr) {
-
-		Soul::masterWindow = windowOut;
-
-		glfwMakeContextCurrent(Soul::masterWindow);
-
-		glfwSetInputMode(windowOut, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-		glfwSetKeyCallback(windowOut, Input::KeyCallback);
-		glfwSetScrollCallback(windowOut, Input::ScrollCallback);
-		glfwSetCursorPosCallback(windowOut, Input::MouseCallback);
-	}
-
-
-	////////////////////////////////////////////////////remove for vulkan
-	// start GLEW extension handler
-	//glewExperimental = GL_TRUE;
-	//if (glewInit() != GLEW_OK) {
-
-	//	throw std::runtime_error("glewInit failed");
-
-	//}
-
-	//glEnable(GL_DEPTH_TEST); // enable depth-testing
-
-	//glDepthMask(GL_TRUE);  // turn on
-
-	//glDepthFunc(GL_LEQUAL);
-
-	//glDepthRange(0.0f, 1.0f);
-
-	//glEnable(GL_TEXTURE_2D);
-	/////////////////////////////////////////////////////////////////////
-
-	//glfwSetWindowUserPointer(windowOut, &VulkanBackend::GetInstance());
-	//glfwSetWindowSizeCallback(windowOut, VulkanBackend::OnWindowResized);
-
-	//////////////////////////
-
-	/*Soul::renderer rend = {
-		new Renderer(glm::uvec2(int(xSize*mode->width), int(ySize*mode->height))),
-		SPECTRAL,
-		1.0f
-	};
-
-	Soul::renderObjects.push_back(rend);*/
-
-	//////////////////////////
-
-	//VulkanBackend::GetInstance().AddWindow(windowOut, int(xSize*mode->width), int(ySize*mode->height), Soul::renderObjects[0].rendererHandle->targetData);
-
-	return windowOut;
 }
 
 void SubmitScene(Scene* scene) {
@@ -468,7 +310,7 @@ int main()
 	SoulInit();
 
 	//create a Window
-	GLFWwindow* win = SoulCreateWindow(0, 0.95f, 0.95f);
+	WindowManager::SoulCreateWindow(0, 0, 0,100,100);
 
 	InputState::GetInstance().ResetMouse = true;
 

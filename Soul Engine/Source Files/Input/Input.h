@@ -16,7 +16,7 @@ public:
 
 	virtual void setEventHandling() final { inputHandle = this; }
 
-	static void KeyCallback(//key presses?
+	static void KeyCallback(
 		GLFWwindow *window,
 		int key,
 		int scancode,
@@ -27,7 +27,7 @@ public:
 			inputHandle->InputKeyboardCallback(window, key, scancode, action, mods);
 	}
 
-	static void MouseCallback(//mouse position?
+	static void MouseCallback(
 		GLFWwindow* window, 
 		double xoffset,
 		double yoffset)
@@ -36,7 +36,7 @@ public:
 			inputHandle->InputMouseCallback(window, xoffset, yoffset);
 	}
 
-	static void ScrollCallback(//monitoring scrolling?
+	static void ScrollCallback(
 		GLFWwindow* window, 
 		double xoffset, 
 		double yoffset)
