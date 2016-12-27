@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Engine Core\BasicDependencies.h"
 #include <boost/fiber/all.hpp>
-#include <boost/fiber/algo/algorithm.hpp>
 
 //TODO: Implement boost 1.63 Fiber: Work_stealing
 
@@ -39,36 +37,36 @@ namespace Scheduler {
 		void InitCheck();
 
 		//property class for the custom scheduler
-		class priority_props : public boost::fibers::fiber_properties {
+		class FiberProperties : public boost::fibers::fiber_properties {
 		public:
-			priority_props(boost::fibers::context * context) :
+			FiberProperties(boost::fibers::context * context) :
 				fiber_properties(context),
 				priority(0),
-				runMain(false){
+				runOnMain(false) {
 			}
 
 			//read priority
-			int get_priority() const {
+			int GetPriority() const {
 				return priority;
 			}
 
-			//read shouldRunOnMAin
-			bool get_main() const {
-				return runMain;
+			//read shouldRunOnMain
+			bool RunOnMain() const {
+				return runOnMain;
 			}
 
 			//setting the priority needs a notify update
-			void set_priority(int p,bool m) {
-				if (p != priority||m!= runMain) {
+			void SetPriority(int p, bool m) {
+				if (p != priority || m != runOnMain) {
 					priority = p;
-					runMain = m;
+					runOnMain = m;
 					notify();
 				}
 			}
 
 		private:
 			int priority;
-			int runMain;
+			bool runOnMain;
 		};
 
 	}
@@ -131,12 +129,12 @@ namespace Scheduler {
 
 			});
 
-			detail::priority_props & props(fiber.properties< detail::priority_props >());
-			props.set_priority(priority, runsOnMain);
+			detail::FiberProperties & props(fiber.properties< detail::FiberProperties >());
+			props.SetPriority(priority, runsOnMain);
 			fiber.detach();
 		}
 		else {
-			boost::fibers::fiber(
+			boost::fibers::fiber fiber(
 				[&]() mutable {
 
 				//prefix code
@@ -150,7 +148,12 @@ namespace Scheduler {
 				detail::fiberCount--;
 				detail::fiberMutex.unlock();
 
-			}).detach();
+			});
+
+			detail::FiberProperties & props(fiber.properties< detail::FiberProperties >());
+			props.SetPriority(priority, runsOnMain);
+			fiber.detach();
+
 		}
 	}
 

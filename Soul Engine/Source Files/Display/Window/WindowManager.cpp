@@ -15,7 +15,7 @@ namespace WindowManager {
 
 	void Init() {
 		detail::monitors = glfwGetMonitors(&detail::monitorCount);
-
+		SoulCreateWindow("Main", 0, 0, 0, 1024, 720);
 	}
 
 	void Terminate() {
@@ -26,22 +26,33 @@ namespace WindowManager {
 	}
 
 	bool ShouldClose() {
-		return glfwWindowShouldClose(masterWindow->windowHandle);
+		if (masterWindow!=nullptr) {
+			return glfwWindowShouldClose(masterWindow->windowHandle);
+		}
+		else {
+			LOG_WARNING("No window has been created");
+			return false;
+		}
 	}
 
 	void SignelClose() {
-		glfwSetWindowShouldClose(masterWindow->windowHandle, GLFW_TRUE);
+		if (masterWindow != nullptr) {
+			glfwSetWindowShouldClose(masterWindow->windowHandle, GLFW_TRUE);
+		}
+		else {
+			LOG_WARNING("No window has been created");
+		}
 	}
 
 	//the moniter number
-	void SoulCreateWindow(int monitor, uint x, uint y,uint width, uint height) {
+	void SoulCreateWindow(const std::string& name,int monitor, uint x, uint y,uint width, uint height) {
 		if (monitor>detail::monitorCount) {
 			LOG(ERROR, "The specified moniter '", monitor, "' needs to be less than ", detail::monitorCount);
 		}
 
 		GLFWmonitor* monitorIn = detail::monitors[monitor];
 
-		windows.push_back({x,y,width,height,monitorIn});
+		windows.push_back({ name,x,y,width,height,monitorIn});
 
 		if (masterWindow == nullptr) {
 

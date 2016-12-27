@@ -283,9 +283,70 @@ void VulkanBackend::Init() {
 	SetupDebugCallback();
 }
 
-void VulkanBackend::CreateWindow(Window& window) {
+void VulkanBackend::CreateWindow(Window* window, GLFWmonitor* moniter, GLFWwindow* share) {
+
+	//WindowType  win = BORDERLESS;
+
+	//glfwWindowHint(GLFW_SAMPLES, 0);
+	//glfwWindowHint(GLFW_VISIBLE, true);
+	//glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+	//const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
+
+	//if (win == FULLSCREEN) {
+
+	//	glfwWindowHint(GLFW_RESIZABLE, false);
+	//	glfwWindowHint(GLFW_DECORATED, false);
+
+	//	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+	//	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+	//	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+	//	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+	//	windowHandle = glfwCreateWindow(mode->width, mode->height, "Soul Engine", monitorIn, NULL);
+
+	//}
+	//else if (win == WINDOWED) {
+
+	//	glfwWindowHint(GLFW_RESIZABLE, true);
+	//	windowHandle = glfwCreateWindow(width, height, "Soul Engine", NULL, NULL);
+
+	//}
+
+	//else if (win == BORDERLESS) {
+
+	//	glfwWindowHint(GLFW_RESIZABLE, false);
+	//	glfwWindowHint(GLFW_DECORATED, false);
+
+	//	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+	//	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+	//	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+	//	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+	//	windowHandle = glfwCreateWindow(width, height, "Soul Engine", NULL, NULL);
+
+	//}
+	//else {
+	//	LOG(ERROR, "No Window setting found");
+	//}
+
+	//if (!windowHandle) {
+	//	LOG(ERROR, "Window creation failed");
+	//}
+
+	//glfwSetWindowPos(windowHandle, x, y);
+
+	//glfwSetWindowUserPointer(windowHandle, this);
+
+	//glfwSetKeyCallback(windowHandle, Input::KeyCallback);
+	//glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
+	//glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
+
+
+	//RasterBackend::CreateWindow(this, monitorIn, nullptr);
+
+
+
 	VKWindowInformation info{};
-	CreateSurface(window.windowHandle, info.surface.replace());
+	CreateSurface(window->windowHandle, info.surface.replace());
 	PhysicalDevice(info.physicalDevice, info.surface);
 }
 

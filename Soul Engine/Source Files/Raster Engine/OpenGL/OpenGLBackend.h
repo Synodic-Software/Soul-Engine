@@ -10,8 +10,8 @@ public:
 	OpenGLBackend();
 	~OpenGLBackend();
 
-	void Init();
-	void CreateWindow(Window&);
+	virtual void Init();
+	virtual void CreateWindow(Window*, GLFWmonitor*, GLFWwindow*);
 private:
 
 };

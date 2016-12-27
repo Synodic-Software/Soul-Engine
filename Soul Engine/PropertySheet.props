@@ -17,8 +17,8 @@
       <AdditionalLibraryDirectories>$(VC_LibraryPath);$(WindowsSDK_LibraryPath);N:\Work\Libraries\glfw-3.0.4.bin.WIN64\lib-msvc120;N:\Work\Libraries\glew-1.10.0\lib\Release\x64;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ClCompile>
-      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\tinyObj;C:\VulkanSDK\1.0.30.0\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;GLEW_MX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Libraries\glew\include;$(ProjectDir)\Libraries\boost;$(ProjectDir)\Libraries\tinyObj;C:\VulkanSDK\1.0.30.0\Include;$(ProjectDir)\Include Files;$(ProjectDir)\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Libraries\glfw\include;$(ProjectDir)\Libraries\glm;$(ProjectDir)\Libraries\stb;$(IncludePath);$(ProjectDir)\Libraries\imgui;$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -31,8 +31,8 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(AMDAPPSDKROOT)/lib/x86_64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)\Libraries\glfw\bin\Release;$(ProjectDir)\Libraries\glfw\bin;$(LibraryPath);$(ProjectDir)\Libraries\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;opengl32.lib;glfw3.lib;OpenCL.lib;cudart.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\glew\lib\Release MX\x64;$(AMDAPPSDKROOT)/lib/x86_64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)\Libraries\glfw\bin\Release;$(ProjectDir)\Libraries\glfw\bin;$(LibraryPath);$(ProjectDir)\Libraries\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;opengl32.lib;glew32mxs.lib;glu32.lib;glfw3.lib;OpenCL.lib;cudart.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>LIBCD.lib;LIBC.lib;MSVCRTD.lib;LIBCMT.lib;LIBCMTD.lib</IgnoreSpecificDefaultLibraries>

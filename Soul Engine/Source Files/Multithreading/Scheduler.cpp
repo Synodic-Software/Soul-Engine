@@ -1,5 +1,12 @@
 #include "Scheduler.h"
+
+#include "Metrics.h"
+
 #include <thread>
+#include <algorithm>  
+#include <condition_variable>
+#include <mutex>
+#include <deque>
 
 //Scheduler Variables//
 static std::thread* threads;
@@ -37,14 +44,14 @@ namespace Scheduler {
 			}
 		}
 
-		class shared_priority :
-			public boost::fibers::algo::algorithm_with_properties< priority_props > {
+		class SoulScheduler :
+			public boost::fibers::algo::algorithm_with_properties< FiberProperties > {
 		private:
 			typedef std::deque< boost::fibers::context * >  rqueue_t;
 			typedef boost::fibers::scheduler::ready_queue_t lqueue_t;
 
 			static rqueue_t     	rqueue_;
-			static std::mutex   	rqueue_mtx_;
+			static std::mutex   	queueMutex;
 			static rqueue_t     	rmqueue_;
 
 			lqueue_t            	lqueue_{};
@@ -54,43 +61,45 @@ namespace Scheduler {
 			bool                    suspend_;
 
 		public:
-			shared_priority() = default;
+			SoulScheduler() = default;
 
-			shared_priority(bool suspend) :
+			SoulScheduler(bool suspend) :
 				suspend_{ suspend } {
 			}
 
-			shared_priority(shared_priority const&) = delete;
-			shared_priority(shared_priority &&) = delete;
+			SoulScheduler(SoulScheduler const&) = delete;
+			SoulScheduler(SoulScheduler &&) = delete;
 
-			shared_priority & operator=(shared_priority const&) = delete;
-			shared_priority & operator=(shared_priority &&) = delete;
+			SoulScheduler & operator=(SoulScheduler const&) = delete;
+			SoulScheduler & operator=(SoulScheduler &&) = delete;
 
-			virtual void awakened(boost::fibers::context * ctx, priority_props & props) noexcept {
+			virtual void awakened(boost::fibers::context * ctx, FiberProperties & props) noexcept {
 
 				//dont push fiber when helper or the main fiber is passed in
 				if (ctx->is_context(boost::fibers::type::pinned_context)) {
 					lqueue_.push_back(*ctx);
 				}
 				else {
-					ctx->detach();
-					std::unique_lock< std::mutex > lk(rqueue_mtx_);
 
-					int ctx_priority = props.get_priority();
-					std::thread::id thisID = std::this_thread::get_id();
+					int ctx_priority = props.GetPriority();
+					bool shouldRun = props.RunOnMain();
+
+					ctx->detach();
+
+					std::unique_lock< std::mutex > lk(queueMutex);
 
 					//if it needs to run on the main thread
-					if (props.get_main() && thisID == mainID) {
+					if (shouldRun) {
 						rqueue_t::iterator i(std::find_if(rmqueue_.begin(), rmqueue_.end(),
 							[ctx_priority, this](boost::fibers::context* c)
-						{ return properties(c).get_priority() < ctx_priority; }));
+						{ return properties(c).GetPriority() < ctx_priority; }));
 
 						rmqueue_.insert(i, ctx);
 					}
 					else {
 						rqueue_t::iterator i(std::find_if(rqueue_.begin(), rqueue_.end(),
 							[ctx_priority, this](boost::fibers::context* c)
-						{ return properties(c).get_priority() < ctx_priority; }));
+						{ return properties(c).GetPriority() < ctx_priority; }));
 
 						rqueue_.insert(i, ctx);
 					}
@@ -101,7 +110,7 @@ namespace Scheduler {
 				boost::fibers::context * ctx(nullptr);
 				std::thread::id thisID = std::this_thread::get_id();
 
-				std::unique_lock< std::mutex > lk(rqueue_mtx_);
+				std::unique_lock< std::mutex > lk(queueMutex);
 
 				if (!rmqueue_.empty() && thisID == mainID) {
 					ctx = rmqueue_.front();
@@ -128,11 +137,11 @@ namespace Scheduler {
 			}
 
 			virtual bool has_ready_fibers() const noexcept {
-				std::unique_lock< std::mutex > lock(rqueue_mtx_);
+				std::unique_lock< std::mutex > lock(queueMutex);
 				return !rmqueue_.empty() || !rqueue_.empty() || !lqueue_.empty();
 			}
 
-			virtual void property_change(boost::fibers::context * ctx, priority_props & props) noexcept {
+			virtual void property_change(boost::fibers::context * ctx, FiberProperties & props) noexcept {
 				if (!ctx->ready_is_linked()) {
 					return;
 				}
@@ -167,14 +176,14 @@ namespace Scheduler {
 
 		};
 
-		shared_priority::rqueue_t shared_priority::rqueue_{};
-		shared_priority::rqueue_t shared_priority::rmqueue_{};
-		std::mutex shared_priority::rqueue_mtx_{};
+		SoulScheduler::rqueue_t SoulScheduler::rqueue_{};
+		SoulScheduler::rqueue_t SoulScheduler::rmqueue_{};
+		std::mutex SoulScheduler::queueMutex{};
 
 
 		//launches a thread that waits with a fiber conditional, meaning it still executes fibers despite waiting for a notify release
 		void ThreadRun() {
-			boost::fibers::use_scheduling_algorithm<shared_priority >();
+			boost::fibers::use_scheduling_algorithm<SoulScheduler >();
 
 			std::unique_lock<std::mutex> lock(Scheduler::detail::fiberMutex);
 			threadCondition.wait(lock, []() { return 0 == Scheduler::detail::fiberCount && !detail::shouldRun; });
@@ -210,7 +219,7 @@ namespace Scheduler {
 
 		detail::mainID = std::this_thread::get_id();
 
-		boost::fibers::use_scheduling_algorithm< detail::shared_priority >();
+		boost::fibers::use_scheduling_algorithm< detail::SoulScheduler >();
 
 		//the main thread takes up one slot.
 		threadCount = std::thread::hardware_concurrency() - 1;
@@ -233,10 +242,11 @@ namespace Scheduler {
 	}
 
 	void Defer() {
+		detail::InitCheck();
 		boost::this_fiber::yield();
 	}
 
-	bool Running(){
+	bool Running() {
 		return detail::shouldRun;
 	}
 
