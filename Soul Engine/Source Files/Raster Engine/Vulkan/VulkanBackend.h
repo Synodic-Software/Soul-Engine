@@ -11,8 +11,8 @@ public:
 	VulkanBackend();
 	~VulkanBackend();
 
-	void Init();
-	void CreateWindow(Window&);
+	virtual void Init();
+	virtual void CreateWindow(Window*, GLFWmonitor*, GLFWwindow*);
 private:
 
 };

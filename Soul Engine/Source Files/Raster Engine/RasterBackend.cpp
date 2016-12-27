@@ -14,23 +14,28 @@ namespace RasterBackend {
 	}
 
 	namespace detail {
+
+		VulkanBackend vBack;
+		OpenGLBackend oBack;
+
 		Backend* raster;
 	}
 
 	void Init() {
+
 		if (glfwVulkanSupported() == GLFW_TRUE) {
-			detail::raster = new VulkanBackend();
+			detail::raster = &detail::vBack;
 		}
 		else {
-			detail::raster = new OpenGLBackend();
+			detail::raster = &detail::oBack;
 		}
 
-
 		detail::raster->Init();
+
 	}
 
-	void CreateWindow(Window& window) {
-		detail::raster->CreateWindow(window);
+	void CreateWindow(Window* window, GLFWmonitor* moniter, GLFWwindow* share) {
+		detail::raster->CreateWindow(window, moniter, share);
 	}
 
 }

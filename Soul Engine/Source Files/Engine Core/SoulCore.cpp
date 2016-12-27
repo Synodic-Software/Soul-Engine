@@ -40,7 +40,7 @@ namespace Soul {
 	Camera* mouseCamera;*/
 
 	int engineRefreshRate;
-
+	bool running = true;
 	/////////////////////////Synchronization///////////////////////////
 
 	void SynchCPU() {
@@ -102,47 +102,55 @@ namespace Soul {
 		//setup the multithreader
 		Scheduler::Init();
 
+#ifdef _DEBUG
 		//log errors to the console for now
 		Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_LOW, false, []() {
 			while (Scheduler::Running()) {
 				std::cout << Logger::Get();
+				Scheduler::Defer();
 			}
 		});
+#endif
 
 		//open the config file for the duration of the runtime
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			Settings::Read("config.ini");
 		});
 
 		//extract all available GPU devices
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			GPUManager::ExtractDevices();
 		});
 
 		//Init glfw context for Window handling
 		int didInit;
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true,[&]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
 			didInit = glfwInit();
 		});
 
-		Scheduler::Wait();
+		Scheduler::Wait(); ////////Block////////////
 
 		if (!didInit) {
 			Terminate();
 		}
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			RasterBackend::Init();
 		});
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false,[]() {
-			WindowManager::Init();
-		});
+
 
 		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60);
 
-		Scheduler::Wait();
+		Scheduler::Wait(); ////////Block////////////
 
+		//init main Window
+
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			WindowManager::Init();
+		});
+
+		Scheduler::Wait(); ////////Block////////////
 	}
 
 	void InputToCamera(GLFWwindow* window, Camera* camera) {
@@ -221,7 +229,7 @@ namespace Soul {
 		double accumulator = 0.0f;
 
 		//stop loop when glfw exit is called
-		while (!WindowManager::ShouldClose()) {
+		while (running) {
 
 			//start frame timers
 			double newTime = glfwGetTime();
@@ -310,6 +318,7 @@ namespace Soul {
 /////////////////////////User Interface///////////////////////////
 
 void SoulSignalClose() {
+	Soul::running = false;
 	WindowManager::SignelClose();
 }
 
@@ -348,9 +357,9 @@ int main()
 
 
 	//create a Window
-	WindowManager::SoulCreateWindow(0, 0, 0, 1024, 720);
+	//WindowManager::SoulCreateWindow("Main",0, 0, 0, 1024, 720);
 
-	InputState::GetInstance().ResetMouse = true;
+	//InputState::GetInstance().ResetMouse = true;
 
 	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 

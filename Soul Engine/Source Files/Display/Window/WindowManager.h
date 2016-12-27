@@ -2,7 +2,7 @@
 
 #include "Utility\Includes\GLFWIncludes.h"
 #include "Metrics.h"
-
+#include <string>
 
 namespace WindowManager {
 
@@ -21,7 +21,7 @@ namespace WindowManager {
 
 	void SignelClose();
 
-	void SoulCreateWindow(int monitor, uint x, uint y, uint width, uint height);
+	void SoulCreateWindow(const std::string&,int monitor, uint x, uint y, uint width, uint height);
 
 	void Draw();
 }
