@@ -73,7 +73,7 @@ namespace Scheduler {
 			SoulScheduler & operator=(SoulScheduler const&) = delete;
 			SoulScheduler & operator=(SoulScheduler &&) = delete;
 
-			virtual void awakened(boost::fibers::context * ctx, FiberProperties & props) noexcept {
+			virtual void awakened(boost::fibers::context * ctx, FiberProperties& props) noexcept {
 
 				//dont push fiber when helper or the main fiber is passed in
 				if (ctx->is_context(boost::fibers::type::pinned_context)) {
@@ -82,14 +82,14 @@ namespace Scheduler {
 				else {
 
 					int ctx_priority = props.GetPriority();
-					bool shouldRun = props.RunOnMain();
+					bool mainRun = props.RunOnMain();
 
 					ctx->detach();
 
 					std::unique_lock< std::mutex > lk(queueMutex);
 
 					//if it needs to run on the main thread
-					if (shouldRun) {
+					if (mainRun) {
 						rqueue_t::iterator i(std::find_if(rmqueue_.begin(), rmqueue_.end(),
 							[ctx_priority, this](boost::fibers::context* c)
 						{ return properties(c).GetPriority() < ctx_priority; }));
@@ -120,18 +120,40 @@ namespace Scheduler {
 					boost::fibers::context::active()->attach(ctx);
 				}
 				else if (!rqueue_.empty()) {
+
 					ctx = rqueue_.front();
-					rqueue_.pop_front();
-					lk.unlock();
-					BOOST_ASSERT(nullptr != ctx);
-					boost::fibers::context::active()->attach(ctx);
+					bool sr = this->properties(ctx).RunOnMain();
+					int prior = this->properties(ctx).GetPriority();
+
+					if (!sr) {
+
+						rqueue_.pop_front();
+						lk.unlock();
+						BOOST_ASSERT(nullptr != ctx);
+						boost::fibers::context::active()->attach(ctx);
+
+					}
+					else {
+
+						rqueue_.pop_front();
+						rqueue_t::iterator i(std::find_if(rmqueue_.begin(), rmqueue_.end(),
+							[prior, this](boost::fibers::context* c)
+						{ return properties(c).GetPriority() < prior; }));
+						rmqueue_.insert(i, ctx);
+
+						ctx = nullptr;
+
+					}
 				}
-				else {
+				if (ctx == nullptr) {
+
 					lk.unlock();
+
 					if (!lqueue_.empty()) {
 						ctx = &lqueue_.front();
 						lqueue_.pop_front();
 					}
+
 				}
 				return ctx;
 			}
