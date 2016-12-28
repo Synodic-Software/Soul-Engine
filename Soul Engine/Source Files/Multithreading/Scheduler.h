@@ -129,7 +129,7 @@ namespace Scheduler {
 
 			});
 
-			detail::FiberProperties & props(fiber.properties< detail::FiberProperties >());
+			detail::FiberProperties& props(fiber.properties< detail::FiberProperties >());
 			props.SetPriority(priority, runsOnMain);
 			fiber.detach();
 		}
@@ -150,7 +150,7 @@ namespace Scheduler {
 
 			});
 
-			detail::FiberProperties & props(fiber.properties< detail::FiberProperties >());
+			detail::FiberProperties& props(fiber.properties< detail::FiberProperties >());
 			props.SetPriority(priority, runsOnMain);
 			fiber.detach();
 
@@ -163,6 +163,6 @@ namespace Scheduler {
 	//Yields the current fiber to the scheduler
 	void Defer();
 
-	//returns the desired running state of the scheduler. Useful for functions that want to run the lifespan of the engine
+	//returns the running state of the scheduler. Useful for functions that want to run the lifespan of the engine
 	bool Running();
 };
