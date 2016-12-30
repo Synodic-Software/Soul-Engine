@@ -3,6 +3,9 @@
 #include <boost/fiber/all.hpp>
 
 //TODO: Implement boost 1.63 Fiber: Work_stealing
+//TODO: Arrivals dont actually get sorted into their respective queue because the fiber properties have
+//to be changed after its creation therfore the 'picknext' function must sort the queue, defering something that needs to run on main
+//another pick cycle. Take a look at this
 
 /*
 IMMEDIATE: Run the fiber immediatly with no context switch
