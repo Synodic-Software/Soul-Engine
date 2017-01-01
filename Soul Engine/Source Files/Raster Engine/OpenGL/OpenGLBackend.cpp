@@ -192,3 +192,14 @@ void OpenGLBackend::CreateWindow(Window* window, GLFWmonitor* monitor, GLFWwindo
 
 }
 
+void OpenGLBackend::PreRaster() {
+
+}
+
+void OpenGLBackend::PostRaster() {
+
+}
+
+void OpenGLBackend::Terminate() {
+
+}

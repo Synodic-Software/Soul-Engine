@@ -80,8 +80,13 @@ namespace Soul {
 		});
 
 		//destroy all windows
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			WindowManager::Terminate();
+		});
+
+		//destroy raster backend
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			RasterBackend::Terminate();
 		});
 
 		Scheduler::Wait();
@@ -131,14 +136,12 @@ namespace Soul {
 		Scheduler::Wait(); ////////Block////////////
 
 		if (!didInit) {
-			Terminate();
+			LOG_FATAL("GLFW did not initialize");
 		}
 
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			RasterBackend::Init();
 		});
-
-
 
 		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60);
 
@@ -201,6 +204,14 @@ namespace Soul {
 			}
 		}*/
 
+	}
+
+	void Raster() {
+		InputState::GetInstance().ResetOffsets();
+		//Backends should handle multithreading
+		RasterBackend::PreRaster();
+		WindowManager::Draw();
+		RasterBackend::PostRaster();
 	}
 
 	void Warmup() {
@@ -294,16 +305,9 @@ namespace Soul {
 					//}
 			SynchGPU();
 			//RayEngine::Clear();
-			///////////////////////////////////////////////////////////////////////until vulkan
-
-			/*InputState::GetInstance().ResetOffsets();
-
-			glfwSwapBuffers(masterWindow);*/
-			////////////////////////////////////////////////////////////////////////////////////
 
 
-			WindowManager::Draw();
-
+			Raster();
 
 		}
 

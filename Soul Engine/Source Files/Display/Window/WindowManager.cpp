@@ -70,6 +70,11 @@ namespace WindowManager {
 		for (auto& win : windows) {
 			win.Draw();
 		}
+
+		for (auto& win : windows) {
+			glfwSwapBuffers(win.windowHandle);
+		}
+
 	}
 
 

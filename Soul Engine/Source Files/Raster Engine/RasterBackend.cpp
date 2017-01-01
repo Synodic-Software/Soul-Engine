@@ -38,4 +38,16 @@ namespace RasterBackend {
 		detail::raster->CreateWindow(window, moniter, share);
 	}
 
+	void PreRaster() {
+		detail::raster->PreRaster();
+	}
+
+	void PostRaster() {
+		detail::raster->PostRaster();
+	}
+
+	void Terminate() {
+		detail::raster->Terminate();
+	}
+
 }

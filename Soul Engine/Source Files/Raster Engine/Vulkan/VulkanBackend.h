@@ -13,6 +13,10 @@ public:
 
 	virtual void Init();
 	virtual void CreateWindow(Window*, GLFWmonitor*, GLFWwindow*);
+	virtual void PreRaster();
+	virtual void PostRaster();
+	virtual void Terminate();
+
 private:
 
 };
