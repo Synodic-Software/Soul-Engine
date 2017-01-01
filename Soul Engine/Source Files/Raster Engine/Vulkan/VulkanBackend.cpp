@@ -350,3 +350,14 @@ void VulkanBackend::CreateWindow(Window* window, GLFWmonitor* moniter, GLFWwindo
 	PhysicalDevice(info.physicalDevice, info.surface);
 }
 
+void VulkanBackend::PreRaster() {
+
+}
+
+void VulkanBackend::PostRaster() {
+
+}
+
+void VulkanBackend::Terminate() {
+
+}

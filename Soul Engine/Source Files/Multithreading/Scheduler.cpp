@@ -217,16 +217,23 @@ namespace Scheduler {
 	void Terminate() {
 		detail::fiberMutex.lock();
 		detail::shouldRun = false;
-		if (0 == --detail::fiberCount) {
-			detail::fiberMutex.unlock();
-			threadCondition.notify_all(); //notify all fibers waiting 
-		}
+		--detail::fiberCount;
 		detail::fiberMutex.unlock();
 
 		//yield this fiber until all the remaining work is done
-		while (detail::fiberCount != 0) {
-			boost::this_fiber::yield();
-			threadCondition.notify_all();
+
+		bool run = true;
+		while (run) {
+			detail::fiberMutex.lock();
+			if (detail::fiberCount==0) {
+				run = false;
+				detail::fiberMutex.unlock();
+				threadCondition.notify_all();
+			}
+			else {
+				detail::fiberMutex.unlock();
+				boost::this_fiber::yield();
+			}
 		}
 
 		//join all complete threads
