@@ -39,12 +39,12 @@ namespace Soul {
 	/*std::vector<Camera*> cameras;
 	Camera* mouseCamera;*/
 
-	int engineRefreshRate;
+	double engineRefreshRate;
 	bool running = true;
 	/////////////////////////Synchronization///////////////////////////
 
 	void SynchCPU() {
-		Scheduler::Wait();
+		Scheduler::Block();
 	}
 
 	void SynchGPU() {
@@ -63,8 +63,6 @@ namespace Soul {
 	/////////////////////////Engine Core/////////////////////////////////
 
 
-
-
 	//Call to deconstuct both the engine and its dependencies
 	void Terminate() {
 		Soul::SynchSystem();
@@ -80,7 +78,7 @@ namespace Soul {
 		});
 
 		//destroy all windows
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false , []() {
 			WindowManager::Terminate();
 		});
 
@@ -89,14 +87,14 @@ namespace Soul {
 			RasterBackend::Terminate();
 		});
 
-		Scheduler::Wait();
+		Scheduler::Block();
 
 		//destroy glfw, needs to wait on the window manager
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			glfwTerminate();
 		});
 
-		Scheduler::Wait();
+		Scheduler::Block();
 
 		Scheduler::Terminate();
 	}
@@ -133,81 +131,31 @@ namespace Soul {
 			didInit = glfwInit();
 		});
 
-		Scheduler::Wait(); ////////Block////////////
+		Scheduler::Block(); 
 
 		if (!didInit) {
-			LOG_FATAL("GLFW did not initialize");
+			S_LOG_FATAL("GLFW did not initialize");
 		}
 
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			RasterBackend::Init();
 		});
 
-		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60);
+		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60.0);
 
-		Scheduler::Wait(); ////////Block////////////
+		Scheduler::Block();
 
 		//init main Window
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			WindowManager::Init();
 		});
 
-		Scheduler::Wait(); ////////Block////////////
-	}
-
-	void InputToCamera(GLFWwindow* window, Camera* camera) {
-
-		if (camera != nullptr) {
-
-			int width, height;
-			glfwGetWindowSize(window, &width, &height);
-
-			/*mouseCamera->OffsetOrientation(
-				(float)(InputState::GetInstance().xPos / width * camera->FieldOfView().x),
-				(float)(InputState::GetInstance().yPos / height * camera->FieldOfView().y));*/
-		}
-
-	}
-
-	void UpdateDefaultCamera(GLFWwindow* window, double deltaTime) {
-		double moveSpeed;
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-			moveSpeed = 9 * METER * deltaTime;
-		}
-		else if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
-			moveSpeed = 1 * METER * deltaTime;
-		}
-		else {
-			moveSpeed = 4.5 * METER * deltaTime;
-		}
-
-		//fill with freecam variable
-	/*	if (true) {
-			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-				mouseCamera->OffsetPosition(float(moveSpeed) * -mouseCamera->Forward());
-			}
-			else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-				mouseCamera->OffsetPosition(float(moveSpeed) * mouseCamera->Forward());
-			}
-			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-				mouseCamera->OffsetPosition(float(moveSpeed) * -mouseCamera->Right());
-			}
-			else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-				mouseCamera->OffsetPosition(float(moveSpeed) * mouseCamera->Right());
-			}
-			if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-				mouseCamera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
-			}
-			else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-				mouseCamera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
-			}
-		}*/
-
+		Scheduler::Block();
 	}
 
 	void Raster() {
-		InputState::GetInstance().ResetOffsets();
+
 		//Backends should handle multithreading
 		RasterBackend::PreRaster();
 		WindowManager::Draw();
@@ -216,13 +164,36 @@ namespace Soul {
 
 	void Warmup() {
 
-		double deltaTime = 1.0 / engineRefreshRate;
-
-		glfwPollEvents();
-
-		for (auto const& scene : scenes) {
+		//double deltaTime = 1.0 / engineRefreshRate;
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			glfwPollEvents();
+		});
+		/*for (auto const& scene : scenes) {
 			scene->Build(deltaTime);
-		}
+		}*/
+		Scheduler::Block();
+
+	}
+
+	void EarlyFrameUpdate() {
+
+	}
+	void LateFrameUpdate() {
+
+	}
+
+	void EarlyUpdate() {
+
+		//poll events before this update, making the state as close as possible to real-time input
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			glfwPollEvents();
+		});
+		InputState::GetInstance().ResetOffsets(); //temp, replace input engine at some point
+
+		Scheduler::Block();
+	}
+
+	void LateUpdate() {
 
 	}
 
@@ -239,7 +210,6 @@ namespace Soul {
 		double currentTime = glfwGetTime();
 		double accumulator = 0.0f;
 
-		//stop loop when glfw exit is called
 		while (running) {
 
 			//start frame timers
@@ -253,35 +223,31 @@ namespace Soul {
 			currentTime = newTime;
 			accumulator += frameTime;
 
+			EarlyFrameUpdate();
+
 			//consumes time created by the renderer
 			while (accumulator >= deltaTime) {
 
 				deltaTime = 1.0 / engineRefreshRate;
 
-				//loading and updates for multithreading
-				glfwPollEvents();
+				EarlyUpdate();
 
-				//if (usingDefaultCamera){
-				//	UpdateDefaultCamera(masterWindow, deltaTime);
-				//	InputToCamera(masterWindow, mouseCamera);
-				//}
-
-				//apply camera changes to their matrices
-				/*for (auto const& cam : cameras){
-					cam->UpdateVariables();
+				/*for (auto const& scene : scenes) {
+					scene->Build(deltaTime);
+				}*/
+				/*
+				for (auto const& scene : scenes){
+					PhysicsEngine::Process(scene);
 				}*/
 
-				/*	for (auto const& scene : scenes){
-						scene->Build(deltaTime);
-					}
-
-					for (auto const& scene : scenes){
-						PhysicsEngine::Process(scene);
-					}*/
+				LateUpdate();
 
 				t += deltaTime;
 				accumulator -= deltaTime;
 			}
+
+
+			LateFrameUpdate();
 
 			/*	for (auto const& rend : renderObjects) {
 					int width, height;
@@ -294,25 +260,9 @@ namespace Soul {
 						RayEngine::Process(scene);
 					}*/
 
-					/*glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
-
-					//SynchGPU();
-					//for (auto const& rend : renderObjects) {
-					//	//integration bool
-					//	rend.rendererHandle->Render(false);
-					//}
-			SynchGPU();
-			//RayEngine::Clear();
-
-
 			Raster();
 
 		}
-
-		//Put Vulkan into idle
-		//VulkanBackend::GetInstance().IdleDevice();
 
 		Terminate();
 
@@ -358,10 +308,6 @@ void RemoveScene(Scene* scene) {
 int main()
 {
 	SoulInit();
-
-
-	//create a Window
-	//WindowManager::SoulCreateWindow("Main",0, 0, 0, 1024, 720);
 
 	//InputState::GetInstance().ResetMouse = true;
 

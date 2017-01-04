@@ -1,5 +1,7 @@
 #include "InputState.h"
 #include <list>
+#include "Multithreading\Scheduler.h"
+
 
 std::list<std::function<void()> > keyHash[350];
 
@@ -25,12 +27,17 @@ bool InputState::SetKey(int key, std::function<void()> function){
 void InputState::InputMouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	int width, height;
-	glfwGetWindowSize(window, &width, &height);
 
-	if (ResetMouse) {
-		glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
-	}
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
 
+		glfwGetWindowSize(window, &width, &height);
+
+		if (ResetMouse) {
+			glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
+		}
+	});
+
+	Scheduler::Block();
 	xPos = xpos - (width / 2.0);
 	yPos = ypos - (height / 2.0);
 }

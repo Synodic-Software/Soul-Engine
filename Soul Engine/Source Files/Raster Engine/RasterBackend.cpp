@@ -2,6 +2,8 @@
 #include "Vulkan/VulkanBackend.h"
 #include "OpenGL/OpenGLBackend.h"
 
+static VulkanBackend vBack;
+static OpenGLBackend oBack;
 
 namespace RasterBackend {
 
@@ -15,27 +17,24 @@ namespace RasterBackend {
 
 	namespace detail {
 
-		VulkanBackend vBack;
-		OpenGLBackend oBack;
-
 		Backend* raster;
 	}
 
 	void Init() {
 
 		if (glfwVulkanSupported() == GLFW_TRUE) {
-			detail::raster = &detail::vBack;
+			detail::raster = &vBack;
 		}
 		else {
-			detail::raster = &detail::oBack;
+			detail::raster = &oBack;
 		}
 
 		detail::raster->Init();
 
 	}
 
-	void CreateWindow(Window* window, GLFWmonitor* moniter, GLFWwindow* share) {
-		detail::raster->CreateWindow(window, moniter, share);
+	void SCreateWindow(Window* window) {
+		detail::raster->SCreateWindow(window);
 	}
 
 	void PreRaster() {
@@ -50,4 +49,7 @@ namespace RasterBackend {
 		detail::raster->Terminate();
 	}
 
+	void Draw() {
+		detail::raster->Draw();
+	}
 }

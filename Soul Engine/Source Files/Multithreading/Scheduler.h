@@ -99,9 +99,6 @@ namespace Scheduler {
 
 		//only difference is the hold lock increment
 		if (policy == LAUNCH_IMMEDIATE) {
-
-			detail::InitCheck();
-
 			std::mutex* holdLock = detail::holdMutex.get();
 			std::size_t* holdSize = detail::holdCount.get();
 			boost::fibers::condition_variable_any* holdConditional = detail::blockCondition.get();
@@ -115,6 +112,7 @@ namespace Scheduler {
 				[&, holdLock, holdSize, holdConditional]() mutable {
 
 				//prefix code
+				detail::InitCheck();
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
@@ -161,11 +159,11 @@ namespace Scheduler {
 	}
 
 	//Blocks the fiber until all tasks with the LAUNCH_IMMEDIATE policy have been executed
-	void Wait();
+	void Block();
 
 	//Yields the current fiber to the scheduler
 	void Defer();
 
-	//returns the running state of the scheduler. Useful for functions that want to run the lifespan of the engine
+	//Returns the running state of the scheduler. Useful for functions that want to run the lifespan of the engine
 	bool Running();
 };

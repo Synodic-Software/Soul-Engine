@@ -10,17 +10,18 @@ typedef enum WindowType { WINDOWED, FULLSCREEN, BORDERLESS };
 class Window
 {
 public:
-	Window(const std::string&, uint x, uint y, uint width, uint height, GLFWmonitor*);
+	Window(std::string&, uint x, uint y, uint width, uint height, GLFWmonitor*, GLFWwindow*);
 	~Window();
 
 	GLFWwindow* windowHandle;
-	
-	void Draw();
 
-	const std::string& title;
-	int xPos; 
-	int yPos; 
-	int width;
-	int height;
+	void Draw();
+	void Resize(GLFWwindow *, int, int);
+
+	std::string title;
+	uint xPos;
+	uint yPos;
+	uint width;
+	uint height;
 };
 

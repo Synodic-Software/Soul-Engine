@@ -8,18 +8,18 @@
 #include <boost/filesystem.hpp>
 
 
-enum LogSeverity {
-	TRACE,
-	WARNING,
-	ERROR,
-	FATAL
+enum SLogSeverity {
+	S_TRACE,
+	S_WARNING,
+	S_ERROR,
+	S_FATAL
 };
 
-#define LOG(SEVERITY,...) Logger::detail::Log(SEVERITY,__FILE__, __LINE__, __VA_ARGS__)
-#define LOG_TRACE(...) Logger::detail::Log(TRACE,__FILE__, __LINE__, __VA_ARGS__)
-#define LOG_WARNING(...) Logger::detail::Log(WARNING,__FILE__, __LINE__, __VA_ARGS__)
-#define LOG_ERROR(...) Logger::detail::Log(ERROR,__FILE__, __LINE__, __VA_ARGS__)
-#define LOG_FATAL(...) Logger::detail::Log(FATAL,__FILE__, __LINE__, __VA_ARGS__)
+#define S_LOG(SEVERITY,...) Logger::detail::Log(SEVERITY,__FILE__, __LINE__, __VA_ARGS__)
+#define S_LOG_TRACE(...) Logger::detail::Log(S_TRACE,__FILE__, __LINE__, __VA_ARGS__)
+#define S_LOG_WARNING(...) Logger::detail::Log(S_WARNING,__FILE__, __LINE__, __VA_ARGS__)
+#define S_LOG_ERROR(...) Logger::detail::Log(S_ERROR,__FILE__, __LINE__, __VA_ARGS__)
+#define S_LOG_FATAL(...) Logger::detail::Log(S_FATAL,__FILE__, __LINE__, __VA_ARGS__)
 
 namespace Logger {
 
@@ -46,7 +46,7 @@ namespace Logger {
 		typedef struct LogI {
 
 			std::string msg;
-			LogSeverity severity;
+			SLogSeverity severity;
 			int luneNumber;
 			const char* filename;
 
@@ -61,7 +61,7 @@ namespace Logger {
 
 		//Logs a message of the specified type
 		template<typename... Args>
-		void Log(LogSeverity logType, const char* file, int line, Args... args)
+		void Log(SLogSeverity logType, const char* file, int line, Args... args)
 		{
 			std::ostringstream oss;
 			WriteInfo(oss, file, line);

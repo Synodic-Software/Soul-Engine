@@ -14,7 +14,7 @@
 #include <thrust/sort.h>
 #include <thrust/remove.h>
 #include <thrust/functional.h>
-
+#include "Utility\Logger.h"
 
 Scene::Scene()
 {
@@ -468,7 +468,7 @@ __host__ void Scene::Build(float deltaTime){
 	CudaCheck(cudaEventDestroy(start));
 	CudaCheck(cudaEventDestroy(stop));
 
-	LOG(TRACE,"     Sorting Execution: " , time , "ms");
+	S_LOG_TRACE("     Sorting Execution: " , time , "ms");
 
 	bvh->Build(compiledSize);
 

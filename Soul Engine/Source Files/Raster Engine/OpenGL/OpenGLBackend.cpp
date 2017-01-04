@@ -3,57 +3,41 @@
 #include "OpenGLUtility.h"
 #include "Utility\Includes\GLMIncludes.h"
 #include "Input/InputState.h"
+#include "Multithreading\Scheduler.h"
+
+#include <list>
+
+	typedef struct GLVertex
+	{
+		glm::vec4 position;
+		glm::vec2 UV;
+		glm::vec4 normal;
+		glm::vec4 color;
+	};
 
 
-typedef struct GLVertex
-{
-	glm::vec4 position;
-	glm::vec2 UV;
-	glm::vec4 normal;
-	glm::vec4 color;
-};
+	typedef struct WindowInformation
+	{
+		Window* window;
+		GLEWContext* glContext;
+		glm::mat4    projection;
+		glm::mat4    view;
+		unsigned int ID;
+	};
 
-
-typedef struct WindowInformation
-{
-	Window*  window;
-	GLEWContext* glContext;
-	glm::mat4    projection;
-	glm::mat4    view;
-	unsigned int ID;
-};
-
-unsigned int windowCounter = 0;
-std::list<WindowInformation*> windows;
-WindowInformation* currentContext = nullptr;
-
+	static unsigned int windowCounter = 0;
+	static std::list<WindowInformation*> windowStorage;
+	static WindowInformation* currentContext = nullptr;
 
 void MakeContextCurrent(WindowInformation* inWindow)
 {
-	if (inWindow != nullptr)
-	{
+	if (inWindow != nullptr) {
 		glfwMakeContextCurrent(inWindow->window->windowHandle);
 		currentContext = inWindow;
 	}
 }
 
-void GLFWWindowSizeCallback(GLFWwindow* inWindow, int inWidth, int inHeight)
-{
-	// find the WindowInformation data corrosponding to inWindow;
-	WindowInformation* info = nullptr;
-
-	for (auto& itr : windows)
-	{
-		if (itr->window->windowHandle == inWindow)
-		{
-			info = itr;
-			info->projection = glm::perspective(45.0f, float(inWidth) / float(inHeight), 0.1f, 1000.0f);
-		}
-	}
-
-	MakeContextCurrent(currentContext);
-}
-
+//needs to be defined
 GLEWContext* glewGetContext()
 {
 	return currentContext->glContext;
@@ -83,116 +67,54 @@ void OpenGLBackend::Init() {
 
 }
 
-void OpenGLBackend::CreateWindow(Window* window, GLFWmonitor* monitor, GLFWwindow* sharedContextin) {
+void OpenGLBackend::SCreateWindow(Window* window) {
 
-	WindowInformation* hPreviousContext = currentContext;
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
 
-	GLFWwindow* sharedContext;
-	if (sharedContextin != nullptr) 
-	{
-		sharedContext = sharedContextin;
-	}
-	else
-	{
-		sharedContext = nullptr;
-	}
+		WindowInformation* previousContext = currentContext;
 
-	WindowInformation* newWindow = new WindowInformation;
+		WindowInformation* newWindow = new WindowInformation;
 
-	newWindow->glContext = nullptr;
-	newWindow->window = window;
-	newWindow->ID = windowCounter++; 
+		newWindow->glContext = nullptr;
+		newWindow->window = window;
+		newWindow->ID = windowCounter++;
+		newWindow->glContext = new GLEWContext();
+		MakeContextCurrent(newWindow);
+		GLenum err = glewInit();
 
+		if (newWindow->glContext == nullptr)
+		{
+			S_LOG_FATAL("Could not Create GLEW OpenGL context");
+		}
+		if (err != GLEW_OK)
+		{
+			S_LOG_FATAL("GLEW Error occured, Description:", glewGetErrorString(err));
+		}
 
-	WindowType  win = BORDERLESS;
+		//add the new reference with encapsulating data
+		windowStorage.push_back(newWindow);
 
-	glfwWindowHint(GLFW_SAMPLES, 0);
-	glfwWindowHint(GLFW_VISIBLE, true);
+		MakeContextCurrent(previousContext);
+	});
 
-	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-	if (win == FULLSCREEN) {
-
-		glfwWindowHint(GLFW_RESIZABLE, false);
-		glfwWindowHint(GLFW_DECORATED, false);
-
-		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-		newWindow->window->windowHandle = glfwCreateWindow(window->width, window->height, window->title.c_str(), monitor, sharedContext);
-
-	}
-	else if (win == WINDOWED) {
-
-		glfwWindowHint(GLFW_RESIZABLE, true);
-		newWindow->window->windowHandle = glfwCreateWindow(window->width, window->height, window->title.c_str(), nullptr, sharedContext);
-
-	}
-
-	else if (win == BORDERLESS) {
-
-		glfwWindowHint(GLFW_RESIZABLE, false);
-		glfwWindowHint(GLFW_DECORATED, false);
-
-		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-		newWindow->window->windowHandle = glfwCreateWindow(window->width, window->height, window->title.c_str(), nullptr, sharedContext);
-
-	}
-	else {
-		LOG(ERROR, "No Window setting found");
-	}
-
-
-
-	if (newWindow->window->windowHandle == nullptr)
-	{
-		LOG(ERROR, "Could not Create GLFW Window");
-		delete newWindow;
-		return;
-	}
-
-	glfwSetWindowPos(newWindow->window->windowHandle, window->xPos, window->yPos);
-
-	newWindow->glContext = new GLEWContext();
-	if (newWindow->glContext == nullptr)
-	{
-		LOG(ERROR, "Could not Create GLEW OpenGL context");
-		delete newWindow;
-		return;
-	}
-
-	MakeContextCurrent(newWindow);
-
-	GLenum err = glewInit();
-
-	if (err != GLEW_OK)
-	{
-		LOG(ERROR, "GLEW Error occured, Description:", glewGetErrorString(err));
-		glfwDestroyWindow(newWindow->window->windowHandle);
-		delete newWindow;
-		return;
-	}
-
-	glfwSetWindowSizeCallback(newWindow->window->windowHandle, GLFWWindowSizeCallback);
-
-	windows.push_back(newWindow);
-
-	//glfwSetWindowUserPointer(windowHandle, this);
-
-	glfwSetKeyCallback(newWindow->window->windowHandle, Input::KeyCallback);
-	glfwSetScrollCallback(newWindow->window->windowHandle, Input::ScrollCallback);
-	glfwSetCursorPosCallback(newWindow->window->windowHandle, Input::MouseCallback);
-
-	// now restore previous context:
-	//MakeContextCurrent(hPreviousContext);
-
+	Scheduler::Block();
 }
 
 void OpenGLBackend::PreRaster() {
+
+	for (auto& winInfo : windowStorage) {
+		GLFWwindow* handler = winInfo->window->windowHandle;
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+
+			WindowInformation* previousContext = currentContext;
+			MakeContextCurrent(winInfo);
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			MakeContextCurrent(previousContext);
+
+		});
+	}
+	Scheduler::Block();
 
 }
 
@@ -201,5 +123,24 @@ void OpenGLBackend::PostRaster() {
 }
 
 void OpenGLBackend::Terminate() {
+	for (auto& winInfo : windowStorage) {
+		delete winInfo;
+	}
+}
 
+void OpenGLBackend::Draw() {
+
+	for (auto& winInfo : windowStorage) {
+		GLFWwindow* handler = winInfo->window->windowHandle;
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+
+			WindowInformation* previousContext = currentContext;
+			MakeContextCurrent(winInfo);
+			glfwSwapBuffers(handler);
+			MakeContextCurrent(previousContext);
+
+		});
+	}
+
+	Scheduler::Block();
 }

@@ -14,7 +14,6 @@ static std::size_t threadCount{ 0 };
 static boost::fibers::condition_variable_any threadCondition{};
 
 
-
 namespace Scheduler {
 
 	namespace detail {
@@ -225,7 +224,7 @@ namespace Scheduler {
 		bool run = true;
 		while (run) {
 			detail::fiberMutex.lock();
-			if (detail::fiberCount==0) {
+			if (detail::fiberCount == 0) {
 				run = false;
 				detail::fiberMutex.unlock();
 				threadCondition.notify_all();
@@ -259,19 +258,22 @@ namespace Scheduler {
 		for (uint i = 0; i < threadCount; ++i) {
 			threads[i] = std::thread(detail::ThreadRun);
 		}
+
+		//init the main fiber specifics
+		detail::InitCheck();
 	}
 
 
-	void Wait() {
-		//could not be initialized if wait is called before an addTask
-		detail::InitCheck();
+	void Block() {
+		//get the current fibers stats for blocking
+		std::size_t* holdSize = detail::holdCount.get();
+		std::mutex* holdMutex = detail::holdMutex.get();
 
-		std::unique_lock<std::mutex> lock(*detail::holdMutex);
-		detail::blockCondition->wait(lock, []() { return 0 == *detail::holdCount; });
+		std::unique_lock<std::mutex> lock(*holdMutex);
+		detail::blockCondition->wait(lock, [=]() { return 0 == *holdSize; });
 	}
 
 	void Defer() {
-		detail::InitCheck();
 		boost::this_fiber::yield();
 	}
 
