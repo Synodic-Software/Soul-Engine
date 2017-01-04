@@ -37,7 +37,7 @@ namespace Scheduler {
 		extern boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
 
 		//initializes all fiber_specific_ptrs if they havnt been initialized
-		void InitSpecific();
+		void InitPointers();
 
 		//property class for the custom scheduler
 		class FiberProperties : public boost::fibers::fiber_properties {
@@ -99,6 +99,7 @@ namespace Scheduler {
 
 		//only difference is the hold lock increment
 		if (policy == LAUNCH_IMMEDIATE) {
+
 			std::mutex* holdLock = detail::holdMutex.get();
 			std::size_t* holdSize = detail::holdCount.get();
 			boost::fibers::condition_variable_any* holdConditional = detail::blockCondition.get();
@@ -112,7 +113,7 @@ namespace Scheduler {
 				[&, holdLock, holdSize, holdConditional]() mutable {
 
 				//prefix code
-				detail::InitSpecific();
+				detail::InitPointers();
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
@@ -139,6 +140,7 @@ namespace Scheduler {
 				[&]() mutable {
 
 				//prefix code
+				detail::InitPointers();
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);

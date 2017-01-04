@@ -29,10 +29,16 @@ namespace Scheduler {
 		boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
 		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
 
-		void InitSpecific() {
-			detail::holdMutex.reset(new std::mutex);
-			detail::holdCount.reset(new std::size_t(0));
-			detail::blockCondition.reset(new boost::fibers::condition_variable_any);
+		void InitPointers() {
+			if (!detail::holdMutex.get()) {
+				detail::holdMutex.reset(new std::mutex);
+			}
+			if (!detail::holdCount.get()) {
+				detail::holdCount.reset(new std::size_t(0));
+			}
+			if (!detail::blockCondition.get()) {
+				detail::blockCondition.reset(new boost::fibers::condition_variable_any);
+			}
 		}
 
 		class SoulScheduler :
@@ -98,6 +104,7 @@ namespace Scheduler {
 			}
 
 			virtual boost::fibers::context * pick_next() noexcept {
+
 				boost::fibers::context * ctx(nullptr);
 				std::thread::id thisID = std::this_thread::get_id();
 
@@ -115,6 +122,10 @@ namespace Scheduler {
 					ctx = rqueue_.front();
 					bool sr = this->properties(ctx).RunOnMain();
 					int prior = this->properties(ctx).GetPriority();
+
+					if (sr) {
+					
+					}
 
 					if (!sr) {
 
@@ -136,7 +147,7 @@ namespace Scheduler {
 
 					}
 				}
-				if (ctx == nullptr) {
+				if (!ctx) {
 
 					lk.unlock();
 
@@ -253,16 +264,16 @@ namespace Scheduler {
 		}
 
 		//init the main fiber specifics
-		detail::InitSpecific();
+		detail::InitPointers();
 	}
 
 
 	void Block() {
+
 		//get the current fibers stats for blocking
 		std::size_t* holdSize = detail::holdCount.get();
-		std::mutex* holdMutex = detail::holdMutex.get();
 
-		std::unique_lock<std::mutex> lock(*holdMutex);
+		std::unique_lock<std::mutex> lock(*detail::holdMutex.get());
 		detail::blockCondition->wait(lock, [=]() { return 0 == *holdSize; });
 	}
 

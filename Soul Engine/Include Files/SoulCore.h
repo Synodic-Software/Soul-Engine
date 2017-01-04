@@ -10,6 +10,7 @@ typedef enum GraphicsAPI{ OPENGL,VULKAN };
 
 void SoulInit();
 void SoulRun();
+void SoulTerminate();
 
 void SoulSignalClose();
 
