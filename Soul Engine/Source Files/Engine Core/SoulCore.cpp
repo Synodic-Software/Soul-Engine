@@ -78,7 +78,7 @@ namespace Soul {
 		});
 
 		//destroy all windows
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false , []() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			WindowManager::Terminate();
 		});
 
@@ -131,7 +131,7 @@ namespace Soul {
 			didInit = glfwInit();
 		});
 
-		Scheduler::Block(); 
+		Scheduler::Block();
 
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
@@ -263,9 +263,6 @@ namespace Soul {
 			Raster();
 
 		}
-
-		Terminate();
-
 	}
 }
 
@@ -297,6 +294,10 @@ void SoulInit() {
 	Soul::Init();
 }
 
+void SoulTerminate() {
+	Soul::Terminate();
+}
+
 void SubmitScene(Scene* scene) {
 	Soul::scenes.push_back(scene);
 }
@@ -307,22 +308,35 @@ void RemoveScene(Scene* scene) {
 
 int main()
 {
-	SoulInit();
 
-	//InputState::GetInstance().ResetMouse = true;
+	try
+	{
+		SoulInit();
 
-	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
+		//InputState::GetInstance().ResetMouse = true;
 
-	/*Material* whiteGray = new Material();
-	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
-	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
-	Scene* scene = new Scene();
-	AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
+		/*Material* whiteGray = new Material();
+		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
+		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	SubmitScene(scene);*/
+		Scene* scene = new Scene();
+		AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
 
-	SoulRun();
+		SubmitScene(scene);*/
 
-	return 0;
+	//	SoulRun();
+		SoulTerminate();
+		return EXIT_SUCCESS;
+	}
+	catch (std::exception const& e)
+	{
+		std::cerr << "exception: " << e.what() << std::endl;
+	}
+	catch (...)
+	{
+		std::cerr << "unhandled exception" << std::endl;
+	}
+	return EXIT_FAILURE;
 }
