@@ -29,18 +29,10 @@ namespace Scheduler {
 		boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
 		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
 
-		void InitCheck() {
-			if (!detail::holdMutex.get()) {
-				detail::holdMutex.reset(new std::mutex);
-			}
-
-			if (!detail::holdCount.get()) {
-				detail::holdCount.reset(new std::size_t(0));
-			}
-
-			if (!detail::blockCondition.get()) {
-				detail::blockCondition.reset(new boost::fibers::condition_variable_any);
-			}
+		void InitSpecific() {
+			detail::holdMutex.reset(new std::mutex);
+			detail::holdCount.reset(new std::size_t(0));
+			detail::blockCondition.reset(new boost::fibers::condition_variable_any);
 		}
 
 		class SoulScheduler :
@@ -214,6 +206,7 @@ namespace Scheduler {
 	}
 
 	void Terminate() {
+
 		detail::fiberMutex.lock();
 		detail::shouldRun = false;
 		--detail::fiberCount;
@@ -260,7 +253,7 @@ namespace Scheduler {
 		}
 
 		//init the main fiber specifics
-		detail::InitCheck();
+		detail::InitSpecific();
 	}
 
 

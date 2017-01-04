@@ -2,9 +2,6 @@
 #include "Vulkan/VulkanBackend.h"
 #include "OpenGL/OpenGLBackend.h"
 
-static VulkanBackend vBack;
-static OpenGLBackend oBack;
-
 namespace RasterBackend {
 
 	Backend::Backend() {
@@ -16,17 +13,18 @@ namespace RasterBackend {
 	}
 
 	namespace detail {
-
 		Backend* raster;
+		VulkanBackend vBack;
+		OpenGLBackend oBack;
 	}
 
 	void Init() {
 
 		if (glfwVulkanSupported() == GLFW_TRUE) {
-			detail::raster = &vBack;
+			detail::raster = &detail::vBack;
 		}
 		else {
-			detail::raster = &oBack;
+			detail::raster = &detail::oBack;
 		}
 
 		detail::raster->Init();
