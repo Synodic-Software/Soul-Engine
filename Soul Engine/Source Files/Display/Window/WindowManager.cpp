@@ -30,7 +30,7 @@ namespace WindowManager {
 		uint xPos = Settings::Get("MainWindow.X_Position", 0);
 		uint yPos = Settings::Get("MainWindow.Y_Position", 0);
 
-		windows.push_back({ std::string("Main"), xPos, yPos, xSize, ySize, monitors[0], nullptr });
+		windows.emplace_back(std::string("Main"), xPos, yPos, xSize, ySize, monitors[0], nullptr);
 
 		masterWindow = &windows[0];
 	}
@@ -74,7 +74,7 @@ namespace WindowManager {
 
 		GLFWmonitor* monitorIn = monitors[monitor];
 
-		windows.push_back({ name,x,y,width,height,monitorIn, masterWindow->windowHandle });
+		windows.emplace_back(name, x, y, width, height, monitorIn, masterWindow->windowHandle);
 
 	}
 
