@@ -25,6 +25,12 @@ namespace Settings {
 		return detail::propTree.get(propertyName, defaultValue);
 	}
 
+	//set value, overriding any point
+	template<typename T>
+	void Set(std::string propertyName, T defaultValue) {
+		detail::propTree.put(propertyName, defaultValue);
+	}
+
 	//Writes the property tree to the file it opened with.
 	void Write();
 

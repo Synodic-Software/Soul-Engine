@@ -6,11 +6,6 @@
 
 namespace WindowManager {
 
-	namespace detail {
-		extern int monitorCount;
-		extern GLFWmonitor** monitors;
-	}
-
 	//GLFW needs to be initialized
 	void Init();
 
@@ -21,7 +16,7 @@ namespace WindowManager {
 
 	void SignelClose();
 
-	void SoulCreateWindow(const std::string&,int monitor, uint x, uint y, uint width, uint height);
+	void SCreateWindow(std::string&,int monitor, uint x, uint y, uint width, uint height);
 
 	void Draw();
 }

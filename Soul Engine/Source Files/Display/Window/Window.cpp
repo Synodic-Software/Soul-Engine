@@ -2,43 +2,121 @@
 #include "Utility\Logger.h"
 #include "Input\Input.h"
 #include "Raster Engine\RasterBackend.h"
+#include "Multithreading\Scheduler.h"
 
-Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn)
-: title(inTitle){
+Window::Window( std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn, GLFWwindow* sharedContextin)
+{
 
 	xPos = x;
 	yPos = y;
 	width = iwidth;
 	height = iheight;
+	title = inTitle;
 
-	RasterBackend::CreateWindow(this, monitorIn,nullptr);
-	//glfwSetWindowUserPointer(windowOut, &VulkanBackend::GetInstance());
-	//glfwSetWindowSizeCallback(windowOut, VulkanBackend::OnWindowResized);
+	GLFWwindow* sharedContext;
+	if (sharedContextin != nullptr)
+	{
+		sharedContext = sharedContextin;
+	}
+	else
+	{
+		sharedContext = nullptr;
+	}
 
-	//////////////////////////
+	WindowType  win = BORDERLESS;
 
-	/*Soul::renderer rend = {
-	new Renderer(glm::uvec2(int(xSize*mode->width), int(ySize*mode->height))),
-	SPECTRAL,
-	1.0f
-	};
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+		glfwWindowHint(GLFW_SAMPLES, 0);
+		glfwWindowHint(GLFW_VISIBLE, true);
 
-	Soul::renderObjects.push_back(rend);*/
+		const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
 
-	//////////////////////////
+		if (win == FULLSCREEN) {
 
-	//VulkanBackend::GetInstance().AddWindow(windowOut, int(xSize*mode->width), int(ySize*mode->height));
+			glfwWindowHint(GLFW_RESIZABLE, false);
+			glfwWindowHint(GLFW_DECORATED, false);
+
+			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+			windowHandle = glfwCreateWindow(width, height, title.c_str(), monitorIn, sharedContext);
+
+		}
+		else if (win == WINDOWED) {
+
+			glfwWindowHint(GLFW_RESIZABLE, true);
+
+			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
+
+		}
+
+		else if (win == BORDERLESS) {
+
+			glfwWindowHint(GLFW_RESIZABLE, false);
+			glfwWindowHint(GLFW_DECORATED, false);
+
+			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
+
+		}
+	});
+
+	Scheduler::Block();
+
+	if (windowHandle == nullptr)
+	{
+		S_LOG_FATAL("Could not Create GLFW Window");
+	}
+
+	RasterBackend::SCreateWindow(this);
+
+
+	//the backend is the new user
+	
+
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+		glfwSetWindowUserPointer(windowHandle, this);
+		glfwSetWindowPos(windowHandle, xPos, yPos);
+
+		//all window related callbacks
+		glfwSetWindowSizeCallback(windowHandle, [](GLFWwindow* w, int x, int y)
+		{
+			static_cast<Window*>(glfwGetWindowUserPointer(w))->Resize(w, x, y);
+		});
+
+		glfwSetKeyCallback(windowHandle, Input::KeyCallback);
+		glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
+		glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
+	});
+
+	Scheduler::Block();
 
 }
 
 
 Window::~Window()
 {
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+		glfwDestroyWindow(windowHandle);
+	});
+	Scheduler::Block();
+
+}
+
+void Window::Resize(GLFWwindow* inWindow, int inWidth, int inHeight)
+{
+
 }
 
 void Window::Draw() {
-	//int width, height;
-	//glfwGetWindowSize(masterWindow, &width, &height);
-	//glfwSetCursorPos(masterWindow, width / 2.0f, height / 2.0f);
-//	VulkanBackend::GetInstance().DrawFrame(masterWindow, width, height);
+
+
 }

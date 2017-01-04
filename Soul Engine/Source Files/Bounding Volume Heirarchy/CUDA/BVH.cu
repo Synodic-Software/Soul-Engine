@@ -157,5 +157,5 @@ void BVH::Build(uint size){
 	CudaCheck(cudaEventDestroy(start));
 	CudaCheck(cudaEventDestroy(stop));
 
-	LOG(TRACE, "     BVH Creation Execution: " , time , "ms" );
+	S_LOG_TRACE( "     BVH Creation Execution: " , time , "ms" );
 }

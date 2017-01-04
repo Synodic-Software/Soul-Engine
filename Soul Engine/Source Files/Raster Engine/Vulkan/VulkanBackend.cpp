@@ -63,7 +63,7 @@ std::vector<const char*> GetRequiredExtensions();
 void CreateInstance() {
 
 	if (enableValidationLayers && !CheckValidationLayerSupport()) {
-		LOG(ERROR, "Validation layers not available");
+		S_LOG(S_ERROR, "Validation layers not available");
 	}
 
 	VkApplicationInfo appInfo = {};
@@ -91,7 +91,7 @@ void CreateInstance() {
 	}
 
 	if (vkCreateInstance(&createInfo, nullptr, instance.replace()) != VK_SUCCESS) {
-		LOG(FATAL, "Failed to create vulkan instance");
+		S_LOG(S_FATAL, "Failed to create vulkan instance");
 	}
 }
 
@@ -104,13 +104,13 @@ void SetupDebugCallback() {
 	createInfo.pfnCallback = DebugCallback;
 
 	if (CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, callback.replace()) != VK_SUCCESS) {
-		LOG(ERROR, "Failed to set up debug callback");
+		S_LOG(S_ERROR, "Failed to set up debug callback");
 	}
 }
 
 void CreateSurface(GLFWwindow* window, VkSurfaceKHR* surface) {
 	if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
-		LOG(ERROR, "Failed to create window surface");
+		S_LOG(S_ERROR, "Failed to create window surface");
 	}
 }
 
@@ -173,7 +173,7 @@ void PhysicalDevice(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
 	if (deviceCount == 0) {
-		LOG(ERROR, "Failed to find GPUs with Vulkan support");
+		S_LOG(S_ERROR, "Failed to find GPUs with Vulkan support");
 	}
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -187,7 +187,7 @@ void PhysicalDevice(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
 	}
 
 	if (physicalDevice == VK_NULL_HANDLE) {
-		LOG(ERROR, "Failed to find a suitable GPU");
+		S_LOG(S_ERROR, "Failed to find a suitable GPU");
 	}
 }
 
@@ -199,7 +199,7 @@ std::vector<const char*> GetRequiredExtensions() {
 	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
 	if (!glfwExtensions) {
-		LOG(FATAL, "Could not grab GLFW Vulkan Extensions");
+		S_LOG(S_FATAL, "Could not grab GLFW Vulkan Extensions");
 	}
 
 	for (unsigned int i = 0; i < glfwExtensionCount; i++) {
@@ -283,7 +283,7 @@ void VulkanBackend::Init() {
 	SetupDebugCallback();
 }
 
-void VulkanBackend::CreateWindow(Window* window, GLFWmonitor* moniter, GLFWwindow* share) {
+void VulkanBackend::SCreateWindow(Window* window) {
 
 	//WindowType  win = BORDERLESS;
 
@@ -325,11 +325,11 @@ void VulkanBackend::CreateWindow(Window* window, GLFWmonitor* moniter, GLFWwindo
 
 	//}
 	//else {
-	//	LOG(ERROR, "No Window setting found");
+	//	S_LOG(S_ERROR, "No Window setting found");
 	//}
 
 	//if (!windowHandle) {
-	//	LOG(ERROR, "Window creation failed");
+	//	S_LOG(S_ERROR, "Window creation failed");
 	//}
 
 	//glfwSetWindowPos(windowHandle, x, y);
@@ -341,7 +341,7 @@ void VulkanBackend::CreateWindow(Window* window, GLFWmonitor* moniter, GLFWwindo
 	//glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
 
 
-	//RasterBackend::CreateWindow(this, monitorIn, nullptr);
+	//RasterBackend::SCreateWindow(this);
 
 
 
@@ -359,5 +359,9 @@ void VulkanBackend::PostRaster() {
 }
 
 void VulkanBackend::Terminate() {
+	//VulkanBackend::GetInstance().IdleDevice();
+}
+
+void VulkanBackend::Draw() {
 
 }

@@ -1,36 +1,57 @@
 #include "WindowManager.h"
+
 #include <vector>
 #include "Utility\Logger.h"
 #include "Window.h"
+#include "Utility\Settings.h"
+#include "Multithreading\Scheduler.h"
+#include "Raster Engine\RasterBackend.h"
 
-std::vector<Window> windows;
-Window* masterWindow = nullptr;
+namespace {
+	std::vector<Window> windows;
+	Window* masterWindow = nullptr;
+
+	int monitorCount;
+	GLFWmonitor** monitors;
+}
 
 namespace WindowManager {
 
-	namespace detail {
-		int monitorCount;
-		GLFWmonitor** monitors;
-	}
-
 	void Init() {
-		detail::monitors = glfwGetMonitors(&detail::monitorCount);
-		SoulCreateWindow("Main", 0, 0, 0, 1024, 720);
+
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+			monitors = glfwGetMonitors(&monitorCount);
+		});
+
+		Scheduler::Block();
+
+		uint xSize = Settings::Get("MainWindow.Width", 1024);
+		uint ySize = Settings::Get("MainWindow.Height", 720);
+		uint xPos = Settings::Get("MainWindow.X_Position", 0);
+		uint yPos = Settings::Get("MainWindow.Y_Position", 0);
+
+		windows.push_back({ std::string("Main"), xPos, yPos, xSize, ySize, monitors[0], nullptr });
+
+		masterWindow = &windows[0];
 	}
 
 	void Terminate() {
 		masterWindow = nullptr;
 		for (auto const& win : windows) {
-			glfwDestroyWindow(win.windowHandle);
+			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+				glfwDestroyWindow(win.windowHandle);
+			});
 		}
+
+		Scheduler::Block();
 	}
 
 	bool ShouldClose() {
-		if (masterWindow!=nullptr) {
+		if (masterWindow != nullptr) {
 			return glfwWindowShouldClose(masterWindow->windowHandle);
 		}
 		else {
-			LOG_WARNING("No window has been created");
+			S_LOG_WARNING("No window has been created");
 			return false;
 		}
 	}
@@ -40,40 +61,36 @@ namespace WindowManager {
 			glfwSetWindowShouldClose(masterWindow->windowHandle, GLFW_TRUE);
 		}
 		else {
-			LOG_WARNING("No window has been created");
+			S_LOG_WARNING("No window has been created");
 		}
 	}
 
 	//the moniter number
-	void SoulCreateWindow(const std::string& name,int monitor, uint x, uint y,uint width, uint height) {
-		if (monitor>detail::monitorCount) {
-			LOG(ERROR, "The specified moniter '", monitor, "' needs to be less than ", detail::monitorCount);
+	void SCreateWindow(std::string& name, int monitor, uint x, uint y, uint width, uint height) {
+
+		if (monitor > monitorCount) {
+			S_LOG_ERROR("The specified moniter '", monitor, "' needs to be less than ", monitorCount);
 		}
 
-		GLFWmonitor* monitorIn = detail::monitors[monitor];
+		GLFWmonitor* monitorIn = monitors[monitor];
 
-		windows.push_back({ name,x,y,width,height,monitorIn});
-
-		if (masterWindow == nullptr) {
-
-			masterWindow = &windows[0];
-
-			//	glfwMakeContextCurrent(Soul::masterWindow);
-
-		//	glfwSetInputMode(windowOut, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		}
+		windows.push_back({ name,x,y,width,height,monitorIn, masterWindow->windowHandle });
 
 	}
 
 	void Draw() {
 
-		for (auto& win : windows) {
-			win.Draw();
+		for (Window& win : windows) {
+			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, [&]() {
+				win.Draw();
+			});
 		}
 
-		for (auto& win : windows) {
-			glfwSwapBuffers(win.windowHandle);
-		}
+		Scheduler::Block();
+
+
+		RasterBackend::Draw();
+
 
 	}
 
