@@ -3,13 +3,43 @@
 #include "OpenGLUtility.h"
 #include "Input/InputState.h"
 #include "Multithreading\Scheduler.h"
+#include "Utility\Includes\GLMIncludes.h"
 
-void OpenGLBackend::MakeContextCurrent(WindowInformation* inWindow)
+struct GLVertex
 {
-	if (inWindow != nullptr) {
-		glfwMakeContextCurrent(inWindow->window->windowHandle);
+	glm::vec4 position;
+	glm::vec2 UV;
+	glm::vec4 normal;
+	glm::vec4 color;
+};
+
+
+struct WindowInformation
+{
+	GLFWwindow* window;
+	GLEWContext* glContext;
+	unsigned int ID;
+};
+
+static uint windowCounter;
+static std::vector<WindowInformation> windowStorage;
+static WindowInformation* currentContext;
+
+//must be called on the main thread
+void MakeContextCurrent(WindowInformation* inWindow)
+{
+	if (inWindow) {
+		glfwMakeContextCurrent(inWindow->window);
+	}
+	else {
+		glfwMakeContextCurrent(nullptr);
 	}
 	currentContext = inWindow;
+}
+
+GLEWContext* glewGetContext()
+{
+	return currentContext->glContext;
 }
 
 void CheckForGLErrors(std::string mssg)
@@ -35,54 +65,57 @@ void OpenGLBackend::Init() {
 
 }
 
-void OpenGLBackend::SCreateWindow(Window* window) {
+void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, window]() {
 
-		WindowInformation* previousContext = currentContext;
 
-		WindowInformation newWindow;
+	WindowInformation newWindow{};
 
-		newWindow.glContext = nullptr;
-		newWindow.window = window;
-		newWindow.ID = windowCounter++;
+	newWindow.window = window;
+	newWindow.ID = windowCounter++;
+
+	GLenum err;
+
+	//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, window, &newWindow, &err]() {
+
 		newWindow.glContext = new GLEWContext();
+	
 		MakeContextCurrent(&newWindow);
-		GLenum err = glewContextInit(newWindow.glContext);
+		glewExperimental = true;
+		err = glewInit();
 
-		if (newWindow.glContext == nullptr)
-		{
-			S_LOG_FATAL("Could not Create GLEW OpenGL context");
-		}
-		if (err != GLEW_OK)
-		{
-			S_LOG_FATAL("GLEW Error occured, Description:", glewGetErrorString(err));
-		}
+		MakeContextCurrent(nullptr);
+//	});
 
-		//add the new reference with encapsulating data
-		windowStorage.push_back(newWindow);
+	//Scheduler::Block();
 
-		MakeContextCurrent(previousContext);
-	});
+	//add the new reference with encapsulating data
+	windowStorage.push_back(newWindow);
 
-	Scheduler::Block();
+	if (!newWindow.glContext)
+	{
+		S_LOG_FATAL("Could not Create GLEW OpenGL context");
+	}
+	if (err != GLEW_OK)
+	{
+		S_LOG_FATAL("GLEW Error occured, Description:", glewGetErrorString(err));
+	}
 }
 
 void OpenGLBackend::PreRaster() {
 
 	for (auto& winInfo : windowStorage) {
-		GLFWwindow* handler = winInfo.window->windowHandle;
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+		GLFWwindow* handler = winInfo.window;
+		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
 
-			WindowInformation* previousContext = currentContext;
 			MakeContextCurrent(&winInfo);
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			MakeContextCurrent(previousContext);
+			MakeContextCurrent(nullptr);
 
-		});
+		//});
 	}
-	Scheduler::Block();
+	//Scheduler::Block();
 
 }
 
@@ -92,21 +125,23 @@ void OpenGLBackend::PostRaster() {
 
 void OpenGLBackend::Terminate() {
 
+	for (auto& winInfo : windowStorage) {
+		delete winInfo.glContext;
+	}
 }
 
 void OpenGLBackend::Draw() {
 
 	for (auto& winInfo : windowStorage) {
-		GLFWwindow* handler = winInfo.window->windowHandle;
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+		GLFWwindow* handler = winInfo.window;
+		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
 
-			WindowInformation* previousContext = currentContext;
 			MakeContextCurrent(&winInfo);
 			glfwSwapBuffers(handler);
-			MakeContextCurrent(previousContext);
+			MakeContextCurrent(nullptr);
 
-		});
+	//	});
 	}
 
-	Scheduler::Block();
+	//Scheduler::Block();
 }

@@ -5,12 +5,12 @@
 
 #include <string>
 
-typedef enum WindowType { WINDOWED, FULLSCREEN, BORDERLESS };
+enum WindowType { WINDOWED, FULLSCREEN, BORDERLESS };
 
 class Window
 {
 public:
-	Window(std::string&, uint x, uint y, uint width, uint height, GLFWmonitor*, GLFWwindow*);
+	Window(const std::string&, uint x, uint y, uint width, uint height, GLFWmonitor*, GLFWwindow*);
 	~Window();
 
 	GLFWwindow* windowHandle;

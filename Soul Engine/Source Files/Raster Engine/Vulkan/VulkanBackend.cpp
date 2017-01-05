@@ -40,7 +40,7 @@ struct SwapChainSupportDetails {
 VulkanWrapper<VkInstance> instance{ vkDestroyInstance };
 VulkanWrapper<VkDebugReportCallbackEXT> callback{ instance, DestroyDebugReportCallbackEXT };
 
-typedef struct VKWindowInformation {
+struct VKWindowInformation {
 	VulkanWrapper<VkSurfaceKHR> surface{ instance, vkDestroySurfaceKHR };
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VulkanWrapper<VkDevice> device{ vkDestroyDevice };
@@ -283,7 +283,7 @@ void VulkanBackend::Init() {
 	SetupDebugCallback();
 }
 
-void VulkanBackend::SCreateWindow(Window* window) {
+void VulkanBackend::BuildWindow(GLFWwindow* window) {
 
 	//WindowType  win = BORDERLESS;
 
@@ -346,7 +346,7 @@ void VulkanBackend::SCreateWindow(Window* window) {
 
 
 	VKWindowInformation info{};
-	CreateSurface(window->windowHandle, info.surface.replace());
+	CreateSurface(window, info.surface.replace());
 	PhysicalDevice(info.physicalDevice, info.surface);
 }
 

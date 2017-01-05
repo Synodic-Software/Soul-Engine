@@ -7,6 +7,8 @@
 #include "Multithreading\Scheduler.h"
 #include "Raster Engine\RasterBackend.h"
 
+#include <string>
+
 namespace {
 	std::vector<Window> windows;
 	Window* masterWindow = nullptr;
@@ -19,31 +21,24 @@ namespace WindowManager {
 
 	void Init() {
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			monitors = glfwGetMonitors(&monitorCount);
-		});
+		//});
 
-		Scheduler::Block();
+		//Scheduler::Block();
 
 		uint xSize = Settings::Get("MainWindow.Width", 1024);
 		uint ySize = Settings::Get("MainWindow.Height", 720);
 		uint xPos = Settings::Get("MainWindow.X_Position", 0);
 		uint yPos = Settings::Get("MainWindow.Y_Position", 0);
 
-		windows.emplace_back(std::string("Main"), xPos, yPos, xSize, ySize, monitors[0], nullptr);
+		windows.emplace_back( "Main", xPos, yPos, xSize, ySize, monitors[0], nullptr );
 
 		masterWindow = &windows[0];
 	}
 
 	void Terminate() {
-		masterWindow = nullptr;
-		for (auto const& win : windows) {
-			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
-				glfwDestroyWindow(win.windowHandle);
-			});
-		}
-
-		Scheduler::Block();
+		windows.clear();
 	}
 
 	bool ShouldClose() {
@@ -81,12 +76,12 @@ namespace WindowManager {
 	void Draw() {
 
 		for (Window& win : windows) {
-			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, [&]() {
+		//	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, [&]() {
 				win.Draw();
-			});
+		//	});
 		}
 
-		Scheduler::Block();
+		//Scheduler::Block();
 
 
 		RasterBackend::Draw();

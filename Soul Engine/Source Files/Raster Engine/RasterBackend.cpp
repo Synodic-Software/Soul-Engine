@@ -31,8 +31,8 @@ namespace RasterBackend {
 
 	}
 
-	void SCreateWindow(Window* window) {
-		detail::raster->SCreateWindow(window);
+	void BuildWindow(GLFWwindow* window) {
+		detail::raster->BuildWindow(window);
 	}
 
 	void PreRaster() {

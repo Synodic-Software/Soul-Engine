@@ -12,7 +12,7 @@ public:
 	~VulkanBackend();
 
 	virtual void Init();
-	virtual void SCreateWindow(Window*);
+	virtual void BuildWindow(GLFWwindow*);
 	virtual void PreRaster();
 	virtual void PostRaster();
 	virtual void Terminate();

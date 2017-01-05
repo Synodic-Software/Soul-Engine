@@ -28,16 +28,16 @@ void InputState::InputMouseCallback(GLFWwindow* window, double xpos, double ypos
 {
 	int width, height;
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+	//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
 
 		glfwGetWindowSize(window, &width, &height);
 
 		if (ResetMouse) {
 			glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
 		}
-	});
+	//});
 
-	Scheduler::Block();
+	//Scheduler::Block();
 	xPos = xpos - (width / 2.0);
 	yPos = ypos - (height / 2.0);
 }
