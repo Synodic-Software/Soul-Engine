@@ -12,38 +12,39 @@
 
 //Scheduler Variables//
 static std::thread* threads;
-static std::size_t threadCount{ 0 };
-static boost::fibers::condition_variable_any threadCondition{};
+static std::size_t threadCount;
+static boost::fibers::condition_variable_any threadCondition;
 
 
 namespace Scheduler {
 
 	namespace detail {
 
-		bool shouldRun = true;
+		bool shouldRun;
 
 		std::thread::id mainID;
 
-		std::size_t fiberCount = 0;
+		std::size_t fiberCount;
 		std::mutex fiberMutex;
 
-		boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
-		boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
-		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
+		boost::fibers::fiber_specific_ptr<std::size_t>* holdCount;
+		boost::fibers::fiber_specific_ptr<std::mutex>* holdMutex;
+		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>* blockCondition;
 
 		void InitPointers() {
-			if (!detail::holdMutex.get()) {
-				detail::holdMutex.reset(new std::mutex);
+			if (!detail::holdMutex->get()) {
+				detail::holdMutex->reset(new std::mutex);
 			}
-			if (!detail::holdCount.get()) {
-				detail::holdCount.reset(new std::size_t(0));
+			if (!detail::holdCount->get()) {
+				detail::holdCount->reset(new std::size_t(0));
 			}
-			if (!detail::blockCondition.get()) {
+			if (!detail::blockCondition->get()) {
 
 				//TODO: Make this aligned_alloc with c++17
-				detail::blockCondition.reset(
-					(boost::fibers::condition_variable_any*)_aligned_malloc( 64,sizeof(boost::fibers::condition_variable_any))
-				);
+				boost::fibers::condition_variable_any* newData =
+					(boost::fibers::condition_variable_any*)_aligned_malloc(64, sizeof(boost::fibers::condition_variable_any));
+
+				detail::blockCondition->reset(newData);
 			}
 		}
 
@@ -130,7 +131,7 @@ namespace Scheduler {
 					int prior = this->properties(ctx).GetPriority();
 
 					if (sr) {
-					
+
 					}
 
 					if (!sr) {
@@ -251,9 +252,21 @@ namespace Scheduler {
 		}
 
 		delete[] threads;
+
+		delete detail::holdCount;
+		delete detail::holdMutex;
+		delete detail::blockCondition;
+
 	}
 
 	void Init() {
+		threadCount = 0;
+		detail::fiberCount = 0;
+		detail::shouldRun = true;
+
+		detail::holdCount = new boost::fibers::fiber_specific_ptr<std::size_t>;
+		detail::holdMutex = new boost::fibers::fiber_specific_ptr<std::mutex>;
+		detail::blockCondition = new boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>;
 
 		detail::mainID = std::this_thread::get_id();
 
@@ -277,10 +290,10 @@ namespace Scheduler {
 	void Block() {
 
 		//get the current fibers stats for blocking
-		std::size_t* holdSize = detail::holdCount.get();
+		std::size_t* holdSize = detail::holdCount->get();
 
-		std::unique_lock<std::mutex> lock(*detail::holdMutex.get());
-		detail::blockCondition->wait(lock, [=]() { return 0 == *holdSize; });
+		std::unique_lock<std::mutex> lock(*detail::holdMutex->get());
+		(*detail::blockCondition)->wait(lock, [=]() { return 0 == *holdSize; });
 	}
 
 	void Defer() {

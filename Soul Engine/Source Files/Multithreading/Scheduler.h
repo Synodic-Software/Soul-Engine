@@ -30,9 +30,9 @@ namespace Scheduler {
 		extern std::mutex fiberMutex;
 
 		//blocker for the holding count
-		extern boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
-		extern boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
-		extern boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
+		extern boost::fibers::fiber_specific_ptr<std::size_t>* holdCount;
+		extern boost::fibers::fiber_specific_ptr<std::mutex>* holdMutex;
+		extern boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>* blockCondition;
 
 		//initializes all fiber_specific_ptrs if they havnt been initialized
 		void InitPointers();
@@ -98,9 +98,9 @@ namespace Scheduler {
 		//only difference is the hold lock increment
 		if (policy == LAUNCH_IMMEDIATE) {
 
-			std::mutex* holdLock = detail::holdMutex.get();
-			std::size_t* holdSize = detail::holdCount.get();
-			boost::fibers::condition_variable_any* holdConditional = detail::blockCondition.get();
+			std::mutex* holdLock = detail::holdMutex->get();
+			std::size_t* holdSize = detail::holdCount->get();
+			boost::fibers::condition_variable_any* holdConditional = detail::blockCondition->get();
 
 			holdLock->lock();
 			(*holdSize)++;
