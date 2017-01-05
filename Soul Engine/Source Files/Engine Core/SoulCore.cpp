@@ -87,14 +87,14 @@ namespace Soul {
 
 		//Scheduler::Block();
 
-	//	Scheduler::Terminate();
+		Scheduler::Terminate();
 	}
 
 	//Initializes the engine
 	void Init() {
 
 		//setup the multithreader
-		//Scheduler::Init();
+		Scheduler::Init();
 
 #ifdef _DEBUG
 		//log errors to the console for now

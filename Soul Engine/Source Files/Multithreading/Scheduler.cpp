@@ -31,6 +31,15 @@ namespace Scheduler {
 		boost::fibers::fiber_specific_ptr<std::mutex>* holdMutex;
 		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>* blockCondition;
 
+		//clean up the block datatype (needs 64 alignment)
+		void CleanUpAlignedCondition(boost::fibers::condition_variable_any* ptr){
+			ptr->~condition_variable_any();
+
+			//TODO: Make this aligned_alloc with c++17, not visual studio specific code
+			_aligned_free(ptr);
+		}
+
+		//Init the fiber specific stuff
 		void InitPointers() {
 			if (!detail::holdMutex->get()) {
 				detail::holdMutex->reset(new std::mutex);
@@ -40,10 +49,10 @@ namespace Scheduler {
 			}
 			if (!detail::blockCondition->get()) {
 
-				//TODO: Make this aligned_alloc with c++17
+				//TODO: Make this aligned_alloc with c++17, not visual studio specific code
 				boost::fibers::condition_variable_any* newData =
-					(boost::fibers::condition_variable_any*)_aligned_malloc(64, sizeof(boost::fibers::condition_variable_any));
-
+					(boost::fibers::condition_variable_any*)_aligned_malloc(sizeof(boost::fibers::condition_variable_any), 64); //needs 64 alignment
+					new (newData) boost::fibers::condition_variable_any();
 				detail::blockCondition->reset(newData);
 			}
 		}
@@ -266,7 +275,8 @@ namespace Scheduler {
 
 		detail::holdCount = new boost::fibers::fiber_specific_ptr<std::size_t>;
 		detail::holdMutex = new boost::fibers::fiber_specific_ptr<std::mutex>;
-		detail::blockCondition = new boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>;
+		detail::blockCondition = 
+			new boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>(detail::CleanUpAlignedCondition);
 
 		detail::mainID = std::this_thread::get_id();
 
