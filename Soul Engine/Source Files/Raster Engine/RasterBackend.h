@@ -9,7 +9,7 @@ namespace RasterBackend {
 		~Backend();
 
 		virtual void Init() = 0;
-		virtual void SCreateWindow(Window*) = 0;
+		virtual void BuildWindow(GLFWwindow*) = 0;
 		virtual void PreRaster() = 0;
 		virtual void PostRaster() = 0;
 		virtual void Terminate() = 0;
@@ -25,7 +25,7 @@ namespace RasterBackend {
 
 	void Init();
 
-	void SCreateWindow(Window*);
+	void BuildWindow(GLFWwindow*);
 
 	void PreRaster();
 

@@ -26,8 +26,6 @@ namespace Scheduler {
 	//User: Do Not Touch
 	namespace detail {
 
-		extern bool shouldRun;
-
 		extern std::size_t fiberCount;
 		extern std::mutex fiberMutex;
 

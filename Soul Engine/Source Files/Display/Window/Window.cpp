@@ -4,7 +4,7 @@
 #include "Raster Engine\RasterBackend.h"
 #include "Multithreading\Scheduler.h"
 
-Window::Window( std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn, GLFWwindow* sharedContextin)
+Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn, GLFWwindow* sharedContextin)
 {
 
 	xPos = x;
@@ -14,7 +14,7 @@ Window::Window( std::string& inTitle, uint x, uint y, uint iwidth, uint iheight,
 	title = inTitle;
 
 	GLFWwindow* sharedContext;
-	if (sharedContextin != nullptr)
+	if (sharedContextin)
 	{
 		sharedContext = sharedContextin;
 	}
@@ -25,7 +25,7 @@ Window::Window( std::string& inTitle, uint x, uint y, uint iwidth, uint iheight,
 
 	WindowType  win = BORDERLESS;
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+	//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContext,win]() {
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		glfwWindowHint(GLFW_VISIBLE, true);
 
@@ -67,23 +67,22 @@ Window::Window( std::string& inTitle, uint x, uint y, uint iwidth, uint iheight,
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
 
 		}
-	});
+//	});
 
-	Scheduler::Block();
+	//Scheduler::Block();
 
 	if (windowHandle == nullptr)
 	{
 		S_LOG_FATAL("Could not Create GLFW Window");
 	}
 
-	RasterBackend::SCreateWindow(this);
-
+	RasterBackend::BuildWindow(windowHandle);
 
 	//the backend is the new user
-	
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
-		glfwSetWindowUserPointer(windowHandle, this);
+	Window* thisWindow = this;
+	//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, thisWindow]() {
+		glfwSetWindowUserPointer(windowHandle, thisWindow);
 		glfwSetWindowPos(windowHandle, xPos, yPos);
 
 		//all window related callbacks
@@ -95,20 +94,22 @@ Window::Window( std::string& inTitle, uint x, uint y, uint iwidth, uint iheight,
 		glfwSetKeyCallback(windowHandle, Input::KeyCallback);
 		glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
 		glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
-	});
+//	});
 
-	Scheduler::Block();
+	//Scheduler::Block();
 
 }
 
 
 Window::~Window()
 {
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
+	//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
+	if (windowHandle) {
 		glfwDestroyWindow(windowHandle);
-	});
-	Scheduler::Block();
+	}
+	//	});
 
+//Scheduler::Block();
 }
 
 void Window::Resize(GLFWwindow* inWindow, int inWidth, int inHeight)

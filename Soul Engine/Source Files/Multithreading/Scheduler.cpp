@@ -7,6 +7,8 @@
 #include <condition_variable>
 #include <mutex>
 #include <deque>
+#include <malloc.h>  
+
 
 //Scheduler Variables//
 static std::thread* threads;
@@ -37,7 +39,11 @@ namespace Scheduler {
 				detail::holdCount.reset(new std::size_t(0));
 			}
 			if (!detail::blockCondition.get()) {
-				detail::blockCondition.reset(new boost::fibers::condition_variable_any);
+
+				//TODO: Make this aligned_alloc with c++17
+				detail::blockCondition.reset(
+					(boost::fibers::condition_variable_any*)_aligned_malloc( 64,sizeof(boost::fibers::condition_variable_any))
+				);
 			}
 		}
 

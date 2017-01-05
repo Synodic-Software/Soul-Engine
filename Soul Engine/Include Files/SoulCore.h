@@ -5,8 +5,8 @@
 #include "Engine Core\Scene\Scene.h"
 
 
-typedef enum RenderType {SPECTRAL, PATH};
-typedef enum GraphicsAPI{ OPENGL,VULKAN };
+enum RenderType {SPECTRAL, PATH};
+enum GraphicsAPI{ OPENGL,VULKAN };
 
 void SoulInit();
 void SoulRun();

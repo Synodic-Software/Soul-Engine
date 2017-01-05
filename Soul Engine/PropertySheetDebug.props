@@ -29,6 +29,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>
+      </WholeProgramOptimization>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\glew\lib\Release MX\x64;$(AMDAPPSDKROOT)/lib/x86_64;$(ProjectDir)\Libraries\boost\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)\Libraries\glfw\bin;$(ProjectDir)\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)\Libraries</AdditionalLibraryDirectories>
@@ -39,8 +41,7 @@
       <ShowProgress>NotSet</ShowProgress>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EntryPointSymbol>
-      </EntryPointSymbol>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -62,6 +63,7 @@
       <GPUDebugInfo>true</GPUDebugInfo>
       <PtxAsOptionV>false</PtxAsOptionV>
       <Runtime>InheritFromHost</Runtime>
+      <AdditionalOptions>-Wno-deprecated-gpu-targets %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <CudaLink>
       <Optimization>O2</Optimization>

@@ -29,6 +29,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WarningLevel>Level3</WarningLevel>
+      <OmitFramePointers>
+      </OmitFramePointers>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\glew\lib\Release MX\x64;$(AMDAPPSDKROOT)/lib/x86_64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)\Libraries\glfw\bin\Release;$(ProjectDir)\Libraries\glfw\bin;$(LibraryPath);$(ProjectDir)\Libraries\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -63,6 +65,7 @@
       <Runtime>InheritFromHost</Runtime>
       <AdditionalCompilerOptions>
       </AdditionalCompilerOptions>
+      <AdditionalOptions>-Wno-deprecated-gpu-targets %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <CudaLink>
       <Optimization>O2</Optimization>

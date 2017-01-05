@@ -5,7 +5,7 @@
 
 
 //typedef struct __align__(128) qsortAtomicData_t
-typedef struct  qsortAtomicData_t
+struct  qsortAtomicData_t
 {
 	volatile unsigned int lt_offset;    // Current output offset for <pivot
 	volatile unsigned int gt_offset;    // Current output offset for >pivot
@@ -13,7 +13,7 @@ typedef struct  qsortAtomicData_t
 	volatile unsigned int index;        // Ringbuf tracking index. Can be ignored if not using ringbuf.
 } qsortAtomicData;
 
-typedef struct qsortRingbuf_t
+struct qsortRingbuf_t
 {
 	volatile unsigned int head;         // Head pointer - we allocate from here
 	volatile unsigned int tail;         // Tail pointer - indicates last still-in-use element
