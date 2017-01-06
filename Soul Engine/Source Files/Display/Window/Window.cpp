@@ -25,7 +25,7 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 
 	WindowType  win = BORDERLESS;
 
-	//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContext,win]() {
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContext, win]() {
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		glfwWindowHint(GLFW_VISIBLE, true);
 
@@ -54,7 +54,6 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
 
 		}
-
 		else if (win == BORDERLESS) {
 
 			glfwWindowHint(GLFW_RESIZABLE, false);
@@ -67,9 +66,9 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
 
 		}
-//	});
+	});
 
-	//Scheduler::Block();
+	Scheduler::Block();
 
 	if (windowHandle == nullptr)
 	{
@@ -81,7 +80,8 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 	//the backend is the new user
 
 	Window* thisWindow = this;
-	//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, thisWindow]() {
+
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, thisWindow]() {
 		glfwSetWindowUserPointer(windowHandle, thisWindow);
 		glfwSetWindowPos(windowHandle, xPos, yPos);
 
@@ -94,22 +94,22 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 		glfwSetKeyCallback(windowHandle, Input::KeyCallback);
 		glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
 		glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
-//	});
+	});
 
-	//Scheduler::Block();
+	Scheduler::Block();
 
 }
 
 
 Window::~Window()
 {
-	//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
-	if (windowHandle) {
-		glfwDestroyWindow(windowHandle);
-	}
-	//	});
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
+		if (windowHandle) {
+			glfwDestroyWindow(windowHandle);
+		}
+	});
 
-//Scheduler::Block();
+	Scheduler::Block();
 }
 
 void Window::Resize(GLFWwindow* inWindow, int inWidth, int inHeight)

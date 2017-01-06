@@ -4,7 +4,6 @@
 #include "Engine Core/Object/Character/Character.h"
 #include "Engine Core\Scene\Scene.h"
 
-
 enum RenderType {SPECTRAL, PATH};
 enum GraphicsAPI{ OPENGL,VULKAN };
 
