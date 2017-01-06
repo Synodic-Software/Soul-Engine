@@ -8,7 +8,7 @@
 
 #include "Utility/Settings.h"
 #include "Utility/Logger.h"
-#include "Multithreading\Scheduler.h"
+
 #include "Engine Core/Frame/Frame.h"
 #include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/InputState.h"
@@ -17,8 +17,9 @@
 //#include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "GPGPU\GPUManager.h"
-#include "Multithreading\Scheduler.h"
 #include "Display\Window\WindowManager.h"
+
+#include "Multithreading\Scheduler.h"
 
 namespace Soul {
 
@@ -35,7 +36,7 @@ namespace Soul {
 	/////////////////////////Synchronization///////////////////////////
 
 	void SynchCPU() {
-		//Scheduler::Block();
+		Scheduler::Block();
 	}
 
 	void SynchGPU() {
@@ -59,33 +60,35 @@ namespace Soul {
 		Soul::SynchSystem();
 
 		//Write the settings into a file
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-		Settings::Write();
-		//});
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			Settings::Write();
+		});
 
 		//Clean the RayEngine from stray data
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			//	RayEngine::Clean();
-		//});
-
-		//destroy all windows
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-		WindowManager::Terminate();
-		//});
+		});
 
 		//destroy raster backend
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-		RasterBackend::Terminate();
-		//});
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			RasterBackend::Terminate();
+		});
 
-		//Scheduler::Block();
+		Scheduler::Block();
+
+		//destroy all windows
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			WindowManager::Terminate();
+		});
+
+		Scheduler::Block();
 
 		//destroy glfw, needs to wait on the window manager
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
-		glfwTerminate();
-		//});
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			glfwTerminate();
+		});
 
-		//Scheduler::Block();
+		Scheduler::Block();
 
 		Scheduler::Terminate();
 	}
@@ -96,57 +99,60 @@ namespace Soul {
 		//setup the multithreader
 		Scheduler::Init();
 
-#ifdef _DEBUG
+#ifdef _DEBUG 
 		//log errors to the console for now
-		//Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_LOW, false, []() {
-			//while (Scheduler::Running()) {
-			//	std::cout << Logger::Get();
-			//	Scheduler::Defer();
-		//	}
-		//});
+		Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_LOW, false, []() {
+			while (Scheduler::Running()) {
+				std::cout << Logger::Get();
+				Scheduler::Defer();
+			}
+		});
 #endif
 
 		//open the config file for the duration of the runtime
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-		Settings::Read("config.ini");
-		//});
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			Settings::Read("config.ini");
+		});
 
 		//extract all available GPU devices
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-		GPUManager::ExtractDevices();
-		//	});
-
-			//Init glfw context for Window handling
-		int didInit;
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&]() {
-		didInit = glfwInit();
-		//});
-
-		//Scheduler::Block();
-
-		glfwSetErrorCallback([](int error, const char* description) {
-			S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			GPUManager::ExtractDevices();
 		});
+
+		//set the error callback
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			glfwSetErrorCallback([](int error, const char* description) {
+				S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
+			});
+		});
+
+		//Init glfw context for Window handling
+		int didInit;
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&didInit]() {
+			didInit = glfwInit();
+		});
+
+		Scheduler::Block();
 
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-		RasterBackend::Init();
-		//});
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			RasterBackend::Init();
+		});
 
 		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60.0);
 
-		//Scheduler::Block();
+		Scheduler::Block();
 
-		////init main Window
+		//init main Window
 
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-		WindowManager::Init();
-		//});
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			WindowManager::Init();
+		});
 
-		//Scheduler::Block();
+		Scheduler::Block();
 	}
 
 	void Raster() {
@@ -160,13 +166,13 @@ namespace Soul {
 	void Warmup() {
 
 		//double deltaTime = 1.0 / engineRefreshRate;
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
-		glfwPollEvents();
-		//});
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			glfwPollEvents();
+		});
 		/*for (auto const& scene : scenes) {
 			scene->Build(deltaTime);
 		}*/
-		//Scheduler::Block();
+		Scheduler::Block();
 
 	}
 
@@ -180,12 +186,12 @@ namespace Soul {
 	void EarlyUpdate() {
 
 		//poll events before this update, making the state as close as possible to real-time input
-		//Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
-		glfwPollEvents();
-		//});
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			glfwPollEvents();
+		});
 		InputState::GetInstance().ResetOffsets(); //temp, replace input engine at some point
 
-	//	Scheduler::Block();
+		Scheduler::Block();
 	}
 
 	void LateUpdate() {
@@ -269,7 +275,9 @@ void SoulSignalClose() {
 }
 
 void SoulRun() {
-	Soul::Run();
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+		Soul::Run();
+	});
 }
 
 void SetKey(int key, void(*func)(void)) {

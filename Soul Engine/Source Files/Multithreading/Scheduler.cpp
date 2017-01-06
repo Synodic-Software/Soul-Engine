@@ -6,7 +6,7 @@
 #include <algorithm>  
 #include <condition_variable>
 #include <mutex>
-#include <deque>
+#include <list>
 #include <malloc.h>  
 
 
@@ -32,7 +32,13 @@ namespace Scheduler {
 		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>* blockCondition;
 
 		//clean up the block datatype (needs 64 alignment)
-		void CleanUpAlignedCondition(boost::fibers::condition_variable_any* ptr){
+		void CleanUpMutex(std::mutex* ptr) {
+			ptr->~mutex();
+			delete ptr;
+		}
+
+		//clean up the block datatype (needs 64 alignment)
+		void CleanUpAlignedCondition(boost::fibers::condition_variable_any* ptr) {
 			ptr->~condition_variable_any();
 
 			//TODO: Make this aligned_alloc with c++17, not visual studio specific code
@@ -52,7 +58,7 @@ namespace Scheduler {
 				//TODO: Make this aligned_alloc with c++17, not visual studio specific code
 				boost::fibers::condition_variable_any* newData =
 					(boost::fibers::condition_variable_any*)_aligned_malloc(sizeof(boost::fibers::condition_variable_any), 64); //needs 64 alignment
-					new (newData) boost::fibers::condition_variable_any();
+				new (newData) boost::fibers::condition_variable_any();
 				detail::blockCondition->reset(newData);
 			}
 		}
@@ -60,14 +66,14 @@ namespace Scheduler {
 		class SoulScheduler :
 			public boost::fibers::algo::algorithm_with_properties< FiberProperties > {
 		private:
-			typedef std::deque< boost::fibers::context * >  rqueue_t;
+			typedef std::list< boost::fibers::context * >  rqueue_t;
 			typedef boost::fibers::scheduler::ready_queue_t lqueue_t;
 
-			static rqueue_t     	rqueue_;
+			static rqueue_t     	readyQueue;
 			static std::mutex   	queueMutex;
-			static rqueue_t     	rmqueue_;
+			static rqueue_t     	mainOnlyQueue;
 
-			lqueue_t            	lqueue_{};
+			lqueue_t            	localQueue{};
 			std::mutex              mtx_{};
 			std::condition_variable cnd_{};
 			bool                    flag_{ false };
@@ -86,15 +92,23 @@ namespace Scheduler {
 			SoulScheduler & operator=(SoulScheduler const&) = delete;
 			SoulScheduler & operator=(SoulScheduler &&) = delete;
 
+			void InsertContext(rqueue_t& queue, boost::fibers::context* ctx, int ctxPriority) {
+				rqueue_t::iterator i(std::find_if(queue.begin(), queue.end(),
+					[ctxPriority, this](boost::fibers::context* c)
+				{ return properties(c).GetPriority() < ctxPriority; }));
+
+				queue.insert(i, ctx);
+			}
+
 			virtual void awakened(boost::fibers::context * ctx, FiberProperties& props) noexcept {
 
 				//dont push fiber when helper or the main fiber is passed in
 				if (ctx->is_context(boost::fibers::type::pinned_context)) {
-					lqueue_.push_back(*ctx);
+					localQueue.push_back(*ctx);
 				}
 				else {
 
-					int ctx_priority = props.GetPriority();
+					int ctxPriority = props.GetPriority();
 					bool mainRun = props.RunOnMain();
 
 					ctx->detach();
@@ -103,18 +117,10 @@ namespace Scheduler {
 
 					//if it needs to run on the main thread
 					if (mainRun) {
-						rqueue_t::iterator i(std::find_if(rmqueue_.begin(), rmqueue_.end(),
-							[ctx_priority, this](boost::fibers::context* c)
-						{ return properties(c).GetPriority() < ctx_priority; }));
-
-						rmqueue_.insert(i, ctx);
+						InsertContext(mainOnlyQueue, ctx, ctxPriority);
 					}
 					else {
-						rqueue_t::iterator i(std::find_if(rqueue_.begin(), rqueue_.end(),
-							[ctx_priority, this](boost::fibers::context* c)
-						{ return properties(c).GetPriority() < ctx_priority; }));
-
-						rqueue_.insert(i, ctx);
+						InsertContext(readyQueue, ctx, ctxPriority);
 					}
 				}
 			}
@@ -124,69 +130,56 @@ namespace Scheduler {
 				boost::fibers::context * ctx(nullptr);
 				std::thread::id thisID = std::this_thread::get_id();
 
+
 				std::unique_lock< std::mutex > lk(queueMutex);
 
-				if (!rmqueue_.empty() && thisID == mainID) {
-					ctx = rmqueue_.front();
-					rmqueue_.pop_front();
+				if (thisID == mainID) {
+					auto i = std::begin(readyQueue);
+					while (i != std::end(readyQueue)) {
+						if (properties(*i).RunOnMain()) {
+							InsertContext(mainOnlyQueue, *i, properties(*i).GetPriority());
+							i = readyQueue.erase(i);
+						}
+						else {
+							++i;
+						}
+					}
+				}
+
+				if (!mainOnlyQueue.empty() && thisID == mainID) {
+					ctx = mainOnlyQueue.front();
+					mainOnlyQueue.pop_front();
 					lk.unlock();
 					BOOST_ASSERT(nullptr != ctx);
 					boost::fibers::context::active()->attach(ctx);
 				}
-				else if (!rqueue_.empty()) {
-
-					ctx = rqueue_.front();
-					bool sr = this->properties(ctx).RunOnMain();
-					int prior = this->properties(ctx).GetPriority();
-
-					if (sr) {
-
-					}
-
-					if (!sr) {
-
-						rqueue_.pop_front();
-						lk.unlock();
-						BOOST_ASSERT(nullptr != ctx);
-						boost::fibers::context::active()->attach(ctx);
-
-					}
-					else {
-
-						rqueue_.pop_front();
-						rqueue_t::iterator i(std::find_if(rmqueue_.begin(), rmqueue_.end(),
-							[prior, this](boost::fibers::context* c)
-						{ return properties(c).GetPriority() < prior; }));
-						rmqueue_.insert(i, ctx);
-
-						ctx = nullptr;
-
-					}
+				else if (!readyQueue.empty()) {
+					ctx = readyQueue.front();
+					readyQueue.pop_front();
+					lk.unlock();
+					BOOST_ASSERT(nullptr != ctx);
+					boost::fibers::context::active()->attach(ctx);
 				}
-				if (!ctx) {
-
+				else {
 					lk.unlock();
 
-					if (!lqueue_.empty()) {
-						ctx = &lqueue_.front();
-						lqueue_.pop_front();
+					if (!localQueue.empty()) {
+						ctx = &localQueue.front();
+						localQueue.pop_front();
 					}
-
 				}
 				return ctx;
 			}
 
 			virtual bool has_ready_fibers() const noexcept {
 				std::unique_lock< std::mutex > lock(queueMutex);
-				return !rmqueue_.empty() || !rqueue_.empty() || !lqueue_.empty();
+				return !mainOnlyQueue.empty() || !readyQueue.empty() || !localQueue.empty();
 			}
 
 			virtual void property_change(boost::fibers::context * ctx, FiberProperties & props) noexcept {
 				if (!ctx->ready_is_linked()) {
 					return;
 				}
-
-				// Found ctx: unlink it
 				ctx->ready_unlink();
 				awakened(ctx, props);
 			}
@@ -216,8 +209,8 @@ namespace Scheduler {
 
 		};
 
-		SoulScheduler::rqueue_t SoulScheduler::rqueue_{};
-		SoulScheduler::rqueue_t SoulScheduler::rmqueue_{};
+		SoulScheduler::rqueue_t SoulScheduler::readyQueue{};
+		SoulScheduler::rqueue_t SoulScheduler::mainOnlyQueue{};
 		std::mutex SoulScheduler::queueMutex{};
 
 
@@ -228,7 +221,6 @@ namespace Scheduler {
 			std::unique_lock<std::mutex> lock(Scheduler::detail::fiberMutex);
 			threadCondition.wait(lock, []() { return 0 == Scheduler::detail::fiberCount && !detail::shouldRun; });
 		}
-
 
 	}
 
@@ -269,13 +261,15 @@ namespace Scheduler {
 	}
 
 	void Init() {
+
+
 		threadCount = 0;
 		detail::fiberCount = 0;
 		detail::shouldRun = true;
 
 		detail::holdCount = new boost::fibers::fiber_specific_ptr<std::size_t>;
-		detail::holdMutex = new boost::fibers::fiber_specific_ptr<std::mutex>;
-		detail::blockCondition = 
+		detail::holdMutex = new boost::fibers::fiber_specific_ptr<std::mutex>(detail::CleanUpMutex);
+		detail::blockCondition =
 			new boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>(detail::CleanUpAlignedCondition);
 
 		detail::mainID = std::this_thread::get_id();
@@ -283,7 +277,8 @@ namespace Scheduler {
 		boost::fibers::use_scheduling_algorithm< detail::SoulScheduler >();
 
 		//the main thread takes up one slot.
-		threadCount = std::thread::hardware_concurrency() - 1;
+		//threadCount = std::thread::hardware_concurrency() - 1;
+		threadCount = 0;
 		threads = new std::thread[threadCount];
 
 		detail::fiberCount++;
@@ -294,6 +289,7 @@ namespace Scheduler {
 
 		//init the main fiber specifics
 		detail::InitPointers();
+
 	}
 
 
@@ -304,13 +300,19 @@ namespace Scheduler {
 
 		std::unique_lock<std::mutex> lock(*detail::holdMutex->get());
 		(*detail::blockCondition)->wait(lock, [=]() { return 0 == *holdSize; });
+
+		assert(*holdSize == 0);
+
 	}
 
 	void Defer() {
+
 		boost::this_fiber::yield();
+
 	}
 
 	bool Running() {
+
 		return detail::shouldRun;
 	}
 

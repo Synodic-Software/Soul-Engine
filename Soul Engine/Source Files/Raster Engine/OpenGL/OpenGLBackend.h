@@ -19,7 +19,14 @@ public:
 	virtual void Terminate();
 	virtual void Draw();
 
+	struct WindowInformation
+	{
+		GLFWwindow* window;
+		GLEWContext* glContext;
+		unsigned int ID;
+	};
+
 private:
-	
-	//void MakeContextCurrent(WindowInformation*);
+
+	void MakeContextCurrent(WindowInformation*);
 };
