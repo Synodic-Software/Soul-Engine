@@ -283,67 +283,11 @@ void VulkanBackend::Init() {
 	SetupDebugCallback();
 }
 
+void VulkanBackend::ResizeWindow(GLFWwindow* win, int x, int y) {
+
+}
+
 void VulkanBackend::BuildWindow(GLFWwindow* window) {
-
-	//WindowType  win = BORDERLESS;
-
-	//glfwWindowHint(GLFW_SAMPLES, 0);
-	//glfwWindowHint(GLFW_VISIBLE, true);
-	//glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-	//const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
-
-	//if (win == FULLSCREEN) {
-
-	//	glfwWindowHint(GLFW_RESIZABLE, false);
-	//	glfwWindowHint(GLFW_DECORATED, false);
-
-	//	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-	//	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-	//	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-	//	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-	//	windowHandle = glfwCreateWindow(mode->width, mode->height, "Soul Engine", monitorIn, NULL);
-
-	//}
-	//else if (win == WINDOWED) {
-
-	//	glfwWindowHint(GLFW_RESIZABLE, true);
-	//	windowHandle = glfwCreateWindow(width, height, "Soul Engine", NULL, NULL);
-
-	//}
-
-	//else if (win == BORDERLESS) {
-
-	//	glfwWindowHint(GLFW_RESIZABLE, false);
-	//	glfwWindowHint(GLFW_DECORATED, false);
-
-	//	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-	//	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-	//	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-	//	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-	//	windowHandle = glfwCreateWindow(width, height, "Soul Engine", NULL, NULL);
-
-	//}
-	//else {
-	//	S_LOG(S_ERROR, "No Window setting found");
-	//}
-
-	//if (!windowHandle) {
-	//	S_LOG(S_ERROR, "Window creation failed");
-	//}
-
-	//glfwSetWindowPos(windowHandle, x, y);
-
-	//glfwSetWindowUserPointer(windowHandle, this);
-
-	//glfwSetKeyCallback(windowHandle, Input::KeyCallback);
-	//glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
-	//glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
-
-
-	//RasterBackend::SCreateWindow(this);
-
-
 
 	VKWindowInformation info{};
 	CreateSurface(window, info.surface.replace());
@@ -354,11 +298,11 @@ void VulkanBackend::SetWindowHints() {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 }
 
-void VulkanBackend::PreRaster() {
+void VulkanBackend::PreRaster(GLFWwindow* window) {
 
 }
 
-void VulkanBackend::PostRaster() {
+void VulkanBackend::PostRaster(GLFWwindow* window) {
 
 }
 
@@ -366,6 +310,6 @@ void VulkanBackend::Terminate() {
 	//VulkanBackend::GetInstance().IdleDevice();
 }
 
-void VulkanBackend::Draw() {
+void VulkanBackend::Draw(GLFWwindow* window) {
 
 }

@@ -35,6 +35,10 @@ typedef unsigned long long uint64;
 
 typedef wchar_t wchar;
 
+//global enumerations
+enum WindowType { WINDOWED, FULLSCREEN, BORDERLESS };
+
+
 class Metrics{
 	public:
 

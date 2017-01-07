@@ -5,6 +5,8 @@
 #include "Multithreading\Scheduler.h"
 #include "Utility\Includes\GLMIncludes.h"
 
+#include <map>
+
 struct GLVertex
 {
 	glm::vec4 position;
@@ -14,19 +16,19 @@ struct GLVertex
 };
 
 static uint windowCounter;
-static std::vector<OpenGLBackend::WindowInformation> windowStorage;
+static std::map<GLFWwindow*, OpenGLBackend::WindowInformation> windowStorage;
 static OpenGLBackend::WindowInformation* currentContext;
 
 //must be called on the main thread
-void OpenGLBackend::MakeContextCurrent(WindowInformation* inWindow)
+void OpenGLBackend::MakeContextCurrent(WindowInformation* window)
 {
-	if (inWindow) {
-		glfwMakeContextCurrent(inWindow->window);
+	if (window) {
+		glfwMakeContextCurrent(window->window);
 	}
 	else {
 		glfwMakeContextCurrent(nullptr);
 	}
-	currentContext = inWindow;
+	currentContext = window;
 }
 
 GLEWContext* glewGetContext()
@@ -90,7 +92,7 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 	Scheduler::Block();
 
 	//add the new reference with encapsulating data
-	windowStorage.push_back(newWindow);
+	windowStorage.insert(std::make_pair(window, newWindow));
 
 	if (!newWindow.glContext)
 	{
@@ -102,22 +104,27 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 	}
 }
 
-void OpenGLBackend::PreRaster() {
+//called by glfwPollEvents meaning no scheduling is needed for the main thread
+void OpenGLBackend::ResizeWindow(GLFWwindow* window, int inWidth, int inHeight) {
+	MakeContextCurrent(&windowStorage.at(window));
+	glViewport(0, 0, inWidth, inHeight);
+	MakeContextCurrent(nullptr);
+}
 
-	for (WindowInformation& winInfo : windowStorage) {
-		WindowInformation* winAddress = &winInfo;
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, winAddress]() {
-			MakeContextCurrent(winAddress);
+void OpenGLBackend::PreRaster(GLFWwindow* window) {
+
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, window]() {
+			MakeContextCurrent(&windowStorage.at(window));
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			MakeContextCurrent(nullptr);
 		});
-	}
+
 	Scheduler::Block();
 
 }
 
-void OpenGLBackend::PostRaster() {
+void OpenGLBackend::PostRaster(GLFWwindow*) {
 
 }
 
@@ -125,7 +132,7 @@ void OpenGLBackend::Terminate() {
 
 	for (auto& winInfo : windowStorage) {
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, [this, winInfo]() {
-			delete winInfo.glContext;
+			delete winInfo.second.glContext;
 		});
 	}
 	Scheduler::Block();
@@ -133,16 +140,13 @@ void OpenGLBackend::Terminate() {
 	windowStorage.clear();
 }
 
-void OpenGLBackend::Draw() {
+void OpenGLBackend::Draw(GLFWwindow* inWindow) {
 
-	for (auto& winInfo : windowStorage) {
-		WindowInformation* winAddress = &winInfo;
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, winAddress]() {
-			MakeContextCurrent(winAddress);
-			glfwSwapBuffers(winAddress->window);
-			MakeContextCurrent(nullptr);
-		});
-	}
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, inWindow]() {
+		MakeContextCurrent(&windowStorage.at(inWindow));
+		glfwSwapBuffers(inWindow);
+		MakeContextCurrent(nullptr);
+	});
 
 	Scheduler::Block();
 }

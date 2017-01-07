@@ -16,7 +16,7 @@ namespace WindowManager {
 
 	void SignelClose();
 
-	void SCreateWindow(std::string&,int monitor, uint x, uint y, uint width, uint height);
+	void SCreateWindow(WindowType, std::string&,int monitor, uint x, uint y, uint width, uint height);
 
 	void Draw();
 }
