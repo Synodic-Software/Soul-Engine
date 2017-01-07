@@ -103,7 +103,7 @@ namespace Soul {
 				std::cout << Logger::Get();
 				Scheduler::Defer();
 			}
-	});
+		});
 #endif
 
 		//open the config file for the duration of the runtime
@@ -150,14 +150,12 @@ namespace Soul {
 		});
 
 		Scheduler::Block();
-}
+	}
 
 	void Raster() {
 
 		//Backends should handle multithreading
-		RasterBackend::PreRaster();
 		WindowManager::Draw();
-		RasterBackend::PostRaster();
 	}
 
 	void Warmup() {
@@ -208,7 +206,7 @@ namespace Soul {
 		double currentTime = glfwGetTime();
 		double accumulator = 0.0f;
 
-		while (running) {
+		while (running && !WindowManager::ShouldClose()) {
 
 			//start frame timers
 			double newTime = glfwGetTime();

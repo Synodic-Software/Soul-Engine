@@ -31,8 +31,9 @@ namespace WindowManager {
 		uint ySize = Settings::Get("MainWindow.Height", 720);
 		uint xPos = Settings::Get("MainWindow.X_Position", 0);
 		uint yPos = Settings::Get("MainWindow.Y_Position", 0);
+		WindowType type = static_cast<WindowType>(Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED)));
 
-		windows.emplace_back("Main", xPos, yPos, xSize, ySize, monitors[0], nullptr);
+		windows.emplace_back(type,"Main", xPos, yPos, xSize, ySize, monitors[0], nullptr);
 
 		masterWindow = &windows[0];
 	}
@@ -46,7 +47,7 @@ namespace WindowManager {
 			return glfwWindowShouldClose(masterWindow->windowHandle);
 		}
 		else {
-			S_LOG_WARNING("No window has been created");
+			//in the case that there is no window system, this should always return false
 			return false;
 		}
 	}
@@ -55,13 +56,10 @@ namespace WindowManager {
 		if (masterWindow != nullptr) {
 			glfwSetWindowShouldClose(masterWindow->windowHandle, GLFW_TRUE);
 		}
-		else {
-			S_LOG_WARNING("No window has been created");
-		}
 	}
 
 	//the moniter number
-	void SCreateWindow(std::string& name, int monitor, uint x, uint y, uint width, uint height) {
+	void SCreateWindow(WindowType type,std::string& name, int monitor, uint x, uint y, uint width, uint height) {
 
 		if (monitor > monitorCount) {
 			S_LOG_ERROR("The specified moniter '", monitor, "' needs to be less than ", monitorCount);
@@ -69,7 +67,7 @@ namespace WindowManager {
 
 		GLFWmonitor* monitorIn = monitors[monitor];
 
-		windows.emplace_back(name, x, y, width, height, monitorIn, masterWindow->windowHandle);
+		windows.emplace_back(type,name, x, y, width, height, monitorIn, masterWindow->windowHandle);
 
 	}
 
@@ -82,11 +80,6 @@ namespace WindowManager {
 		}
 
 		Scheduler::Block();
-
-
-		RasterBackend::Draw();
-
-
 	}
 
 

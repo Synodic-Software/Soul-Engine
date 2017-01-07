@@ -4,9 +4,9 @@
 #include "Raster Engine\RasterBackend.h"
 #include "Multithreading\Scheduler.h"
 
-Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn, GLFWwindow* sharedContextin)
+Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn, GLFWwindow* sharedContextin)
 {
-
+	windowType = inWin;
 	xPos = x;
 	yPos = y;
 	width = iwidth;
@@ -23,9 +23,7 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 		sharedContext = nullptr;
 	}
 
-	WindowType  win = BORDERLESS;
-
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContext, win]() {
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContext]() {
 
 		RasterBackend::SetWindowHints();
 		glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
@@ -33,7 +31,7 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 
 		const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
 
-		if (win == FULLSCREEN) {
+		if (windowType == FULLSCREEN) {
 
 			glfwWindowHint(GLFW_RESIZABLE, false);
 			glfwWindowHint(GLFW_DECORATED, false);
@@ -45,7 +43,7 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), monitorIn, sharedContext);
 
 		}
-		else if (win == WINDOWED) {
+		else if (windowType == WINDOWED) {
 
 			glfwWindowHint(GLFW_RESIZABLE, true);
 
@@ -56,7 +54,7 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
 
 		}
-		else if (win == BORDERLESS) {
+		else if (windowType == BORDERLESS) {
 
 			glfwWindowHint(GLFW_RESIZABLE, false);
 			glfwWindowHint(GLFW_DECORATED, false);
@@ -93,6 +91,16 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 			static_cast<Window*>(glfwGetWindowUserPointer(w))->Resize(w, x, y);
 		});
 
+		glfwSetWindowPosCallback(windowHandle, [](GLFWwindow* w, int x, int y)
+		{
+			static_cast<Window*>(glfwGetWindowUserPointer(w))->WindowPos(w, x, y);
+		});
+
+		glfwSetWindowRefreshCallback(windowHandle, [](GLFWwindow* w)
+		{
+			static_cast<Window*>(glfwGetWindowUserPointer(w))->Refresh(w);
+		});
+
 		glfwSetKeyCallback(windowHandle, Input::KeyCallback);
 		glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
 		glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
@@ -114,12 +122,23 @@ Window::~Window()
 	Scheduler::Block();
 }
 
-void Window::Resize(GLFWwindow* inWindow, int inWidth, int inHeight)
+void Window::Resize(GLFWwindow* window, int width, int height)
 {
-
+	RasterBackend::ResizeWindow(window, width, height);
 }
 
-void Window::Draw() {
+void Window::WindowPos(GLFWwindow* window, int x, int y)
+{
+}
 
+void Window::Refresh(GLFWwindow* window)
+{
+	Draw();
+}
 
+void Window::Draw() 
+{
+	RasterBackend::PreRaster(windowHandle);
+	RasterBackend::Draw(windowHandle);
+	RasterBackend::PostRaster(windowHandle);
 }

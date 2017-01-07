@@ -4,9 +4,6 @@
 #include "Display\Window\Window.h"
 #include "Raster Engine\RasterBackend.h"
 
-#include <vector>
-
-
 class OpenGLBackend : public RasterBackend::Backend {
 public:
 	OpenGLBackend();
@@ -14,11 +11,12 @@ public:
 
 	virtual void Init();
 	virtual	void SetWindowHints();
+	virtual void ResizeWindow(GLFWwindow*, int, int);
 	virtual void BuildWindow(GLFWwindow*);
-	virtual void PreRaster();
-	virtual void PostRaster();
+	virtual void PreRaster(GLFWwindow*);
+	virtual void PostRaster(GLFWwindow*);
 	virtual void Terminate();
-	virtual void Draw();
+	virtual void Draw(GLFWwindow*);
 
 	struct WindowInformation
 	{

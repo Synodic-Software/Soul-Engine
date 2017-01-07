@@ -5,19 +5,20 @@
 
 #include <string>
 
-enum WindowType { WINDOWED, FULLSCREEN, BORDERLESS };
-
 class Window
 {
 public:
-	Window(const std::string&, uint x, uint y, uint width, uint height, GLFWmonitor*, GLFWwindow*);
+	Window(WindowType,const std::string&, uint x, uint y, uint width, uint height, GLFWmonitor*, GLFWwindow*);
 	~Window();
 
 	GLFWwindow* windowHandle;
 
 	void Draw();
 	void Resize(GLFWwindow *, int, int);
+	void Refresh(GLFWwindow*);
+	void WindowPos(GLFWwindow *, int, int);
 
+	WindowType windowType;
 	std::string title;
 	uint xPos;
 	uint yPos;

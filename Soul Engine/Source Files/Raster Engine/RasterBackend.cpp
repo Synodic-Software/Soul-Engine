@@ -36,23 +36,27 @@ namespace RasterBackend {
 		detail::raster->SetWindowHints();
 	}
 
+	void ResizeWindow(GLFWwindow* window, int x, int y) {
+		detail::raster->ResizeWindow(window, x, y);
+	}
+
 	void BuildWindow(GLFWwindow* window) {
 		detail::raster->BuildWindow(window);
 	}
 
-	void PreRaster() {
-		detail::raster->PreRaster();
+	void PreRaster(GLFWwindow* window) {
+		detail::raster->PreRaster(window);
 	}
 
-	void PostRaster() {
-		detail::raster->PostRaster();
+	void PostRaster(GLFWwindow* window) {
+		detail::raster->PostRaster(window);
 	}
 
 	void Terminate() {
 		detail::raster->Terminate();
 	}
 
-	void Draw() {
-		detail::raster->Draw();
+	void Draw(GLFWwindow* window) {
+		detail::raster->Draw(window);
 	}
 }
