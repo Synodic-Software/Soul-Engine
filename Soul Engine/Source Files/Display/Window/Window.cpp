@@ -26,7 +26,9 @@ Window::Window(const std::string& inTitle, uint x, uint y, uint iwidth, uint ihe
 	WindowType  win = BORDERLESS;
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContext, win]() {
-		glfwWindowHint(GLFW_SAMPLES, 0);
+
+		RasterBackend::SetWindowHints();
+		glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
 		glfwWindowHint(GLFW_VISIBLE, true);
 
 		const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);

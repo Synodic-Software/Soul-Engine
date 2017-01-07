@@ -13,6 +13,7 @@ public:
 	~OpenGLBackend();
 
 	virtual void Init();
+	virtual	void SetWindowHints();
 	virtual void BuildWindow(GLFWwindow*);
 	virtual void PreRaster();
 	virtual void PostRaster();
