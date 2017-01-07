@@ -25,6 +25,8 @@ namespace Scheduler {
 	//User: Do Not Touch
 	namespace detail {
 
+		extern std::thread::id mainID;
+
 		extern std::size_t fiberCount;
 		extern std::mutex fiberMutex;
 

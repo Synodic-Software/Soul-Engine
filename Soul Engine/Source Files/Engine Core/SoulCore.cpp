@@ -69,18 +69,15 @@ namespace Soul {
 			//	RayEngine::Clean();
 		});
 
-		//destroy raster backend
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			RasterBackend::Terminate();
-		});
-
-		Scheduler::Block();
-
 		//destroy all windows
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			WindowManager::Terminate();
 		});
 
+		//destroy raster backend
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			RasterBackend::Terminate();
+		});
 		Scheduler::Block();
 
 		//destroy glfw, needs to wait on the window manager
@@ -106,7 +103,7 @@ namespace Soul {
 				std::cout << Logger::Get();
 				Scheduler::Defer();
 			}
-		});
+	});
 #endif
 
 		//open the config file for the duration of the runtime
@@ -153,7 +150,7 @@ namespace Soul {
 		});
 
 		Scheduler::Block();
-	}
+}
 
 	void Raster() {
 
