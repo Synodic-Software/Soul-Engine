@@ -350,6 +350,10 @@ void VulkanBackend::BuildWindow(GLFWwindow* window) {
 	PhysicalDevice(info.physicalDevice, info.surface);
 }
 
+void VulkanBackend::SetWindowHints() {
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+}
+
 void VulkanBackend::PreRaster() {
 
 }

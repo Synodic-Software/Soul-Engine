@@ -12,6 +12,7 @@ namespace RasterBackend {
 
 	}
 
+	//encapsulate a backend and pass info to it
 	namespace detail {
 		Backend* raster;
 		VulkanBackend vBack;
@@ -29,6 +30,10 @@ namespace RasterBackend {
 
 		detail::raster->Init();
 
+	}
+
+	void SetWindowHints() {
+		detail::raster->SetWindowHints();
 	}
 
 	void BuildWindow(GLFWwindow* window) {

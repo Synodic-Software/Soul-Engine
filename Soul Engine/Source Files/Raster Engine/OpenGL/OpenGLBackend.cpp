@@ -57,6 +57,14 @@ void OpenGLBackend::Init() {
 
 }
 
+void OpenGLBackend::SetWindowHints() {
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
+
 void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 
 
@@ -97,8 +105,8 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 void OpenGLBackend::PreRaster() {
 
 	for (WindowInformation& winInfo : windowStorage) {
-		WindowInformation* winAddress= &winInfo;
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this,winAddress]() {
+		WindowInformation* winAddress = &winInfo;
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, winAddress]() {
 			MakeContextCurrent(winAddress);
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -129,7 +137,7 @@ void OpenGLBackend::Draw() {
 
 	for (auto& winInfo : windowStorage) {
 		WindowInformation* winAddress = &winInfo;
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this,winAddress]() {
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, winAddress]() {
 			MakeContextCurrent(winAddress);
 			glfwSwapBuffers(winAddress->window);
 			MakeContextCurrent(nullptr);
