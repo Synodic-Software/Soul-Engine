@@ -21,6 +21,7 @@ namespace Scheduler {
 	namespace detail {
 
 		bool shouldRun;
+		bool needsSort;
 
 		std::thread::id mainID;
 
@@ -125,6 +126,20 @@ namespace Scheduler {
 				}
 			}
 
+			//remove all fibers labeled as running on main into the proper bin
+			void SortQueues() {
+				auto i = std::begin(readyQueue);
+				while (i != std::end(readyQueue)) {
+					if (properties(*i).RunOnMain()) {
+						InsertContext(mainOnlyQueue, *i, properties(*i).GetPriority());
+						i = readyQueue.erase(i);
+					}
+					else {
+						++i;
+					}
+				}
+			}
+
 			virtual boost::fibers::context * pick_next() noexcept {
 
 				boost::fibers::context * ctx(nullptr);
@@ -133,16 +148,12 @@ namespace Scheduler {
 
 				std::unique_lock< std::mutex > lk(queueMutex);
 
-				if (thisID == mainID) {
-					auto i = std::begin(readyQueue);
-					while (i != std::end(readyQueue)) {
-						if (properties(*i).RunOnMain()) {
-							InsertContext(mainOnlyQueue, *i, properties(*i).GetPriority());
-							i = readyQueue.erase(i);
-						}
-						else {
-							++i;
-						}
+				//at the cost for a check forall fibers, garuntees no missed fiber spins
+				//awakened doesnt garuntee the property placement
+				if (!readyQueue.empty()) {
+					boost::fibers::context * temp= readyQueue.front();
+					if (properties(temp).RunOnMain()) {
+						SortQueues();
 					}
 				}
 
@@ -266,6 +277,7 @@ namespace Scheduler {
 		threadCount = 0;
 		detail::fiberCount = 0;
 		detail::shouldRun = true;
+		detail::needsSort = false;
 
 		detail::holdCount = new boost::fibers::fiber_specific_ptr<std::size_t>;
 		detail::holdMutex = new boost::fibers::fiber_specific_ptr<std::mutex>(detail::CleanUpMutex);
@@ -277,8 +289,8 @@ namespace Scheduler {
 		boost::fibers::use_scheduling_algorithm< detail::SoulScheduler >();
 
 		//the main thread takes up one slot.
-		//threadCount = std::thread::hardware_concurrency() - 1;
-		threadCount = 0;
+		threadCount = std::thread::hardware_concurrency() - 1;
+		//threadCount = 0;
 		threads = new std::thread[threadCount];
 
 		detail::fiberCount++;
