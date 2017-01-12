@@ -271,16 +271,12 @@ QueueFamilyIndices FindQueueFamilies(const VkPhysicalDevice device, VkSurfaceKHR
 }
 
 VulkanBackend::VulkanBackend() {
-
+	CreateInstance();
+	SetupDebugCallback();
 }
 
 VulkanBackend::~VulkanBackend() {
-
-}
-
-void VulkanBackend::Init() {
-	CreateInstance();
-	SetupDebugCallback();
+	//VulkanBackend::GetInstance().IdleDevice();
 }
 
 void VulkanBackend::ResizeWindow(GLFWwindow* win, int x, int y) {
@@ -304,10 +300,6 @@ void VulkanBackend::PreRaster(GLFWwindow* window) {
 
 void VulkanBackend::PostRaster(GLFWwindow* window) {
 
-}
-
-void VulkanBackend::Terminate() {
-	//VulkanBackend::GetInstance().IdleDevice();
 }
 
 void VulkanBackend::Draw(GLFWwindow* window) {

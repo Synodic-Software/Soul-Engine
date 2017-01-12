@@ -73,11 +73,6 @@ namespace Soul {
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			WindowManager::Terminate();
 		});
-
-		//destroy raster backend
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			RasterBackend::Terminate();
-		});
 		Scheduler::Block();
 
 		//destroy glfw, needs to wait on the window manager
@@ -131,23 +126,16 @@ namespace Soul {
 
 		Scheduler::Block();
 
+		//init main Window
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			WindowManager::Init(&running);
+		});
+
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			RasterBackend::Init();
-		});
-
 		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60.0);
-
-		Scheduler::Block();
-
-		//init main Window
-
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			WindowManager::Init();
-		});
 
 		Scheduler::Block();
 	}
@@ -314,6 +302,18 @@ int main()
 		//InputState::GetInstance().ResetMouse = true;
 
 		SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
+
+		uint xSize = Settings::Get("MainWindow.Width", 1024);
+		uint ySize = Settings::Get("MainWindow.Height", 720);
+		uint xPos = Settings::Get("MainWindow.X_Position", 0);
+		uint yPos = Settings::Get("MainWindow.Y_Position", 0);
+		int monitor = Settings::Get("MainWindow.Monitor", 0);
+		WindowType type = static_cast<WindowType>(Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED)));
+
+		WindowManager::CreateWindow(type,"main", monitor,xPos,yPos,xSize,ySize);
+
+		//TODO: multiple Windows has 1. context issues 2. multithreading issues.
+		//WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300);
 
 		/*Material* whiteGray = new Material();
 		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);

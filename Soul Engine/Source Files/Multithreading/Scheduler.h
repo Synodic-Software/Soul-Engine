@@ -1,5 +1,9 @@
 #pragma once
 
+//removes all fiber specifics and calls functions immediatly by pointer 
+//(all tasks that repeat and yield will need to be removed)
+//#define SOUL_SINGLE_STACK
+
 #include <boost/fiber/all.hpp>
 
 #include <iostream>
@@ -99,6 +103,8 @@ namespace Scheduler {
 		//only difference is the hold lock increment
 		if (policy == LAUNCH_IMMEDIATE) {
 
+#ifndef	SOUL_SINGLE_STACK
+
 			std::mutex* holdLock = detail::holdMutex->get();
 			std::size_t* holdSize = detail::holdCount->get();
 			boost::fibers::condition_variable_any* holdConditional = detail::blockCondition->get();
@@ -107,12 +113,18 @@ namespace Scheduler {
 			(*holdSize)++;
 			holdLock->unlock();
 
+
 			//lambda wrapping the called function with other information
 			boost::fibers::fiber fiber(
 				[&, holdLock, holdSize, holdConditional]() mutable {
 
 				//prefix code
 				detail::InitPointers();
+
+#endif
+				//assert that the function is executing on the right thread
+				assert(!fiber.properties< detail::FiberProperties >().RunOnMain() ||
+					(fiber.properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
@@ -122,6 +134,8 @@ namespace Scheduler {
 				detail::fiberMutex.lock();
 				detail::fiberCount--;
 				detail::fiberMutex.unlock();
+
+#ifndef	SOUL_SINGLE_STACK
 
 				holdLock->lock();
 				(*holdSize)--;
@@ -133,13 +147,24 @@ namespace Scheduler {
 			detail::FiberProperties& props(fiber.properties< detail::FiberProperties >());
 			props.SetPriority(priority, runsOnMain);
 			fiber.detach();
+
+#endif
+
 		}
 		else {
+
+#ifndef	SOUL_SINGLE_STACK
+
 			boost::fibers::fiber fiber(
 				[&]() mutable {
 
 				//prefix code
 				detail::InitPointers();
+
+#endif
+				//assert that the function is executing on the right thread
+				assert(!fiber.properties< detail::FiberProperties >().RunOnMain() ||
+					(fiber.properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
@@ -150,11 +175,15 @@ namespace Scheduler {
 				detail::fiberCount--;
 				detail::fiberMutex.unlock();
 
+#ifndef	SOUL_SINGLE_STACK
+
 			});
 
 			detail::FiberProperties& props(fiber.properties< detail::FiberProperties >());
 			props.SetPriority(priority, runsOnMain);
 			fiber.detach();
+
+#endif
 
 		}
 	}

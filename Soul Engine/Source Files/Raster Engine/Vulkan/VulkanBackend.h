@@ -11,13 +11,11 @@ public:
 	VulkanBackend();
 	~VulkanBackend();
 
-	virtual void Init();
 	virtual void SetWindowHints();
 	virtual void ResizeWindow(GLFWwindow*, int, int);
 	virtual void BuildWindow(GLFWwindow*);
-	virtual void PreRaster(GLFWwindow*);
-	virtual void PostRaster(GLFWwindow*);
-	virtual void Terminate();
+	void PreRaster(GLFWwindow*);
+	void PostRaster(GLFWwindow*);
 	virtual void Draw(GLFWwindow*);
 
 private:
