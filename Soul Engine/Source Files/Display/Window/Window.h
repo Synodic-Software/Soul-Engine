@@ -14,9 +14,6 @@ public:
 	GLFWwindow* windowHandle;
 
 	void Draw();
-	void Resize(GLFWwindow *, int, int);
-	void Refresh(GLFWwindow*);
-	void WindowPos(GLFWwindow *, int, int);
 
 	WindowType windowType;
 	std::string title;

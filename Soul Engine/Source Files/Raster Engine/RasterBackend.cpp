@@ -2,6 +2,8 @@
 #include "Vulkan/VulkanBackend.h"
 #include "OpenGL/OpenGLBackend.h"
 
+#include <memory>
+
 namespace RasterBackend {
 
 	Backend::Backend() {
@@ -14,49 +16,37 @@ namespace RasterBackend {
 
 	//encapsulate a backend and pass info to it
 	namespace detail {
-		Backend* raster;
-		VulkanBackend vBack;
-		OpenGLBackend oBack;
+		std::unique_ptr<Backend> raster;
 	}
 
 	void Init() {
 
 		if (glfwVulkanSupported() == GLFW_TRUE) {
-			detail::raster = &detail::vBack;
+			detail::raster.reset(new VulkanBackend());
 		}
 		else {
-			detail::raster = &detail::oBack;
+			detail::raster.reset(new OpenGLBackend());
 		}
-
-		detail::raster->Init();
 
 	}
 
 	void SetWindowHints() {
-		detail::raster->SetWindowHints();
+		detail::raster.get()->SetWindowHints();
 	}
 
 	void ResizeWindow(GLFWwindow* window, int x, int y) {
-		detail::raster->ResizeWindow(window, x, y);
+		detail::raster.get()->ResizeWindow(window, x, y);
 	}
 
 	void BuildWindow(GLFWwindow* window) {
-		detail::raster->BuildWindow(window);
-	}
-
-	void PreRaster(GLFWwindow* window) {
-		detail::raster->PreRaster(window);
-	}
-
-	void PostRaster(GLFWwindow* window) {
-		detail::raster->PostRaster(window);
+		detail::raster.get()->BuildWindow(window);
 	}
 
 	void Terminate() {
-		detail::raster->Terminate();
+
 	}
 
 	void Draw(GLFWwindow* window) {
-		detail::raster->Draw(window);
+		detail::raster.get()->Draw(window);
 	}
 }

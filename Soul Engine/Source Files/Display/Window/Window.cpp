@@ -3,6 +3,7 @@
 #include "Input\Input.h"
 #include "Raster Engine\RasterBackend.h"
 #include "Multithreading\Scheduler.h"
+#include "WindowManager.h"
 
 Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn, GLFWwindow* sharedContextin)
 {
@@ -27,19 +28,20 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 
 		RasterBackend::SetWindowHints();
 		glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
-		glfwWindowHint(GLFW_VISIBLE, true);
+		glfwWindowHint(GLFW_VISIBLE, false);
 
 		const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
+
+		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
 		if (windowType == FULLSCREEN) {
 
 			glfwWindowHint(GLFW_RESIZABLE, false);
 			glfwWindowHint(GLFW_DECORATED, false);
 
-			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), monitorIn, sharedContext);
 
 		}
@@ -47,10 +49,6 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 
 			glfwWindowHint(GLFW_RESIZABLE, true);
 
-			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
 
 		}
@@ -59,10 +57,6 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 			glfwWindowHint(GLFW_RESIZABLE, false);
 			glfwWindowHint(GLFW_DECORATED, false);
 
-			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
 
 		}
@@ -80,36 +74,42 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	//the backend is the new user
 
 	Window* thisWindow = this;
-
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, thisWindow]() {
+
 		glfwSetWindowUserPointer(windowHandle, thisWindow);
-		glfwSetWindowPos(windowHandle, xPos, yPos);
 
 		//all window related callbacks
 		glfwSetWindowSizeCallback(windowHandle, [](GLFWwindow* w, int x, int y)
 		{
-			static_cast<Window*>(glfwGetWindowUserPointer(w))->Resize(w, x, y);
+			WindowManager::Resize(w, x, y);
 		});
 
 		glfwSetWindowPosCallback(windowHandle, [](GLFWwindow* w, int x, int y)
 		{
-			static_cast<Window*>(glfwGetWindowUserPointer(w))->WindowPos(w, x, y);
+			WindowManager::WindowPos(w, x, y);
 		});
 
 		glfwSetWindowRefreshCallback(windowHandle, [](GLFWwindow* w)
 		{
-			static_cast<Window*>(glfwGetWindowUserPointer(w))->Refresh(w);
+			WindowManager::Refresh(w);
+		});
+
+		glfwSetWindowCloseCallback(windowHandle, [](GLFWwindow* w)
+		{
+			WindowManager::Close(w);
 		});
 
 		glfwSetKeyCallback(windowHandle, Input::KeyCallback);
 		glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
 		glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
+
+		glfwShowWindow(windowHandle);
+
 	});
 
 	Scheduler::Block();
 
 }
-
 
 Window::~Window()
 {
@@ -122,23 +122,7 @@ Window::~Window()
 	Scheduler::Block();
 }
 
-void Window::Resize(GLFWwindow* window, int width, int height)
+void Window::Draw()
 {
-	RasterBackend::ResizeWindow(window, width, height);
-}
-
-void Window::WindowPos(GLFWwindow* window, int x, int y)
-{
-}
-
-void Window::Refresh(GLFWwindow* window)
-{
-	Draw();
-}
-
-void Window::Draw() 
-{
-	RasterBackend::PreRaster(windowHandle);
-	RasterBackend::Draw(windowHandle);
-	RasterBackend::PostRaster(windowHandle);
+		RasterBackend::Draw(windowHandle);
 }

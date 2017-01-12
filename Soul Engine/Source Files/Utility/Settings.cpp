@@ -3,9 +3,7 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/filesystem.hpp>
 
-namespace {
-	std::string filename;
-}
+static std::string filename;
 
 namespace Settings {
 	namespace detail {

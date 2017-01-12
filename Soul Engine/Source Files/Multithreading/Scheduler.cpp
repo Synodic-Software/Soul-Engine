@@ -8,7 +8,7 @@
 #include <mutex>
 #include <list>
 #include <malloc.h>  
-
+#include "Utility\Settings.h"
 
 //Scheduler Variables//
 static std::thread* threads;
@@ -242,6 +242,8 @@ namespace Scheduler {
 		--detail::fiberCount;
 		detail::fiberMutex.unlock();
 
+#ifndef	SOUL_SINGLE_STACK
+
 		//yield this fiber until all the remaining work is done
 
 		bool run = true;
@@ -269,6 +271,8 @@ namespace Scheduler {
 		delete detail::holdMutex;
 		delete detail::blockCondition;
 
+#endif
+
 	}
 
 	void Init() {
@@ -279,6 +283,8 @@ namespace Scheduler {
 		detail::shouldRun = true;
 		detail::needsSort = false;
 
+#ifndef	SOUL_SINGLE_STACK
+
 		detail::holdCount = new boost::fibers::fiber_specific_ptr<std::size_t>;
 		detail::holdMutex = new boost::fibers::fiber_specific_ptr<std::mutex>(detail::CleanUpMutex);
 		detail::blockCondition =
@@ -288,9 +294,8 @@ namespace Scheduler {
 
 		boost::fibers::use_scheduling_algorithm< detail::SoulScheduler >();
 
-		//the main thread takes up one slot.
-		threadCount = std::thread::hardware_concurrency() - 1;
-		//threadCount = 0;
+		//the main thread takes up one slot, leave one open for system+background.
+		threadCount = Settings::Get("Engine.Additional_Threads",std::thread::hardware_concurrency() - 2);
 		threads = new std::thread[threadCount];
 
 		detail::fiberCount++;
@@ -302,10 +307,15 @@ namespace Scheduler {
 		//init the main fiber specifics
 		detail::InitPointers();
 
+#endif
+
 	}
 
 
 	void Block() {
+
+#ifndef	SOUL_SINGLE_STACK
+
 
 		//get the current fibers stats for blocking
 		std::size_t* holdSize = detail::holdCount->get();
@@ -315,11 +325,18 @@ namespace Scheduler {
 
 		assert(*holdSize == 0);
 
+#endif
+
+
 	}
 
 	void Defer() {
 
+#ifndef	SOUL_SINGLE_STACK
+
 		boost::this_fiber::yield();
+
+#endif
 
 	}
 
