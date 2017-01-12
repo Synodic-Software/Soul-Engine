@@ -190,6 +190,12 @@
     <Filter Include="Engine Backend\Raster Engine\OpenGL">
       <UniqueIdentifier>{d704523a-5da0-4051-8078-7201a209513f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Display\Widget">
+      <UniqueIdentifier>{42e1dbf4-87bb-404e-a654-26cca954b8c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Display\Layout">
+      <UniqueIdentifier>{5f674607-8b24-4025-ae86-dffe6e51b262}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Files\Engine Core\BasicDependencies.h">
@@ -429,6 +435,12 @@
     <ClInclude Include="Source Files\Raster Engine\OpenGL\OpenGLBackend.h">
       <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Display\Widget\Widget.h">
+      <Filter>Engine Backend\Display\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Display\Layout\Layout.h">
+      <Filter>Engine Backend\Display\Layout</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Input\Input.cpp">
@@ -505,6 +517,12 @@
     </ClCompile>
     <ClCompile Include="Source Files\Raster Engine\OpenGL\OpenGLBackend.cpp">
       <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Display\Widget\Widget.cpp">
+      <Filter>Engine Backend\Display\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Display\Layout\Layout.cpp">
+      <Filter>Engine Backend\Display\Layout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
