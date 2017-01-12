@@ -2,6 +2,7 @@
 
 #include "Utility\Includes\GLFWIncludes.h"
 #include "Metrics.h"
+#include "Display\Widget\Widget.h"
 
 #include <string>
 
@@ -14,6 +15,8 @@ public:
 	GLFWwindow* windowHandle;
 
 	void Draw();
+
+	Layout widget;
 
 	WindowType windowType;
 	std::string title;

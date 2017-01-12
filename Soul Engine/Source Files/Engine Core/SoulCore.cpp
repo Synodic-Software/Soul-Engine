@@ -27,10 +27,6 @@ namespace Soul {
 
 	std::list<Scene*> scenes;
 
-	//bool usingDefaultCamera;
-	/*std::vector<Camera*> cameras;
-	Camera* mouseCamera;*/
-
 	double engineRefreshRate;
 	bool running = true;
 	/////////////////////////Synchronization///////////////////////////
