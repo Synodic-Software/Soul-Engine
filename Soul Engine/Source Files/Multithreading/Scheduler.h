@@ -123,8 +123,8 @@ namespace Scheduler {
 
 #endif
 				//assert that the function is executing on the right thread
-				assert(!fiber.properties< detail::FiberProperties >().RunOnMain() ||
-					(fiber.properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
+				assert(!boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() ||
+					(boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
@@ -163,8 +163,8 @@ namespace Scheduler {
 
 #endif
 				//assert that the function is executing on the right thread
-				assert(!fiber.properties< detail::FiberProperties >().RunOnMain() ||
-					(fiber.properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
+				assert(!boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() ||
+					(boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
