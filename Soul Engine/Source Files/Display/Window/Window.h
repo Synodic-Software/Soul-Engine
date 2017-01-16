@@ -16,7 +16,7 @@ public:
 
 	void Draw();
 
-	Layout widget;
+	Widget widget;
 
 	WindowType windowType;
 	std::string title;

@@ -2,6 +2,7 @@
 
 Widget::Widget()
 {
+
 }
 
 Widget::~Widget()
