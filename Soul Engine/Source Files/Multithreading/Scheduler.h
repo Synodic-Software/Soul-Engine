@@ -116,12 +116,16 @@ namespace Scheduler {
 
 			//lambda wrapping the called function with other information
 			boost::fibers::fiber fiber(
-				[&, holdLock, holdSize, holdConditional]() mutable {
+				[&, holdLock, holdSize, holdConditional, priority, runsOnMain]() mutable {
 
 				//prefix code
 				detail::InitPointers();
 
+				//yielding garuntees that the fiber properties are saved at the expense of another round of context switching
+				boost::this_fiber::properties< detail::FiberProperties >().SetPriority(priority, runsOnMain);
+				boost::this_fiber::yield();
 #endif
+
 				//assert that the function is executing on the right thread
 				assert(!boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() ||
 					(boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
@@ -143,9 +147,6 @@ namespace Scheduler {
 				holdConditional->notify_all();
 
 			});
-
-			detail::FiberProperties& props(fiber.properties< detail::FiberProperties >());
-			props.SetPriority(priority, runsOnMain);
 			fiber.detach();
 
 #endif
@@ -156,10 +157,14 @@ namespace Scheduler {
 #ifndef	SOUL_SINGLE_STACK
 
 			boost::fibers::fiber fiber(
-				[&]() mutable {
+				[&, priority, runsOnMain]() mutable {
 
 				//prefix code
 				detail::InitPointers();
+
+				//yielding garuntees that the fiber properties are saved at the expense of another round of context switching
+				boost::this_fiber::properties< detail::FiberProperties >().SetPriority(priority, runsOnMain);
+				boost::this_fiber::yield();
 
 #endif
 				//assert that the function is executing on the right thread
@@ -178,9 +183,6 @@ namespace Scheduler {
 #ifndef	SOUL_SINGLE_STACK
 
 			});
-
-			detail::FiberProperties& props(fiber.properties< detail::FiberProperties >());
-			props.SetPriority(priority, runsOnMain);
 			fiber.detach();
 
 #endif
