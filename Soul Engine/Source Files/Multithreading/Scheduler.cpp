@@ -93,7 +93,7 @@ namespace Scheduler {
 			SoulScheduler & operator=(SoulScheduler const&) = delete;
 			SoulScheduler & operator=(SoulScheduler &&) = delete;
 
-			void InsertContext(rqueue_t& queue, boost::fibers::context* ctx, int ctxPriority) {
+			void InsertContext(rqueue_t& queue, boost::fibers::context*& ctx, int ctxPriority) {
 				rqueue_t::iterator i(std::find_if(queue.begin(), queue.end(),
 					[ctxPriority, this](boost::fibers::context* c)
 				{ return properties(c).GetPriority() < ctxPriority; }));
@@ -108,34 +108,18 @@ namespace Scheduler {
 					localQueue.push_back(*ctx);
 				}
 				else {
-
-					int ctxPriority = props.GetPriority();
-					bool mainRun = props.RunOnMain();
-
 					ctx->detach();
 
 					std::unique_lock< std::mutex > lk(queueMutex);
 
+					int ctxPriority = props.GetPriority();
+
 					//if it needs to run on the main thread
-					if (mainRun) {
+					if (props.RunOnMain()) {
 						InsertContext(mainOnlyQueue, ctx, ctxPriority);
 					}
 					else {
 						InsertContext(readyQueue, ctx, ctxPriority);
-					}
-				}
-			}
-
-			//remove all fibers labeled as running on main into the proper bin
-			void SortQueues() {
-				auto i = std::begin(readyQueue);
-				while (i != std::end(readyQueue)) {
-					if (properties(*i).RunOnMain()) {
-						InsertContext(mainOnlyQueue, *i, properties(*i).GetPriority());
-						i = readyQueue.erase(i);
-					}
-					else {
-						++i;
 					}
 				}
 			}
@@ -147,15 +131,6 @@ namespace Scheduler {
 
 
 				std::unique_lock< std::mutex > lk(queueMutex);
-
-				//at the cost for a check forall fibers, garuntees no missed fiber spins
-				//awakened doesnt garuntee the property placement
-				if (!readyQueue.empty()) {
-					boost::fibers::context * temp= readyQueue.front();
-					if (properties(temp).RunOnMain()) {
-						SortQueues();
-					}
-				}
 
 				if (!mainOnlyQueue.empty() && thisID == mainID) {
 					ctx = mainOnlyQueue.front();
