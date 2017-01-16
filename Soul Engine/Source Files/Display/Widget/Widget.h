@@ -8,5 +8,11 @@ public:
 	Widget();
 	~Widget();
 
+protected:
+
+
+
+private:
+
 };
 

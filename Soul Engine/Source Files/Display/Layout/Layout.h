@@ -1,10 +1,13 @@
 #pragma once
+#include "Display\Widget\Widget.h"
 
 #include "Metrics.h"
 
-class Layout
+class Layout : public Widget
 {
+
 public:
+
 	Layout();
 	~Layout();
 
