@@ -2,7 +2,7 @@
 
 #include "Utility\Includes\GLFWIncludes.h"
 #include "Metrics.h"
-#include "Display\Widget\Widget.h"
+#include "Display\Layout\Layout.h"
 
 #include <string>
 
