@@ -308,7 +308,6 @@ int main()
 
 		WindowManager::CreateWindow(type,"main", monitor,xPos,yPos,xSize,ySize);
 
-		//TODO: multiple Windows has 1. context issues 2. multithreading issues.
 		//WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300);
 
 		/*Material* whiteGray = new Material();
