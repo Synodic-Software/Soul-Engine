@@ -14,19 +14,11 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	height = iheight;
 	title = inTitle;
 
-	GLFWwindow* sharedContext;
-	if (sharedContextin)
-	{
-		sharedContext = sharedContextin;
-	}
-	else
-	{
-		sharedContext = nullptr;
-	}
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContextin]() {
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContext]() {
+		GLFWwindow* sharedContext= sharedContextin;
 
-		RasterBackend::SetWindowHints();
+		RasterBackend::SetWindowHints(sharedContext);
 		glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
 		glfwWindowHint(GLFW_VISIBLE, false);
 

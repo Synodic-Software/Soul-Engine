@@ -13,7 +13,7 @@ public:
 	OpenGLBackend();
 	~OpenGLBackend();
 
-	virtual	void SetWindowHints();
+	virtual	void SetWindowHints(GLFWwindow*&);
 	virtual void ResizeWindow(GLFWwindow*, int, int);
 	virtual void BuildWindow(GLFWwindow*);
 
