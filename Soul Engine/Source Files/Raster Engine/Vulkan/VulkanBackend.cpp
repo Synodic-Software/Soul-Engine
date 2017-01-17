@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <set>
+#include <map>
 
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_LUNARG_standard_validation"
@@ -45,6 +46,8 @@ struct VKWindowInformation {
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VulkanWrapper<VkDevice> device{ vkDestroyDevice };
 };
+
+static std::map<GLFWwindow*, std::unique_ptr< VKWindowInformation> > windowStorage;
 
 /////////////////////////Function Declarations/////////////////////////////////////////
 
@@ -284,14 +287,14 @@ void VulkanBackend::ResizeWindow(GLFWwindow* win, int x, int y) {
 }
 
 void VulkanBackend::BuildWindow(GLFWwindow* window) {
-
-	VKWindowInformation info{};
-	CreateSurface(window, info.surface.replace());
-	PhysicalDevice(info.physicalDevice, info.surface);
+	windowStorage[window] = std::unique_ptr<VKWindowInformation>(new VKWindowInformation());
+	CreateSurface(window, windowStorage[window]->surface.replace());
+	PhysicalDevice(windowStorage[window]->physicalDevice, windowStorage[window]->surface);
 }
 
-void VulkanBackend::SetWindowHints() {
+void VulkanBackend::SetWindowHints(GLFWwindow*& context) {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	context = nullptr;
 }
 
 void VulkanBackend::PreRaster(GLFWwindow* window) {
