@@ -441,6 +441,9 @@
     <ClInclude Include="Source Files\Display\Layout\Layout.h">
       <Filter>Engine Backend\Display\Layout</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Display\Widget\RenderWidget.h">
+      <Filter>Engine Backend\Display\Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Input\Input.cpp">
@@ -523,6 +526,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Display\Layout\Layout.cpp">
       <Filter>Engine Backend\Display\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Display\Widget\RenderWidget.cpp">
+      <Filter>Engine Backend\Display\Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

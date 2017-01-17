@@ -89,6 +89,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
     <ClInclude Include="Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
     <ClInclude Include="Source Files\Display\Layout\Layout.h" />
+    <ClInclude Include="Source Files\Display\Widget\RenderWidget.h" />
     <ClInclude Include="Source Files\Display\Widget\Widget.h" />
     <ClInclude Include="Source Files\Display\Window\Window.h" />
     <ClInclude Include="Source Files\Display\Window\WindowManager.h" />
@@ -164,6 +165,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="Source Files\Display\Layout\Layout.cpp" />
+    <ClCompile Include="Source Files\Display\Widget\RenderWidget.cpp" />
     <ClCompile Include="Source Files\Display\Widget\Widget.cpp" />
     <ClCompile Include="Source Files\Display\Window\Window.cpp" />
     <ClCompile Include="Source Files\Display\Window\WindowManager.cpp" />
