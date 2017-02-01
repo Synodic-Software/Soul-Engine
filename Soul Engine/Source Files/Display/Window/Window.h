@@ -5,6 +5,7 @@
 #include "Display\Layout\Layout.h"
 
 #include <string>
+#include <memory>
 
 class Window
 {
@@ -16,7 +17,7 @@ public:
 
 	void Draw();
 
-	Widget widget;
+	std::unique_ptr<Layout> layout;
 
 	WindowType windowType;
 	std::string title;

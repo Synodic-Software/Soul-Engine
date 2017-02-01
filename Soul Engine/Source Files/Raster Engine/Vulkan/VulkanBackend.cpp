@@ -279,7 +279,7 @@ VulkanBackend::VulkanBackend() {
 }
 
 VulkanBackend::~VulkanBackend() {
-	//VulkanBackend::GetInstance().IdleDevice();
+
 }
 
 void VulkanBackend::ResizeWindow(GLFWwindow* win, int x, int y) {

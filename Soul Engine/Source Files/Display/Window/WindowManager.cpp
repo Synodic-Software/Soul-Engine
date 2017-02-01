@@ -133,7 +133,7 @@ namespace WindowManager {
 	{
 		RasterBackend::ResizeWindow(handler, width, height);
 	}
-
+	 
 	void WindowPos(GLFWwindow* handler, int x, int y)
 	{
 	}

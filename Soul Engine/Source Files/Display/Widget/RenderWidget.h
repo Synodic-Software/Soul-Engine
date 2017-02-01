@@ -9,6 +9,7 @@ public:
 	RenderWidget();
 	~RenderWidget();
 
+	virtual void Draw();
 protected:
 
 

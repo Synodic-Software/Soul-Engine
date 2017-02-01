@@ -16,7 +16,7 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContextin]() {
 
-		GLFWwindow* sharedContext= sharedContextin;
+		GLFWwindow* sharedContext = sharedContextin;
 
 		RasterBackend::SetWindowHints(sharedContext);
 		glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
@@ -116,5 +116,6 @@ Window::~Window()
 
 void Window::Draw()
 {
-		RasterBackend::Draw(windowHandle);
+	//layout->Draw();
+	RasterBackend::Draw(windowHandle);
 }
