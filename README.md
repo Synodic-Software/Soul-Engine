@@ -38,7 +38,7 @@ For your propiertery purposes, an alternate license will be also made available 
 Check out the currently open [issues](https://github.com/Behemyth/Soul-Engine/issues) for opportunities to contribute!
 
 # User (programmer) Setup
-To compile dependancies with the following must be met:
+To compile within the visual studio project dependancies with the following must be met:
 
   - GLFW          - http://www.glfw.org/
   
@@ -48,11 +48,13 @@ To compile dependancies with the following must be met:
   
   - Vulkan SDK    - https://lunarg.com/vulkan-sdk/
   
-  - Boost         - http://www.boost.org/
+  - Boost 1.63    - http://www.boost.org/
   
   - GLEW          - http://glew.sourceforge.net/ 
   
   - Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
+  
+  - OpenCL	  - http://developer.amd.com/tools-and-sdks/opencl-zone/amd-accelerated-parallel-processing-app-sdk/
   
   - tinyobjloader - https://github.com/syoyo/tinyobjloader
   
