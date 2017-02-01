@@ -444,6 +444,9 @@
     <ClInclude Include="Source Files\Display\Widget\RenderWidget.h">
       <Filter>Engine Backend\Display\Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Engine Core\Object\Loader.h">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Input\Input.cpp">
@@ -529,6 +532,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Display\Widget\RenderWidget.cpp">
       <Filter>Engine Backend\Display\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Engine Core\Object\Loader.cpp">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

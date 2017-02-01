@@ -21,12 +21,12 @@ namespace RasterBackend {
 
 	void Init() {
 
-		if (glfwVulkanSupported() == GLFW_TRUE) {
+		/*if (glfwVulkanSupported() == GLFW_TRUE) {
 			detail::raster.reset(new VulkanBackend());
 		}
-		else {
+		else {*/
 			detail::raster.reset(new OpenGLBackend());
-		}
+		/*}*/
 
 	}
 

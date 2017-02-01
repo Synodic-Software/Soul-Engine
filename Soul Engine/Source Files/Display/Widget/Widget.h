@@ -8,8 +8,9 @@ public:
 	Widget();
 	~Widget();
 
-protected:
+	virtual void Draw()=0;
 
+protected:
 
 
 private:
