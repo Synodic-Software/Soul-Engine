@@ -15,7 +15,6 @@ x86/
 [Dd]ebug/
 Debug/
 debug/
-build/
 bld/
 [Bb]in/
 [Oo]bj/
@@ -216,3 +215,5 @@ x64/Release/cudart32_75.dll
 x64/Release/cudart64_75.dll
 /Soul Engine.VC.db
 /Soul Engine.VC.VC.opendb
+*.opendb
+*.db
