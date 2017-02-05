@@ -205,6 +205,7 @@ x64/Debug/cudart64_75.dll
 *.exe
 *.obj
 *.idb
+*.ini
 Soul Engine/x64/Debug/Soul Engine/Soul Engine.tlog/CL.read.1.tlog
 Soul Engine/x64/Debug/Soul Engine/Soul Engine.tlog/cl.command.1.tlog
 *.command.1.tlog
