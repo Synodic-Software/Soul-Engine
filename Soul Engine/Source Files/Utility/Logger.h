@@ -47,7 +47,7 @@ namespace Logger {
 
 			std::string msg;
 			SLogSeverity severity;
-			int luneNumber;
+			int lineNumber;
 			const char* filename;
 
 		}LogI;
