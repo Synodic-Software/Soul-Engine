@@ -13,8 +13,11 @@ namespace RasterBackend {
 		virtual void Draw(GLFWwindow*) = 0;
 		virtual void ResizeWindow(GLFWwindow*, int, int) = 0;
 
+
 	private:
 	};
+
+	
 
 	void Init();
 

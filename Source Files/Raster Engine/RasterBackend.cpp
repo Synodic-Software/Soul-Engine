@@ -6,6 +6,7 @@
 
 namespace RasterBackend {
 
+	//backend
 	Backend::Backend() {
 
 	}
@@ -13,6 +14,7 @@ namespace RasterBackend {
 	Backend::~Backend() {
 
 	}
+
 
 	//encapsulate a backend and pass info to it
 	namespace detail {
