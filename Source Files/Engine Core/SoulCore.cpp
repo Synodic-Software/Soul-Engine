@@ -14,7 +14,6 @@
 #include "Input/InputState.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
-//#include "Renderer\Renderer.h"
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "GPGPU\GPUManager.h"
 #include "Display\Window\WindowManager.h"

@@ -420,6 +420,12 @@
     <ClInclude Include="..\Include Files\Metrics.h">
       <Filter>Engine Frontend</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Raster Engine\Shader.h">
+      <Filter>Engine Backend\Raster Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Raster Engine\RasterJob.h">
+      <Filter>Engine Backend\Raster Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
@@ -496,6 +502,12 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Utility\Settings.cpp">
       <Filter>Engine Backend\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Raster Engine\RasterJob.cpp">
+      <Filter>Engine Backend\Raster Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Raster Engine\Shader.cpp">
+      <Filter>Engine Backend\Raster Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
