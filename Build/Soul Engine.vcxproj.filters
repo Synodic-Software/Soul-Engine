@@ -426,6 +426,12 @@
     <ClInclude Include="..\Source Files\Raster Engine\RasterJob.h">
       <Filter>Engine Backend\Raster Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanShader.h">
+      <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLShader.h">
+      <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
@@ -508,6 +514,12 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Raster Engine\Shader.cpp">
       <Filter>Engine Backend\Raster Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanShader.cpp">
+      <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLShader.cpp">
+      <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
