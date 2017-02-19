@@ -8,6 +8,8 @@
 #include <map>
 #include <memory>
 
+GLEWContext* glewGetContext();
+
 class OpenGLBackend : public RasterBackend::Backend {
 public:
 	OpenGLBackend();
@@ -30,12 +32,14 @@ public:
 		std::unique_ptr<GLEWContext> glContext;
 		uint ID;
 
-		WindowInformation(GLFWwindow* windowIn,std::unique_ptr<GLEWContext> glContextIn) :
+		WindowInformation(GLFWwindow* windowIn, std::unique_ptr<GLEWContext> glContextIn) :
 			glContext(std::move(glContextIn)) {
 			window = windowIn;
 			ID = windowCounter++;
 		}
 	};
+
+	static WindowInformation* currentContext;
 
 private:
 
@@ -44,7 +48,7 @@ private:
 		glm::vec4 position;
 		glm::vec4 normal;
 		glm::vec4 color;
-		glm::vec2 UV;	
+		glm::vec2 UV;
 	};
 
 	static uint windowCounter;
@@ -52,7 +56,5 @@ private:
 
 	void MakeContextCurrent(WindowInformation*);
 
-	WindowInformation* currentContext;
 
-	GLEWContext* glewGetContext();
 };

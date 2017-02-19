@@ -7,7 +7,10 @@
 #include <cassert>
 #include <sstream>
 
-VulkanShader::VulkanShader(const std::string& shaderCode, std::string filePath, shader_t shaderType)
-	: Shader(shaderCode, filePath, shaderType) {
+VulkanShader::VulkanShader(std::string filePath, shader_t shaderType)
+	: Shader(filePath, shaderType) {
+
+}
+VulkanShader::~VulkanShader() {
 
 }

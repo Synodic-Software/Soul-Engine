@@ -5,6 +5,7 @@
 #include "Multithreading\Scheduler.h"
 
 uint OpenGLBackend::windowCounter = 0;
+OpenGLBackend::WindowInformation* OpenGLBackend::currentContext = nullptr;
 
 //must be called on the main thread
 void OpenGLBackend::MakeContextCurrent(WindowInformation* window)
@@ -18,9 +19,9 @@ void OpenGLBackend::MakeContextCurrent(WindowInformation* window)
 	currentContext = window;
 }
 
-GLEWContext* OpenGLBackend::glewGetContext()
+GLEWContext* glewGetContext()
 {
-	return currentContext->glContext.get();
+	return OpenGLBackend::currentContext->glContext.get();
 }
 
 OpenGLBackend::OpenGLBackend() {

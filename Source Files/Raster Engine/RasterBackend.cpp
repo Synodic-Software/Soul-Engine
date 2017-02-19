@@ -1,7 +1,8 @@
 #include "RasterBackend.h"
 #include "Vulkan/VulkanBackend.h"
 #include "OpenGL/OpenGLBackend.h"
-
+#include "Vulkan/VulkanShader.h"
+#include "OpenGL/OpenGLShader.h"
 #include <memory>
 
 namespace RasterBackend {
@@ -30,6 +31,15 @@ namespace RasterBackend {
 			detail::raster.reset(new OpenGLBackend());
 		/*}*/
 
+	}
+
+	Shader* CreateShader(const std::string& fileName, shader_t shaderT) {
+		/*if (glfwVulkanSupported() == GLFW_TRUE) {
+			return new VulkanShader(fileName, shaderT);
+		}
+		else {*/
+			return new OpenGLShader(fileName, shaderT);
+		/*}*/
 	}
 
 	void SetWindowHints(GLFWwindow*& window) {
