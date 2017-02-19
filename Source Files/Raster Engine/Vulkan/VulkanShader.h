@@ -6,8 +6,8 @@
 
 class VulkanShader:public Shader {
 public:
-	VulkanShader(const std::string&, std::string, shader_t);
-
+	VulkanShader(std::string, shader_t);
+	virtual ~VulkanShader();
 private:
 
 };

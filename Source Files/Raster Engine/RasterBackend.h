@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Display\Window\Window.h"
+#include "Raster Engine\Shader.h"
 
 namespace RasterBackend {
 	class Backend {
@@ -23,6 +24,8 @@ namespace RasterBackend {
 
 	//needs to be called from the main thread
 	void SetWindowHints(GLFWwindow*&);
+
+	Shader* CreateShader(const std::string&, shader_t);
 
 	void ResizeWindow(GLFWwindow*, int, int);
 

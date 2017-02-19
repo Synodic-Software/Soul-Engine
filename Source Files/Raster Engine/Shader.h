@@ -6,10 +6,21 @@ enum shader_t {VERTEX_SHADER,FRAGMENT_SHADER};
 
 class Shader {
 public:
-	const std::string& name;
-	Shader(const std::string&, std::string, shader_t);
-	Shader ExtractShader(const std::string&, shader_t);
+
+	Shader(std::string, shader_t);
+	virtual ~Shader();
+	void ExtractShader(const std::string&);
+
+protected:
+
+	std::string name;
+	std::string codeStr;
+	shader_t type;
+	unsigned* referenceCount;
+	void Retain();
+	void Release();
 
 private:
+	
 
 };

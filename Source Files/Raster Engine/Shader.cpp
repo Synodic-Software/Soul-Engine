@@ -7,12 +7,15 @@
 #include <cassert>
 #include <sstream>
 
-Shader::Shader(const std::string& shaderCode, std::string filePath, shader_t shaderType) :
-	name(filePath) {
-
+Shader::Shader(std::string filePath, shader_t shaderType) :
+	name(filePath), type(shaderType), referenceCount(nullptr){
+	ExtractShader(filePath);
+}
+Shader::~Shader() {
+	if (referenceCount) Release();
 }
 
-Shader Shader::ExtractShader(const std::string& filePath, shader_t shaderType) {
+void Shader::ExtractShader(const std::string& filePath) {
 
 	//Open shader file
 	std::ifstream file;
@@ -25,7 +28,19 @@ Shader Shader::ExtractShader(const std::string& filePath, shader_t shaderType) {
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 
-	//return new shader
-	Shader shader(buffer.str(), filePath, shaderType);
-	return shader;
+	//update code
+	codeStr =buffer.str();
+}
+void Shader::Retain() {
+	assert(referenceCount);
+	*referenceCount += 1;
+}
+
+void Shader::Release() {
+	assert(referenceCount && *referenceCount > 0);
+	*referenceCount -= 1;
+	if (*referenceCount == 0) {
+		delete referenceCount; referenceCount = NULL;
+		delete this;	
+	}
 }
