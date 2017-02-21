@@ -209,7 +209,9 @@ namespace Settings {
 
 	void Write();
 
-	//void Write(const std::string & _filename);
+	void Write(const std::string & _filename);
 
 	void Read(const std::string & _filename);
+
+	void SetFilename(const std::string & _filename);
 }

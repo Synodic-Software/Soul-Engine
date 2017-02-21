@@ -162,7 +162,7 @@ namespace internal{
 		assert(Settings::Set("i", std::uint64_t(8)));
 		assert(Settings::Set("j", 9.9));
 
-		filename = "b.ini";
+		Settings::SetFilename("b.ini");
 		Settings::Write();
 		Settings::Read("b.ini");
 
@@ -183,6 +183,8 @@ namespace internal{
 		internal::testGetProperInputs();
 		internal::testSerialization();
 		internal::testGetNonDefinedSettings();
+
+		std::cout << "All tests have successfully completed." << std::endl;
 	}
 
 }
@@ -214,13 +216,17 @@ namespace Settings {
 		tableWrapper.Write();
 	}
 
-	//void Write(const std::string & _filename) {
-	//	filename = _filename;
-	//	tableWrapper.Write();
-	//}
+	void Write(const std::string & _filename) {
+		filename = _filename;
+		tableWrapper.Write();
+	}
 
 	void Read(const std::string & _filename) {
 		tableWrapper.Read(_filename);
+	}
+
+	void SetFilename(const std::string & _filename) {
+		filename = _filename;
 	}
 }
 
