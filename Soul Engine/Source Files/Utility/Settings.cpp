@@ -1,13 +1,12 @@
 #include "Settings.h"
 
-//#define BOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT
-//#define BOOST_NOEXCEPT
-//#define BOOST_VARIANT_MINIMIZE_SIZE
+#define BOOST_VARIANT_MINIMIZE_SIZE
 
-//#include <boost/property_tree/ini_parser.hpp>
-//#include <boost/filesystem.hpp>
 #include <iostream>
 #include <fstream>
+
+//Only needed for debugging
+#include <cassert>
 
 
 
@@ -23,12 +22,6 @@ static std::string filename;
 */
 
 namespace Settings {
-
-	/*Table Table::ReadTable(const std::string & filename) {
-		Table table(filename);
-		table.Read(filename);
-		return table;
-	}*/
 
 	template <class V, typename T>
 	std::pair<T, bool> Table::get(const std::unordered_map<std::string, V> & dict, 
@@ -64,31 +57,9 @@ namespace Settings {
 	//void Table::set(OBM & dict, const std::string & propertyName, U propertyValue);
 	//return false
 
-	//template <class T, typename std::enable_if<(std::is_same<T, std::int8_t>::value || std::is_same<T, std::uint8_t>::value), int>::type = 0> 
-	//bool Table::set(OBM & dict, const std::string & propertyName, T propertyValue) {
-	//	dict[propertyName] = OneByteTypes(propertyValue);
-	//	return true;
-	//}
-
-	//template <class T>
-	//bool Table::set(OBM & dict, const std::string & propertyName, T propertyValue) { return false; }
-
-	//template <class V, typename T>
-	//void Table::set(std::unordered_map<std::string, V> & dict,
-	//	const std::string & propertyName, T propertyValue) {
-	//	/*V val;
-	//	val = propertyValue;
-	//	dict[propertyName] = val;*/
-	//	dict[propertyName] = V(propertyValue);
-	//}
-
 	template <typename T>
 	T Table::Get(const std::string & propertyName, T defaultValue) {
 		T propertyValue;
-
-		//bool exists = Get(propertyName, defaultvalue, &T);
-		//return (exists) ? propertyvalue : defaultvalue;
-
 		Get(propertyName, defaultValue, &propertyValue);
 		return propertyValue;
 	}
@@ -98,29 +69,8 @@ namespace Settings {
 		std::size_t s = sizeof(T);
 		std::pair<T, bool> pr;
 
-		
 		switch (s) {
 		case 1: {
-			//auto itr = this->obt.find(propertyName);
-			//if (itr == this->obt.end()) {
-			//	*propertyValue = defaultValue;
-			//	return false;
-			//} 
-
-			//auto hash = typeid(defaultValue).hash_code();
-			//if (hash == typeid(std::int8_t).hash_code()) {
-			//	*propertyValue = boost::get<std::int8_t>(itr->second);
-			//	return true;
-			//}
-			//else if (hash == typeid(std::uint8_t).hash_code()) {
-			//	*propertyValue = boost::get<std::uint8_t>(itr->second);
-			//	return true;
-			//}
-			//else {
-			//	*propertyValue = defaultValue;
-			//	return false;
-			//}
-
 			pr = this->get(this->obt, propertyName, defaultValue);
 			break;
 		}
@@ -145,38 +95,8 @@ namespace Settings {
 		return pr.second;
 	}
 
-
-
 	template <typename T>
 	bool Table::Set(const std::string & propertyName, T propertyValue) {
-		//std::size_t s = sizeof(T);
-		//switch (s) {
-		//case 1: {
-		//	////auto hash = typeid(propertyValue).hash_code();
-		//	////if (hash == typeid(std::int8_t).hash_code()) this->obt[propertyName] = OneByteTypes(propertyValue);
-		//	//OneByteTypes val;
-		//	//val = propertyValue;
-		//	//this->obt[propertyName] = val;
-		//	////this->obt[propertyName] = OneByteTypes(propertyValue);
-		//	this->set(this->obt, propertyName, propertyValue);
-		//	break;
-		//}
-		//case 2: {
-		//	//static_assert(std::is_base_of<std::int16_t, T>::value || std::is_base_of<std::uint16_t, T>::value, "Invalid storage type");
-		//	this->set(this->tbt, propertyName, propertyValue);
-		//	break;
-		//}
-		////case 4: {
-		////	this->set(this->fbt, propertyName, propertyValue);
-		////	break;
-		////}
-		////case 8: {
-		////	this->set(this->ebt, propertyName, propertyValue);
-		////	break;
-		////}
-		//default: return false;
-		//}
-		//return true;
 		if (std::is_same<std::int8_t, T>::value || std::is_same<std::uint8_t, T>::value) 
 			return this->set(this->obt, propertyName, propertyValue);
 		else if (std::is_same<std::int16_t, T>::value || std::is_same<std::uint16_t, T>::value) 
@@ -186,8 +106,6 @@ namespace Settings {
 		else if (std::is_same<std::int64_t, T>::value || std::is_same<std::uint64_t, T>::value || std::is_same<double,T>::value)
 			return this->set(this->ebt, propertyName, propertyValue);
 		else return false;
-
-		//return true;
 	}
 
 	template <class Archive>
@@ -196,55 +114,7 @@ namespace Settings {
 		ar & boost::serialization::make_nvp("TwoByteTypes", this->tbt);
 		ar & boost::serialization::make_nvp("FourByteTypes", this->fbt);
 		ar & boost::serialization::make_nvp("EightByteTypes", this->ebt);
-		//ar & BOOST_SERIALIZATION_NVP(this->filename);
 	}
-
-	//void Table::Read(const std::string & filename) {
-	//	std::ifstream ifs(filename);
-	//	boost::archive::xml_iarchive ar(ifs);
-	//	//ar & 
-	//}
-
-	//Table* Table::Read(const std::string & filename) {
-	//	std::ifstream ifs(filename);
-	//	boost::archive::xml_iarchive ar(ifs);
-	//	Table* ptr = new Table(filename);
-	//	ar & *ptr;
-	//	return ptr;
-	//}
-
-	//void Table::Write() {
-	//	std::ofstream ofs(filename);
-	//	boost::archive::xml_oarchive ar(ofs);
-	//	ar & *this;
-	//}
-
-
-
-
-
-	//namespace detail {
-	//	boost::property_tree::ptree propTree;
-	//}
-
-	//void Read(std::string fn) {
-	//	filename = fn;
-
-	//	boost::filesystem::path file(filename);
-
-	//	if (!boost::filesystem::exists(file))
-	//	{
-	//		std::ofstream outfile(filename);
-	//		outfile.close();
-	//	}
-
-
-	//	boost::property_tree::ini_parser::read_ini(filename, detail::propTree);
-	//}
-
-	//void Write() {
-	//	boost::property_tree::ini_parser::write_ini(filename, detail::propTree);
-	//}
 
 	void TableWrapper::Read(const std::string & _filename){
 		filename = _filename;
@@ -264,6 +134,68 @@ namespace Settings {
 
 }
 
+void testGetProperInputs() {
+	Settings::TableWrapper tw;
+	assert(tw.Set("a", std::int8_t(0)));
+	assert(tw.Set("b", std::uint8_t(1)));
+	assert(tw.Set("c", std::int16_t(2)));
+	assert(tw.Set("d", std::uint16_t(3)));
+	assert(tw.Set("e", std::int32_t(4)));
+	assert(tw.Set("f", std::uint32_t(5)));
+	assert(tw.Set("g", float(6.6)));
+	assert(tw.Set("h", std::int64_t(7)));
+	assert(tw.Set("i", std::uint64_t(8)));
+	assert(tw.Set("j", 9.9));
+
+	assert(tw.Get("a", std::int8_t(1)) == 0);
+	assert(tw.Get("b", std::uint8_t(2)) == 1);
+	assert(tw.Get("c", std::int16_t(3)) == 2);
+	assert(tw.Get("d", std::uint16_t(4)) == 3);
+	assert(tw.Get("e", std::int32_t(5)) == 4);
+	assert(tw.Get("f", std::uint32_t(6)) == 5);
+	assert(tw.Get("g", float(7.7)) == 6.6f);
+	assert(tw.Get("h", std::int64_t(8)) == 7);
+	assert(tw.Get("i", std::uint64_t(9)) == 8);
+	assert(tw.Get("j", 10.1) == 9.9);
+
+}
+
+void testSerialization() {
+	Settings::TableWrapper tw;
+	assert(tw.Set("a", std::int8_t(0)));
+	assert(tw.Set("b", std::uint8_t(1)));
+	assert(tw.Set("c", std::int16_t(2)));
+	assert(tw.Set("d", std::uint16_t(3)));
+	assert(tw.Set("e", std::int32_t(4)));
+	assert(tw.Set("f", std::uint32_t(5)));
+	assert(tw.Set("g", float(6.6)));
+	assert(tw.Set("h", std::int64_t(7)));
+	assert(tw.Set("i", std::uint64_t(8)));
+	assert(tw.Set("j", 9.9));
+
+	filename = "b.ini";
+	tw.Write();
+	Settings::TableWrapper tw2;
+	tw2.Read("b.ini");
+
+	assert(tw2.Get("a", std::int8_t(1)) == 0);
+	assert(tw2.Get("b", std::uint8_t(2)) == 1);
+	assert(tw2.Get("c", std::int16_t(3)) == 2);
+	assert(tw2.Get("d", std::uint16_t(4)) == 3);
+	assert(tw2.Get("e", std::int32_t(5)) == 4);
+	assert(tw2.Get("f", std::uint32_t(6)) == 5);
+	assert(tw2.Get("g", float(7.7)) == 6.6f);
+	assert(tw2.Get("h", std::int64_t(8)) == 7);
+	assert(tw2.Get("i", std::uint64_t(9)) == 8);
+	assert(tw2.Get("j", 10.1) == 9.9);
+
+}
+
+void runAllTests() {
+	testGetProperInputs();
+	testSerialization();
+}
+
 
 
 int main() {
@@ -277,21 +209,23 @@ int main() {
 	//std::cout << "Values: " << static_cast<int>(val) << " " << static_cast<unsigned int>(val2) << std::endl;
 	//int brkpnt = 0;
 	
-	filename = "a.ini";
-	Settings::TableWrapper tw;
-	tw.Set("a", std::int8_t(0));
-	tw.Set("b", std::uint8_t(42));
-	std::int8_t val = tw.Get("a", std::int8_t(1));
-	std::uint8_t val2 = tw.Get("b", std::uint8_t(21));
-	tw.Write();
+	//filename = "a.ini";
+	//Settings::TableWrapper tw;
+	//tw.Set("a", std::int8_t(0));
+	//tw.Set("b", std::uint8_t(42));
+	//std::int8_t val = tw.Get("a", std::int8_t(1));
+	//std::uint8_t val2 = tw.Get("b", std::uint8_t(21));
+	//tw.Write();
 
-	Settings::TableWrapper tw2;
-	tw2.Read(filename);
-	std::int8_t val_ = tw2.Get("a", std::int8_t(1));
-	std::uint8_t val2_ = tw2.Get("b", std::uint8_t(21));
+	//Settings::TableWrapper tw2;
+	//tw2.Read(filename);
+	//std::int8_t val_ = tw2.Get("a", std::int8_t(1));
+	//std::uint8_t val2_ = tw2.Get("b", std::uint8_t(21));
 
-	std::cout << "Original Value of 'a': " << static_cast<int>(val) << ".  Recovered value: " << static_cast<int>(val_) << std::endl;
-	std::cout << "Original Value of 'b': " << static_cast<unsigned int>(val2) << ".  Recovered value: " << static_cast<unsigned int>(val2_) << std::endl;
+	//std::cout << "Original Value of 'a': " << static_cast<int>(val) << ".  Recovered value: " << static_cast<int>(val_) << std::endl;
+	//std::cout << "Original Value of 'b': " << static_cast<unsigned int>(val2) << ".  Recovered value: " << static_cast<unsigned int>(val2_) << std::endl;
+
+	runAllTests();
 
 	int bk = 0;
 
