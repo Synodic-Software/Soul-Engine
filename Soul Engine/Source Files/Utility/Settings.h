@@ -37,14 +37,6 @@ namespace Settings {
 		TBM tbt;
 		FBM fbt;
 		EBM ebt;
-		//std::string filename;
-		
-		//static struct : boost::static_visitor<> {
-		//	bool operator(std::unordered_map<std::string,OneByteTypes> & dict)
-		//} setVisitor;
-
-		//Filename Constructor
-		//Table(const std::string & filename) : obt(), tbt(), fbt(), ebt(), filename(filename) {}
 
 		//Used to allow boost to serialize the object
 		friend class boost::serialization::access;
@@ -58,13 +50,10 @@ namespace Settings {
 		std::pair<T, bool> get(const std::unordered_map<std::string, V> & dict,
 			const std::string & propertyName, T defaultValue);
 
-		////Helper function for adding new settings
-		//template <class V, typename T>
-		//void set(std::unordered_map<std::string, V> & dict,
-		//	const std::string & propertyName, T propertyValue);
 
-		//template <class T, typename std::enable_if<(std::is_same<T, std::int8_t>::value || std::is_same<T, std::uint8_t>::value), int>::type = 0>
-		//bool set(OBM & dict, const std::string & propertyName, T propertyValue);
+	//Helper Functions for setting values of each type
+
+	//Setting OneByteTypes
 
 		bool set(OBM & dict, const std::string & propertyName, std::int8_t propertyValue) {
 			dict[propertyName] = OneByteTypes(propertyValue);
@@ -81,6 +70,8 @@ namespace Settings {
 			return false;
 		}
 
+		//Setting TwoByteTypes
+
 		bool set(TBM & dict, const std::string & propertyName, std::int16_t propertyValue) {
 			dict[propertyName] = TwoByteTypes(propertyValue);
 			return true;
@@ -96,6 +87,8 @@ namespace Settings {
 			return false;
 		}
 
+		//Setting FourByteTypes
+
 		bool set(FBM & dict, const std::string & propertyName, std::int32_t propertyValue) {
 			dict[propertyName] = FourByteTypes(propertyValue);
 			return true;
@@ -106,10 +99,17 @@ namespace Settings {
 			return true;
 		}
 
+		bool set(FBM & dict, const std::string & propertyName, float propertyValue) {
+			dict[propertyName] = FourByteTypes(propertyValue);
+			return true;
+		}
+
 		template <class T>
 		bool set(FBM & dict, const std::string & propertyName, T propertyValue) {
 			return false;
 		}
+
+		//Setting EightByteTypes
 
 		bool set(EBM & dict, const std::string & propertyName, std::int64_t propertyValue) {
 			dict[propertyName] = EightByteTypes(propertyValue);
@@ -117,6 +117,11 @@ namespace Settings {
 		}
 
 		bool set(EBM & dict, const std::string & propertyName, std::uint64_t propertyValue) {
+			dict[propertyName] = EightByteTypes(propertyValue);
+			return true;
+		}
+
+		bool set(EBM & dict, const std::string & propertyName, double propertyValue) {
 			dict[propertyName] = EightByteTypes(propertyValue);
 			return true;
 		}
@@ -154,14 +159,6 @@ namespace Settings {
 		template <typename T>
 		bool Set(const std::string & propertyName, T propertyValue);
 
-		//Must be called from the main thread, as the setting structure is Read Only
-		//void Read(const std::string & filename);
-
-		//Table* Read(const std::string & filename);
-
-		//Writes the property tree to the file it opened with.
-		//void Write();
-
 
 
 	};
@@ -194,33 +191,6 @@ namespace Settings {
 
 	};
 
-	//namespace detail {
-	//	extern boost::property_tree::ptree propTree;
-	//}
 
-	//Must be called from the main thread, as the setting structure is Read Only
-	//void Read(std::string);
-
-	//Retrieves a value at the specified placeholder. Cannot accept user defined types, only system types
-	//template<typename T>
-	//T Get(std::string propertyName, T defaultValue) {
-	//	auto ret = detail::propTree.find(propertyName);
-
-	//	if (ret == detail::propTree.not_found()) {
-	//		detail::propTree.put(propertyName, defaultValue);
-	//		return defaultValue;
-	//	}
-
-	//	return detail::propTree.get(propertyName, defaultValue);
-	//}
-
-	//set value, overriding any point
-	//template<typename T>
-	//void Set(std::string propertyName, T defaultValue) {
-	//	detail::propTree.put(propertyName, defaultValue);
-	//}
-
-	//Writes the property tree to the file it opened with.
-	//void Write();
 
 };
