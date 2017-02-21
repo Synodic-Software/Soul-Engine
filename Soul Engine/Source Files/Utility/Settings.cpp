@@ -160,6 +160,32 @@ void testGetProperInputs() {
 
 }
 
+void testGetNonDefinedSettings() {
+	Settings::TableWrapper tw;
+	assert(tw.Set("a", std::int8_t(0)));
+	assert(tw.Set("b", std::uint8_t(1)));
+	assert(tw.Set("c", std::int16_t(2)));
+	assert(tw.Set("d", std::uint16_t(3)));
+	assert(tw.Set("e", std::int32_t(4)));
+	assert(tw.Set("f", std::uint32_t(5)));
+	assert(tw.Set("g", float(6.6)));
+	assert(tw.Set("h", std::int64_t(7)));
+	assert(tw.Set("i", std::uint64_t(8)));
+	assert(tw.Set("j", 9.9));
+
+	assert(tw.Get("j", std::int8_t(1)) == 1);
+	assert(tw.Get("i", std::uint8_t(2)) == 2);
+	assert(tw.Get("h", std::int16_t(3)) == 3);
+	assert(tw.Get("g", std::uint16_t(4)) == 4);
+	assert(tw.Get("f", std::int32_t(5)) == 5);
+	assert(tw.Get("e", std::uint32_t(6)) == 6);
+	assert(tw.Get("d", float(7.7)) == 7.7f);
+	assert(tw.Get("c", std::int64_t(8)) == 8);
+	assert(tw.Get("b", std::uint64_t(9)) == 9);
+	assert(tw.Get("a", 10.1) == 10.1);
+
+}
+
 void testSerialization() {
 	Settings::TableWrapper tw;
 	assert(tw.Set("a", std::int8_t(0)));
@@ -194,6 +220,7 @@ void testSerialization() {
 void runAllTests() {
 	testGetProperInputs();
 	testSerialization();
+	testGetNonDefinedSettings();
 }
 
 
