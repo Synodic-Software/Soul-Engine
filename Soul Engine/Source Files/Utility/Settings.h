@@ -19,7 +19,7 @@
 #include <utility>
 #include <type_traits>
 
-namespace Settings {
+namespace internal {
 	typedef boost::variant<std::int8_t, std::uint8_t> OneByteTypes;
 	typedef boost::variant<std::int16_t, std::uint16_t> TwoByteTypes;
 	typedef boost::variant<std::int32_t, std::uint32_t, float> FourByteTypes;
@@ -32,6 +32,7 @@ namespace Settings {
 
 
 	class Table {
+
 	private:
 		OBM obt;
 		TBM tbt;
@@ -51,9 +52,11 @@ namespace Settings {
 			const std::string & propertyName, T defaultValue);
 
 
-	//Helper Functions for setting values of each type
+		//Helper Functions for setting values of each type
+		//These allow data to be set only when the type of the property value
+		//and unordered map match
 
-	//Setting OneByteTypes
+		//Setting OneByteTypes
 
 		bool set(OBM & dict, const std::string & propertyName, std::int8_t propertyValue) {
 			dict[propertyName] = OneByteTypes(propertyValue);
@@ -173,24 +176,40 @@ namespace Settings {
 		~TableWrapper() { delete table; }
 		void Read(const std::string & _filename);
 		void Write();
-		
+
 		//See header for Settings::Table::Get(const std::string&,T) for more info
 		template <typename T>
-		T Get(const std::string & propertyName, T defaultValue) { 
-			return this->table->Get(propertyName, defaultValue); }
+		T Get(const std::string & propertyName, T defaultValue) {
+			return this->table->Get(propertyName, defaultValue);
+		}
 
 		//See header for Settings::Table::Get(const std::string&,T,T*) for more info
 		template <typename T>
-		bool Get(const std::string & propertyName, T defaultValue, T* propertyValue) { 
-			return this->table->Get(propertyName, defaultValue, propertyValue); }
+		bool Get(const std::string & propertyName, T defaultValue, T* propertyValue) {
+			return this->table->Get(propertyName, defaultValue, propertyValue);
+		}
 
 		//See header for Settings::Table::Set(const std::string&,T) for more info
 		template <typename T>
-		bool Set(const std::string & propertyName, T propertyValue) { 
-			return this->table->Set(propertyName, propertyValue); }
+		bool Set(const std::string & propertyName, T propertyValue) {
+			return this->table->Set(propertyName, propertyValue);
+		}
 
 	};
+}
 
+//Public API
+namespace Settings {
 
+	template<typename T>
+	T Get(std::string propertyName, T defaultValue);
 
-};
+	template<typename T>
+	bool Set(std::string propertyName, T defaultValue);
+
+	void Write();
+
+	//void Write(const std::string & _filename);
+
+	void Read(const std::string & _filename);
+}
