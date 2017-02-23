@@ -7,11 +7,15 @@
 #include <cassert>
 #include <sstream>
 
-OpenGLJob::OpenGLJob(const std::vector<Shader>& shaders)
-	: RasterJob(shaders){
+OpenGLJob::OpenGLJob()
+	: RasterJob(){
 
 }
 
 OpenGLJob::~OpenGLJob() {
+
+}
+
+void OpenGLJob::AttachShaders(const std::vector<Shader*>&) {
 
 }

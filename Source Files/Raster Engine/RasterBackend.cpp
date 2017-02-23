@@ -3,6 +3,8 @@
 #include "OpenGL/OpenGLBackend.h"
 #include "Vulkan/VulkanShader.h"
 #include "OpenGL/OpenGLShader.h"
+#include "Vulkan/VulkanJob.h"
+#include "OpenGL/OpenGLJob.h"
 #include <memory>
 
 namespace RasterBackend {
@@ -39,6 +41,15 @@ namespace RasterBackend {
 		}
 		else {*/
 			return new OpenGLShader(fileName, shaderT);
+		/*}*/
+	}
+
+	RasterJob* CreateJob() {
+		/*if (glfwVulkanSupported() == GLFW_TRUE) {
+		return new VulkanShader(fileName, shaderT);
+		}
+		else {*/
+		return new OpenGLJob();
 		/*}*/
 	}
 

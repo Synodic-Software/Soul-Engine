@@ -10,6 +10,9 @@
 Shader::Shader(std::string filePath, shader_t shaderType) :
 	name(filePath), type(shaderType), referenceCount(nullptr){
 	ExtractShader(filePath);
+
+	referenceCount = new unsigned;
+	*referenceCount = 1;
 }
 Shader::~Shader() {
 	if (referenceCount) Release();

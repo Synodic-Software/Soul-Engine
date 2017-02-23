@@ -7,8 +7,10 @@
 
 class OpenGLJob : public RasterJob {
 public:
-	OpenGLJob(const std::vector<Shader>&);
+	OpenGLJob();
 	~OpenGLJob();
+
+	void AttachShaders(const std::vector<Shader*>&);
 
 private:
 	GLuint vao;
