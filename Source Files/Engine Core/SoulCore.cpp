@@ -307,7 +307,7 @@ int main()
 
 		WindowManager::CreateWindow(type,"main", monitor,xPos,yPos,xSize,ySize);
 
-		WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300);
+		//WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300);
 
 		/*Material* whiteGray = new Material();
 		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);

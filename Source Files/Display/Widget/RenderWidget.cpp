@@ -1,8 +1,12 @@
 #include "RenderWidget.h"
 
+
 RenderWidget::RenderWidget()
 {
-
+	widgetJob->AttachShaders({
+		RasterBackend::CreateShader("vertex-shader[Renderer].txt",VERTEX_SHADER),
+		RasterBackend::CreateShader("fragment-shader[Renderer].txt",FRAGMENT_SHADER)
+	});
 }
 
 RenderWidget::~RenderWidget()

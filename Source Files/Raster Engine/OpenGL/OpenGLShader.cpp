@@ -40,9 +40,6 @@ OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
 		std::cerr << msg << std::endl;
 		throw std::runtime_error(msg);
 	}
-
-	referenceCount = new unsigned;
-	*referenceCount = 1;
 }
 
 OpenGLShader::~OpenGLShader() {

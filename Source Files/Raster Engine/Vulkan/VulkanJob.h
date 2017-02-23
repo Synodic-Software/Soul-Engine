@@ -6,8 +6,10 @@
 
 class VulkanJob:public RasterJob {
 public:
-	VulkanJob(const std::vector<Shader>&);
+	VulkanJob();
 	~VulkanJob();
+
+	void AttachShaders(const std::vector<Shader*>&);
 private:
 
 };

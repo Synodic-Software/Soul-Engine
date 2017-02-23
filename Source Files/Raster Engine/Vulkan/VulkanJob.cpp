@@ -7,10 +7,14 @@
 #include <cassert>
 #include <sstream>
 
-VulkanJob::VulkanJob(const std::vector<Shader>& shaders)
-	: RasterJob(shaders) {
+VulkanJob::VulkanJob()
+	: RasterJob() {
 
 }
 VulkanJob::~VulkanJob() {
+
+}
+
+void VulkanJob::AttachShaders(const std::vector<Shader*>&) {
 
 }

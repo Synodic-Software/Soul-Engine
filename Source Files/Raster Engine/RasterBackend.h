@@ -27,6 +27,8 @@ namespace RasterBackend {
 
 	Shader* CreateShader(const std::string&, shader_t);
 
+	RasterJob* CreateJob();
+
 	void ResizeWindow(GLFWwindow*, int, int);
 
 	void BuildWindow(GLFWwindow*);
