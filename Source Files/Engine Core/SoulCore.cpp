@@ -310,7 +310,9 @@ int main()
 			return new SingleLayout(win, new RenderWidget());
 		});
 
-		//WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300);
+		/*WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300, [](GLFWwindow* win) {
+			return new SingleLayout(win, new RenderWidget());
+		});*/
 
 		/*Material* whiteGray = new Material();
 		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);

@@ -178,6 +178,12 @@
     <Filter Include="Engine Backend\Display\Layout">
       <UniqueIdentifier>{5f674607-8b24-4025-ae86-dffe6e51b262}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{9eab1205-d6c9-4b62-9b12-d3fe5cf05080}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{0a48df46-08a2-4c4c-93c2-5d82046ad2cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -624,5 +630,13 @@
     <None Include="..\Source Files\Utility\OpenCL\OpenCLHelper.cl">
       <Filter>Engine Backend\Utility\OpenCL</Filter>
     </None>
+    <None Include="..\Resources\Shaders\vertex-shader[Renderer].glsl">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\Resources\Shaders\fragment-shader[Renderer].glsl">
+      <Filter>Resources\Shaders</Filter>
+    </Media>
   </ItemGroup>
 </Project>

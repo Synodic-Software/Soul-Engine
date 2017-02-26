@@ -27,13 +27,6 @@ public:
 	virtual void Draw(GLFWwindow*, RasterJob*);
 
 	template<typename Fn, typename ... Args>
-	void RasterFunction(GLFWwindow* window, Fn && fn, Args && ... args) {
-		MakeContextCurrent(window);
-		fn(std::forward<Args>(args)...);
-		MakeContextCurrent(nullptr);
-	}
-
-	template<typename Fn, typename ... Args>
 	void RasterFunction(Fn && fn, Args && ... args) {
 		MakeContextCurrent(defaultContext->window);
 		fn(std::forward<Args>(args)...);
