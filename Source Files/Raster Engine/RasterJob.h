@@ -7,8 +7,23 @@
 
 #include "boost\variant.hpp"
 #include "Metrics.h"
+#include "Utility\Includes\GLMIncludes.h"
 
-typedef boost::variant<int, float, double, bool, uint> RasterVariant;
+
+typedef boost::variant<
+	int, 
+	float, 
+	double, 
+	bool, 
+	uint, 
+	glm::mat4, 
+	glm::vec3, 
+	glm::uvec3, 
+	glm::vec4, 
+	glm::uvec4, 
+	glm::vec2, 
+	glm::uvec2
+> RasterVariant;
 
 class RasterJob {
 public:
@@ -20,7 +35,9 @@ public:
 
 	virtual void AttachShaders(const std::vector<Shader*>&)=0;
 
-private:
+protected:
 	std::map<std::string, RasterVariant> shaderUniforms;
 	std::vector<Shader*> shaders;
+private:
+	
 };

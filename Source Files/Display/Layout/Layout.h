@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Display\Widget\Widget.h"
 
 #include "Metrics.h"
@@ -9,15 +10,16 @@ class Layout : public Widget
 {
 
 public:
-
 	Layout();
+	Layout(GLFWwindow*);
 	~Layout();
 
-	virtual void Draw();
+	virtual void Draw(GLFWwindow*);
+	virtual void UpdateWindow(GLFWwindow*);
 
 protected:
 
-	std::list<std::unique_ptr<Widget> > widgets;
+	std::list<Widget*> widgets;
 
 private:
 };

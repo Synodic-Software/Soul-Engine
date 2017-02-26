@@ -1,4 +1,5 @@
 #include "Widget.h"
+#include "Raster Engine\RasterBackend.h"
 
 Widget::Widget()
 {
@@ -8,4 +9,13 @@ Widget::Widget()
 Widget::~Widget()
 {
 
+}
+
+void Widget::Draw(GLFWwindow* windowHandle)
+{
+	RasterBackend::Draw(windowHandle, widgetJob);
+}
+
+void Widget::UpdateWindow(GLFWwindow* winIn) {
+	window = winIn;
 }

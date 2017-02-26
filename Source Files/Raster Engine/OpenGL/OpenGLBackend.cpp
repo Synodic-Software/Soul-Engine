@@ -6,17 +6,21 @@
 
 uint OpenGLBackend::windowCounter = 0;
 OpenGLBackend::WindowInformation* OpenGLBackend::currentContext = nullptr;
+OpenGLBackend::WindowInformation*  OpenGLBackend::defaultContext = nullptr;
 
 //must be called on the main thread
-void OpenGLBackend::MakeContextCurrent(WindowInformation* window)
+void OpenGLBackend::MakeContextCurrent(GLFWwindow* window)
 {
+	OpenGLBackend::WindowInformation* info;
 	if (window) {
-		glfwMakeContextCurrent(window->window);
+		info = windowStorage.at(window).get();
+		glfwMakeContextCurrent(info->window);
 	}
 	else {
+		info = nullptr;
 		glfwMakeContextCurrent(nullptr);
 	}
-	currentContext = window;
+	currentContext = info;
 }
 
 GLEWContext* glewGetContext()
@@ -48,7 +52,11 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 
 		windowStorage[window] = std::unique_ptr<WindowInformation>(new WindowInformation(window, std::unique_ptr<GLEWContext>(new GLEWContext())));
 
-		MakeContextCurrent(windowStorage[window].get());
+		if (windowStorage.size()==1) {
+			defaultContext = windowStorage[window].get();
+		}
+
+		MakeContextCurrent(window);
 		glewExperimental = true;
 		err = glewInit();
 
@@ -73,7 +81,7 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 void OpenGLBackend::ResizeWindow(GLFWwindow* window, int width, int height) {
 	if (windowStorage.find(window) != windowStorage.end()) {
 
-		MakeContextCurrent(windowStorage.at(window).get());
+		MakeContextCurrent(window);
 		glViewport(0, 0, width, height);
 		MakeContextCurrent(nullptr);
 	}
@@ -95,17 +103,16 @@ void OpenGLBackend::PostRaster(GLFWwindow* window) {
 
 
 
-void OpenGLBackend::Draw(GLFWwindow* window) {
+void OpenGLBackend::Draw(GLFWwindow* window, RasterJob* job) {
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &window]() {
 
 		if (windowStorage.find(window)!= windowStorage.end()) {
 
-			MakeContextCurrent(windowStorage.at(window).get());
+			MakeContextCurrent(window);
 			PreRaster(window);
 
-
-
+			
 
 			PostRaster(window);
 			MakeContextCurrent(nullptr);

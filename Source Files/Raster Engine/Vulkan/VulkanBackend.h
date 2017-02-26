@@ -16,7 +16,14 @@ public:
 	virtual void BuildWindow(GLFWwindow*);
 	void PreRaster(GLFWwindow*);
 	void PostRaster(GLFWwindow*);
-	virtual void Draw(GLFWwindow*);
+	virtual void Draw(GLFWwindow*, RasterJob*);
+
+	template<typename Fn,
+		typename ... Args>
+		void RasterFunction(Fn && fn, Args && ... args) {
+
+
+	}
 
 private:
 

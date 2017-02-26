@@ -18,8 +18,6 @@ namespace RasterBackend {
 
 	}
 
-
-	//encapsulate a backend and pass info to it
 	namespace detail {
 		std::unique_ptr<Backend> raster;
 	}
@@ -35,12 +33,12 @@ namespace RasterBackend {
 
 	}
 
-	Shader* CreateShader(const std::string& fileName, shader_t shaderT) {
+	Shader* CreateShader(GLFWwindow* window,const std::string& fileName, shader_t shaderT) {
 		/*if (glfwVulkanSupported() == GLFW_TRUE) {
 			return new VulkanShader(fileName, shaderT);
 		}
 		else {*/
-			return new OpenGLShader(fileName, shaderT);
+			return new OpenGLShader(window,fileName, shaderT);
 		/*}*/
 	}
 
@@ -69,7 +67,7 @@ namespace RasterBackend {
 
 	}
 
-	void Draw(GLFWwindow* window) {
-		detail::raster.get()->Draw(window);
+	void Draw(GLFWwindow* window, RasterJob* job) {
+		detail::raster.get()->Draw(window, job);
 	}
 }

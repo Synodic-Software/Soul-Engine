@@ -438,6 +438,9 @@
     <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLJob.h">
       <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Display\Layout\SingleLayout.h">
+      <Filter>Engine Backend\Display\Layout</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
@@ -532,6 +535,9 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLJob.cpp">
       <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Display\Layout\SingleLayout.cpp">
+      <Filter>Engine Backend\Display\Layout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

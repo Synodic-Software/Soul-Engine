@@ -7,7 +7,7 @@
 #include <cassert>
 #include <sstream>
 
-OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
+OpenGLShader::OpenGLShader(GLFWwindow* window,std::string filePath, shader_t shaderType)
 	: Shader(filePath, shaderType), object(0){
 
 

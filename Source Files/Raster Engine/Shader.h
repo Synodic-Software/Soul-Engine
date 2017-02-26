@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "Utility\Includes\GLFWIncludes.h"
 
 enum shader_t {VERTEX_SHADER,FRAGMENT_SHADER};
 
