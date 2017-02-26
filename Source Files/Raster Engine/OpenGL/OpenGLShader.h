@@ -7,7 +7,7 @@
 
 class OpenGLShader : public Shader {
 public:
-	OpenGLShader(std::string, shader_t);
+	OpenGLShader(GLFWwindow* window,std::string, shader_t);
 	OpenGLShader(const OpenGLShader& other);
 	virtual ~OpenGLShader();
 

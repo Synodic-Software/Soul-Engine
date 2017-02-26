@@ -17,7 +17,8 @@
 #include "Bounding Volume Heirarchy/BVH.h"
 #include "GPGPU\GPUManager.h"
 #include "Display\Window\WindowManager.h"
-
+#include "Display\Layout\SingleLayout.h"
+#include "Display\Widget\RenderWidget.h"
 #include "Multithreading\Scheduler.h"
 
 namespace Soul {
@@ -305,7 +306,9 @@ int main()
 		int monitor = Settings::Get("MainWindow.Monitor", 0);
 		WindowType type = static_cast<WindowType>(Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED)));
 
-		WindowManager::CreateWindow(type,"main", monitor,xPos,yPos,xSize,ySize);
+		WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize, [](GLFWwindow* win) {
+			return new SingleLayout(win, new RenderWidget());
+		});
 
 		//WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300);
 

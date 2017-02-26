@@ -305,6 +305,6 @@ void VulkanBackend::PostRaster(GLFWwindow* window) {
 
 }
 
-void VulkanBackend::Draw(GLFWwindow* window) {
+void VulkanBackend::Draw(GLFWwindow* window, RasterJob* job) {
 
 }

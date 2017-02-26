@@ -3,6 +3,9 @@
 #include "Utility\Includes\GLFWIncludes.h"
 #include "Metrics.h"
 #include <string>
+#include <functional>
+
+#include "Display\Layout\Layout.h"
 
 #ifdef WIN32
 	#undef CreateWindow
@@ -20,7 +23,7 @@ namespace WindowManager {
 
 	void SignelClose();
 
-	void CreateWindow(WindowType, const std::string&,int monitor, uint x, uint y, uint width, uint height);
+	void CreateWindow(WindowType, const std::string&,int monitor, uint x, uint y, uint width, uint height, std::function<Layout*(GLFWwindow*)>);
 
 	void Draw();
 

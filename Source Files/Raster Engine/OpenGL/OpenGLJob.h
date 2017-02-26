@@ -16,4 +16,6 @@ private:
 	GLuint vao;
 	GLuint vbo;
 	GLuint ibo;
+
+	GLuint object;
 };

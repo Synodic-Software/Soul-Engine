@@ -24,7 +24,21 @@ public:
 
 	//disengages the gl context
 	void PostRaster(GLFWwindow*);
-	virtual void Draw(GLFWwindow*);
+	virtual void Draw(GLFWwindow*, RasterJob*);
+
+	template<typename Fn, typename ... Args>
+	void RasterFunction(GLFWwindow* window, Fn && fn, Args && ... args) {
+		MakeContextCurrent(window);
+		fn(std::forward<Args>(args)...);
+		MakeContextCurrent(nullptr);
+	}
+
+	template<typename Fn, typename ... Args>
+	void RasterFunction(Fn && fn, Args && ... args) {
+		MakeContextCurrent(defaultContext->window);
+		fn(std::forward<Args>(args)...);
+		MakeContextCurrent(nullptr);
+	}
 
 	struct WindowInformation
 	{
@@ -40,6 +54,9 @@ public:
 	};
 
 	static WindowInformation* currentContext;
+	static WindowInformation* defaultContext;
+
+protected:
 
 private:
 
@@ -54,7 +71,6 @@ private:
 	static uint windowCounter;
 	std::map<GLFWwindow*, std::unique_ptr<WindowInformation> > windowStorage;
 
-	void MakeContextCurrent(WindowInformation*);
-
+	void MakeContextCurrent(GLFWwindow*);
 
 };

@@ -1,12 +1,20 @@
 #include "RenderWidget.h"
-
+#include "Raster Engine\RasterBackend.h"
 
 RenderWidget::RenderWidget()
 {
+	//attach shaders to render a quad and apply a texture
 	widgetJob->AttachShaders({
-		RasterBackend::CreateShader("vertex-shader[Renderer].txt",VERTEX_SHADER),
-		RasterBackend::CreateShader("fragment-shader[Renderer].txt",FRAGMENT_SHADER)
+		RasterBackend::CreateShader(window,"vertex-shader[Renderer].txt",VERTEX_SHADER),
+		RasterBackend::CreateShader(window,"fragment-shader[Renderer].txt",FRAGMENT_SHADER)
 	});
+
+	//init all uniform data
+	//(*widgetJob)[std::string("camera")]=
+		//	cameraUniform = CUDAtoScreen->uniform("camera");
+		//	modelUniform = CUDAtoScreen->uniform("model");
+		//	screenUniform = CUDAtoScreen->uniform("screen");
+		//	screenModUniform = CUDAtoScreen->uniform("screenMod");
 }
 
 RenderWidget::~RenderWidget()
