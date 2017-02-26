@@ -90,11 +90,11 @@ namespace WindowManager {
 			windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, sharedCtx));
 		}
 
-		windows.back()->layout.reset(createLayout(windows.back()->windowHandle));
-
+		windows.back()->layout.reset(createLayout(masterWindow->windowHandle));
 	}
 
 	void Draw() {
+		std::unique_lock<std::mutex>(windowMutex);
 
 		for (auto& itr : windows) {
 			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, [&itr]() {
@@ -142,6 +142,8 @@ namespace WindowManager {
 
 	void Refresh(GLFWwindow* handler)
 	{
+		std::unique_lock<std::mutex>(windowMutex);
+
 		Window* window = static_cast<Window*>(glfwGetWindowUserPointer(handler));
 		window->Draw();
 	}

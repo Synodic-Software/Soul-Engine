@@ -7,6 +7,8 @@
 #include <cassert>
 #include <sstream>
 
+#include "Utility\Logger.h"
+
 Shader::Shader(std::string filePath, shader_t shaderType) :
 	name(filePath), type(shaderType), referenceCount(nullptr){
 	ExtractShader(filePath);
@@ -24,7 +26,7 @@ void Shader::ExtractShader(const std::string& filePath) {
 	std::ifstream file;
 	file.open(filePath.c_str(), std::ios::in | std::ios::binary);
 	if (!file.is_open()) {
-		throw std::runtime_error(std::string("Failed to open file: ") + filePath);
+		S_LOG_ERROR("Failed to open file: ", filePath);
 	}
 
 	//read whole file into stringstream buffer

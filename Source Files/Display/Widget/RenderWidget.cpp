@@ -5,8 +5,8 @@ RenderWidget::RenderWidget()
 {
 	//attach shaders to render a quad and apply a texture
 	widgetJob->AttachShaders({
-		RasterBackend::CreateShader(window,"vertex-shader[Renderer].txt",VERTEX_SHADER),
-		RasterBackend::CreateShader(window,"fragment-shader[Renderer].txt",FRAGMENT_SHADER)
+		RasterBackend::CreateShader("../Resources/Shaders/vertex-shader[Renderer].glsl",VERTEX_SHADER),
+		RasterBackend::CreateShader("../Resources/Shaders/fragment-shader[Renderer].glsl",FRAGMENT_SHADER)
 	});
 
 	//init all uniform data

@@ -3,7 +3,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>$(ProjectDir)..\Libraries;$(ProjectDir)..\Libraries\vulkan\Include;$(ProjectDir)..\Include Files;$(ProjectDir)..\Source Files;$(CUDA_INC_PATH);$(ProjectDir)..\Libraries\glfw\include;$(ProjectDir)..\Libraries\glm;$(ProjectDir)..\Libraries\stb;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\Resources;$(ProjectDir)..\Libraries;$(ProjectDir)..\Libraries\vulkan\Include;$(ProjectDir)..\Include Files;$(ProjectDir)..\Source Files;$(CUDA_INC_PATH);$(ProjectDir)..\Libraries\glfw\include;$(ProjectDir)..\Libraries\glm;$(ProjectDir)..\Libraries\stb;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)..\Libraries\vulkan\Bin;$(ProjectDir)..\Libraries;$(ProjectDir)..\Libraries\glfw\bin;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);$(ExecutablePath)</ExecutablePath>
     <ReferencePath>$(VC_ReferencesPath);$(ReferencePath)</ReferencePath>
@@ -18,7 +18,7 @@
     </Lib>
     <ClCompile>
       <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;GLEW_MX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Libraries\glew\include;$(ProjectDir)..\Libraries\boost;$(ProjectDir)..\Libraries\tinyObj;C:\VulkanSDK\1.0.30.0\Include;$(ProjectDir)..\Include Files;$(ProjectDir)..\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\Libraries\glfw\include;$(ProjectDir)..\Libraries\glm;$(ProjectDir)..\Libraries\stb;$(IncludePath);$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Resources;$(ProjectDir)..\Libraries\glew\include;$(ProjectDir)..\Libraries\boost;$(ProjectDir)..\Libraries\tinyObj;C:\VulkanSDK\1.0.30.0\Include;$(ProjectDir)..\Include Files;$(ProjectDir)..\Source Files;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\Libraries\glfw\include;$(ProjectDir)..\Libraries\glm;$(ProjectDir)..\Libraries\stb;$(IncludePath);$(AMDAPPSDKROOT)/include;$(AMDAPPSDKROOT)/include/SDKUtil;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>

@@ -33,12 +33,12 @@ namespace RasterBackend {
 
 	}
 
-	Shader* CreateShader(GLFWwindow* window,const std::string& fileName, shader_t shaderT) {
+	Shader* CreateShader(const std::string& fileName, shader_t shaderT) {
 		/*if (glfwVulkanSupported() == GLFW_TRUE) {
 			return new VulkanShader(fileName, shaderT);
 		}
 		else {*/
-			return new OpenGLShader(window,fileName, shaderT);
+			return new OpenGLShader(fileName, shaderT);
 		/*}*/
 	}
 
