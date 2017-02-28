@@ -1,4 +1,4 @@
-#version 440 core
+#version 430 core
 in vec4 vert_VS_in;
 
 uniform mat4 camera;

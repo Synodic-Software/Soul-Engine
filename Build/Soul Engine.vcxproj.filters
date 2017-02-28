@@ -633,10 +633,8 @@
     <None Include="..\Resources\Shaders\vertex-shader[Renderer].glsl">
       <Filter>Resources\Shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="..\Resources\Shaders\fragment-shader[Renderer].glsl">
+    <None Include="..\Resources\Shaders\fragment-shader[Renderer].glsl">
       <Filter>Resources\Shaders</Filter>
-    </Media>
+    </None>
   </ItemGroup>
 </Project>
