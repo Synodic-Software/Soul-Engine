@@ -1,13 +1,19 @@
 #pragma once
 
-void ExtractDevices();
+#include <vector>
 
-int GetCoreCount();
+namespace CUDAProperties{
 
-int GetWarpSize();
+	void ExtractDevices(std::vector<int>&);
 
-int GetSMCount();
+	int GetCoreCount();
 
-int GetBlockHeight();
+	int GetWarpSize();
 
-void Terminate();
+	int GetSMCount();
+
+	int GetBlockHeight();
+
+	void Terminate();
+
+}

@@ -1,6 +1,6 @@
 #pragma once
 
-enum Backend {CUDA, OpenCL};
+enum GPUBackend {CUDA, OpenCL};
 
 namespace GPUManager {
 
