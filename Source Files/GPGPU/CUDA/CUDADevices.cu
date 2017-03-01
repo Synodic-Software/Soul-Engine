@@ -6,51 +6,55 @@
 int deviceCount;
 cudaDeviceProp* deviceProp;
 
-void ExtractDevices(){
-	cudaError_t error = cudaGetDeviceCount(&deviceCount);
+namespace CUDAProperties {
 
-	if (deviceCount == 0)
-	{
-		return;
+	void ExtractDevices(std::vector<int>& devices) {
+		cudaError_t error = cudaGetDeviceCount(&deviceCount);
+
+		if (deviceCount == 0)
+		{
+			return;
+		}
+
+		deviceProp = new cudaDeviceProp[deviceCount];
+
+		for (int dev = 0; dev < deviceCount; ++dev) {
+
+			CudaCheck(cudaSetDevice(dev));
+			CudaCheck(cudaGetDeviceProperties(&deviceProp[dev], dev));
+			devices.push_back(dev);
+		}
+
 	}
 
-	deviceProp = new cudaDeviceProp[deviceCount];
-
-	for (int dev = 0; dev < deviceCount; ++dev){
-
-		CudaCheck(cudaSetDevice(dev));
-		CudaCheck(cudaGetDeviceProperties(&deviceProp[dev], dev));
-
+	int GetCoreCount() {
+		int device;
+		CudaCheck(cudaGetDevice(&device));
+		return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) * deviceProp[device].multiProcessorCount;
 	}
 
-}
+	int GetSMCount() {
+		int device;
+		CudaCheck(cudaGetDevice(&device));
+		return deviceProp[device].multiProcessorCount;
+	}
 
-int GetCoreCount(){
-	int device;
-	CudaCheck(cudaGetDevice(&device));
-	return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) * deviceProp[device].multiProcessorCount;
-}
+	int GetWarpSize() {
+		int device;
+		CudaCheck(cudaGetDevice(&device));
 
-int GetSMCount(){
-	int device;
-	CudaCheck(cudaGetDevice(&device));
-	return deviceProp[device].multiProcessorCount;
-}
+		return deviceProp[device].warpSize;
+	}
 
-int GetWarpSize(){
-	int device;
-	CudaCheck(cudaGetDevice(&device));
+	int GetBlockHeight() {
+		int device;
+		CudaCheck(cudaGetDevice(&device));
 
-	return deviceProp[device].warpSize;
-}
+		return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) / GetWarpSize();
+	}
 
-int GetBlockHeight(){
-	int device;
-	CudaCheck(cudaGetDevice(&device));
+	void Terminate() {
+		CudaCheck(cudaDeviceReset());
+	}
 
-	return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) / GetWarpSize();
-}
-
-void Terminate() {
-	CudaCheck(cudaDeviceReset());
 }
