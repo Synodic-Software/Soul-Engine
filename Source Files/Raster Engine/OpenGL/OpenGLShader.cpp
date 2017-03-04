@@ -33,8 +33,6 @@ OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
 				S_LOG_FATAL("glCreateShader failed");
 			}
 
-			std::cout << object<<std::endl;
-
 			//set the source code
 			const char* code = codeStr.c_str();
 			glShaderSource(object, 1, (const GLchar**)&code, NULL);

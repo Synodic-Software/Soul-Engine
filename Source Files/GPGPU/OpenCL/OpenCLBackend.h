@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace CUDAProperties{
+namespace OpenCLBackend {
 
 	void ExtractDevices(std::vector<int>&);
 

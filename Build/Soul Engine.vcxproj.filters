@@ -324,9 +324,6 @@
     <ClInclude Include="..\Source Files\Engine Core\BasicDependencies.h">
       <Filter>Engine Backend\Engine Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevices.cuh">
-      <Filter>Engine Backend\GPGPU\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\GPGPU\GPUManager.h">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClInclude>
@@ -447,6 +444,12 @@
     <ClInclude Include="..\Source Files\Display\Layout\SingleLayout.h">
       <Filter>Engine Backend\Display\Layout</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.h">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABackend.h">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
@@ -545,6 +548,12 @@
     <ClCompile Include="..\Source Files\Display\Layout\SingleLayout.cpp">
       <Filter>Engine Backend\Display\Layout</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.cpp">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABackend.cpp">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
@@ -601,9 +610,6 @@
     <CudaCompile Include="..\Source Files\Engine Core\Scene\CUDA\Sky.cu">
       <Filter>Engine Backend\Engine Core\Scene\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\GPGPU\CUDA\CUDADevices.cu">
-      <Filter>Engine Backend\GPGPU\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\Source Files\Physics Engine\CUDA\PhysicsEngine.cu">
       <Filter>Engine Backend\Physics Engine\CUDA</Filter>
     </CudaCompile>
@@ -633,8 +639,6 @@
     <None Include="..\Resources\Shaders\vertex-shader[Renderer].glsl">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="..\Resources\Shaders\fragment-shader[Renderer].glsl">
-      <Filter>Resources\Shaders</Filter>
-    </None>
+    <None Include="..\Resources\Shaders\fragment-shader[Renderer].glsl" />
   </ItemGroup>
 </Project>

@@ -6,4 +6,5 @@ namespace GPUManager {
 
 	void ExtractDevices();
 
+	void CreateRasterBuffer();
 }
