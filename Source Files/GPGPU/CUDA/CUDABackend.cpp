@@ -1,12 +1,13 @@
-#include "CUDADevices.cuh"
+#include "CUDABackend.h"
 #include <device_launch_parameters.h>
+#include <cuda.h>
 #include <cuda_runtime_api.h>
 #include "Utility/CUDA/CudaHelper.cuh"
 
-int deviceCount;
-cudaDeviceProp* deviceProp;
+static int deviceCount;
+static cudaDeviceProp* deviceProp;
 
-namespace CUDAProperties {
+namespace CUDABackend {
 
 	void ExtractDevices(std::vector<int>& devices) {
 		cudaError_t error = cudaGetDeviceCount(&deviceCount);

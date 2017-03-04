@@ -9,7 +9,7 @@
 #include <thrust/remove.h>
 #include <cuda_runtime.h>
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "GPGPU\CUDA\CUDADevices.cuh"
+#include "GPGPU\CUDA\CUDABackend.h"
 
 struct is_marked
 {
@@ -698,13 +698,13 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* scene){
 			counter[0] = 0;
 
 			cudaOccupancyMaxPotentialBlockSize(&GridSize, &BlockSize, EngineExecute, 0, 0);
-			dim3 blockSizeDim(BlockSize/ CUDAProperties::GetBlockHeight(), CUDAProperties::GetBlockHeight(), 1);
+			dim3 blockSizeDim(BlockSize/ CUDABackend::GetBlockHeight(), CUDABackend::GetBlockHeight(), 1);
 			CudaCheck(cudaDeviceSynchronize());
 
-			dim3 blockSizeE(CUDAProperties::GetWarpSize(), CUDAProperties::GetBlockHeight(), 1);
-			int blockWarps = (blockSizeE.x * blockSizeE.y + (CUDAProperties::GetWarpSize() - 1)) / CUDAProperties::GetWarpSize();
+			dim3 blockSizeE(CUDABackend::GetWarpSize(), CUDABackend::GetBlockHeight(), 1);
+			int blockWarps = (blockSizeE.x * blockSizeE.y + (CUDABackend::GetWarpSize() - 1)) / CUDABackend::GetWarpSize();
 			//int numBlocks = (GetCoreCount() + blockWarps - 1) / blockWarps;
-			int numBlocks = CUDAProperties::GetSMCount();
+			int numBlocks = CUDABackend::GetSMCount();
 			// Launch.
 
 

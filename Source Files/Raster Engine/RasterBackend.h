@@ -4,8 +4,15 @@
 #include "Raster Engine\Shader.h"
 #include "Raster Engine\RasterJob.h"
 
+enum BackendName { OpenGL, Vulkan};
+
 
 namespace RasterBackend {
+
+		/////////////////////////////////////////
+		/*         Backend Definitions         */
+		/////////////////////////////////////////
+
 	class Backend {
 	public:
 		Backend();
@@ -25,8 +32,14 @@ namespace RasterBackend {
 
 	namespace detail {
 		extern std::unique_ptr<Backend> raster;
+		extern BackendName backend;
 	}
 	
+
+		/////////////////////////////////////////
+		/*         Public Definitions         */
+		/////////////////////////////////////////
+
 
 	void Init();
 

@@ -20,15 +20,19 @@ namespace RasterBackend {
 
 	namespace detail {
 		std::unique_ptr<Backend> raster;
+		BackendName backend;
 	}
 
 	void Init() {
 
 		/*if (glfwVulkanSupported() == GLFW_TRUE) {
 			detail::raster.reset(new VulkanBackend());
+			backend = Vulkan;
+
 		}
 		else {*/
 			detail::raster.reset(new OpenGLBackend());
+			detail::backend = OpenGL;
 		/*}*/
 
 	}
