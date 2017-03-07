@@ -23,6 +23,7 @@
 #include <type_traits>
 
 
+//"Under the hood" functions to handle settings.  Should not be used externally.
 namespace internal {
 
 	//Type definitions for data structures used to store settings of
@@ -269,3 +270,5 @@ namespace Settings {
 	//Write instead of Write(const std::string & _filename).
 	void SetFilename(const std::string & _filename);
 }
+
+#include "Settings.cpp"
