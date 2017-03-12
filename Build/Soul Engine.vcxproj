@@ -134,7 +134,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
     <ClInclude Include="..\Source Files\Physics Engine\CUDA\PhysicsEngine.cuh" />
     <ClInclude Include="..\Source Files\Physics Engine\PhysicsEngine.h" />
+    <ClInclude Include="..\Source Files\Raster Engine\Buffer.h" />
     <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLBackend.h" />
+    <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLJob.h" />
     <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLShader.h" />
     <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLUtility.h" />
@@ -142,6 +144,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="..\Source Files\Raster Engine\RasterJob.h" />
     <ClInclude Include="..\Source Files\Raster Engine\Shader.h" />
     <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanBackend.h" />
+    <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanJob.h" />
     <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanShader.h" />
     <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanUtility.h" />
@@ -188,13 +191,16 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="..\Source Files\Input\InputState.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />
     <ClCompile Include="..\Source Files\Physics Engine\PhysicsEngine.cpp" />
+    <ClCompile Include="..\Source Files\Raster Engine\Buffer.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLBackend.cpp" />
+    <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLJob.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\RasterBackend.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\RasterJob.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Shader.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanBackend.cpp" />
+    <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanBuffer.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanJob.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="..\Source Files\Ray Engine\RayEngine.cpp" />
