@@ -19,6 +19,8 @@ protected:
 	RasterJob* widgetJob;
 	GLFWwindow* window;
 
+	glm::uvec2 size;
+
 private:
 
 };

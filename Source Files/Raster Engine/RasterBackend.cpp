@@ -5,6 +5,8 @@
 #include "OpenGL/OpenGLShader.h"
 #include "Vulkan/VulkanJob.h"
 #include "OpenGL/OpenGLJob.h"
+#include "Vulkan/VulkanBuffer.h"
+#include "OpenGL/OpenGLBuffer.h"
 #include <memory>
 
 namespace RasterBackend {
@@ -20,8 +22,10 @@ namespace RasterBackend {
 
 	namespace detail {
 		std::unique_ptr<Backend> raster;
-		BackendName backend;
 	}
+
+	BackendName backend;
+
 
 	void Init() {
 
@@ -32,7 +36,7 @@ namespace RasterBackend {
 		}
 		else {*/
 			detail::raster.reset(new OpenGLBackend());
-			detail::backend = OpenGL;
+			backend = OpenGL;
 		/*}*/
 
 	}
@@ -43,6 +47,15 @@ namespace RasterBackend {
 		}
 		else {*/
 			return new OpenGLShader(fileName, shaderT);
+		/*}*/
+	}
+
+	Buffer* CreateBuffer(uint size) {
+		/*if (glfwVulkanSupported() == GLFW_TRUE) {
+		return new VulkanBuffer();
+		}
+		else {*/
+		return new OpenGLBuffer(size);
 		/*}*/
 	}
 
@@ -74,4 +87,6 @@ namespace RasterBackend {
 	void Draw(GLFWwindow* window, RasterJob* job) {
 		detail::raster.get()->Draw(window, job);
 	}
+
+	
 }

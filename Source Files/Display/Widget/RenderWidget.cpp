@@ -1,5 +1,6 @@
 #include "RenderWidget.h"
 #include "Raster Engine\RasterBackend.h"
+#include "Raster Engine\Buffer.h"
 
 RenderWidget::RenderWidget()
 {
@@ -8,6 +9,8 @@ RenderWidget::RenderWidget()
 		RasterBackend::CreateShader("../Resources/Shaders/vertex-shader[Renderer].glsl",VERTEX_SHADER),
 		RasterBackend::CreateShader("../Resources/Shaders/fragment-shader[Renderer].glsl",FRAGMENT_SHADER)
 	});
+
+	RasterBackend::CreateBuffer(size.x*size.y*sizeof(glm::vec4));
 
 	//init all uniform data
 	//(*widgetJob)[std::string("camera")]=

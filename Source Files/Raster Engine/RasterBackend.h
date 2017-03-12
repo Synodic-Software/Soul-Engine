@@ -3,9 +3,9 @@
 #include "Display\Window\Window.h"
 #include "Raster Engine\Shader.h"
 #include "Raster Engine\RasterJob.h"
+#include "Raster Engine\Buffer.h"
 
 enum BackendName { OpenGL, Vulkan};
-
 
 namespace RasterBackend {
 
@@ -32,13 +32,14 @@ namespace RasterBackend {
 
 	namespace detail {
 		extern std::unique_ptr<Backend> raster;
-		extern BackendName backend;
 	}
 	
 
 		/////////////////////////////////////////
 		/*         Public Definitions         */
 		/////////////////////////////////////////
+
+	extern BackendName backend;
 
 
 	void Init();
@@ -47,6 +48,8 @@ namespace RasterBackend {
 	void SetWindowHints(GLFWwindow*&);
 
 	Shader* CreateShader(const std::string&, shader_t);
+
+	Buffer* CreateBuffer(uint size);
 
 	RasterJob* CreateJob();
 

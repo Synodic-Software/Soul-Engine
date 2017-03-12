@@ -450,6 +450,15 @@
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABackend.h">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Raster Engine\Buffer.h">
+      <Filter>Engine Backend\Raster Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLBuffer.h">
+      <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanBuffer.h">
+      <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
@@ -553,6 +562,15 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABackend.cpp">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Raster Engine\Buffer.cpp">
+      <Filter>Engine Backend\Raster Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLBuffer.cpp">
+      <Filter>Engine Backend\Raster Engine\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanBuffer.cpp">
+      <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
