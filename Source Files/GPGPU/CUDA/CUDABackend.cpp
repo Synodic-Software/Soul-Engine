@@ -62,9 +62,11 @@ namespace CUDABackend {
 		CudaCheck(cudaDeviceReset());
 	}
 
-	void CreateRasterBuffer(uint size) {
+	GPURasterBuffer* CreateRasterBuffer(uint size) {
 
 		Buffer* rasterBuffer = RasterBackend::CreateBuffer(size);
+
+		GPURasterBuffer* buffer;
 
 		if (RasterBackend::backend == OpenGL) {
 
@@ -91,7 +93,7 @@ namespace CUDABackend {
 		}
 
 
-
+		return buffer;
 	}
 
 }
