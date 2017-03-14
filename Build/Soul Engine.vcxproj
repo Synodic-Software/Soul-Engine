@@ -127,8 +127,11 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="..\Source Files\Engine Core\Scene\Scene.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\Sky.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABackend.h" />
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUManager.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.h" />
+    <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.h" />
     <ClInclude Include="..\Source Files\Input\Input.h" />
     <ClInclude Include="..\Source Files\Input\InputState.h" />
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
@@ -185,8 +188,11 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="..\Source Files\Engine Core\Object\Loader.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\SoulCore.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABackend.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUManager.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.cpp" />
     <ClCompile Include="..\Source Files\Input\Input.cpp" />
     <ClCompile Include="..\Source Files\Input\InputState.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />
