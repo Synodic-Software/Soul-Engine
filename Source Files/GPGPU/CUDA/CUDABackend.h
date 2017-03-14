@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Metrics.h"
+#include "GPGPU\GPURasterBuffer.h"
 
 namespace CUDABackend {
 
@@ -18,6 +19,6 @@ namespace CUDABackend {
 
 	void Terminate();
 
-	void CreateRasterBuffer(uint size);
+	GPURasterBuffer* CreateRasterBuffer(uint size);
 
 }

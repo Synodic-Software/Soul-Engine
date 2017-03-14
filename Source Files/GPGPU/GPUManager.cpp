@@ -30,9 +30,9 @@ namespace GPUManager {
 	}
 
 
-	void CreateRasterBuffer() {
+	GPURasterBuffer* CreateRasterBuffer() {
 
-	
+		return nullptr;
 	}
 
 
