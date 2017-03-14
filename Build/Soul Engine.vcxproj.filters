@@ -459,6 +459,15 @@
     <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanBuffer.h">
       <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUBuffer.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.h">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
@@ -571,6 +580,15 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanBuffer.cpp">
       <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUBuffer.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.cpp">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABuffer.cpp">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
