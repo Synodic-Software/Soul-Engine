@@ -140,6 +140,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
     <ClInclude Include="..\Source Files\Physics Engine\CUDA\PhysicsEngine.cuh" />
     <ClInclude Include="..\Source Files\Physics Engine\PhysicsEngine.h" />
+    <ClInclude Include="..\Source Files\Raster Engine\RasterBase.h" />
     <ClInclude Include="..\Source Files\Raster Engine\Buffer.h" />
     <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLBackend.h" />
     <ClInclude Include="..\Source Files\Raster Engine\OpenGL\OpenGLBuffer.h" />
@@ -203,6 +204,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="..\Source Files\Input\InputState.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />
     <ClCompile Include="..\Source Files\Physics Engine\PhysicsEngine.cpp" />
+    <ClCompile Include="..\Source Files\Raster Engine\RasterBase.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Buffer.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLBackend.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\OpenGL\OpenGLBuffer.cpp" />

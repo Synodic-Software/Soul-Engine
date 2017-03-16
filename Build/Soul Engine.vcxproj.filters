@@ -477,6 +477,9 @@
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.h">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Raster Engine\RasterBase.h">
+      <Filter>Engine Backend\Raster Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
@@ -607,6 +610,9 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.cpp">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Raster Engine\RasterBase.cpp">
+      <Filter>Engine Backend\Raster Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

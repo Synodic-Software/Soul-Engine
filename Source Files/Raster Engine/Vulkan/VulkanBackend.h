@@ -2,11 +2,10 @@
 
 #include "Utility\Includes\GLFWIncludes.h"
 #include "Display\Window\Window.h"
-#include "Raster Engine\RasterBackend.h"
+#include "Raster Engine\RasterBase.h"
 
 
-
-class VulkanBackend : public RasterBackend::Backend {
+class VulkanBackend : public RasterBase {
 public:
 	VulkanBackend();
 	~VulkanBackend();

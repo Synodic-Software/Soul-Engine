@@ -89,12 +89,12 @@ namespace Soul {
 
 #ifdef _DEBUG 
 		//log errors to the console for now
-		/*Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_LOW, false, []() {
+		Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_LOW, false, []() {
 			while (Scheduler::Running()) {
 				std::cout << Logger::Get();
 				Scheduler::Defer();
 			}
-		});*/
+		});
 #endif
 
 		//open the config file for the duration of the runtime
