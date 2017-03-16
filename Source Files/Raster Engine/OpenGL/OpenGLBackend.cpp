@@ -90,6 +90,8 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 			S_LOG_FATAL(err);
 		}
 
+		while (glGetError() != GL_NO_ERROR) {}
+
 		MakeContextCurrent(nullptr);
 
 	});
