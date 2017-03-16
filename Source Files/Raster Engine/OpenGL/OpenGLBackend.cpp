@@ -5,8 +5,8 @@
 #include "Multithreading\Scheduler.h"
 
 uint OpenGLBackend::windowCounter = 0;
-OpenGLBackend::WindowInformation* OpenGLBackend::currentContext = nullptr;
-OpenGLBackend::WindowInformation*  OpenGLBackend::defaultContext = nullptr;
+OpenGLBackend::WindowInformation* currentContext = nullptr;
+OpenGLBackend::WindowInformation* defaultContext = nullptr;
 
 //static void APIENTRY openglCallbackFunction(
 //	GLenum source,
@@ -25,8 +25,15 @@ OpenGLBackend::WindowInformation*  OpenGLBackend::defaultContext = nullptr;
 //	}
 //}
 
+//the public method that calls the private one
+void  OpenGLBackend::MakeContextCurrent() {
+	if (currentContext != defaultContext) {
+		MakeContextCurrent(nullptr);
+		MakeContextCurrent(defaultContext->window);
+	}
+}
 
-//must be called on the main thread
+//must be called on the main thread, makes the context current
 void OpenGLBackend::MakeContextCurrent(GLFWwindow* window)
 {
 	OpenGLBackend::WindowInformation* info;
@@ -43,7 +50,7 @@ void OpenGLBackend::MakeContextCurrent(GLFWwindow* window)
 
 GLEWContext* glewGetContext()
 {
-	return OpenGLBackend::currentContext->glContext.get();
+	return currentContext->glContext.get();
 }
 
 OpenGLBackend::OpenGLBackend() {
@@ -70,11 +77,12 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 
 		windowStorage[window] = std::unique_ptr<WindowInformation>(new WindowInformation(window, std::unique_ptr<GLEWContext>(new GLEWContext())));
 
-		if (windowStorage.size()==1) {
+		if (windowStorage.size() == 1) {
 			defaultContext = windowStorage[window].get();
 		}
 
-		MakeContextCurrent(window);
+		MakeContextCurrent();
+
 		glewExperimental = true;
 		err = glewInit();
 
@@ -86,13 +94,13 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 		//	GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, true
 		//);
 
-		if (err!=0) {
+		if (err != 0) {
 			S_LOG_FATAL(err);
 		}
 
 		while (glGetError() != GL_NO_ERROR) {}
 
-		MakeContextCurrent(nullptr);
+
 
 	});
 
@@ -137,17 +145,18 @@ void OpenGLBackend::PostRaster(GLFWwindow* window) {
 
 void OpenGLBackend::Draw(GLFWwindow* window, RasterJob* job) {
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &window]() {
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this,&window]() {
 
-		if (windowStorage.find(window)!= windowStorage.end()) {
+		if (windowStorage.find(window) != windowStorage.end()) {
 
-			MakeContextCurrent(window);
+			MakeContextCurrent();
+
+
 			PreRaster(window);
 
-			
+
 
 			PostRaster(window);
-			MakeContextCurrent(nullptr);
 		}
 
 	});

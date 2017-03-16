@@ -5,39 +5,22 @@
 #include "Raster Engine\RasterJob.h"
 #include "Raster Engine\Buffer.h"
 
-enum BackendName { OpenGL, Vulkan};
+#include "RasterBase.h"
+#include "OpenGL\OpenGLBackend.h"
+#include "Vulkan\VulkanBackend.h"
+
+enum BackendName { OpenGL, Vulkan };
 
 namespace RasterBackend {
 
-		/////////////////////////////////////////
-		/*         Backend Definitions         */
-		/////////////////////////////////////////
-
-	class Backend {
-	public:
-		Backend();
-		~Backend();
-
-		virtual void SetWindowHints(GLFWwindow*&) = 0;
-		virtual void BuildWindow(GLFWwindow*) = 0;
-		virtual void Draw(GLFWwindow*,RasterJob*) = 0;
-		virtual void ResizeWindow(GLFWwindow*, int, int) = 0;
-
-		template<typename Fn,
-			typename ... Args>
-			void RasterFunction( Fn && fn, Args && ... args) = 0;
-
-	private:
-	};
-
 	namespace detail {
-		extern std::unique_ptr<Backend> raster;
+		extern std::unique_ptr<RasterBase> raster;
 	}
-	
 
-		/////////////////////////////////////////
-		/*         Public Definitions         */
-		/////////////////////////////////////////
+
+	/////////////////////////////////////////
+	/*         Public Definitions         */
+	/////////////////////////////////////////
 
 	extern BackendName backend;
 
@@ -53,17 +36,7 @@ namespace RasterBackend {
 
 	RasterJob* CreateJob();
 
-	template<typename Fn,
-		typename ... Args>
-		void RasterFunction( Fn && fn, Args && ... args) {
-		/*if (glfwVulkanSupported() == GLFW_TRUE) {
-		return new VulkanShader(fileName, shaderT);
-		}
-		else {*/
-		static_cast<OpenGLBackend*>(detail::raster.get())->RasterFunction(fn, std::forward<Args>(args)...);
-		/*}*/
-
-	}
+	void MakeContextCurrent();
 
 	void ResizeWindow(GLFWwindow*, int, int);
 
@@ -71,5 +44,5 @@ namespace RasterBackend {
 
 	void Terminate();
 
-	void Draw(GLFWwindow*,RasterJob*);
+	void Draw(GLFWwindow*, RasterJob*);
 }

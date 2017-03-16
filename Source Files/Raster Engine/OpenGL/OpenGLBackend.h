@@ -2,7 +2,7 @@
 
 #include "Utility\Includes\GLFWIncludes.h"
 #include "Display\Window\Window.h"
-#include "Raster Engine\RasterBackend.h"
+#include "Raster Engine\RasterBase.h"
 #include "Utility\Includes\GLMIncludes.h"
 
 #include <map>
@@ -10,7 +10,7 @@
 
 GLEWContext* glewGetContext();
 
-class OpenGLBackend : public RasterBackend::Backend {
+class OpenGLBackend : public RasterBase {
 public:
 	OpenGLBackend();
 	~OpenGLBackend();
@@ -26,14 +26,7 @@ public:
 	void PostRaster(GLFWwindow*);
 	virtual void Draw(GLFWwindow*, RasterJob*);
 
-	template<typename Fn, typename ... Args>
-	void RasterFunction(Fn && fn, Args && ... args) {
-		if (currentContext != defaultContext) {
-			MakeContextCurrent(nullptr);
-			MakeContextCurrent(defaultContext->window);
-		}
-		fn(std::forward<Args>(args)...);
-	}
+	void MakeContextCurrent();
 
 	struct WindowInformation
 	{
@@ -48,8 +41,6 @@ public:
 		}
 	};
 
-	static WindowInformation* currentContext;
-	static WindowInformation* defaultContext;
 
 protected:
 

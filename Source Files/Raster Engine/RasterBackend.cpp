@@ -11,17 +11,8 @@
 
 namespace RasterBackend {
 
-	//backend
-	Backend::Backend() {
-
-	}
-
-	Backend::~Backend() {
-
-	}
-
 	namespace detail {
-		std::unique_ptr<Backend> raster;
+		std::unique_ptr<RasterBase> raster;
 	}
 
 	BackendName backend;
@@ -37,6 +28,16 @@ namespace RasterBackend {
 		else {*/
 			detail::raster.reset(new OpenGLBackend());
 			backend = OpenGL;
+		/*}*/
+
+	}
+
+	void MakeContextCurrent(){
+		/*if (glfwVulkanSupported() == GLFW_TRUE) {
+		return new VulkanShader(fileName, shaderT);
+		}
+		else {*/
+		static_cast<OpenGLBackend*>(detail::raster.get())->MakeContextCurrent();
 		/*}*/
 
 	}
