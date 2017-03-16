@@ -257,6 +257,8 @@ void SoulRun() {
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 		Soul::Run();
 	});
+
+	Scheduler::Block();
 }
 
 void SetKey(int key, void(*func)(void)) {
