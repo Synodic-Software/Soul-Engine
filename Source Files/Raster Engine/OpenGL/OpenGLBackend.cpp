@@ -86,6 +86,10 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 		//	GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, true
 		//);
 
+		if (err!=0) {
+			S_LOG_FATAL(err);
+		}
+
 		MakeContextCurrent(nullptr);
 
 	});

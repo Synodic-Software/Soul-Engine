@@ -17,6 +17,7 @@ OpenGLJob::OpenGLJob()
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
 		RasterBackend::RasterFunction([this]() {
+
 			//create the program object
 			object = glCreateProgram();
 
