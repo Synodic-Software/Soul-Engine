@@ -26,7 +26,9 @@ OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
 			case FRAGMENT_SHADER:
 				shaderT = GL_FRAGMENT_SHADER;
 				break;
+
 			}
+
 
 			object = glCreateShader(shaderT);
 			if (object == 0) {
@@ -39,6 +41,7 @@ OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
 
 			//compile
 			glCompileShader(object);
+
 
 			//throw exception if compile error occurred
 			GLint status;
