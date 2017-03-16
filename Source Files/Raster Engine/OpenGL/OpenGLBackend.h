@@ -28,9 +28,11 @@ public:
 
 	template<typename Fn, typename ... Args>
 	void RasterFunction(Fn && fn, Args && ... args) {
-		MakeContextCurrent(defaultContext->window);
+		if (currentContext != defaultContext) {
+			MakeContextCurrent(nullptr);
+			MakeContextCurrent(defaultContext->window);
+		}
 		fn(std::forward<Args>(args)...);
-		MakeContextCurrent(nullptr);
 	}
 
 	struct WindowInformation
