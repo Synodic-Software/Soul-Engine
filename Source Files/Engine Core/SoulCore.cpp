@@ -99,7 +99,7 @@ namespace Soul {
 
 		//open the config file for the duration of the runtime
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			Settings::Read("config.ini");
+			Settings::SetFilename("config.ini");
 		});
 
 		//extract all available GPU devices
