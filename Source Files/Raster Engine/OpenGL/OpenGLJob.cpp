@@ -16,7 +16,7 @@ OpenGLJob::OpenGLJob()
 	: RasterJob() {
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
-		RasterBackend::RasterFunction([this]() {
+		RasterBackend::RasterFunction([&object = object]() {
 
 			//create the program object
 			object = glCreateProgram();
@@ -38,7 +38,7 @@ void OpenGLJob::AttachShaders(const std::vector<Shader*>& shaders) {
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &shaders]() {
 
-		RasterBackend::RasterFunction([this, &shaders]() {
+		RasterBackend::RasterFunction([&object = object, &shaders]() {
 
 			//attach all the shaders
 			for (unsigned i = 0; i < shaders.size(); ++i) {

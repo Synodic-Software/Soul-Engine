@@ -14,7 +14,7 @@ OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
 	: Shader(filePath, shaderType), object(0) {
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, shaderType]() {
 
-		RasterBackend::RasterFunction([this, shaderType]() {
+		RasterBackend::RasterFunction([&object = object, name = name,  codeStr = codeStr, shaderType]() {
 			//create the shader object
 
 			GLenum shaderT;
@@ -71,7 +71,7 @@ OpenGLShader::~OpenGLShader() {
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
 
-		RasterBackend::RasterFunction([this]() {
+		RasterBackend::RasterFunction([&object = object]() {
 			glDeleteShader(object); object = 0;
 		});
 	});
