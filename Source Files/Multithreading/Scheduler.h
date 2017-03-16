@@ -124,11 +124,12 @@ namespace Scheduler {
 				//yielding garuntees that the fiber properties are saved at the expense of another round of context switching
 				boost::this_fiber::properties< detail::FiberProperties >().SetPriority(priority, runsOnMain);
 				boost::this_fiber::yield();
-#endif
 
 				//assert that the function is executing on the right thread
 				assert(!boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() ||
 					(boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
+
+#endif
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
@@ -166,10 +167,11 @@ namespace Scheduler {
 				boost::this_fiber::properties< detail::FiberProperties >().SetPriority(priority, runsOnMain);
 				boost::this_fiber::yield();
 
-#endif
 				//assert that the function is executing on the right thread
 				assert(!boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() ||
 					(boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
+
+#endif
 
 				///////////////////////////////////////////
 				fn(std::forward<Args>(args)...);
