@@ -6,9 +6,9 @@
 
 OpenGLBuffer::OpenGLBuffer(uint sizeInBytes) {
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, sizeInBytes]() {
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&buffer = buffer, sizeInBytes]() {
 
-		RasterBackend::RasterFunction([this, sizeInBytes]() {
+		RasterBackend::RasterFunction([&buffer = buffer,sizeInBytes]() {
 
 			glGenBuffers(1, &buffer);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
