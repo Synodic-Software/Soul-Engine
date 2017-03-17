@@ -1,5 +1,3 @@
-#include <iostream>
-#include <fstream>
 #include "Settings.h"
 
 //Will try to minimize size of boost variants.  May have a negative impact on performance.
@@ -20,6 +18,34 @@ namespace Settings {
 		std::string filename;
 		TableWrapper tableWrapper;
 
+	}
+
+	void Write(const std::string & _filename, FileType type) {
+
+		detail::filename = _filename;
+
+		if (type == TEXT) {
+			detail::tableWrapper.Write<boost::archive::text_oarchive>();
+		}
+		else if (type == XML) {
+			detail::tableWrapper.Write<boost::archive::xml_oarchive>();
+		}
+		else {
+			detail::tableWrapper.Write<boost::archive::binary_oarchive>();
+		}
+	}
+
+	void Read(const std::string & _filename, FileType type) {
+
+		if (type == TEXT) {
+			detail::tableWrapper.Read<boost::archive::text_iarchive>(_filename);
+		}
+		else if (type == XML) {
+			detail::tableWrapper.Read<boost::archive::xml_iarchive>(_filename);
+		}
+		else {
+			detail::tableWrapper.Read<boost::archive::binary_iarchive>(_filename);
+		}
 	}
 
 	void SetFilename(const std::string & _filename) {

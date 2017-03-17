@@ -21,7 +21,10 @@
 #include <typeinfo>
 #include <utility>
 #include <type_traits>
+#include <iostream>
+#include <fstream>
 
+enum FileType { BINARY, XML, TEXT };
 
 //Publically Accessible Methods
 namespace Settings {
@@ -302,6 +305,7 @@ namespace Settings {
 
 		extern std::string filename;
 		extern TableWrapper tableWrapper;
+
 	}
 
 
@@ -334,38 +338,13 @@ namespace Settings {
 		return detail::tableWrapper.Set<T>(propertyName, propertyValue);
 	}
 
-	//Writes settings to a file already specified by SetFilename(const std::string &) or
-	//Read(const std::string & _filename).  Does nothing if a filename has not already been set.
-	//This is included to ensure compatability with previously written code before 
-	//Write(const std::string & _filename) was available.
-	//T is a boost text, XML, or binary oarchive.  Wide character archives are not supported.
-	template <class T = boost::archive::text_oarchive>
-	void Write() {
-		if (detail::filename == "") {
-			std::cerr <<
-				"Warning: Attempted to write settings to file with Settings::Write() without first"
-				"making a call to Settings::Read(const std::string &).  Use Settings::SetFilename(const std::string &)"
-				"or Settings::Write(const std::string &) to specify where the file should be saved" << std::endl;
-			return;
-		}
-
-		detail::tableWrapper.Write<T>();
-	}
-
 	//Writes settings to the file _filename
 	//T is a boost text, XML, or binary oarchive.  Wide character archives are not supported.
-	template <class T>
-	void Write(const std::string & _filename) {
-		detail::filename = _filename;
-		detail::tableWrapper.Write<T>();
-	}
+	void Write(const std::string & _filename, FileType type);
 
 	//Deletes all currently stored settings and reads new ones from _filename.
 	//T is a boost text, XML, or binary iarchive.  Wide character archives are not supported.
-	template <class T>
-	void Read(const std::string & _filename) {
-		detail::tableWrapper.Read<T>(_filename);
-	}
+	void Read(const std::string & _filename, FileType type);
 
 	//Sets filename to _filename to allow Write() to be called for code using
 	//Write instead of Write(const std::string & _filename).
