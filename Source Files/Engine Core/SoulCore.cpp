@@ -57,7 +57,7 @@ namespace Soul {
 
 		//Write the settings into a file
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			Settings::Write();
+			Settings::Write("config.ini",TEXT);
 		});
 
 		//Clean the RayEngine from stray data
@@ -99,7 +99,7 @@ namespace Soul {
 
 		//open the config file for the duration of the runtime
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			Settings::SetFilename("config.ini");
+			Settings::Read("config.ini",TEXT);
 		});
 
 		//extract all available GPU devices
