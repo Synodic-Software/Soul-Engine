@@ -19,4 +19,33 @@ class Allocator {
 		size_t _capacity;
 		size_t _usedMem;
 		size_t _numAllocs;
+
+
 };
+template<Class T> T* Allocator::allocateNew(Allocator& allocator) {
+	return new (allocator.allocate(sizeof(T), __alignof(T))) T;
+}
+
+template<Class T> T* Allocator::allocateNew(Allocator& allocator, const T& t) {
+	return new (allocator.allocate(sizeof(T), __alignof(T))) T(t);
+}
+
+template<Class T> T* Allocator::allocateNewArr(Allocator& allocator, size_t length) {
+	assert(length != 0);
+	T* arr = (T*)allocator.allocate(sizeof(T)*length, __alignof(T));
+	for (size_t i = 0; i < length; ++i) {
+		*(arr + i) = new T();
+	}
+	return p;
+}
+
+template<Class T> void Allocator::deallocateItem(Allocator& allocator, T& object) {
+	object.~T();
+	allocator.deallocate(&object);
+}
+
+template<Class T> void Allocator::deallocateArr(Allocator& allocator, T* arr) {
+	assert(arr != nullptr);
+	//TODO deallocate all objects in the array
+	allocator.deallocate(arr);
+}
