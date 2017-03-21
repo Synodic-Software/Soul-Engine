@@ -275,7 +275,7 @@ namespace Settings {
 			//Write settings to file
 			//T is a boost text, xml, or binary oarchive.  Wide character archives are not supported.
 			template <class T>
-			void TableWrapper::Write() {
+			void Write() {
 				std::ofstream ofs(detail::filename);
 				T ar(ofs);
 				//boost::archive::text_oarchive ar(ofs);
@@ -340,13 +340,9 @@ namespace Settings {
 
 	//Writes settings to the file _filename
 	//T is a boost text, XML, or binary oarchive.  Wide character archives are not supported.
-	void Write(const std::string & _filename, FileType type);
+	void Write(const std::string & _filename, FileType type = TEXT);
 
 	//Deletes all currently stored settings and reads new ones from _filename.
 	//T is a boost text, XML, or binary iarchive.  Wide character archives are not supported.
-	void Read(const std::string & _filename, FileType type);
-
-	//Sets filename to _filename to allow Write() to be called for code using
-	//Write instead of Write(const std::string & _filename).
-	void SetFilename(const std::string & _filename);
+	void Read(const std::string & _filename, FileType type = TEXT);
 }
