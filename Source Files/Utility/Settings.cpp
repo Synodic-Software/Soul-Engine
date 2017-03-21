@@ -6,7 +6,7 @@
 
 
 /*
-	NOTE: See header file "Settings.h" for descriptions of all methods.
+NOTE: See header file "Settings.h" for descriptions of all methods.
 */
 
 //Publically Accessible Methods
@@ -48,7 +48,4 @@ namespace Settings {
 		}
 	}
 
-	void SetFilename(const std::string & _filename) {
-		detail::filename = _filename;
-	}
 }

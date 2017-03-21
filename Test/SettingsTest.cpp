@@ -6,7 +6,7 @@
 
 //Tests to make sure settings works properly when given proper inputs
 
-namespace internal {
+namespace detail {
 
 	void testGetProperInputs() {
 		assert(Settings::Set("a", std::int8_t(0)));
@@ -141,8 +141,7 @@ namespace internal {
 
 	//Serialization Tests
 
-	template <class T1, class T2>
-	void testSerialization() {
+	void testSerialization(FileType type) {
 		assert(Settings::Set("a", std::int8_t(0)));
 		assert(Settings::Set("b", std::uint8_t(1)));
 		assert(Settings::Set("c", std::int16_t(2)));
@@ -154,37 +153,8 @@ namespace internal {
 		assert(Settings::Set("i", std::uint64_t(8)));
 		assert(Settings::Set("j", 9.9));
 
-		Settings::SetFilename("b.ini");
-		Settings::Write<T2>();
-		Settings::Read<T1>("b.ini");
-
-		assert(Settings::Get("a", std::int8_t(1)) == 0);
-		assert(Settings::Get("b", std::uint8_t(2)) == 1);
-		assert(Settings::Get("c", std::int16_t(3)) == 2);
-		assert(Settings::Get("d", std::uint16_t(4)) == 3);
-		assert(Settings::Get("e", std::int32_t(5)) == 4);
-		assert(Settings::Get("f", std::uint32_t(6)) == 5);
-		assert(Settings::Get("g", float(7.7)) == 6.6f);
-		assert(Settings::Get("h", std::int64_t(8)) == 7);
-		assert(Settings::Get("i", std::uint64_t(9)) == 8);
-		assert(Settings::Get("j", 10.1) == 9.9);
-	}
-
-	template <class T1, class T2>
-	void testSerialization2() {
-		assert(Settings::Set("a", std::int8_t(0)));
-		assert(Settings::Set("b", std::uint8_t(1)));
-		assert(Settings::Set("c", std::int16_t(2)));
-		assert(Settings::Set("d", std::uint16_t(3)));
-		assert(Settings::Set("e", std::int32_t(4)));
-		assert(Settings::Set("f", std::uint32_t(5)));
-		assert(Settings::Set("g", float(6.6)));
-		assert(Settings::Set("h", std::int64_t(7)));
-		assert(Settings::Set("i", std::uint64_t(8)));
-		assert(Settings::Set("j", 9.9));
-
-		Settings::Write<T2>("b.ini");
-		Settings::Read<T1>("b.ini");
+		Settings::Write("b.ini", type);
+		Settings::Read("b.ini", type);
 
 		assert(Settings::Get("a", std::int8_t(1)) == 0);
 		assert(Settings::Get("b", std::uint8_t(2)) == 1);
@@ -200,30 +170,16 @@ namespace internal {
 
 	//Runs all tests
 	void runAllTests() {
-		internal::testGetProperInputs();
-		internal::testGetProperInputs2();
-		internal::testGetUndefinedSettings();
-		internal::testGetUndefinedSettings2();
+		detail::testGetProperInputs();
+		detail::testGetProperInputs2();
+		detail::testGetUndefinedSettings();
+		detail::testGetUndefinedSettings2();
 
-		internal::testSerialization<boost::archive::binary_iarchive, boost::archive::binary_oarchive>();
-		internal::testSerialization2<boost::archive::binary_iarchive, boost::archive::binary_oarchive>();
-
-		internal::testSerialization<boost::archive::xml_iarchive, boost::archive::xml_oarchive>();
-		internal::testSerialization2<boost::archive::xml_iarchive, boost::archive::xml_oarchive>();
-
-		internal::testSerialization<boost::archive::text_iarchive, boost::archive::text_oarchive>();
-		internal::testSerialization2<boost::archive::text_iarchive, boost::archive::text_oarchive>();
+		detail::testSerialization(BINARY);
+		detail::testSerialization(XML);
+		detail::testSerialization(TEXT);
 
 		std::cout << "All tests have successfully completed." << std::endl;
 	}
 
 }
-
-
-//Can be used to run these tests separately from others
-/*
-int main() {
-	internal::runAllTests();
-	return 0;
-}
-*/
