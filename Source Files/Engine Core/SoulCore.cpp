@@ -131,7 +131,7 @@ namespace Soul {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
-		engineRefreshRate = Settings::Get("Engine.Engine_Refresh_Rate", 60.0);
+		Settings::Get("Engine.Engine_Refresh_Rate",60.0,&engineRefreshRate);
 
 		Scheduler::Block();
 	}
@@ -301,12 +301,21 @@ int main()
 
 		SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
-		uint xSize = Settings::Get("MainWindow.Width", 1024);
-		uint ySize = Settings::Get("MainWindow.Height", 720);
-		uint xPos = Settings::Get("MainWindow.X_Position", 0);
-		uint yPos = Settings::Get("MainWindow.Y_Position", 0);
-		int monitor = Settings::Get("MainWindow.Monitor", 0);
-		WindowType type = static_cast<WindowType>(Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED)));
+		uint xSize;
+		Settings::Get("MainWindow.Width", uint(1024), &xSize);
+		uint ySize;
+		Settings::Get("MainWindow.Height", uint(720), &ySize);
+		uint xPos;
+		Settings::Get("MainWindow.X_Position", uint(0), &xPos);
+		uint yPos;
+		Settings::Get("MainWindow.Y_Position", uint(0), &yPos);
+		int monitor;
+		Settings::Get("MainWindow.Monitor", 0, &monitor);
+
+		WindowType type;
+		int typeCast;
+		Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), static_cast<int*>(&typeCast));
+		type = static_cast<WindowType>(typeCast);
 
 		WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize, [](GLFWwindow* win) {
 			return new SingleLayout(win, new RenderWidget());
