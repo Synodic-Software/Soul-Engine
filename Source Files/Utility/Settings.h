@@ -312,6 +312,7 @@ namespace Settings {
 	//Retrieves a value at the specified placeholder. Cannot accept user defined types, only system types
 	//If a template T is not explicitly provided, defaultvalue must be the same exact type as the value you 
 	//are retrieving.  For example, if you are retrieving a float, default value must be 1.0f and not 1.
+	//default values are not created
 	template<typename T>
 	T Get(const std::string & propertyName, T defaultValue) {
 		return detail::tableWrapper.Get<T>(propertyName, defaultValue);
@@ -321,14 +322,20 @@ namespace Settings {
 	//If a template T is not explicitly provided, defaultvalue must be the same exact type as the value you 
 	//are retrieving.  For example, if you are retrieving a float, default value must be 1.0f and not 1.
 	//Retrieved value is assigned to the given pointer.
-	//returns true if value was retrieved, and false if defaultvalue was assigned to pointer.
+	//returns true if value was retrieved without being created, and false if defaultvalue was assigned to pointer
+	//and the value was created.
 	template<typename T>
 	bool Get(const std::string & propertyName, T defaultValue, T* propertyValue) {
-		if (propertyValue == nullptr) {
+		if (!propertyValue) {
 			std::cerr << "Error: a null pointer was passed as 'propertyValue'" << std::endl;
-			exit(1); return false; //Which one should I do??
+			return false;
 		}
-		return detail::tableWrapper.Get<T>(propertyName, defaultValue, propertyValue);
+
+		bool found = detail::tableWrapper.Get<T>(propertyName, defaultValue, propertyValue);
+		if (!found) {
+			Set(propertyName, defaultValue);
+		}
+		return found;
 	}
 
 	//Set value, overriding any point
