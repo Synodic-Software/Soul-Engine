@@ -480,6 +480,15 @@
     <ClInclude Include="..\Source Files\Raster Engine\RasterBase.h">
       <Filter>Engine Backend\Raster Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUDevice.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.h">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.h">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
@@ -613,6 +622,15 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Raster Engine\RasterBase.cpp">
       <Filter>Engine Backend\Raster Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUDevice.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.cpp">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cpp">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

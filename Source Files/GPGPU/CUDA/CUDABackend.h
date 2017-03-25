@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Metrics.h"
-#include "GPGPU\GPURasterBuffer.h"
+#include "GPGPU\CUDA\CUDARasterBuffer.h"
 
 namespace CUDABackend {
 
@@ -18,7 +18,5 @@ namespace CUDABackend {
 	int GetBlockHeight();
 
 	void Terminate();
-
-	GPURasterBuffer* CreateRasterBuffer(uint size);
 
 }

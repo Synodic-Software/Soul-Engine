@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <Metrics.h>
+#include "GPGPU\OpenCL\OpenCLRasterBuffer.h"
 
 namespace OpenCLBackend {
 

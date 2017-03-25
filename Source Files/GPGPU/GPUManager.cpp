@@ -3,6 +3,9 @@
 #include "CUDA\CUDABackend.h"
 #include "OpenCL\OpenCLBackend.h"
 
+#include "CUDA\CUDARasterBuffer.h"
+#include "OpenCL\OpenCLRasterBuffer.h"
+
 #include <vector>
 
 std::vector<std::pair<int, GPUBackend>> devices;
@@ -18,7 +21,7 @@ namespace GPUManager {
 		CUDABackend::ExtractDevices(cudaDevices);
 
 		for (auto &var : cudaDevices) {
-			devices.push_back(std::make_pair(var,CUDA));
+			devices.push_back(std::make_pair(var, CUDA));
 		}
 
 		std::vector<int> openCLDevices;
@@ -30,9 +33,22 @@ namespace GPUManager {
 	}
 
 
-	GPURasterBuffer* CreateRasterBuffer() {
+	GPURasterBuffer* CreateRasterBuffer(int GPU, uint size) {
 
-		return nullptr;
+		GPURasterBuffer* buffer;
+
+		if (devices[GPU].second == CUDA) {
+			//cudaSetDevice(1);
+			buffer = new CUDARasterBuffer(size);
+		}
+		else {
+			buffer = new OpenCLRasterBuffer();
+		}
+		return buffer;
+	}
+
+	int GetBestGPU() {
+		return 0;
 	}
 
 

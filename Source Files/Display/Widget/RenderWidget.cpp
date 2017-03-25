@@ -1,6 +1,8 @@
 #include "RenderWidget.h"
 #include "Raster Engine\RasterBackend.h"
 #include "Raster Engine\Buffer.h"
+#include "GPGPU\GPUManager.h"
+#include "GPGPU\GPURasterBuffer.h"
 
 RenderWidget::RenderWidget()
 {
@@ -10,7 +12,9 @@ RenderWidget::RenderWidget()
 		RasterBackend::CreateShader("../Resources/Shaders/fragment-shader[Renderer].glsl",FRAGMENT_SHADER)
 	});
 
-	RasterBackend::CreateBuffer(size.x*size.y*sizeof(glm::vec4));
+	GPURasterBuffer* buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(),size.x*size.y * sizeof(glm::vec4));
+
+	//RasterBackend::CreateBuffer(size.x*size.y*sizeof(glm::vec4));
 
 	//init all uniform data
 	//(*widgetJob)[std::string("camera")]=
