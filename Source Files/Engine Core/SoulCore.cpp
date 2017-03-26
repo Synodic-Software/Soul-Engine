@@ -317,8 +317,8 @@ int main()
 		Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), static_cast<int*>(&typeCast));
 		type = static_cast<WindowType>(typeCast);
 
-		WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize, [](GLFWwindow* win) {
-			return new SingleLayout(win, new RenderWidget());
+		WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize, [](GLFWwindow* win, glm::uvec2 sizeIn) {
+			return new SingleLayout(win, sizeIn,new RenderWidget());
 		});
 
 		/*WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300, [](GLFWwindow* win) {

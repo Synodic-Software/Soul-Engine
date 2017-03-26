@@ -23,7 +23,7 @@ namespace WindowManager {
 
 	void SignelClose();
 
-	void CreateWindow(WindowType, const std::string&,int monitor, uint x, uint y, uint width, uint height, std::function<Layout*(GLFWwindow*)>);
+	void CreateWindow(WindowType, const std::string&,int monitor, uint x, uint y, uint width, uint height, std::function<Layout*(GLFWwindow*, glm::uvec2)>);
 
 	void Draw();
 

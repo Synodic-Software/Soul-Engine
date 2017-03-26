@@ -1,7 +1,8 @@
 #include "GPUDevice.h"
 
-GPUDevice::GPUDevice() {
+GPUDevice::GPUDevice(uint o) {
 
+	order = o;
 
 }
 

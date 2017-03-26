@@ -70,7 +70,7 @@ namespace WindowManager {
 	}
 
 	//the moniter number
-	void CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height, std::function<Layout*(GLFWwindow*)> createLayout) {
+	void CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height, std::function<Layout*(GLFWwindow*, glm::uvec2)> createLayout) {
 
 		if (monitor > monitorCount) {
 			S_LOG_ERROR("The specified moniter '", monitor, "' needs to be less than ", monitorCount);
@@ -90,7 +90,7 @@ namespace WindowManager {
 			windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, sharedCtx));
 		}
 
-		windows.back()->layout.reset(createLayout(masterWindow->windowHandle));
+		windows.back()->layout.reset(createLayout(masterWindow->windowHandle,glm::uvec2(width,height)));
 	}
 
 	void Draw() {

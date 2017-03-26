@@ -3,8 +3,6 @@
 #include "GPURasterBuffer.h"
 #include "Metrics.h"
 
-enum GPUBackend {CUDA, OpenCL};
-
 namespace GPUManager {
 
 	void ExtractDevices();

@@ -1,7 +1,10 @@
 #include "CUDADevice.h"
 
-CUDADevice::CUDADevice() {
+CUDADevice::CUDADevice(uint o) :
+GPUDevice(o)
+{
 
+	api = CUDA;
 
 }
 

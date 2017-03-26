@@ -6,7 +6,10 @@
 #include "Raster Engine\OpenGL\OpenGLBuffer.h"
 #include <cuda_gl_interop.h>
 
-CUDARasterBuffer::CUDARasterBuffer(uint size) {
+CUDARasterBuffer::CUDARasterBuffer(CUDADevice* device,uint size) {
+
+	cudaSetDevice(device->order);
+
 	Buffer* rasterBuffer = RasterBackend::CreateBuffer(size);
 
 	CUDARasterBuffer* buffer;

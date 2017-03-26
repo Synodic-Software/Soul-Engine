@@ -6,9 +6,14 @@
 #include "CUDA\CUDARasterBuffer.h"
 #include "OpenCL\OpenCLRasterBuffer.h"
 
-#include <vector>
+#include "GPUDevice.h"
+#include "CUDA\CUDADevice.h"
+#include "OpenCL\OpenCLDevice.h"
 
-std::vector<std::pair<int, GPUBackend>> devices;
+#include <vector>
+#include <memory>
+
+std::vector<std::unique_ptr<GPUDevice>> devices;
 
 namespace GPUManager {
 
@@ -21,14 +26,14 @@ namespace GPUManager {
 		CUDABackend::ExtractDevices(cudaDevices);
 
 		for (auto &var : cudaDevices) {
-			devices.push_back(std::make_pair(var, CUDA));
+			devices.emplace_back(new CUDADevice(var));
 		}
 
 		std::vector<int> openCLDevices;
 		OpenCLBackend::ExtractDevices(openCLDevices);
 
 		for (auto &var : openCLDevices) {
-			devices.push_back(std::make_pair(var, OpenCL));
+			devices.emplace_back(new OpenCLDevice(var));
 		}
 	}
 
@@ -37,12 +42,11 @@ namespace GPUManager {
 
 		GPURasterBuffer* buffer;
 
-		if (devices[GPU].second == CUDA) {
-			//cudaSetDevice(1);
-			buffer = new CUDARasterBuffer(size);
+		if (devices[GPU]->api == CUDA) {
+			buffer = new CUDARasterBuffer(static_cast<CUDADevice*>(devices[GPU].get()),size);
 		}
 		else {
-			buffer = new OpenCLRasterBuffer();
+			buffer = new OpenCLRasterBuffer(static_cast<OpenCLDevice*>(devices[GPU].get()), size);
 		}
 		return buffer;
 	}
