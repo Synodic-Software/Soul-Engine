@@ -4,7 +4,7 @@
 class OpenCLDevice :public GPUDevice {
 
 public:
-	OpenCLDevice();
+	OpenCLDevice(uint);
 	~OpenCLDevice();
 
 protected:

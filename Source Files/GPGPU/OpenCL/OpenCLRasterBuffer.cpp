@@ -1,6 +1,6 @@
 #include "OpenCLRasterBuffer.h"
 
-OpenCLRasterBuffer::OpenCLRasterBuffer() {
+OpenCLRasterBuffer::OpenCLRasterBuffer(OpenCLDevice* device, uint size) {
 
 
 }

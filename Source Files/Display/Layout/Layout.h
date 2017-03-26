@@ -11,7 +11,7 @@ class Layout : public Widget
 
 public:
 	Layout();
-	Layout(GLFWwindow*);
+	Layout(GLFWwindow*, glm::uvec2);
 	~Layout();
 
 	virtual void Draw(GLFWwindow*);

@@ -1,7 +1,10 @@
 #include "OpenCLDevice.h"
 
-OpenCLDevice::OpenCLDevice() {
+OpenCLDevice::OpenCLDevice(uint o) :
+GPUDevice(o)
+{
 
+	api = OpenCL;
 
 }
 

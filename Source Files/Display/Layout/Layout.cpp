@@ -4,9 +4,10 @@ Layout::Layout()
 {
 }
 
-Layout::Layout(GLFWwindow* winIn)
+Layout::Layout(GLFWwindow* winIn, glm::uvec2 sizeIn)
 {
 	UpdateWindow(winIn);
+	size = sizeIn;
 }
 
 Layout::~Layout()

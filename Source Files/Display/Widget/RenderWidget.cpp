@@ -14,7 +14,6 @@ RenderWidget::RenderWidget()
 
 	GPURasterBuffer* buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(),size.x*size.y * sizeof(glm::vec4));
 
-	//RasterBackend::CreateBuffer(size.x*size.y*sizeof(glm::vec4));
 
 	//init all uniform data
 	//(*widgetJob)[std::string("camera")]=
