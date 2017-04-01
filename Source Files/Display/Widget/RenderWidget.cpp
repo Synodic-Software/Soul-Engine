@@ -12,8 +12,6 @@ RenderWidget::RenderWidget()
 		RasterBackend::CreateShader("../Resources/Shaders/fragment-shader[Renderer].glsl",FRAGMENT_SHADER)
 	});
 
-	GPURasterBuffer* buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(),size.x*size.y * sizeof(glm::vec4));
-
 
 	//init all uniform data
 	//(*widgetJob)[std::string("camera")]=
@@ -39,4 +37,10 @@ void RenderWidget::Draw() {
 	//	glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
 	//	glBindVertexArray(0);
 	//	CUDAtoScreen->stopUsing();
+}
+
+void RenderWidget::RecreateData() {
+
+	GPURasterBuffer* buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+
 }

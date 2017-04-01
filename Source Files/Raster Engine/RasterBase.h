@@ -11,7 +11,8 @@ public:
 	RasterBase();
 	~RasterBase();
 
-	virtual void SetWindowHints(GLFWwindow*&) = 0;
+	virtual void SetWindowHints() = 0;
+	virtual GLFWwindow* GetResourceContext() = 0;
 	virtual void BuildWindow(GLFWwindow*) = 0;
 	virtual void Draw(GLFWwindow*, RasterJob*) = 0;
 	virtual void ResizeWindow(GLFWwindow*, int, int) = 0;

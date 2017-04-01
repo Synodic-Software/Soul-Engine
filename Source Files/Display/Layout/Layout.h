@@ -11,11 +11,12 @@ class Layout : public Widget
 
 public:
 	Layout();
-	Layout(GLFWwindow*, glm::uvec2);
 	~Layout();
 
 	virtual void Draw(GLFWwindow*);
 	virtual void UpdateWindow(GLFWwindow*);
+	virtual void UpdatePositioning(glm::uvec2, glm::uvec2);
+	virtual void RecreateData();
 
 protected:
 

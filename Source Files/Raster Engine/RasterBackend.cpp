@@ -69,8 +69,8 @@ namespace RasterBackend {
 		/*}*/
 	}
 
-	void SetWindowHints(GLFWwindow*& window) {
-		detail::raster.get()->SetWindowHints(window);
+	void SetWindowHints() {
+		detail::raster.get()->SetWindowHints();
 	}
 
 	void ResizeWindow(GLFWwindow* window, int x, int y) {
