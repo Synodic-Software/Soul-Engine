@@ -12,6 +12,8 @@ public:
 
 	virtual void Draw(GLFWwindow*);
 	virtual void UpdateWindow(GLFWwindow*);
+	virtual void UpdatePositioning(glm::uvec2, glm::uvec2);
+	virtual void RecreateData();
 
 protected:
 	
@@ -20,6 +22,7 @@ protected:
 	GLFWwindow* window;
 
 	glm::uvec2 size;
+	glm::uvec2 position;
 
 private:
 

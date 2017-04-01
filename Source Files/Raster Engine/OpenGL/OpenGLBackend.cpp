@@ -55,13 +55,19 @@ GLEWContext* glewGetContext()
 
 OpenGLBackend::OpenGLBackend() {
 	currentContext = nullptr;
+
 }
 
 OpenGLBackend::~OpenGLBackend() {
 
 }
 
-void OpenGLBackend::SetWindowHints(GLFWwindow*& contextIn) {
+GLFWwindow* OpenGLBackend::GetResourceContext() {
+	return defaultContext->window;
+}
+
+
+void OpenGLBackend::SetWindowHints() {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

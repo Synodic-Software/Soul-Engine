@@ -10,6 +10,8 @@ public:
 	~RenderWidget();
 
 	virtual void Draw();
+	virtual void RecreateData();
+
 protected:
 
 

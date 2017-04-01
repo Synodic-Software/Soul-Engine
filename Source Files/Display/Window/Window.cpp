@@ -5,7 +5,7 @@
 #include "Multithreading\Scheduler.h"
 #include "WindowManager.h"
 
-Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn, GLFWwindow* sharedContextin)
+Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, GLFWmonitor* monitorIn, GLFWwindow* sharedContext)
 {
 	windowType = inWin;
 	xPos = x;
@@ -14,13 +14,11 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	height = iheight;
 	title = inTitle;
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, monitorIn, sharedContextin]() {
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, sharedContext, monitorIn ]() {
 
-		GLFWwindow* sharedContext = sharedContextin;
-
-		RasterBackend::SetWindowHints(sharedContext);
+		RasterBackend::SetWindowHints();
 		glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
-		glfwWindowHint(GLFW_VISIBLE, false);
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
 		const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
 
@@ -52,6 +50,14 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
 
 		}
+		else {
+			glfwWindowHint(GLFW_RESIZABLE, false);
+			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
+
+		}
+
 	});
 
 	Scheduler::Block();

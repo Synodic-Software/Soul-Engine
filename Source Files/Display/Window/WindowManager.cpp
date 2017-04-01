@@ -6,6 +6,8 @@
 #include "Multithreading\Scheduler.h"
 #include "Raster Engine\RasterBackend.h"
 
+#include "Utility\Includes\GLMIncludes.h"
+
 #include <string>
 #include <vector>
 #include <mutex>
@@ -32,9 +34,14 @@ namespace WindowManager {
 			monitors = glfwGetMonitors(&monitorCount);
 		});
 
+		
 		runningFlag = runningFlagIn;
 
 		Scheduler::Block();
+
+		//std::unique_lock<std::mutex>(windowMutex);
+		//windows.emplace_back(new Window(static_cast<WindowType>(-1), "", 0, 0, 1, 1, monitors[0], nullptr));
+		//masterWindow = windows.back().get();
 	}
 
 	void Terminate() {
@@ -70,7 +77,7 @@ namespace WindowManager {
 	}
 
 	//the moniter number
-	void CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height, std::function<Layout*(GLFWwindow*, glm::uvec2)> createLayout) {
+	void CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height, std::function<Layout*()> createLayout) {
 
 		if (monitor > monitorCount) {
 			S_LOG_ERROR("The specified moniter '", monitor, "' needs to be less than ", monitorCount);
@@ -90,8 +97,15 @@ namespace WindowManager {
 			windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, sharedCtx));
 		}
 
-		windows.back()->layout.reset(createLayout(masterWindow->windowHandle,glm::uvec2(width,height)));
+
+		windows.back()->layout.reset(createLayout());
+		windows.back()->layout->UpdateWindow(windows.back().get()->windowHandle);
+		windows.back()->layout->UpdatePositioning( glm::uvec2(x,y), glm::uvec2(width, height));
+		windows.back()->layout->RecreateData();
+
 	}
+
+
 
 	void Draw() {
 		std::unique_lock<std::mutex>(windowMutex);

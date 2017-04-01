@@ -292,9 +292,8 @@ void VulkanBackend::BuildWindow(GLFWwindow* window) {
 	PhysicalDevice(windowStorage[window]->physicalDevice, windowStorage[window]->surface);
 }
 
-void VulkanBackend::SetWindowHints(GLFWwindow*& context) {
+void VulkanBackend::SetWindowHints() {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	context = nullptr;
 }
 
 void VulkanBackend::PreRaster(GLFWwindow* window) {
@@ -307,4 +306,8 @@ void VulkanBackend::PostRaster(GLFWwindow* window) {
 
 void VulkanBackend::Draw(GLFWwindow* window, RasterJob* job) {
 
+}
+
+GLFWwindow* VulkanBackend::GetResourceContext() {
+	return nullptr;
 }

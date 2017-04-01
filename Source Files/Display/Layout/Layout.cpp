@@ -4,12 +4,6 @@ Layout::Layout()
 {
 }
 
-Layout::Layout(GLFWwindow* winIn, glm::uvec2 sizeIn)
-{
-	UpdateWindow(winIn);
-	size = sizeIn;
-}
-
 Layout::~Layout()
 {
 }
@@ -20,10 +14,25 @@ void Layout::Draw(GLFWwindow* window) {
 	}
 }
 
-void  Layout::UpdateWindow(GLFWwindow* winIn) {
+void Layout::UpdateWindow(GLFWwindow* winIn) {
 	window = winIn;
 
 	for (auto& wid : widgets) {
 		wid->UpdateWindow(winIn);
+	}
+}
+
+void Layout::UpdatePositioning( glm::uvec2 newPosition, glm::uvec2 newSize) {
+	size = newSize;
+	position = newPosition;
+	for (auto& wid : widgets) {
+		wid->UpdatePositioning(newPosition, newSize);
+	}
+
+}
+
+void Layout::RecreateData() {
+	for (auto& wid : widgets) {
+		wid->RecreateData();
 	}
 }

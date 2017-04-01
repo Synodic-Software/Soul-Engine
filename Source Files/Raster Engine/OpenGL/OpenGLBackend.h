@@ -15,7 +15,8 @@ public:
 	OpenGLBackend();
 	~OpenGLBackend();
 
-	virtual	void SetWindowHints(GLFWwindow*&);
+	virtual GLFWwindow* GetResourceContext();
+	virtual	void SetWindowHints();
 	virtual void ResizeWindow(GLFWwindow*, int, int);
 	virtual void BuildWindow(GLFWwindow*);
 

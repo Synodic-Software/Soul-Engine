@@ -28,7 +28,7 @@ namespace RasterBackend {
 	void Init();
 
 	//needs to be called from the main thread
-	void SetWindowHints(GLFWwindow*&);
+	void SetWindowHints();
 
 	Shader* CreateShader(const std::string&, shader_t);
 
