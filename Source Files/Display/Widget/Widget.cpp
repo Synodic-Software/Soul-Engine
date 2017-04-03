@@ -13,7 +13,7 @@ Widget::~Widget()
 
 void Widget::Draw(GLFWwindow* windowHandle)
 {
-	RasterBackend::Draw(windowHandle, widgetJob);
+
 }
 
 void Widget::UpdateWindow(GLFWwindow* winIn) {

@@ -10,9 +10,9 @@ RasterJob::~RasterJob() {
 
 }
 
-RasterVariant const& RasterJob::operator [](std::string i) const {
+int const& RasterJob::operator [](std::string i) const {
 	return shaderUniforms.at(i); 
 }
-RasterVariant& RasterJob::operator [](std::string i) {
+int& RasterJob::operator [](std::string i) {
 	return shaderUniforms[i]; 
 }
