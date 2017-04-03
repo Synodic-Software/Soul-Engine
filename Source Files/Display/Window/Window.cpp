@@ -123,5 +123,5 @@ Window::~Window()
 
 void Window::Draw()
 {
-	layout->Draw(windowHandle);
+	layout->Draw();
 }

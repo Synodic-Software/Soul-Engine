@@ -10,7 +10,7 @@ public:
 	Widget();
 	~Widget();
 
-	virtual void Draw(GLFWwindow*);
+	virtual void Draw();
 	virtual void UpdateWindow(GLFWwindow*);
 	virtual void UpdatePositioning(glm::uvec2, glm::uvec2);
 	virtual void RecreateData();

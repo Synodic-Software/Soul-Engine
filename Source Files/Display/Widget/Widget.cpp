@@ -11,7 +11,7 @@ Widget::~Widget()
 
 }
 
-void Widget::Draw(GLFWwindow* windowHandle)
+void Widget::Draw()
 {
 
 }

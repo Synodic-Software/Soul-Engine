@@ -9,7 +9,7 @@ public:
 	SingleLayout(Widget*);
 	~SingleLayout();
 
-	virtual void Draw(GLFWwindow*);
+	virtual void Draw();
 protected:
 
 
