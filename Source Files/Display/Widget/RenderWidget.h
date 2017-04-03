@@ -2,6 +2,8 @@
 
 #include "Display\Widget\Widget.h"
 #include "Metrics.h"
+#include "Raster Engine\RasterBackend.h"
+#include "GPGPU\GPURasterBuffer.h"
 
 class RenderWidget : public Widget
 {
@@ -17,6 +19,9 @@ protected:
 
 
 private:
+
+	glm::uvec2 currentSize;
+	GPURasterBuffer* buffer;
 
 };
 

@@ -1,8 +1,7 @@
 #include "RenderWidget.h"
-#include "Raster Engine\RasterBackend.h"
 #include "Raster Engine\Buffer.h"
 #include "GPGPU\GPUManager.h"
-#include "GPGPU\GPURasterBuffer.h"
+
 
 RenderWidget::RenderWidget()
 {
@@ -14,11 +13,43 @@ RenderWidget::RenderWidget()
 
 
 	//init all uniform data
-	//(*widgetJob)[std::string("camera")]=
-		//	cameraUniform = CUDAtoScreen->uniform("camera");
-		//	modelUniform = CUDAtoScreen->uniform("model");
-		//	screenUniform = CUDAtoScreen->uniform("screen");
-		//	screenModUniform = CUDAtoScreen->uniform("screenMod");
+	widgetJob->RegisterUniform(std::string("screen"));
+
+	uint indices[6];
+	float vertices[6 * 4];
+
+	vertices[0] = -1.0f;
+	vertices[1] = -1.0f;
+	vertices[2] = 0.0f;
+	vertices[3] = 1.0f;
+
+
+	vertices[4] = 1.0f;
+	vertices[5] = 1.0f;
+	vertices[6] = 0.0f;
+	vertices[7] = 1.0f;
+
+
+	vertices[8] = -1.0f;
+	vertices[9] = 1.0f;
+	vertices[10] = 0.0f;
+	vertices[11] = 1.0f;
+
+
+	vertices[12] = 1.0f;
+	vertices[13] = -1.0f;
+	vertices[14] = 0.0f;
+	vertices[15] = 1.0f;
+
+	indices[0] = 0;
+	indices[1] = 2;
+	indices[2] = 1;
+	indices[3] = 0;
+	indices[4] = 1;
+	indices[5] = 3;
+
+	widgetJob->UploadGeometry(vertices, sizeof(vertices), indices, sizeof(indices));
+
 }
 
 RenderWidget::~RenderWidget()
@@ -27,20 +58,18 @@ RenderWidget::~RenderWidget()
 }
 
 void RenderWidget::Draw() {
-	//	CUDAtoScreen->use();
-	//	glBindVertexArray(vao);
-	//	CUDAtoScreen->setUniform(cameraUniform, glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, 2.0f, -2.0f));
-	//	CUDAtoScreen->setUniform(modelUniform, glm::mat4());
-	//	CUDAtoScreen->setUniform(screenUniform, originalScreen.x, originalScreen.y);
-	//	CUDAtoScreen->setUniform(screenModUniform, modifiedScreen.x , modifiedScreen.y);
-	//	//RenderJob->SwapResults(0,1);
-	//	glDrawElements(GL_TRIANGLES, (6), GL_UNSIGNED_INT, (GLvoid*)0);
-	//	glBindVertexArray(0);
-	//	CUDAtoScreen->stopUsing();
+		
+	widgetJob->Draw();
+
 }
 
 void RenderWidget::RecreateData() {
 
-	GPURasterBuffer* buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+	buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+
+	if (currentSize != size) {
+		currentSize = size;
+		widgetJob->SetUniform(std::string("screen"), size);
+	}
 
 }

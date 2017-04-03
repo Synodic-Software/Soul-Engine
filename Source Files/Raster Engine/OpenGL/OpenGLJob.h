@@ -11,11 +11,21 @@ public:
 	~OpenGLJob();
 
 	void AttachShaders(const std::vector<Shader*>&);
+	void RegisterUniform(const std::string);
+	void UploadGeometry(float*, uint, uint*, uint);
+	void SetUniform(const std::string, RasterVariant);
+
+	void Draw();
+
 
 private:
+	GLint GetAttribute(const GLchar*);
+
 	GLuint vao;
 	GLuint vbo;
 	GLuint ibo;
 
 	GLuint object;
+
+	uint drawSize;
 };

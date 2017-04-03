@@ -3,23 +3,17 @@
 #include "Utility/CUDA/CudaHelper.cuh"
 
 #include "Raster Engine\RasterBackend.h"
-#include "Raster Engine\OpenGL\OpenGLBuffer.h"
 #include <cuda_gl_interop.h>
 
 CUDARasterBuffer::CUDARasterBuffer(CUDADevice* device,uint size) {
 
 	cudaSetDevice(device->order);
 
-	Buffer* rasterBuffer = RasterBackend::CreateBuffer(size);
-
-	CUDARasterBuffer* buffer;
+	rasterBuffer = RasterBackend::CreateBuffer(size);
 
 	if (RasterBackend::backend == OpenGL) {
 
 		OpenGLBuffer* oglBuffer = static_cast<OpenGLBuffer*>(rasterBuffer);
-
-		struct cudaGraphicsResource *cudaBuffer;
-		glm::vec4 *bufferData;
 
 		CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
 			, oglBuffer->GetBufferID()

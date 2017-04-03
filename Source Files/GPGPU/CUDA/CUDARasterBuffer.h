@@ -3,6 +3,7 @@
 #include "Metrics.h"
 
 #include "GPGPU\CUDA\CUDADevice.h"
+#include "Raster Engine\OpenGL\OpenGLBuffer.h"
 
 class CUDARasterBuffer :public GPURasterBuffer {
 
@@ -13,5 +14,9 @@ public:
 protected:
 
 private:
+	Buffer* rasterBuffer = nullptr;
+	struct cudaGraphicsResource* cudaBuffer;
+	void* bufferData;
+
 
 };
