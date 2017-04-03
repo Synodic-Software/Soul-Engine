@@ -11,6 +11,6 @@ SingleLayout::~SingleLayout()
 
 }
 
-void SingleLayout::Draw(GLFWwindow* window) {
-	Layout::Draw(window);
+void SingleLayout::Draw() {
+	Layout::Draw();
 }

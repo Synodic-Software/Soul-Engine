@@ -1,10 +1,13 @@
 #version 430 core
+
 in vec4 vert_VS_in;
 
-uniform mat4 camera;
-uniform mat4 model;
+const vec2 offset = vec2(0.5, 0.5);
+
+out vec2 textureCoord;
 
 void main()
 {
-	gl_Position=(camera*model)*vert_VS_in;
+	textureCoord = vert_VS_in.xy*offset + offset; // scale vertex attribute to [0-1] range
+	gl_Position = vec4(vert_VS_in.xy, 0.0, 1.0);
 }

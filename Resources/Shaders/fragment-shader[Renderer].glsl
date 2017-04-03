@@ -7,94 +7,17 @@
 
 	layout(pixel_center_integer) in vec4 gl_FragCoord;
 
+	in vec2 textureCoord;
+
     out vec4 fragment;
 
-	uniform uvec2 screenMod;
 	uniform uvec2 screen;
-
-
-vec4 Bilinear( vec2 texcoord){
-
-uint px = uint(floor(texcoord.x)); // floor of x
-uint py = uint(floor(texcoord.y)); // floor of y
-
-float tx=abs(fract(texcoord.x));
-float ty=abs(fract(texcoord.y));
-
-uint pyN=py+1;
-uint pxN=px+1;
-
-if(px<0){
-	px=0;
-	pxN=px;
-	tx=0.0f;
-}
-if(py<0){
-	py=0;
-	pyN=py;
-	ty=0.0f;
-}
-
-vec4 p1 = tex[py*screenMod.x+px];
-vec4 p2 = tex[py*screenMod.x+pxN];
-vec4 p3 = tex[pyN*screenMod.x+px];
-vec4 p4 = tex[pyN*screenMod.x+pxN];
-
-// Calculate the weights for each pixel
- vec4 r1 = mix(p1, p2, tx);
- vec4 r2 = mix(p3, p4, tx);
- 
- return mix (r1, r2, ty);
-}
-
-vec4 Cubic(float x)
-{
-    float x2 = x * x;
-    float x3 = x2 * x;
-    vec4 w;
-    w.x =   -x3 + 3*x2 - 3*x + 1;
-    w.y =  3*x3 - 6*x2       + 4;
-    w.z = -3*x3 + 3*x2 + 3*x + 1;
-    w.w =  x3;
-    return w / 6.f;
-}
-
-vec4 Bicubic(vec2 texcoord)
-{
-    float fx = fract(texcoord.x);
-    float fy = fract(texcoord.y);
-    texcoord.x = uint(floor(texcoord.x)); // floor of x
-	texcoord.y = uint(floor(texcoord.y)); // floor of y
-
-    vec4 xcubic = Cubic(fx);
-    vec4 ycubic = Cubic(fy);
-
-    vec4 c = vec4(texcoord.x-1.0f, texcoord.x + 1.0f, texcoord.y-1.0f, texcoord.y + 1.0f);
-    vec4 s = vec4(xcubic.x + xcubic.y, xcubic.z + xcubic.w, ycubic.x +
-ycubic.y, ycubic.z + ycubic.w);
-
-    vec4 offset = c + vec4(xcubic.y, xcubic.w, ycubic.y, ycubic.w) /
-s;
-
-    vec4 sample0 = Bilinear( vec2(offset.x, offset.z));
-    vec4 sample1 = Bilinear( vec2(offset.y, offset.z));
-    vec4 sample2 = Bilinear( vec2(offset.x, offset.w));
-    vec4 sample3 = Bilinear( vec2(offset.y, offset.w));
-
-    float sx = s.x / (s.x + s.y);
-    float sy = s.z / (s.z + s.w);
-
-    return mix(
-        mix(sample3, sample2, sx),
-        mix(sample1, sample0, sx), sy);
-}
-
 
 
     void main(){
 
-		vec2 pos= gl_FragCoord.xy*(vec2(screenMod-vec2(1))/vec2(screen));
+		uvec2 pos= uvec2(textureCoord.xy*vec2(screen));
 
-		fragment=Bicubic(pos);
+		fragment= tex[pos.x+ screen.x*pos.y];
 
 	}

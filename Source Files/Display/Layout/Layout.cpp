@@ -8,9 +8,9 @@ Layout::~Layout()
 {
 }
 
-void Layout::Draw(GLFWwindow* window) {
+void Layout::Draw() {
 	for (auto& wid : widgets) {
-		wid->Draw(window);
+		wid->Draw();
 	}
 }
 
