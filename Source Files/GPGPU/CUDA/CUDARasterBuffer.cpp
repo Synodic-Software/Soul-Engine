@@ -16,15 +16,21 @@ CUDARasterBuffer::CUDARasterBuffer(CUDADevice* device, uint size) {
 
 		OpenGLBuffer* oglBuffer = static_cast<OpenGLBuffer*>(rasterBuffer);
 
-		CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
-			, oglBuffer->GetBufferID()
-			, cudaGraphicsRegisterFlagsWriteDiscard));
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this,&oglBuffer]() {
+			RasterBackend::MakeContextCurrent();
+
+			CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
+				, oglBuffer->GetBufferID()
+				, cudaGraphicsRegisterFlagsWriteDiscard));
 
 
-		CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
-		size_t num_bytes;
-		CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
-			cudaBuffer));
+			CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
+			size_t num_bytes;
+			CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
+				cudaBuffer));
+
+		});
+		Scheduler::Block();
 	}
 	else {
 		//TODO
@@ -53,8 +59,6 @@ void CUDARasterBuffer::MapResources() {
 			CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
 				cudaBuffer));
 
-//			CudaCheck(cudaMemset((float*)bufferData, 0, num_bytes));
-
 		});
 		Scheduler::Block();
 
@@ -71,7 +75,6 @@ void CUDARasterBuffer::UnmapResources() {
 
 	if (RasterBackend::backend == OpenGL) {
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
-			RasterBackend::MakeContextCurrent();
 
 			CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
 
