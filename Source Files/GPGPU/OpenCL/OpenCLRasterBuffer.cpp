@@ -9,3 +9,15 @@ OpenCLRasterBuffer::~OpenCLRasterBuffer() {
 
 
 }
+
+void OpenCLRasterBuffer::MapResources() {
+
+}
+
+void OpenCLRasterBuffer::UnmapResources() {
+
+}
+
+void OpenCLRasterBuffer::BindData(uint) {
+
+}

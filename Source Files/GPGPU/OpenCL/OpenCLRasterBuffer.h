@@ -10,6 +10,10 @@ public:
 	OpenCLRasterBuffer(OpenCLDevice*, uint);
 	~OpenCLRasterBuffer();
 
+	void MapResources();
+	void UnmapResources();
+	void BindData(uint);
+
 protected:
 
 private:

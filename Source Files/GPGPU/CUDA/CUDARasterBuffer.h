@@ -11,6 +11,10 @@ public:
 	CUDARasterBuffer(CUDADevice*, uint);
 	~CUDARasterBuffer();
 
+	void MapResources();
+	void UnmapResources();
+	void BindData(uint);
+
 protected:
 
 private:

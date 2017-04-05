@@ -1,7 +1,7 @@
 #include "RenderWidget.h"
 #include "Raster Engine\Buffer.h"
 #include "GPGPU\GPUManager.h"
-
+#include <iostream>
 
 RenderWidget::RenderWidget()
 {
@@ -58,8 +58,17 @@ RenderWidget::~RenderWidget()
 }
 
 void RenderWidget::Draw() {
-		
+
+	buffer->UnmapResources();
+	buffer->BindData(0);
 	widgetJob->Draw();
+
+	GLenum x;
+	if ((x = glGetError()) != GL_NO_ERROR) {
+		std::cout << x << std::endl;
+	}
+
+	buffer->MapResources();
 
 }
 
