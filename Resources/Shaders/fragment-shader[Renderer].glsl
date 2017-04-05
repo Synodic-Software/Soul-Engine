@@ -5,8 +5,6 @@
 		vec4 tex[];
 	};
 
-	layout(pixel_center_integer) in vec4 gl_FragCoord;
-
 	in vec2 textureCoord;
 
     out vec4 fragment;
