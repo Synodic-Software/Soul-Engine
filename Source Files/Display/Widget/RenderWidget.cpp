@@ -63,11 +63,6 @@ void RenderWidget::Draw() {
 	buffer->BindData(0);
 	widgetJob->Draw();
 
-	GLenum x;
-	if ((x = glGetError()) != GL_NO_ERROR) {
-		std::cout << x << std::endl;
-	}
-
 	buffer->MapResources();
 
 }

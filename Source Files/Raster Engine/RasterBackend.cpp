@@ -89,5 +89,10 @@ namespace RasterBackend {
 		detail::raster.get()->Draw(window, job);
 	}
 
-	
+	void PreRaster(GLFWwindow* window) {
+		detail::raster.get()->PreRaster(window);
+	}
+	void PostRaster(GLFWwindow* window) {
+		detail::raster.get()->PostRaster(window);
+	}
 }

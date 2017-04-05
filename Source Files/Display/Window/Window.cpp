@@ -123,5 +123,9 @@ Window::~Window()
 
 void Window::Draw()
 {
+
+	RasterBackend::PreRaster(windowHandle);
 	layout->Draw();
+	RasterBackend::PostRaster(windowHandle);
+
 }

@@ -53,6 +53,8 @@ void CUDARasterBuffer::MapResources() {
 			CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,
 				cudaBuffer));
 
+//			CudaCheck(cudaMemset((float*)bufferData, 0, num_bytes));
+
 		});
 		Scheduler::Block();
 
@@ -72,7 +74,6 @@ void CUDARasterBuffer::UnmapResources() {
 			RasterBackend::MakeContextCurrent();
 
 			CudaCheck(cudaGraphicsUnmapResources(1, &cudaBuffer, 0));
-
 
 		});
 		Scheduler::Block();

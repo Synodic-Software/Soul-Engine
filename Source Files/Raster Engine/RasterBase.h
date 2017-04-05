@@ -17,6 +17,8 @@ public:
 	virtual void Draw(GLFWwindow*, RasterJob*) = 0;
 	virtual void ResizeWindow(GLFWwindow*, int, int) = 0;
 
+	virtual void PreRaster(GLFWwindow*) = 0;
+	virtual void PostRaster(GLFWwindow*) = 0;
 	virtual void MakeContextCurrent() = 0;
 
 private:
