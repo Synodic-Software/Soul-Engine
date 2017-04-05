@@ -45,4 +45,8 @@ namespace RasterBackend {
 	void Terminate();
 
 	void Draw(GLFWwindow*, RasterJob*);
+
+	void PreRaster(GLFWwindow*);
+	void PostRaster(GLFWwindow*);
+
 }

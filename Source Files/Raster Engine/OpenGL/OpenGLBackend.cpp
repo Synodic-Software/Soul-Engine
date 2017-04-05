@@ -87,7 +87,7 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 			defaultContext = windowStorage[window].get();
 		}
 
-		MakeContextCurrent();
+		MakeContextCurrent(window);
 
 		glewExperimental = true;
 		err = glewInit();
@@ -135,27 +135,42 @@ void OpenGLBackend::ResizeWindow(GLFWwindow* window, int width, int height) {
 
 void OpenGLBackend::PreRaster(GLFWwindow* window) {
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &window]() {
 
+		MakeContextCurrent(window);
+
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	});
+
+	Scheduler::Block();
 }
 
 void OpenGLBackend::PostRaster(GLFWwindow* window) {
 
-	glfwSwapBuffers(window);
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &window]() {
+
+		MakeContextCurrent(window);
 
 
+		glfwSwapBuffers(window);
+
+	});
+
+	Scheduler::Block();
 }
 
 
 
 void OpenGLBackend::Draw(GLFWwindow* window, RasterJob* job) {
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this,&window]() {
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &window]() {
 
 		if (windowStorage.find(window) != windowStorage.end()) {
 
-			MakeContextCurrent();
+			MakeContextCurrent(window);
 
 
 			PreRaster(window);

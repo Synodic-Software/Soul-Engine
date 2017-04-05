@@ -9,5 +9,5 @@ out vec2 textureCoord;
 void main()
 {
 	textureCoord = vert_VS_in.xy*offset + offset; // scale vertex attribute to [0-1] range
-	gl_Position = vec4(vert_VS_in.xy, 0.0, 1.0);
+	gl_Position = vert_VS_in;
 }
