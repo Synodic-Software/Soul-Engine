@@ -144,13 +144,16 @@ namespace Soul {
 
 	void Warmup() {
 
-		//double deltaTime = 1.0 / engineRefreshRate;
+		double deltaTime = 1.0 / engineRefreshRate;
+
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			glfwPollEvents();
 		});
-		/*for (auto const& scene : scenes) {
+
+		for (auto const& scene : scenes) {
 			scene->Build(deltaTime);
-		}*/
+		}
+
 		Scheduler::Block();
 
 	}
@@ -212,9 +215,9 @@ namespace Soul {
 
 				EarlyUpdate();
 
-				/*for (auto const& scene : scenes) {
+				for (auto const& scene : scenes) {
 					scene->Build(deltaTime);
-				}*/
+				}
 				/*
 				for (auto const& scene : scenes){
 					PhysicsEngine::Process(scene);
@@ -325,14 +328,14 @@ int main()
 			return new SingleLayout(new RenderWidget());
 		});*/
 
-		/*Material* whiteGray = new Material();
+		Material* whiteGray = new Material();
 		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
 		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 		Scene* scene = new Scene();
-		AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
+		AddObject(scene, glm::vec3(0, 0, 0), "..\\Resources\\Objects\\Rebellion.obj", whiteGray);
 
-		SubmitScene(scene);*/
+		SubmitScene(scene);
 
 		SoulRun();
 		SoulTerminate();
