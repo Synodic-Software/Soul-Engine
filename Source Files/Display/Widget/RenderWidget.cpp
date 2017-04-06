@@ -1,10 +1,19 @@
 #include "RenderWidget.h"
 #include "Raster Engine\Buffer.h"
 #include "GPGPU\GPUManager.h"
+#include "Ray Engine/RayEngine.h"
+
 #include <iostream>
 
 RenderWidget::RenderWidget()
 {
+
+	widgetJob = RasterBackend::CreateJob();
+
+	samples = 1;
+
+	camera = new Camera();
+
 	//attach shaders to render a quad and apply a texture
 	widgetJob->AttachShaders({
 		RasterBackend::CreateShader("../Resources/Shaders/vertex-shader[Renderer].glsl",VERTEX_SHADER),
@@ -65,9 +74,14 @@ void RenderWidget::Draw() {
 
 	buffer->MapResources();
 
+	//add the rayJob back in
+	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, camera, buffer->GetData());
+
 }
 
 void RenderWidget::RecreateData() {
+	//remove the rayJob if it exists
+	//TODO
 
 	buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
 
@@ -76,4 +90,7 @@ void RenderWidget::RecreateData() {
 		widgetJob->SetUniform(std::string("screen"), size);
 	}
 
+	//add the ray job with new sizes
+	buffer->MapResources();
+	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, camera, buffer->GetData());
 }

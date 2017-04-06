@@ -17,7 +17,7 @@
 OpenGLJob::OpenGLJob()
 	: RasterJob() {
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&object = object]() {
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
 		RasterBackend::MakeContextCurrent();
 
 		//create the program object
@@ -25,6 +25,7 @@ OpenGLJob::OpenGLJob()
 
 		if (object == 0) {
 			S_LOG_FATAL("glCreateProgram failed");
+			assert(object != 0);
 		}
 
 	});
@@ -37,8 +38,6 @@ OpenGLJob::~OpenGLJob() {
 
 //should be called in the context of the main thread
 GLint OpenGLJob::GetAttribute(const GLchar* attribName) {
-	if (!attribName)
-		throw std::runtime_error("attribName was NULL");
 
 	GLint attrib = glGetAttribLocation(object, attribName);
 	if (attrib == -1) {
@@ -48,39 +47,42 @@ GLint OpenGLJob::GetAttribute(const GLchar* attribName) {
 	return attrib;
 }
 
-void OpenGLJob::AttachShaders(const std::vector<Shader*>& shaders) {
-
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&object = object, &shaders]() {
+void OpenGLJob::AttachShaders(const std::vector<Shader*>& shadersIn) {
+	shaders = shadersIn;
+	OpenGLJob* job = this;
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&job]() {
 
 		RasterBackend::MakeContextCurrent();
 
 		//attach all the shaders
-		for (unsigned i = 0; i < shaders.size(); ++i) {
-			glAttachShader(object, static_cast<OpenGLShader*>(shaders[i])->Object());
+		for (unsigned i = 0; i < job->shaders.size(); ++i) {
+			OpenGLShader* temp = static_cast<OpenGLShader*>(job->shaders[i]);
+			glAttachShader(job->object, temp->Object());
 		}
 
 		//link the shaders together
-		glLinkProgram(object);
+		glLinkProgram(job->object);
 
 		//detach all the shaders
-		for (unsigned i = 0; i < shaders.size(); ++i) {
-			glDetachShader(object, static_cast<OpenGLShader*>(shaders[i])->Object());
+		for (unsigned i = 0; i < job->shaders.size(); ++i) {
+			OpenGLShader* temp = static_cast<OpenGLShader*>(job->shaders[i]);
+			glDetachShader(job->object, temp->Object());
 		}
 
 		//throw exception if linking failed
 		GLint status;
-		glGetProgramiv(object, GL_LINK_STATUS, &status);
+		glGetProgramiv(job->object, GL_LINK_STATUS, &status);
 		if (status == GL_FALSE) {
 
 			std::string msg("Program linking failure in: ");
 			GLint infoLogLength;
-			glGetProgramiv(object, GL_INFO_LOG_LENGTH, &infoLogLength);
+			glGetProgramiv(job->object, GL_INFO_LOG_LENGTH, &infoLogLength);
 			char* strInfoLog = new char[infoLogLength + 1];
-			glGetProgramInfoLog(object, infoLogLength, NULL, strInfoLog);
+			glGetProgramInfoLog(job->object, infoLogLength, NULL, strInfoLog);
 			msg += strInfoLog;
 			delete[] strInfoLog;
 
-			glDeleteProgram(object); object = 0;
+			glDeleteProgram(job->object); job->object = 0;
 			S_LOG_FATAL(msg);
 
 		}
@@ -203,12 +205,14 @@ void OpenGLJob::SetUniform(const std::string uniformName, RasterVariant type) {
 
 void OpenGLJob::Draw() {
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
+	OpenGLJob* job = this;
+
+	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&job]() {
 		RasterBackend::MakeContextCurrent();
 
-		glUseProgram(object);
-		glBindVertexArray(vao);
-		glDrawElements(GL_TRIANGLES, drawSize, GL_UNSIGNED_INT, (GLvoid*)0);
+		glUseProgram(job->object);
+		glBindVertexArray(job->vao);
+		glDrawElements(GL_TRIANGLES, job->drawSize, GL_UNSIGNED_INT, (GLvoid*)0);
 		glBindVertexArray(0);
 		glUseProgram(0);
 
