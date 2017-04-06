@@ -40,8 +40,8 @@ __host__ __device__ void Camera::OffsetPosition(const glm::vec3& offset) {
 __host__ __device__ glm::vec2 Camera::FieldOfView() const{
     return fieldOfView;
 }
-__host__ __device__ void Camera::SetFieldOfView(glm::vec2 fieldOfView) {
-    fieldOfView = fieldOfView;
+__host__ __device__ void Camera::SetFieldOfView(glm::vec2 fieldOfViewIn) {
+    fieldOfView = fieldOfViewIn;
 }
 
 

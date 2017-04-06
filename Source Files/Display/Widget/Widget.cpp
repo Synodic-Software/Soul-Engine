@@ -3,7 +3,6 @@
 
 Widget::Widget()
 {
-	widgetJob=RasterBackend::CreateJob();
 }
 
 Widget::~Widget()

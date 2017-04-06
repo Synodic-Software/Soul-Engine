@@ -321,8 +321,8 @@ int main()
 			return new SingleLayout(new RenderWidget());
 		}); 
 
-		/*WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300, [](GLFWwindow* win) {
-			return new SingleLayout(win, new RenderWidget());
+	/*	WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300, []() {
+			return new SingleLayout(new RenderWidget());
 		});*/
 
 		/*Material* whiteGray = new Material();

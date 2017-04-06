@@ -39,10 +39,10 @@ Object::Object(glm::vec3 pos, std::string name, Material* mat){
 	ExtractFromFile(name.c_str());
 }
 
-void Object::AddVertices(Vertex* vertices, uint vSize){
+void Object::AddVertices(Vertex* verticesIn, uint vSize){
 
 }
-void Object::AddFaces(Face* vertices, uint fSize){
+void Object::AddFaces(Face* facesIn, uint fSize){
 
 }
 void Object::ExtractFromFile(const char* name){

@@ -13,7 +13,6 @@
 #include <mutex>
 #include <memory>
 
-static std::mutex windowMutex;
 static std::list<std::unique_ptr<Window>> windows;
 static Window* masterWindow = nullptr;
 
@@ -39,7 +38,6 @@ namespace WindowManager {
 
 		Scheduler::Block();
 
-		//std::unique_lock<std::mutex>(windowMutex);
 		//windows.emplace_back(new Window(static_cast<WindowType>(-1), "", 0, 0, 1, 1, monitors[0], nullptr));
 		//masterWindow = windows.back().get();
 	}
@@ -86,8 +84,6 @@ namespace WindowManager {
 
 		GLFWmonitor* monitorIn = monitors[monitor];
 
-		std::unique_lock<std::mutex>(windowMutex);
-
 		if (!masterWindow) {
 			windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, nullptr));
 			masterWindow = windows.front().get();
@@ -96,7 +92,6 @@ namespace WindowManager {
 			GLFWwindow* sharedCtx = masterWindow->windowHandle;
 			windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, sharedCtx));
 		}
-
 
 		windows.back()->layout.reset(createLayout());
 		windows.back()->layout->UpdateWindow(windows.back().get()->windowHandle);
@@ -108,7 +103,6 @@ namespace WindowManager {
 
 
 	void Draw() {
-		std::unique_lock<std::mutex>(windowMutex);
 
 		for (auto& itr : windows) {
 			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, [&itr]() {
@@ -129,7 +123,6 @@ namespace WindowManager {
 			masterWindow = nullptr;
 		}
 
-		std::unique_lock<std::mutex>(windowMutex);
 
 		// Find the matching unique_ptr
 		auto b = windows.begin();
@@ -156,7 +149,6 @@ namespace WindowManager {
 
 	void Refresh(GLFWwindow* handler)
 	{
-		std::unique_lock<std::mutex>(windowMutex);
 
 		Window* window = static_cast<Window*>(glfwGetWindowUserPointer(handler));
 		window->Draw();
