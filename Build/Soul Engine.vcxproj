@@ -83,7 +83,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h" />
-    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h" />
+    <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh" />
+    <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h" />
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.h" />
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
@@ -180,7 +181,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="..\Source Files\Utility\Settings.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp" />
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="..\Source Files\Display\Layout\Layout.cpp" />
@@ -228,8 +228,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="..\Source Files\Utility\Logger.cpp" />
     <ClCompile Include="..\Source Files\Utility\Settings.cpp" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />
-    <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu" />
-    <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Quicksort.cu" />
+    <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cu" />
