@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Utility\CUDA\CUDAManaged.cuh"
 #include "Utility\Includes\GLMIncludes.h"
 
-class  Vertex : public Managed
+class  Vertex
 {
 public:
 	Vertex();

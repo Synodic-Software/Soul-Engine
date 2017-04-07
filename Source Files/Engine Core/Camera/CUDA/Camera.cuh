@@ -7,7 +7,7 @@
 class Ray;
 
 //forward and right must be normalized!
-    class Camera : public Managed {
+    class Camera{
     public:
 		__host__ __device__ Camera();
 		__host__ __device__ ~Camera();

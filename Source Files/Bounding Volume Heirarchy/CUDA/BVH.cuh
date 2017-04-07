@@ -4,7 +4,7 @@
 #include "Bounding Volume Heirarchy\BoundingBox.h"
 #include "Engine Core\Object\Face.h"
 
-class BVH : public Managed{
+class BVH{
 public:
 
 	BVH(Face*** datan, uint64** mortonCodesn);

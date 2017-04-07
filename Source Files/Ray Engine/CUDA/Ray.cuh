@@ -6,7 +6,7 @@
 class Face;
 
 //__align__(64)
-class Ray : public Managed
+class Ray
 {
 
 public:

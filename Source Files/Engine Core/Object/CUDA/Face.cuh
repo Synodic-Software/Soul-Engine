@@ -5,7 +5,7 @@
 
 class Object;
 //__align__(32)
-class Face : public Managed
+class Face
 {
 public:
 	Face();

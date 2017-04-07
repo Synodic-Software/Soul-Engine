@@ -4,7 +4,7 @@
 #include "Utility\Includes\GLMIncludes.h"
 #include <string>
 
-class Material : public Managed{
+class Material{
 public:
 
 	__host__ Material(std::string texName = "..\\Resources\\Textures\\SoulDefault.png");

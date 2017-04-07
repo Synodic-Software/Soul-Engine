@@ -2,7 +2,7 @@
 
 //#include "Engine Core\Object\CUDA/Object.cuh"
 //
-//class ObjectSceneAbstraction : public Managed
+//class ObjectSceneAbstraction
 //{
 //public:
 //	__host__ ObjectSceneAbstraction(Object*);

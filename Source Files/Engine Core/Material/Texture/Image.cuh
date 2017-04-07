@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Utility\CUDA\CUDAManaged.cuh"
 #include <cuda_runtime.h>
 
-class Image: public Managed{
+class Image{
 public:
 	int width;
 	int height;

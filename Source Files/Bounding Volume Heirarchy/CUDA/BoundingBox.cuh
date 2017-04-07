@@ -1,10 +1,8 @@
 #pragma once
-
-#include "Utility\CUDA\CudaManaged.cuh"
 #include <cuda_runtime.h>
 #include "Utility\Includes\GLMIncludes.h"
 
-class BoundingBox : public Managed
+class BoundingBox
 {
 public:
 	__host__ __device__ BoundingBox();

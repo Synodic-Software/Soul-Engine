@@ -26,7 +26,7 @@ namespace std {
 	};
 }
 
-class Object: public Managed{
+class Object{
 	public:
 
 		Object();
