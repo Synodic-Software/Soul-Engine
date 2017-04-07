@@ -396,9 +396,6 @@
     <ClInclude Include="..\Source Files\Utility\CUDA\CudaHelper.cuh">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Utility\CUDA\CUDAManaged.cuh">
-      <Filter>Engine Backend\Utility\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Utility\Includes\OpenCLIncludes.h">
       <Filter>Engine Backend\Utility\Includes</Filter>
     </ClInclude>
@@ -704,9 +701,6 @@
       <Filter>Engine Backend\Renderer\CUDA</Filter>
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Utility\CUDA\CudaHelper.cu">
-      <Filter>Engine Backend\Utility\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Utility\CUDA\CUDAManaged.cu">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>

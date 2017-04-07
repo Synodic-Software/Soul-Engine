@@ -6,7 +6,7 @@
 
 class Object;
 
-class Tet : public Managed
+class Tet
 {
 public:
 	Tet();

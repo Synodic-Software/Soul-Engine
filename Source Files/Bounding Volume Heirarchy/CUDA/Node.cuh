@@ -4,7 +4,7 @@
 #include "Ray Engine\CUDA/Ray.cuh"
 #include "Engine Core\Object\Face.h"
 
-class Node : public Managed
+class Node
 {
 public:
 	Node();

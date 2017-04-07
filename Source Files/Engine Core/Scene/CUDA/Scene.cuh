@@ -6,7 +6,7 @@
 #include "Bounding Volume Heirarchy\BVH.h"
 #include <vector>
 
-class Scene : public Managed
+class Scene
 {
 public:
 	__host__ Scene();

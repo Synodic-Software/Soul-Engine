@@ -2,7 +2,7 @@
 
 #include "Cuda\Colour.cuh"
 
-//class Image: public Managed{
+//class Image{
 //public:
 //	int width;
 //	int height;

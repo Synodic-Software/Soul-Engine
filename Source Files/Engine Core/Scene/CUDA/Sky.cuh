@@ -8,7 +8,7 @@
 
 
 
-class Sky : public Managed
+class Sky
 {
 
 public:

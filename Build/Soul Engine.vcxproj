@@ -171,7 +171,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="..\Source Files\Renderer\CUDA\Renderer.cuh" />
     <ClInclude Include="..\Source Files\Renderer\Renderer.h" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CudaHelper.cuh" />
-    <ClInclude Include="..\Source Files\Utility\CUDA\CUDAManaged.cuh" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CUDAMath.h" />
     <ClInclude Include="..\Source Files\Utility\Includes\GLFWIncludes.h" />
     <ClInclude Include="..\Source Files\Utility\Includes\GLMIncludes.h" />
@@ -239,7 +238,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\Material.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
     <CudaCompile Include="..\Source Files\Utility\CUDA\CudaHelper.cu" />
-    <CudaCompile Include="..\Source Files\Utility\CUDA\CUDAManaged.cu" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Engine Core\Material\Texture\Image.cu" />

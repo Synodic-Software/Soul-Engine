@@ -3,7 +3,7 @@
 #include "Engine Core/Material/Texture/Image.cuh"
 
 
-class ShaderNode : public Managed{
+class ShaderNode{
 public:
 
 	__host__ ShaderNode();
