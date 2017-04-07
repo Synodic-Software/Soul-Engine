@@ -13,14 +13,8 @@
     <Filter Include="Engine Backend\Algorithms\Data Algorithms">
       <UniqueIdentifier>{fe552dae-c229-45e9-9c8c-224aa3858a64}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Quicksort">
-      <UniqueIdentifier>{6e015e6b-cd04-40db-8ee2-cac7fb930bc7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Engine Core">
       <UniqueIdentifier>{b1cc8635-7429-4fa8-9d93-24788c28bc85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA">
-      <UniqueIdentifier>{0ffe0620-3e5a-44bb-9414-54167b39b786}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Sound">
       <UniqueIdentifier>{a32a3c77-3bdc-463e-81f0-b1e41ac61e21}</UniqueIdentifier>
@@ -184,6 +178,12 @@
     <Filter Include="Resources\Shaders">
       <UniqueIdentifier>{0a48df46-08a2-4c4c-93c2-5d82046ad2cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Algorithms\Morton Code">
+      <UniqueIdentifier>{1936a0d2-7e56-48ba-9bc4-98077dc51d2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Morton Code\CUDA">
+      <UniqueIdentifier>{50e0d8e9-2a5a-40d9-9b0f-64fc3df29968}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -194,9 +194,6 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.h">
-      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
@@ -486,11 +483,14 @@
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.h">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h">
+      <Filter>Engine Backend\Algorithms\Morton Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh">
+      <Filter>Engine Backend\Algorithms\Morton Code\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\QuickSort.cpp">
-      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
       <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
     </ClCompile>
@@ -634,12 +634,6 @@
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Bitonic.cu">
-      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Quicksort\CUDA\Quicksort.cu">
-      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Quicksort\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
     </CudaCompile>
@@ -702,6 +696,9 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Utility\CUDA\CudaHelper.cu">
       <Filter>Engine Backend\Utility\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu">
+      <Filter>Engine Backend\Algorithms\Morton Code\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
