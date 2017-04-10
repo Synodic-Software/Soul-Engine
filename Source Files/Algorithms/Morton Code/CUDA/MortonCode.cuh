@@ -5,6 +5,6 @@
 
 namespace MortonCode{
 
-	__global__ void Compute(const uint n, uint64* mortonCodes, Face** faceList, Object** objectList, const BoundingBox box);
+	__global__ void Compute(const uint n, uint64* mortonCodes, Face** faceList, Object** objectList, BoundingBox* box);
 
 }

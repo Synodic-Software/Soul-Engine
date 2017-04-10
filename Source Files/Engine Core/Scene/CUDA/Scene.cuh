@@ -38,7 +38,8 @@ private:
 	// a list of objects to remove 
 	std::vector<uint> objectsToRemove;
 
-	BoundingBox sceneBox;
+	BoundingBox sceneBoxHost;
+	BoundingBox* sceneBoxDevice;
 
 	int newFaceAmount; //The amount of indices the entire scene takes
 	int compiledSize; //the amount of indices as of the previous compile;
