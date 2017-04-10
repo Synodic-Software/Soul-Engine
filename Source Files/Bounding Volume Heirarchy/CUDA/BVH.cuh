@@ -9,19 +9,19 @@ public:
 
 	BVH(Face*** datan, uint64** mortonCodesn);
 
-	__host__ __device__ Node* GetRoot(){
+	__device__ Node* GetRoot(){
 		return root;
 	}
-	__host__ __device__ Node* GetNodes(){
+	__device__ Node* GetNodes(){
 		return bvh;
 	}
-	__host__ __device__ bool IsLeaf(Node* test){
+	__device__ bool IsLeaf(Node* test){
 		return ((test - bvh) >= (currentSize - 1));
 	}
-	__host__ __device__ uint GetSize(){
+	__device__ uint GetSize(){
 		return currentSize;
 	}
-	__host__ __device__ Node* GetLeaf(int test){
+	__device__ Node* GetLeaf(int test){
 		return bvh+((currentSize - 1) + test);
 	}
 

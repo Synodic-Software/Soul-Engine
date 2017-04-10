@@ -19,20 +19,26 @@
 Scene::Scene()
 {
 	objectsSize = 0;
-	allocatedObjects = 1;
+	allocatedObjects = 0;
 	allocatedSize = 0;
 
 	compiledSize = 0;
 	newFaceAmount = 0;
-	CudaCheck(cudaMallocManaged((void**)&objectList,
-		allocatedObjects*sizeof(Object*)));
 
+	objectListHost.clear();
 	objectsToRemove.clear();
-
+	objectListDevice = nullptr;
+	mortonCodes = nullptr;
+	faceIds = nullptr;
+	objIds = nullptr;
+	objectBitSetup = nullptr;
 	//give the addresses for the data
-	bvh = new BVH(&faceIds, &mortonCodes);
+	bvhHost = new BVH(&faceIds, &mortonCodes);
+	CudaCheck(cudaMalloc((void **)&bvhDevice, sizeof(BVH)));
 
-	sky = new Sky("Starmap.png");
+	Sky* skyHost = new Sky("Starmap.png");
+	CudaCheck(cudaMalloc((void **)&sky, sizeof(Sky)));
+	CudaCheck(cudaMemcpy(sky, skyHost, sizeof(Sky), cudaMemcpyHostToDevice));
 }
 
 
@@ -46,10 +52,14 @@ Scene::~Scene()
 
 	//Variables concerning object storage
 
-	CudaCheck(cudaFree(objectList));
+	CudaCheck(cudaFree(objectListDevice));
 	CudaCheck(cudaFree(objectRemoval));
 
-	delete bvh;
+	delete bvhHost;
+
+	CudaCheck(cudaFree(bvhDevice));
+	CudaCheck(cudaFree(sky));
+
 }
 
 
@@ -63,35 +73,35 @@ struct is_scheduled
 };
 
 
-__global__ void FillBool(const uint n, bool* jobs, bool* fjobs, Face** faces, uint* objIds, Object** objects){
+__global__ void FillBool(const uint n, bool* jobs, bool* fjobs, Face** faces, uint* objIds, Object** objects) {
 
 
 	uint index = getGlobalIdx_1D_1D();
 
 
-	if (index < n){
-		if (objects[objIds[index] - 1]->requestRemoval){
+	if (index < n) {
+		if (objects[objIds[index] - 1]->requestRemoval) {
 			jobs[index] = true;
 		}
-		else{
+		else {
 			jobs[index] = false;
 		}
-		if (faces[index]->objectPointer->requestRemoval){
+		if (faces[index]->objectPointer->requestRemoval) {
 			fjobs[index] = true;
 		}
-		else{
+		else {
 			fjobs[index] = false;
 		}
 	}
 }
 
-__global__ void GetFace(const uint n, uint* objIds, Object** objects, Face** faces, const uint offset){
+__global__ void GetFace(const uint n, uint* objIds, Object** objects, Face** faces, const uint offset) {
 
 
 	uint index = getGlobalIdx_1D_1D();
 
 
-	if (index >= n){
+	if (index >= n) {
 		return;
 	}
 
@@ -103,11 +113,11 @@ __global__ void GetFace(const uint n, uint* objIds, Object** objects, Face** fac
 
 
 //add all new objects into the scene's arrays
-__host__ bool Scene::Compile(){
+__host__ bool Scene::Compile() {
 
 	uint amountToRemove = objectsToRemove.size();
 
-	if (newFaceAmount > 0 || amountToRemove > 0){
+	if (newFaceAmount > 0 || amountToRemove > 0) {
 
 		//bitSetup only has the first element of each object flagged
 		//this extends that length and copies the previous results as well
@@ -115,7 +125,7 @@ __host__ bool Scene::Compile(){
 		uint newSize = compiledSize + newFaceAmount;
 		uint indicesToRemove = 0;
 		uint removedOffset = 0;
-		if (amountToRemove > 0){
+		if (amountToRemove > 0) {
 
 			bool* markers;
 			bool* faceMarkers;
@@ -132,7 +142,7 @@ __host__ bool Scene::Compile(){
 			uint gridSize = (compiledSize + blockSize - 1) / blockSize;
 
 			//fill the mask with 1s or 0s
-			FillBool << <gridSize, blockSize >> >(compiledSize, markers, faceMarkers, faceIds, objIds, objectList);
+			FillBool << <gridSize, blockSize >> > (compiledSize, markers, faceMarkers, faceIds, objIds, objectListDevice);
 			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -158,7 +168,7 @@ __host__ bool Scene::Compile(){
 			CudaCheck(cudaDeviceSynchronize());
 
 			//actual object list
-			thrust::device_ptr<Object*> objectsPtr = thrust::device_pointer_cast(objectList);
+			thrust::device_ptr<Object*> objectsPtr = thrust::device_pointer_cast(objectListDevice);
 
 			thrust::remove_if(objectsPtr, objectsPtr + objectsSize, is_scheduled());
 
@@ -167,9 +177,9 @@ __host__ bool Scene::Compile(){
 			CudaCheck(cudaFree(faceMarkers));
 		}
 
-		if (newFaceAmount > 0){
+		if (newFaceAmount > 0) {
 
-			if (allocatedSize < newSize){
+			if (allocatedSize < newSize) {
 				Face** faceTemp;
 				uint* objTemp;
 				bool* objectBitSetupTemp;
@@ -179,19 +189,28 @@ __host__ bool Scene::Compile(){
 				CudaCheck(cudaMalloc((void**)&faceTemp, allocatedSize * sizeof(Face*)));
 				CudaCheck(cudaMalloc((void**)&objTemp, allocatedSize * sizeof(uint)));
 				CudaCheck(cudaMalloc((void**)&objectBitSetupTemp, allocatedSize * sizeof(bool)));
-				CudaCheck(cudaFree(mortonCodes));
+
+				if (mortonCodes) {
+					CudaCheck(cudaFree(mortonCodes));
+				}
 				CudaCheck(cudaMalloc((void**)&mortonCodes, allocatedSize * sizeof(uint64)));
 
-				CudaCheck(cudaMemcpy(faceTemp, faceIds, compiledSize*sizeof(Face*), cudaMemcpyDeviceToDevice));
-				CudaCheck(cudaFree(faceIds));
+				if (faceIds) {
+					CudaCheck(cudaMemcpy(faceTemp, faceIds, compiledSize * sizeof(Face*), cudaMemcpyDeviceToDevice));
+					CudaCheck(cudaFree(faceIds));
+				}
 				faceIds = faceTemp;
 
-				CudaCheck(cudaMemcpy(objTemp, objIds, compiledSize*sizeof(uint), cudaMemcpyDeviceToDevice));
-				CudaCheck(cudaFree(objIds));
+				if (objIds) {
+					CudaCheck(cudaMemcpy(objTemp, objIds, compiledSize * sizeof(uint), cudaMemcpyDeviceToDevice));
+					CudaCheck(cudaFree(objIds));
+				}
 				objIds = objTemp;
 
-				CudaCheck(cudaMemcpy(objectBitSetupTemp, objectBitSetup, compiledSize*sizeof(bool), cudaMemcpyDeviceToDevice));
-				CudaCheck(cudaFree(objectBitSetup));
+				if (objectBitSetup) {
+					CudaCheck(cudaMemcpy(objectBitSetupTemp, objectBitSetup, compiledSize * sizeof(bool), cudaMemcpyDeviceToDevice));
+					CudaCheck(cudaFree(objectBitSetup));
+				}
 				objectBitSetup = objectBitSetupTemp;
 
 			}
@@ -211,16 +230,26 @@ __host__ bool Scene::Compile(){
 
 		//flag the first and setup state of life (only time iteration through objects should be done)
 		uint l = 0;
-		for (uint i = 0; i < objectsSize; i++){
-			if (!objectList[i]->ready){
+		for (uint i = 0; i < objectsSize; i++) {
+			if (!objectListHost[i]->ready) {
 				CudaCheck(cudaMemset(objectBitSetup + l, true, sizeof(bool)));
-				objectList[i]->ready = true;
+				objectListHost[i]->ready = true;
 			}
-			objectList[i]->localSceneIndex = l;
-			l += objectList[i]->faceAmount;
+			
+			objectListHost[i]->localSceneIndex = l;
+
+			Object** objHolderHost = new Object*[1];
+
+			Object* objDevice;
+			CudaCheck(cudaMalloc((void**)&objDevice, sizeof(Object)));
+			CudaCheck(cudaMemcpy(objDevice, objectListHost[i], sizeof(Object), cudaMemcpyHostToDevice));
+
+			objHolderHost[0] = objDevice;
+			CudaCheck(cudaMemcpy(objectListDevice + i, &objHolderHost[0], sizeof(Object*), cudaMemcpyHostToDevice));
+			l += objectListHost[i]->faceAmount;
 		}
 
-		if (newFaceAmount > 0){
+		if (newFaceAmount > 0) {
 
 			thrust::device_ptr<bool> bitPtr = thrust::device_pointer_cast(objectBitSetup);
 			thrust::device_ptr<uint> objPtr = thrust::device_pointer_cast(objIds);
@@ -233,7 +262,7 @@ __host__ bool Scene::Compile(){
 			uint blockSize = 64;
 			uint gridSize = ((newSize - removedOffset) + blockSize - 1) / blockSize;
 
-			GetFace << <gridSize, blockSize >> >(newSize - removedOffset, objIds, objectList, faceIds, removedOffset);
+			GetFace << <gridSize, blockSize >> > (newSize - removedOffset, objIds, objectListDevice, faceIds, removedOffset);
 			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -247,7 +276,7 @@ __host__ bool Scene::Compile(){
 		return true;
 
 	}
-	else{
+	else {
 		return false;
 	}
 
@@ -255,13 +284,10 @@ __host__ bool Scene::Compile(){
 }
 
 
-__host__ void Scene::Build(float deltaTime){
+__host__ void Scene::Build(float deltaTime) {
 
 	int device;
 	CudaCheck(cudaGetDevice(&device));
-
-	//CudaCheck(cudaMemAdvise(objectList, objectsSize*sizeof(Object*)*sizeof(Vertex), cudaMemAdviseSetAccessedBy, device));
-	//CudaCheck(cudaMemPrefetchAsync(objectList, objectsSize*sizeof(Object*)*sizeof(Vertex), device, 0));
 
 	bool b = Compile();
 
@@ -272,10 +298,7 @@ __host__ void Scene::Build(float deltaTime){
 
 	CudaCheck(cudaDeviceSynchronize());
 
-	//CudaCheck(cudaMemAdvise(objectList, objectsSize*sizeof(Object*)*sizeof(Vertex), cudaMemAdviseSetAccessedBy, device));
-	//CudaCheck(cudaMemPrefetchAsync(objectList, objectsSize*sizeof(Object*)*sizeof(Vertex), device, 0));
-
-	MortonCode::Compute << <gridSize, blockSize >> >(compiledSize, mortonCodes, faceIds, objectList, sceneBox);
+	MortonCode::Compute << <gridSize, blockSize >> > (compiledSize, mortonCodes, faceIds, objectListDevice, sceneBox);
 
 
 	CudaCheck(cudaPeekAtLastError());
@@ -294,7 +317,7 @@ __host__ void Scene::Build(float deltaTime){
 
 	CudaCheck(cudaDeviceSynchronize());
 
-	thrust::sort_by_key(keys, keys + compiledSize, values);           
+	thrust::sort_by_key(keys, keys + compiledSize, values);
 
 	CudaCheck(cudaDeviceSynchronize());
 
@@ -304,30 +327,35 @@ __host__ void Scene::Build(float deltaTime){
 	CudaCheck(cudaEventDestroy(start));
 	CudaCheck(cudaEventDestroy(stop));
 
-	S_LOG_TRACE("     Sorting Execution: " , time , "ms");
+	S_LOG_TRACE("     Sorting Execution: ", time, "ms");
 
-	bvh->Build(compiledSize);
+	bvhHost->Build(compiledSize);
+	CudaCheck(cudaMemcpy(bvhDevice, bvhHost, sizeof(BVH), cudaMemcpyHostToDevice));
+
 
 }
 
-
-__host__ uint Scene::AddObject(Object* obj){
+//object pointer is host
+__host__ uint Scene::AddObject(Object*& obj) {
 
 	//if the size of objects stores increases, double the available size pool;
-	if (objectsSize == allocatedObjects){
+	if (objectsSize == allocatedObjects) {
 
 		Object** objectsTemp;
 		allocatedObjects *= 2;
 
-		if (allocatedObjects == 0){
+		if (allocatedObjects == 0) {
 			allocatedObjects = 1;
 		}
 
-		CudaCheck(cudaMallocManaged((void**)&objectsTemp, allocatedObjects * sizeof(Object*)));
+		CudaCheck(cudaMalloc((void**)&objectsTemp, allocatedObjects * sizeof(Object*)));
 
-		CudaCheck(cudaMemcpy(objectsTemp, objectList, objectsSize*sizeof(Object*), cudaMemcpyDeviceToDevice));
-		CudaCheck(cudaFree(objectList));
-		objectList = objectsTemp;
+		if (objectListDevice) {
+			CudaCheck(cudaMemcpy(objectsTemp, objectListDevice, objectsSize * sizeof(Object*), cudaMemcpyDeviceToDevice));
+			CudaCheck(cudaFree(objectListDevice));
+		}
+
+		objectListDevice = objectsTemp;
 	}
 
 
@@ -336,15 +364,25 @@ __host__ uint Scene::AddObject(Object* obj){
 	sceneBox.max = glm::max(sceneBox.max, obj->box.max);
 	sceneBox.min = glm::min(sceneBox.min, obj->box.min);
 
+	objectListHost.push_back(obj);
+
 	//add the reference as the new object and increase the object count by 1
-	CudaCheck(cudaDeviceSynchronize());
-	objectList[objectsSize] = obj;
+	Object** objHolderHost = new Object*[1];
+
+	Object* objDevice;
+	CudaCheck(cudaMalloc((void**)&objDevice, sizeof(Object)));
+	CudaCheck(cudaMemcpy(objDevice, obj, sizeof(Object), cudaMemcpyHostToDevice));
+
+	objHolderHost[0] = objDevice;
+	CudaCheck(cudaMemcpy(objectListDevice + objectsSize, &objHolderHost[0], sizeof(Object*), cudaMemcpyHostToDevice));
 	objectsSize++;
 	newFaceAmount += obj->faceAmount;
+	delete objHolderHost;
+
 	return 0;
 }
 
-__host__ bool Scene::RemoveObject(const uint& tag){
+__host__ bool Scene::RemoveObject(const uint& tag) {
 	objectRemoval[tag] = true;
 	return true;
 }

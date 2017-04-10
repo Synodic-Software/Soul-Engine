@@ -17,19 +17,23 @@ public:
 
 	//signels the scene that an object should be added when the next 'Build()' is called
 	//modifies the global scene bounding box, making the 3D spatial calculation less accurate
-	__host__ uint AddObject(Object*);
+	__host__ uint AddObject(Object*&);
 
 	//signels the scene that an object should be removed when the next 'Build()' is called
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
 	__host__ bool RemoveObject(const uint&);
-	BVH* bvh;
+
+
+	BVH* bvhDevice;
+	BVH* bvhHost;
+
 	Sky* sky;
 
+
 private:
+
 	//take in all requests for the frame and process them in bulk
 	__host__ bool Scene::Compile();
-
-	//abstraction layer that linearizes all seperate object pointer
 
 	// a list of objects to remove 
 	std::vector<uint> objectsToRemove;
@@ -47,7 +51,9 @@ private:
 
 	//Variables concerning object storage
 
-	Object** objectList;
+	Object** objectListDevice;
+	std::vector<Object*> objectListHost;
+
 	bool* objectRemoval;
 	uint objectsSize;
 	uint allocatedObjects;
