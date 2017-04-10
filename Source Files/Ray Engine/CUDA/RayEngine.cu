@@ -454,7 +454,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			stackPtr = 0;
 			currentLeaf = NULL;   // No postponed leaf.
-			currentNode = scene->bvh->GetRoot();   // Start from the root.
+			currentNode = scene->bvhDevice->GetRoot();   // Start from the root.
 			ray.currentHit = NULL;  // No triangle intersected so far.
 		}
 
@@ -464,7 +464,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 		{
 			// Until all threads find a leaf, traverse
 
-			while (!scene->bvh->IsLeaf(currentNode) && currentNode != NULL)
+			while (!scene->bvhDevice->IsLeaf(currentNode) && currentNode != NULL)
 			{
 				// Fetch AABBs of the two child nodes.
 
@@ -527,7 +527,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				// First leaf => postpone and continue traversal.
 
-				if (scene->bvh->IsLeaf(currentNode) && !scene->bvh->IsLeaf(currentLeaf))     // Postpone leaf
+				if (scene->bvhDevice->IsLeaf(currentNode) && !scene->bvhDevice->IsLeaf(currentLeaf))     // Postpone leaf
 				{
 					currentLeaf = currentNode;
 					currentNode = traversalStack[stackPtr--];
@@ -535,7 +535,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				// Once all found, break to the processing
 
-				if (!__any(!scene->bvh->IsLeaf(currentLeaf))){
+				if (!__any(!scene->bvhDevice->IsLeaf(currentLeaf))){
 					break;
 				}
 			}
@@ -543,7 +543,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			// Process postponed leaf nodes.
 
-			while (scene->bvh->IsLeaf(currentLeaf))
+			while (scene->bvhDevice->IsLeaf(currentLeaf))
 			{
 				// Tris in TEX (good to fetch as a single batch)
 				glm::uvec3 face = currentLeaf->faceID->indices;
@@ -565,7 +565,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				//go throught the second postponed leaf
 				currentLeaf = currentNode;
-				if (scene->bvh->IsLeaf(currentNode))
+				if (scene->bvhDevice->IsLeaf(currentNode))
 				{
 					currentNode = traversalStack[stackPtr--];
 				}

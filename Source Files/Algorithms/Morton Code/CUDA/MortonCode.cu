@@ -2,7 +2,8 @@
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "Utility\Logger.h"
 #include "Utility\Includes\GLMIncludes.h"
-
+#include <inttypes.h>
+#include <stdint.h>
 //morton codes precomputed
 
 __device__ const uint morton256_x[256] =
@@ -161,6 +162,7 @@ __global__ void MortonCode::Compute(const uint n, uint64* mortonCodes, Face** fa
 	Vertex* x = &(current->vertices[ind.x]);
 	Vertex* y = &(current->vertices[ind.y]);
 	Vertex* z = &(current->vertices[ind.z]);
+
 	centroid = (x->position + y->position + z->position) / 3.0f;
 
 	mortonCodes[index] = mortonEncode_LUT(centroid, box);

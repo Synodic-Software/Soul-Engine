@@ -184,6 +184,12 @@
     <Filter Include="Engine Backend\Algorithms\Morton Code\CUDA">
       <UniqueIdentifier>{50e0d8e9-2a5a-40d9-9b0f-64fc3df29968}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Objects">
+      <UniqueIdentifier>{867c0680-2d35-430c-aa48-793785f1a7a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{e7ae551a-61f1-47f1-af97-e4be7e2b783b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">

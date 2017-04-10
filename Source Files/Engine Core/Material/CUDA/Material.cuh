@@ -7,7 +7,7 @@
 class Material{
 public:
 
-	__host__ Material(std::string texName = "..\\Resources\\Textures\\SoulDefault.png");
+	__host__ Material(std::string texName = "Resources\\Textures\\SoulDefault.png");
 	__host__ ~Material();
 
 	glm::vec4 diffuse;
