@@ -18,7 +18,7 @@ public:
 	__device__ bool IsLeaf(Node* test){
 		return ((test - bvh) >= (currentSize - 1));
 	}
-	__device__ uint GetSize(){
+	__host__ __device__ uint GetSize(){
 		return currentSize;
 	}
 	__device__ Node* GetLeaf(int test){

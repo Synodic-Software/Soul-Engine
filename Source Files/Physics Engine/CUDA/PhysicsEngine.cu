@@ -47,7 +47,7 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 
 	
 
-	BVH* bvh = scene->bvh;
+	BVH* bvh = scene->bvhDevice;
 	
 	Node* test = bvh->GetLeaf(index);
 
@@ -102,7 +102,7 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 __host__ void ProcessScene(const Scene* scene){
 	CudaCheck(cudaDeviceSynchronize());
 
-	uint n = scene->bvh->GetSize();
+	uint n = scene->bvhHost->GetSize();
 
 	if (n <= 0){
 		return;
