@@ -7,6 +7,8 @@ BVH::BVH( Face*** datan, uint64** mortonCodesn){
 	mortonCodes = mortonCodesn;
 	currentSize = 0;
 	allocatedSize = 0;
+
+	bvh = nullptr;
 }
 
 // Returns the highest differing bit of i and i+1
@@ -129,9 +131,10 @@ void BVH::Build(uint size){
 		allocatedSize = glm::max(uint(allocatedSize * 1.5f), (currentSize * 2) - 1);
 
 
-		CudaCheck(cudaMallocManaged((void**)&nodeTemp, allocatedSize * sizeof(Node)));
-
-		CudaCheck(cudaFree(bvh));
+		CudaCheck(cudaMalloc((void**)&nodeTemp, allocatedSize * sizeof(Node)));
+		if (bvh) {
+			CudaCheck(cudaFree(bvh));
+		}
 		bvh = nodeTemp;
 	}
 
@@ -146,10 +149,18 @@ void BVH::Build(uint size){
 	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
 
-	BuildTree << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1,this);
+
+	//copy this into the kernal
+	BVH* bvhDevice;
+	CudaCheck(cudaMalloc((void**)&bvhDevice, sizeof(BVH)));
+	CudaCheck(cudaMemcpy(bvhDevice, this, sizeof(BVH), cudaMemcpyHostToDevice));
+
+	BuildTree << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1, bvhDevice);
 
 	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
+
+	CudaCheck(cudaFree(bvhDevice));
 
 	CudaCheck(cudaEventRecord(stop, 0));
 	CudaCheck(cudaEventSynchronize(stop));
