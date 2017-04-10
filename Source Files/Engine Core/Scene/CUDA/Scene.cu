@@ -39,6 +39,8 @@ Scene::Scene()
 	Sky* skyHost = new Sky("Starmap.png");
 	CudaCheck(cudaMalloc((void **)&sky, sizeof(Sky)));
 	CudaCheck(cudaMemcpy(sky, skyHost, sizeof(Sky), cudaMemcpyHostToDevice));
+
+	CudaCheck(cudaMalloc((void **)&sceneBoxDevice, sizeof(BoundingBox)));
 }
 
 
@@ -105,7 +107,7 @@ __global__ void GetFace(const uint n, uint* objIds, Object** objects, Face** fac
 		return;
 	}
 
-	Object* obj = objects[objIds[offset + index] - 1];
+ 	Object* obj = objects[objIds[offset + index] - 1];
 	faces[offset + index] = obj->faces + (index - obj->localSceneIndex);
 	faces[offset + index]->objectPointer = obj;
 
@@ -286,9 +288,6 @@ __host__ bool Scene::Compile() {
 
 __host__ void Scene::Build(float deltaTime) {
 
-	int device;
-	CudaCheck(cudaGetDevice(&device));
-
 	bool b = Compile();
 
 	//calculate the morton code for each triangle
@@ -298,7 +297,7 @@ __host__ void Scene::Build(float deltaTime) {
 
 	CudaCheck(cudaDeviceSynchronize());
 
-	MortonCode::Compute << <gridSize, blockSize >> > (compiledSize, mortonCodes, faceIds, objectListDevice, sceneBox);
+	MortonCode::Compute << <gridSize, blockSize >> > (compiledSize, mortonCodes, faceIds, objectListDevice, sceneBoxDevice);
 
 
 	CudaCheck(cudaPeekAtLastError());
@@ -361,8 +360,10 @@ __host__ uint Scene::AddObject(Object*& obj) {
 
 	//update the scene's bounding volume
 
-	sceneBox.max = glm::max(sceneBox.max, obj->box.max);
-	sceneBox.min = glm::min(sceneBox.min, obj->box.min);
+	sceneBoxHost.max = glm::max(sceneBoxHost.max, obj->box.max);
+	sceneBoxHost.min = glm::min(sceneBoxHost.min, obj->box.min);
+
+	CudaCheck(cudaMemcpy(sceneBoxDevice, &sceneBoxHost, sizeof(BoundingBox), cudaMemcpyHostToDevice));
 
 	objectListHost.push_back(obj);
 

@@ -57,7 +57,9 @@ class Object{
 	void UpdateLate(double);
 	void Load();
 
-	Material** materialP;
+	Material** materialsDevice;
+	Material** materialsHost;
+
 	uint materialSize;
 
 	BoundingBox box;

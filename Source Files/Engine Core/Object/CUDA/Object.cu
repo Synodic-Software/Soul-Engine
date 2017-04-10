@@ -16,9 +16,11 @@ Object::Object(){
 
 	xyzPosition = glm::vec3(0);
 
-	vertices = NULL;
-	faces = NULL;
-	materialP = NULL;
+	vertices = nullptr;
+	faces = nullptr;
+	materialsDevice = nullptr;
+	materialsHost = nullptr;
+
 }
 Object::Object(glm::vec3 pos, std::string name, Material* mat){
 
@@ -30,11 +32,20 @@ Object::Object(glm::vec3 pos, std::string name, Material* mat){
 
 	xyzPosition = glm::vec3(0);
 
-	vertices = NULL;
-	faces = NULL;
-	CudaCheck(cudaMallocManaged((void**)&materialP, materialSize*sizeof(Material*)));
-	materialP[0] = mat;
+	vertices = nullptr;
+	faces = nullptr;
+	materialsDevice = nullptr;
+	materialsHost = nullptr;
 
+	Material* matDevice;
+	CudaCheck(cudaMalloc((void**)&matDevice, sizeof(Material)));
+	CudaCheck(cudaMemcpy(matDevice, mat, sizeof(Material), cudaMemcpyHostToDevice));
+
+	CudaCheck(cudaMalloc((void**)&materialsDevice, materialSize * sizeof(Material*)));
+	CudaCheck(cudaMemcpy(materialsDevice, &matDevice, sizeof(Material*), cudaMemcpyHostToDevice));
+
+	materialsHost = new Material*[materialSize];
+	materialsHost[0] = mat;
 	xyzPosition = pos;
 	ExtractFromFile(name.c_str());
 }
@@ -66,16 +77,8 @@ void Object::ExtractFromFile(const char* name){
 	glm::vec3 max = glm::vec3(attrib.vertices[0], attrib.vertices[1], attrib.vertices[2]);
 	glm::vec3 min = max;
 
-	CudaCheck(cudaDeviceSynchronize());
-
-	CudaCheck(cudaMallocManaged((void**)&vertices,
-		verticeAmount*sizeof(Vertex)));
-
-	CudaCheck(cudaMallocManaged((void**)&faces,
-		faceAmount*sizeof(Face)));
-
-	CudaCheck(cudaDeviceSynchronize());
-
+	Vertex* verticesHost = new Vertex[verticeAmount];
+	Face* facesHost = new Face[faceAmount];
 
 
 	std::unordered_map<Vertex, int> uniqueVertices = {};
@@ -92,59 +95,63 @@ void Object::ExtractFromFile(const char* name){
 
 		int current_material_id = shape.mesh.material_ids[f];
 
-		faces[f].indices.x = id0.vertex_index;
-		vertices[id0.vertex_index].position.x = attrib.vertices[id0.vertex_index * 3 + 0];
-		vertices[id0.vertex_index].position.y = attrib.vertices[id0.vertex_index * 3 + 1];
-		vertices[id0.vertex_index].position.z = attrib.vertices[id0.vertex_index * 3 + 2];
+		facesHost[f].indices.x = id0.vertex_index;
+		verticesHost[id0.vertex_index].position.x = attrib.vertices[id0.vertex_index * 3 + 0];
+		verticesHost[id0.vertex_index].position.y = attrib.vertices[id0.vertex_index * 3 + 1];
+		verticesHost[id0.vertex_index].position.z = attrib.vertices[id0.vertex_index * 3 + 2];
 
-		vertices[id0.vertex_index].textureCoord.x = attrib.texcoords[id0.texcoord_index * 2 + 0];
-		vertices[id0.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id0.texcoord_index * 2 + 1];
+		verticesHost[id0.vertex_index].textureCoord.x = attrib.texcoords[id0.texcoord_index * 2 + 0];
+		verticesHost[id0.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id0.texcoord_index * 2 + 1];
 
-		vertices[id0.vertex_index].normal.x = attrib.normals[id0.normal_index * 3 + 0];
-		vertices[id0.vertex_index].normal.y = attrib.normals[id0.normal_index * 3 + 1];
-		vertices[id0.vertex_index].normal.z = attrib.normals[id0.normal_index * 3 + 2];
+		verticesHost[id0.vertex_index].normal.x = attrib.normals[id0.normal_index * 3 + 0];
+		verticesHost[id0.vertex_index].normal.y = attrib.normals[id0.normal_index * 3 + 1];
+		verticesHost[id0.vertex_index].normal.z = attrib.normals[id0.normal_index * 3 + 2];
 
-		vertices[id0.vertex_index].position += xyzPosition;
-		max = glm::max(vertices[id0.vertex_index].position, max);
-		min = glm::min(vertices[id0.vertex_index].position, min);
-
-		///////////////////
-
-		faces[f].indices.y = id1.vertex_index;
-		vertices[id1.vertex_index].position.x = attrib.vertices[id1.vertex_index * 3 + 0];
-		vertices[id1.vertex_index].position.y = attrib.vertices[id1.vertex_index * 3 + 1];
-		vertices[id1.vertex_index].position.z = attrib.vertices[id1.vertex_index * 3 + 2];
-
-		vertices[id1.vertex_index].textureCoord.x = attrib.texcoords[id1.texcoord_index * 2 + 0];
-		vertices[id1.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id1.texcoord_index * 2 + 1];
-
-		vertices[id1.vertex_index].normal.x = attrib.normals[id1.normal_index * 3 + 0];
-		vertices[id1.vertex_index].normal.y = attrib.normals[id1.normal_index * 3 + 1];
-		vertices[id1.vertex_index].normal.z = attrib.normals[id1.normal_index * 3 + 2];
-
-		vertices[id1.vertex_index].position += xyzPosition;
-		max = glm::max(vertices[id1.vertex_index].position, max);
-		min = glm::min(vertices[id1.vertex_index].position, min);
+		verticesHost[id0.vertex_index].position += xyzPosition;
+		max = glm::max(verticesHost[id0.vertex_index].position, max);
+		min = glm::min(verticesHost[id0.vertex_index].position, min);
 
 		///////////////////
 
-		faces[f].indices.z = id2.vertex_index;
-		vertices[id2.vertex_index].position.x = attrib.vertices[id2.vertex_index * 3 + 0];
-		vertices[id2.vertex_index].position.y = attrib.vertices[id2.vertex_index * 3 + 1];
-		vertices[id2.vertex_index].position.z = attrib.vertices[id2.vertex_index * 3 + 2];
+		facesHost[f].indices.y = id1.vertex_index;
+		verticesHost[id1.vertex_index].position.x = attrib.vertices[id1.vertex_index * 3 + 0];
+		verticesHost[id1.vertex_index].position.y = attrib.vertices[id1.vertex_index * 3 + 1];
+		verticesHost[id1.vertex_index].position.z = attrib.vertices[id1.vertex_index * 3 + 2];
 
-		vertices[id2.vertex_index].textureCoord.x = attrib.texcoords[id2.texcoord_index * 2 + 0];
-		vertices[id2.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id2.texcoord_index * 2 + 1];
+		verticesHost[id1.vertex_index].textureCoord.x = attrib.texcoords[id1.texcoord_index * 2 + 0];
+		verticesHost[id1.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id1.texcoord_index * 2 + 1];
 
-		vertices[id2.vertex_index].normal.x = attrib.normals[id2.normal_index * 3 + 0];
-		vertices[id2.vertex_index].normal.y = attrib.normals[id2.normal_index * 3 + 1];
-		vertices[id2.vertex_index].normal.z = attrib.normals[id2.normal_index * 3 + 2];
+		verticesHost[id1.vertex_index].normal.x = attrib.normals[id1.normal_index * 3 + 0];
+		verticesHost[id1.vertex_index].normal.y = attrib.normals[id1.normal_index * 3 + 1];
+		verticesHost[id1.vertex_index].normal.z = attrib.normals[id1.normal_index * 3 + 2];
 
-		vertices[id2.vertex_index].position += xyzPosition;
-		max = glm::max(vertices[id2.vertex_index].position, max);
-		min = glm::min(vertices[id2.vertex_index].position, min);
+		verticesHost[id1.vertex_index].position += xyzPosition;
+		max = glm::max(verticesHost[id1.vertex_index].position, max);
+		min = glm::min(verticesHost[id1.vertex_index].position, min);
 
-		faces[f].materialPointer = materialP[0];
+		///////////////////
+
+		facesHost[f].indices.z = id2.vertex_index;
+		verticesHost[id2.vertex_index].position.x = attrib.vertices[id2.vertex_index * 3 + 0];
+		verticesHost[id2.vertex_index].position.y = attrib.vertices[id2.vertex_index * 3 + 1];
+		verticesHost[id2.vertex_index].position.z = attrib.vertices[id2.vertex_index * 3 + 2];
+
+		verticesHost[id2.vertex_index].textureCoord.x = attrib.texcoords[id2.texcoord_index * 2 + 0];
+		verticesHost[id2.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id2.texcoord_index * 2 + 1];
+
+		verticesHost[id2.vertex_index].normal.x = attrib.normals[id2.normal_index * 3 + 0];
+		verticesHost[id2.vertex_index].normal.y = attrib.normals[id2.normal_index * 3 + 1];
+		verticesHost[id2.vertex_index].normal.z = attrib.normals[id2.normal_index * 3 + 2];
+
+		verticesHost[id2.vertex_index].position += xyzPosition;
+		max = glm::max(verticesHost[id2.vertex_index].position, max);
+		min = glm::min(verticesHost[id2.vertex_index].position, min);
+
+		Material* matDevice;
+		CudaCheck(cudaMalloc((void**)&matDevice, sizeof(Material)));
+		CudaCheck(cudaMemcpy(matDevice, materialsHost[0], sizeof(Material), cudaMemcpyHostToDevice));
+
+		facesHost[f].materialPointer = matDevice;
 	}
 
 
@@ -181,12 +188,13 @@ void Object::ExtractFromFile(const char* name){
 	box.max = max;
 	box.min = min;
 
-	int device=0;
-	CudaCheck(cudaGetDevice(&device));
+	CudaCheck(cudaMalloc((void**)&vertices,
+		verticeAmount * sizeof(Vertex)));
 
-	/*CudaCheck(cudaMemAdvise(vertices, verticeAmount*sizeof(Vertex), cudaMemAdviseSetAccessedBy, device));
-	CudaCheck(cudaMemPrefetchAsync(vertices, verticeAmount*sizeof(Vertex), device));
+	CudaCheck(cudaMalloc((void**)&faces,
+		faceAmount * sizeof(Face)));
 
-	CudaCheck(cudaMemAdvise(faces, faceAmount*sizeof(Face), cudaMemAdviseSetAccessedBy, device));
-	CudaCheck(cudaMemPrefetchAsync(faces, faceAmount*sizeof(Face), device));*/
+	CudaCheck(cudaMemcpy(vertices, verticesHost, verticeAmount * sizeof(Vertex), cudaMemcpyHostToDevice));
+	CudaCheck(cudaMemcpy(faces, facesHost, faceAmount * sizeof(Face), cudaMemcpyHostToDevice));
+
 }
