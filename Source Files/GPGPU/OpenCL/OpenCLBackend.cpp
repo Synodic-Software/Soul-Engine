@@ -12,6 +12,10 @@ namespace OpenCLBackend {
 		S_LOG_WARNING("OpenCL is not supported yet");
 	}
 
+	void InitThread() {
+
+	}
+
 	int GetCoreCount() {
 
 		return 0;

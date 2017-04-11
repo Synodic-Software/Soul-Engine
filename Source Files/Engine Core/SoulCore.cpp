@@ -87,7 +87,7 @@ namespace Soul {
 		//setup the multithreader
 		Scheduler::Init();
 
-#ifdef _DEBUG 
+#if defined(_DEBUG) && !defined(SOUL_SINGLE_STACK) 
 		//log errors to the console for now
 		Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_LOW, false, []() {
 			while (Scheduler::Running()) {

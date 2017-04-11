@@ -37,6 +37,11 @@ namespace GPUManager {
 		}
 	}
 
+	void InitThread() {
+		CUDABackend::InitThread();
+		OpenCLBackend::InitThread();
+	}
+
 
 	GPURasterBuffer* CreateRasterBuffer(int GPU, uint size) {
 

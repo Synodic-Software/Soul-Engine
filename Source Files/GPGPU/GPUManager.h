@@ -6,6 +6,7 @@
 namespace GPUManager {
 
 	void ExtractDevices();
+	void InitThread();
 
 	GPURasterBuffer* CreateRasterBuffer(int,uint);
 	int GetBestGPU();
