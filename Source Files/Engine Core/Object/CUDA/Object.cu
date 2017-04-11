@@ -10,44 +10,27 @@ Object::Object(){
 
 	verticeAmount = 0;
 	faceAmount = 0;
-	materialSize = 0;
-	localSceneIndex = 0;
+	tetAmount = 0;
+	materialAmount = 0;
 	ready = false;
 
-	xyzPosition = glm::vec3(0);
-
-	vertices = nullptr;
-	faces = nullptr;
-	materialsDevice = nullptr;
-	materialsHost = nullptr;
-
 }
-Object::Object(glm::vec3 pos, std::string name, Material* mat){
+Object::Object(std::string name, Material* mat){
 
 	verticeAmount = 0;
 	faceAmount = 0;
-	materialSize = 1;
-	localSceneIndex = 0;
+	tetAmount = 0;
+	materialAmount = 0;
 	ready = false;
 
-	xyzPosition = glm::vec3(0);
+	materials.push_back(*mat);
+	materialAmount++;
 
-	vertices = nullptr;
-	faces = nullptr;
-	materialsDevice = nullptr;
-	materialsHost = nullptr;
-
-	Material* matDevice;
-	CudaCheck(cudaMalloc((void**)&matDevice, sizeof(Material)));
-	CudaCheck(cudaMemcpy(matDevice, mat, sizeof(Material), cudaMemcpyHostToDevice));
-
-	CudaCheck(cudaMalloc((void**)&materialsDevice, materialSize * sizeof(Material*)));
-	CudaCheck(cudaMemcpy(materialsDevice, &matDevice, sizeof(Material*), cudaMemcpyHostToDevice));
-
-	materialsHost = new Material*[materialSize];
-	materialsHost[0] = mat;
-	xyzPosition = pos;
 	ExtractFromFile(name.c_str());
+}
+
+Object::~Object() {
+
 }
 
 void Object::AddVertices(Vertex* verticesIn, uint vSize){
@@ -58,14 +41,12 @@ void Object::AddFaces(Face* facesIn, uint fSize){
 }
 void Object::ExtractFromFile(const char* name){
 
-
-
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
+	std::vector<tinyobj::material_t> materialsT;
 	std::string err;
 
-	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, name)) {
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materialsT, &err, name)) {
 		throw std::runtime_error(err);
 	}
 
@@ -77,9 +58,8 @@ void Object::ExtractFromFile(const char* name){
 	glm::vec3 max = glm::vec3(attrib.vertices[0], attrib.vertices[1], attrib.vertices[2]);
 	glm::vec3 min = max;
 
-	Vertex* verticesHost = new Vertex[verticeAmount];
-	Face* facesHost = new Face[faceAmount];
-
+	vertices.resize(verticeAmount);
+	faces.resize(faceAmount);
 
 	std::unordered_map<Vertex, int> uniqueVertices = {};
 
@@ -95,63 +75,56 @@ void Object::ExtractFromFile(const char* name){
 
 		int current_material_id = shape.mesh.material_ids[f];
 
-		facesHost[f].indices.x = id0.vertex_index;
-		verticesHost[id0.vertex_index].position.x = attrib.vertices[id0.vertex_index * 3 + 0];
-		verticesHost[id0.vertex_index].position.y = attrib.vertices[id0.vertex_index * 3 + 1];
-		verticesHost[id0.vertex_index].position.z = attrib.vertices[id0.vertex_index * 3 + 2];
+		faces[f].indices.x = id0.vertex_index;
+		vertices[id0.vertex_index].position.x = attrib.vertices[id0.vertex_index * 3 + 0];
+		vertices[id0.vertex_index].position.y = attrib.vertices[id0.vertex_index * 3 + 1];
+		vertices[id0.vertex_index].position.z = attrib.vertices[id0.vertex_index * 3 + 2];
 
-		verticesHost[id0.vertex_index].textureCoord.x = attrib.texcoords[id0.texcoord_index * 2 + 0];
-		verticesHost[id0.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id0.texcoord_index * 2 + 1];
+		vertices[id0.vertex_index].textureCoord.x = attrib.texcoords[id0.texcoord_index * 2 + 0];
+		vertices[id0.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id0.texcoord_index * 2 + 1];
 
-		verticesHost[id0.vertex_index].normal.x = attrib.normals[id0.normal_index * 3 + 0];
-		verticesHost[id0.vertex_index].normal.y = attrib.normals[id0.normal_index * 3 + 1];
-		verticesHost[id0.vertex_index].normal.z = attrib.normals[id0.normal_index * 3 + 2];
+		vertices[id0.vertex_index].normal.x = attrib.normals[id0.normal_index * 3 + 0];
+		vertices[id0.vertex_index].normal.y = attrib.normals[id0.normal_index * 3 + 1];
+		vertices[id0.vertex_index].normal.z = attrib.normals[id0.normal_index * 3 + 2];
 
-		verticesHost[id0.vertex_index].position += xyzPosition;
-		max = glm::max(verticesHost[id0.vertex_index].position, max);
-		min = glm::min(verticesHost[id0.vertex_index].position, min);
-
-		///////////////////
-
-		facesHost[f].indices.y = id1.vertex_index;
-		verticesHost[id1.vertex_index].position.x = attrib.vertices[id1.vertex_index * 3 + 0];
-		verticesHost[id1.vertex_index].position.y = attrib.vertices[id1.vertex_index * 3 + 1];
-		verticesHost[id1.vertex_index].position.z = attrib.vertices[id1.vertex_index * 3 + 2];
-
-		verticesHost[id1.vertex_index].textureCoord.x = attrib.texcoords[id1.texcoord_index * 2 + 0];
-		verticesHost[id1.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id1.texcoord_index * 2 + 1];
-
-		verticesHost[id1.vertex_index].normal.x = attrib.normals[id1.normal_index * 3 + 0];
-		verticesHost[id1.vertex_index].normal.y = attrib.normals[id1.normal_index * 3 + 1];
-		verticesHost[id1.vertex_index].normal.z = attrib.normals[id1.normal_index * 3 + 2];
-
-		verticesHost[id1.vertex_index].position += xyzPosition;
-		max = glm::max(verticesHost[id1.vertex_index].position, max);
-		min = glm::min(verticesHost[id1.vertex_index].position, min);
+		max = glm::max(vertices[id0.vertex_index].position, max);
+		min = glm::min(vertices[id0.vertex_index].position, min);
 
 		///////////////////
 
-		facesHost[f].indices.z = id2.vertex_index;
-		verticesHost[id2.vertex_index].position.x = attrib.vertices[id2.vertex_index * 3 + 0];
-		verticesHost[id2.vertex_index].position.y = attrib.vertices[id2.vertex_index * 3 + 1];
-		verticesHost[id2.vertex_index].position.z = attrib.vertices[id2.vertex_index * 3 + 2];
+		faces[f].indices.y = id1.vertex_index;
+		vertices[id1.vertex_index].position.x = attrib.vertices[id1.vertex_index * 3 + 0];
+		vertices[id1.vertex_index].position.y = attrib.vertices[id1.vertex_index * 3 + 1];
+		vertices[id1.vertex_index].position.z = attrib.vertices[id1.vertex_index * 3 + 2];
 
-		verticesHost[id2.vertex_index].textureCoord.x = attrib.texcoords[id2.texcoord_index * 2 + 0];
-		verticesHost[id2.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id2.texcoord_index * 2 + 1];
+		vertices[id1.vertex_index].textureCoord.x = attrib.texcoords[id1.texcoord_index * 2 + 0];
+		vertices[id1.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id1.texcoord_index * 2 + 1];
 
-		verticesHost[id2.vertex_index].normal.x = attrib.normals[id2.normal_index * 3 + 0];
-		verticesHost[id2.vertex_index].normal.y = attrib.normals[id2.normal_index * 3 + 1];
-		verticesHost[id2.vertex_index].normal.z = attrib.normals[id2.normal_index * 3 + 2];
+		vertices[id1.vertex_index].normal.x = attrib.normals[id1.normal_index * 3 + 0];
+		vertices[id1.vertex_index].normal.y = attrib.normals[id1.normal_index * 3 + 1];
+		vertices[id1.vertex_index].normal.z = attrib.normals[id1.normal_index * 3 + 2];
 
-		verticesHost[id2.vertex_index].position += xyzPosition;
-		max = glm::max(verticesHost[id2.vertex_index].position, max);
-		min = glm::min(verticesHost[id2.vertex_index].position, min);
+		max = glm::max(vertices[id1.vertex_index].position, max);
+		min = glm::min(vertices[id1.vertex_index].position, min);
 
-		Material* matDevice;
-		CudaCheck(cudaMalloc((void**)&matDevice, sizeof(Material)));
-		CudaCheck(cudaMemcpy(matDevice, materialsHost[0], sizeof(Material), cudaMemcpyHostToDevice));
+		///////////////////
 
-		facesHost[f].materialPointer = matDevice;
+		faces[f].indices.z = id2.vertex_index;
+		vertices[id2.vertex_index].position.x = attrib.vertices[id2.vertex_index * 3 + 0];
+		vertices[id2.vertex_index].position.y = attrib.vertices[id2.vertex_index * 3 + 1];
+		vertices[id2.vertex_index].position.z = attrib.vertices[id2.vertex_index * 3 + 2];
+
+		vertices[id2.vertex_index].textureCoord.x = attrib.texcoords[id2.texcoord_index * 2 + 0];
+		vertices[id2.vertex_index].textureCoord.y = 1.0f - attrib.texcoords[id2.texcoord_index * 2 + 1];
+
+		vertices[id2.vertex_index].normal.x = attrib.normals[id2.normal_index * 3 + 0];
+		vertices[id2.vertex_index].normal.y = attrib.normals[id2.normal_index * 3 + 1];
+		vertices[id2.vertex_index].normal.z = attrib.normals[id2.normal_index * 3 + 2];
+
+		max = glm::max(vertices[id2.vertex_index].position, max);
+		min = glm::min(vertices[id2.vertex_index].position, min);
+
+		faces[f].material = 0;
 	}
 
 
@@ -187,14 +160,5 @@ void Object::ExtractFromFile(const char* name){
 
 	box.max = max;
 	box.min = min;
-
-	CudaCheck(cudaMalloc((void**)&vertices,
-		verticeAmount * sizeof(Vertex)));
-
-	CudaCheck(cudaMalloc((void**)&faces,
-		faceAmount * sizeof(Face)));
-
-	CudaCheck(cudaMemcpy(vertices, verticesHost, verticeAmount * sizeof(Vertex), cudaMemcpyHostToDevice));
-	CudaCheck(cudaMemcpy(faces, facesHost, faceAmount * sizeof(Face), cudaMemcpyHostToDevice));
 
 }

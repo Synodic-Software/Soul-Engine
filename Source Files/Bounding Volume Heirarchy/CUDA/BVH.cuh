@@ -3,11 +3,12 @@
 #include "Bounding Volume Heirarchy\CUDA\Node.cuh"
 #include "Bounding Volume Heirarchy\BoundingBox.h"
 #include "Engine Core\Object\Face.h"
+#include "Engine Core\Object\Vertex.h"
 
 class BVH{
 public:
 
-	BVH(Face*** datan, uint64** mortonCodesn);
+	BVH();
 
 	__device__ Node* GetRoot(){
 		return root;
@@ -25,7 +26,7 @@ public:
 		return bvh+((currentSize - 1) + test);
 	}
 
-	void Build(uint);
+	void Build(uint,uint64*, Face *, Vertex*);
 	Node* root;
 
 private:
@@ -34,8 +35,5 @@ private:
 	Node* bvh;
 	uint currentSize;
 	uint allocatedSize;
-	Face*** data;
-	uint64** mortonCodes;
-
 
 };

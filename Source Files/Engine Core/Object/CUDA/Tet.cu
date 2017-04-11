@@ -4,9 +4,9 @@
 Tet::Tet()
 {
 }
-Tet::Tet(glm::uvec4 ind, Material* matID){
+Tet::Tet(glm::uvec4 ind, uint matID){
 	indices = ind;
-	materialPointer = matID;
+	material = matID;
 }
 
 Tet::~Tet()

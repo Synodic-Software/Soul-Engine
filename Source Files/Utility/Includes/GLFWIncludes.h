@@ -2,6 +2,8 @@
 
 #pragma warning(push, 0)  
 
+#define NOMINMAX
+
 #ifdef _WIN32
 #include <windows.h>
 #endif

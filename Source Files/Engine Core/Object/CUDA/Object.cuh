@@ -5,11 +5,13 @@
 #include "Engine Core/Material/Material.h"
 #include "Engine Core/Object/CUDA/Vertex.cuh"
 #include "Engine Core/Object/CUDA/Face.cuh"
+#include "Engine Core/Object/CUDA/Tet.cuh"
 #include "Bounding Volume Heirarchy\BoundingBox.h"
 #include "Metrics.h"
 
-class Face;
+#include <vector>
 
+class Face;
 
 namespace std {
 	template<> struct hash<Vertex> {
@@ -26,48 +28,41 @@ namespace std {
 	};
 }
 
-class Object{
-	public:
+class Object {
 
-		Object();
+public:
 
-		Object(glm::vec3,std::string,Material*);
+	Object();
+	Object(std::string, Material*);
+	~Object();
 
-		bool requestRemoval;
-		bool ready;
-		bool isStatic;
+	bool requestRemoval;
+	bool ready;
+	bool isStatic;
 
-		glm::vec3 xyzPosition;
-		glm::vec3 velocity;
-		glm::vec3 acceleration;
+	void AddVertices(Vertex*, uint);
+	void AddFaces(Face*, uint);
+	void ExtractFromFile(const char*);
 
-		void AddVertices(Vertex*,uint);
-		void AddFaces(Face*, uint);
-		void ExtractFromFile(const char*);
+	uint verticeAmount;
+	uint faceAmount;
+	uint tetAmount;
+	uint materialAmount;
 
-		uint verticeAmount;
-		uint faceAmount;
-
-		Vertex* vertices;
-		Vertex* verticesCPU;
-		Face* faces;
-		Face* facesCPU;
+	std::vector<Vertex> vertices;
+	std::vector<Face> faces;
+	std::vector<Tet> tets;
+	std::vector<Material> materials;
 
 	void Update(double);
 	void UpdateLate(double);
 	void Load();
 
-	Material** materialsDevice;
-	Material** materialsHost;
+	BoundingBox box; //in object space
 
-	uint materialSize;
-
-	BoundingBox box;
-
-	uint localSceneIndex;
 protected:
-	
+
 private:
 
-	
+
 };

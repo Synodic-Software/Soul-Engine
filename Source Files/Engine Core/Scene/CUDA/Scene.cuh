@@ -2,61 +2,63 @@
 #include <cuda.h>  
 
 #include "Engine Core\Object\CUDA/Object.cuh"
+#include "Engine Core\Object\CUDA/MiniObject.cuh"
 #include "Engine Core\Scene\CUDA\Sky.cuh"
+#include "Engine Core\Material\Material.h"
 #include "Bounding Volume Heirarchy\BVH.h"
 #include <vector>
 
 class Scene
 {
 public:
-	__host__ Scene();
-	__host__ ~Scene();
+	Scene();
+	~Scene();
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
-	__host__ void Build(float deltaTime);
+	void Build(float deltaTime);
 
 	//signels the scene that an object should be added when the next 'Build()' is called
 	//modifies the global scene bounding box, making the 3D spatial calculation less accurate
-	__host__ uint AddObject(Object*&);
+	void AddObject(Object*);
 
 	//signels the scene that an object should be removed when the next 'Build()' is called
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
-	__host__ bool RemoveObject(const uint&);
+	void RemoveObject(Object*);
 
-
-	BVH* bvhDevice;
-	BVH* bvhHost;
-
+	BVH* bvh;
 	Sky* sky;
 
+	Face* faces;
+	Vertex* vertices;
+	Tet* tets;
+	Material* materials;
+	MiniObject* objects;
 
 private:
+	BVH* bvhHost;
 
-	//take in all requests for the frame and process them in bulk
-	__host__ bool Scene::Compile();
+	//updates the scene representation based on what is in addList or removeList
+	void Compile();
 
-	// a list of objects to remove 
-	std::vector<uint> objectsToRemove;
+	//scene bounding box
+	BoundingBox sceneBox;
 
-	BoundingBox sceneBoxHost;
-	BoundingBox* sceneBoxDevice;
+	uint64* mortonCodes; //codes for all the faces
 
-	int newFaceAmount; //The amount of indices the entire scene takes
-	int compiledSize; //the amount of indices as of the previous compile;
-	int allocatedSize; //the amount of triangles that have been allocated
+	uint faceAmount;
+	uint vertexAmount;
+	uint tetAmount;
+	uint materialAmount;
+	uint objectAmount;
 
-	bool* objectBitSetup; // hold a true for the first indice of each object
-	uint* objIds; //points to the object
-	Face** faceIds;
-	uint64* mortonCodes;
+	uint faceAllocated;
+	uint vertexAllocated;
+	uint tetAllocated;
+	uint materialAllocated;
+	uint objectAllocated;
 
-	//Variables concerning object storage
+	std::vector<Object*> addList;
+	std::vector<Object*> removeList;
 
-	Object** objectListDevice;
-	std::vector<Object*> objectListHost;
-
-	bool* objectRemoval;
-	uint objectsSize;
-	uint allocatedObjects;
 };
 

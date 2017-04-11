@@ -1,6 +1,9 @@
 #pragma once
 
+#include <cuda_runtime.h>
+
 #include "Utility\Includes\GLMIncludes.h"
+#include "Metrics.h"
 
 class  Vertex
 {
@@ -12,15 +15,19 @@ public:
 	glm::vec3 position;
 	glm::vec2 textureCoord;
 	glm::vec3 normal;
-
 	glm::vec3 velocity;
 
+	uint object;
 
-	bool operator==(const Vertex& other) const {
-		return position == other.position && normal == other.normal && textureCoord == other.textureCoord;
+	__host__ __device__ bool operator==(const Vertex& other) const {
+		return
+			position == other.position &&
+			normal == other.normal &&
+			textureCoord == other.textureCoord &&
+			velocity == other.velocity ;
 	}
 	
-	friend void swap(Vertex& a, Vertex& b)
+	__host__ __device__ friend void swap(Vertex& a, Vertex& b)
 	{
 
 		glm::vec3 temp = a.position;
@@ -35,8 +42,16 @@ public:
 		a.textureCoord = b.textureCoord;
 		b.textureCoord = temp1;
 
+		temp = a.velocity;
+		a.velocity = b.velocity;
+		b.velocity = temp;
+
+		uint temp2 = a.object;
+		a.object = b.object;
+		b.object = temp2;
+
 	}
-	Vertex& operator=(Vertex arg)
+	__host__ __device__ Vertex& operator=(Vertex arg)
 	{
 		this->position = arg.position;
 		this->textureCoord = arg.textureCoord;

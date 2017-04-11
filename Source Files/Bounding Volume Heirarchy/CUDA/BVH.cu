@@ -2,9 +2,8 @@
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "Utility/Logger.h"
 
-BVH::BVH( Face*** datan, uint64** mortonCodesn){
-	data = datan;
-	mortonCodes = mortonCodesn;
+BVH::BVH() {
+
 	currentSize = 0;
 	allocatedSize = 0;
 
@@ -17,7 +16,7 @@ __device__ uint HighestBit(uint i, uint64* morton)
 	return morton[i] ^ morton[i + 1];
 }
 
-__global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* mortonCodes, const uint leafOffset, BVH* bvh)
+__global__ void BuildTree(const uint n, Node* nodes, uint64* mortonCodes, const uint leafOffset, BVH* bvh)
 {
 	uint index = getGlobalIdx_1D_1D();
 	if (index >= n)
@@ -25,7 +24,7 @@ __global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* morton
 
 	Node* currentNode = nodes + (leafOffset + index);
 
-	while (true){
+	while (true) {
 		// Allow only one thread to process a node
 		if (atomicAdd(&(currentNode->atomic), 1) != 1)
 			return;
@@ -40,7 +39,7 @@ __global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* morton
 		uint left = currentNode->rangeLeft;
 		uint right = currentNode->rangeRight;
 
-		if (left == 0 && right == leafOffset){
+		if (left == 0 && right == leafOffset) {
 			bvh->root = currentNode;
 			return;
 		}
@@ -65,9 +64,9 @@ __global__ void BuildTree(const uint n, Node* nodes, Face** data, uint64* morton
 		currentNode = parent;
 	}
 }
-	
 
-__global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes,const uint leafOffset)
+
+__global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, const uint leafOffset)
 {
 	uint index = getGlobalIdx_1D_1D();
 	if (index >= n)
@@ -81,29 +80,29 @@ __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes
 	nodes[leafOffset + index].atomic = 1; // To allow the next thread to process
 	nodes[leafOffset + index].childLeft = NULL; // Second thread to process
 	nodes[leafOffset + index].childRight = NULL; // Second thread to process
-	if (index<leafOffset){
+	if (index < leafOffset) {
 		/*nodes[index].rangeLeft = index;   //unneeded as all nodes are touched and updated
 		nodes[index].rangeRight = index + 1;*/
 		nodes[index].atomic = 0; // Second thread to process
 		nodes[index].childLeft = &nodes[leafOffset + index]; // Second thread to process
-		nodes[index].childRight = &nodes[leafOffset + index+1]; // Second thread to process
+		nodes[index].childRight = &nodes[leafOffset + index + 1]; // Second thread to process
 	}
 
 
 	// Set triangles in leaf
-	Face* face = *(data + index);
-	nodes[leafOffset + index].faceID = face;
+	Face face = faces[index];
+	nodes[leafOffset + index].faceID = index;
 
 	// Expand bounds using min/max functions
 
-	glm::vec3 max = face->objectPointer->vertices[face->indices.x].position;
-	glm::vec3 min = face->objectPointer->vertices[face->indices.x].position;
+	glm::vec3 max = vertices[face.indices.x].position;
+	glm::vec3 min = vertices[face.indices.x].position;
 
-	max = glm::max(face->objectPointer->vertices[face->indices.y].position, max);
-	min = glm::min(face->objectPointer->vertices[face->indices.y].position, min);
+	max = glm::max(vertices[face.indices.y].position, max);
+	min = glm::min(vertices[face.indices.y].position, min);
 
-	max = glm::max(face->objectPointer->vertices[face->indices.z].position, max);
-	min = glm::min(face->objectPointer->vertices[face->indices.z].position, min);
+	max = glm::max(vertices[face.indices.z].position, max);
+	min = glm::min(vertices[face.indices.z].position, min);
 
 	nodes[leafOffset + index].box.max = max;
 	nodes[leafOffset + index].box.min = min;
@@ -111,12 +110,12 @@ __global__ void Reset(const uint n,Node* nodes, Face** data, uint64* mortonCodes
 	// Special case
 	if (n == 1)
 	{
-		nodes[0].box = nodes[leafOffset+0].box;
-		nodes[0].childLeft = &nodes[leafOffset+0];
+		nodes[0].box = nodes[leafOffset + 0].box;
+		nodes[0].childLeft = &nodes[leafOffset + 0];
 	}
 }
 
-void BVH::Build(uint size){
+void BVH::Build(uint size, uint64* mortonCodes, Face * faces, Vertex * vertices) {
 	cudaEvent_t start, stop;
 	float time;
 	CudaCheck(cudaEventCreate(&start));
@@ -124,7 +123,7 @@ void BVH::Build(uint size){
 	CudaCheck(cudaEventRecord(start, 0));
 
 	currentSize = size;
-	if (currentSize > allocatedSize){
+	if (currentSize > allocatedSize) {
 
 		Node* nodeTemp;
 
@@ -145,7 +144,7 @@ void BVH::Build(uint size){
 
 	CudaCheck(cudaDeviceSynchronize());
 
-	Reset << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1);
+	Reset << <gridSize, blockSize >> > (currentSize, bvh, faces, vertices, mortonCodes, currentSize - 1);
 	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
 
@@ -155,7 +154,7 @@ void BVH::Build(uint size){
 	CudaCheck(cudaMalloc((void**)&bvhDevice, sizeof(BVH)));
 	CudaCheck(cudaMemcpy(bvhDevice, this, sizeof(BVH), cudaMemcpyHostToDevice));
 
-	BuildTree << <gridSize, blockSize >> >(currentSize, bvh, *data, *mortonCodes, currentSize - 1, bvhDevice);
+	BuildTree << <gridSize, blockSize >> > (currentSize, bvh, mortonCodes, currentSize - 1, bvhDevice);
 
 	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
@@ -168,5 +167,5 @@ void BVH::Build(uint size){
 	CudaCheck(cudaEventDestroy(start));
 	CudaCheck(cudaEventDestroy(stop));
 
-	S_LOG_TRACE( "     BVH Creation Execution: " , time , "ms" );
+	S_LOG_TRACE("     BVH Creation Execution: ", time, "ms");
 }
