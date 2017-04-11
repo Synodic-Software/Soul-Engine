@@ -9,7 +9,9 @@
 #include <mutex>
 #include <list>
 #include <malloc.h>  
+
 #include "Utility\Settings.h"
+#include "GPGPU\GPUManager.h"
 
 //Scheduler Variables//
 static std::thread* threads;
@@ -204,6 +206,8 @@ namespace Scheduler {
 		//launches a thread that waits with a fiber conditional, meaning it still executes fibers despite waiting for a notify release
 		void ThreadRun() {
 			boost::fibers::use_scheduling_algorithm<SoulScheduler >();
+
+			GPUManager::InitThread();
 
 			std::unique_lock<std::mutex> lock(Scheduler::detail::fiberMutex);
 			threadCondition.wait(lock, []() { return 0 == Scheduler::detail::fiberCount && !detail::shouldRun; });

@@ -105,8 +105,8 @@ __host__ void Scene::Build(float deltaTime) {
 
 	S_LOG_TRACE("     Sorting Execution: ", time, "ms");
 
-	/*bvhHost->Build(faceAmount, mortonCodes, faces, vertices);
-	CudaCheck(cudaMemcpy(bvh, bvhHost, sizeof(BVH), cudaMemcpyHostToDevice));*/
+	bvhHost->Build(faceAmount, mortonCodes, faces, vertices);
+	CudaCheck(cudaMemcpy(bvh, bvhHost, sizeof(BVH), cudaMemcpyHostToDevice));
 }
 
 void Scene::Compile() {

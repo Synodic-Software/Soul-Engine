@@ -8,6 +8,8 @@ namespace OpenCLBackend {
 
 	void ExtractDevices(std::vector<int>&);
 
+	void InitThread();
+
 	int GetCoreCount();
 
 	int GetWarpSize();

@@ -27,6 +27,12 @@ namespace CUDABackend {
 			devices.push_back(dev);
 		}
 
+		CudaCheck(cudaSetDevice(0));
+
+	}
+
+	void InitThread() {
+		cudaSetDevice(0);
 	}
 
 	int GetCoreCount() {
