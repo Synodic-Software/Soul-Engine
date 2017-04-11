@@ -4,6 +4,7 @@
 #include "Utility\Includes\GLMIncludes.h"
 #include <inttypes.h>
 #include <stdint.h>
+
 //morton codes precomputed
 
 __device__ const uint morton256_x[256] =
@@ -117,9 +118,9 @@ __device__ const uint morton256_z[256] = {
 	0x00924804, 0x00924820, 0x00924824, 0x00924900, 0x00924904, 0x00924920, 0x00924924
 };
 
-__device__ uint64 mortonEncode_LUT(const glm::vec3& data, BoundingBox* box) {
+__device__ uint64 mortonEncode_LUT(const glm::vec3& data, const BoundingBox& box) {
 
-	glm::dvec3 temp = (((glm::dvec3(data) - glm::dvec3(((box->max - box->min) / 2.0f) + box->min)) / glm::dvec3((box->max - box->min) / 2.0f)) / 2.0) + 0.5;
+	glm::dvec3 temp = (((glm::dvec3(data) - glm::dvec3(((box.max - box.min) / 2.0f) + box.min)) / glm::dvec3((box.max - box.min) / 2.0f)) / 2.0) + 0.5;
 
 	//uint max = powf(2, 21) - 1;
 
@@ -144,7 +145,7 @@ __device__ uint64 mortonEncode_LUT(const glm::vec3& data, BoundingBox* box) {
 }
 
 
-__global__ void MortonCode::Compute(const uint n, uint64* mortonCodes, Face** faceList, Object** objectList, BoundingBox* box) {
+__global__ void MortonCode::Compute(const uint n, uint64* mortonCodes, Face* faces, Vertex* vertices,const BoundingBox box) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -152,19 +153,8 @@ __global__ void MortonCode::Compute(const uint n, uint64* mortonCodes, Face** fa
 		return;
 	}
 
-
-	Object* current = faceList[index]->objectPointer;
-	Face* face = faceList[index];
-
-	glm::vec3 centroid;
-	glm::uvec3 ind = face->indices;
-
-	Vertex* x = &(current->vertices[ind.x]);
-	Vertex* y = &(current->vertices[ind.y]);
-	Vertex* z = &(current->vertices[ind.z]);
-
-	centroid = (x->position + y->position + z->position) / 3.0f;
+	glm::uvec3 ind = faces[index].indices;
+	glm::vec3 centroid = ((vertices+ind.x)->position + (vertices+ind.y)->position + (vertices+ind.z)->position) / 3.0f;
 
 	mortonCodes[index] = mortonEncode_LUT(centroid, box);
-	//mortonCodes[index] = index;
 }

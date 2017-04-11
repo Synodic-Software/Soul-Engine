@@ -495,6 +495,12 @@
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh">
       <Filter>Engine Backend\Algorithms\Morton Code\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cuh">
+      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Object\MiniObject.h">
+      <Filter>Engine Backend\Engine Core\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -705,6 +711,9 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu">
       <Filter>Engine Backend\Algorithms\Morton Code\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cu">
+      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

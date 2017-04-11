@@ -269,7 +269,7 @@ void SetKey(int key, void(*func)(void)) {
 }
 
 void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat) {
-	Object* obj = new Object(globalPos, file, mat);
+	Object* obj = new Object(file, mat);
 	scene->AddObject(obj);
 }
 void RemoveObject(void* object) {

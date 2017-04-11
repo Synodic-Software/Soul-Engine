@@ -17,7 +17,7 @@ public:
 	BoundingBox box;
 
 	
-	Face* faceID;
+	uint faceID;
 	uint atomic;
 	uint rangeRight;
 	uint rangeLeft;

@@ -113,11 +113,13 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Engine Core\Material\Texture\Image.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Character\Character.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Face.cuh" />
+    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Object.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Tet.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Vertex.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Face.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Loader.h" />
+    <ClInclude Include="..\Source Files\Engine Core\Object\MiniObject.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Object.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\OpenCL\CLFace.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\OpenCL\CLObject.h" />
@@ -238,6 +240,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <CudaCompile Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\Material.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
+    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cu" />
     <CudaCompile Include="..\Source Files\Utility\CUDA\CudaHelper.cu" />
   </ItemGroup>
   <ItemGroup>

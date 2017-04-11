@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Engine Core\Object\CUDA\Face.cuh"
+#include <cuda_runtime.h>
+
+#include "Utility\Includes\GLMIncludes.h"
 #include "Metrics.h"
 
-class Face;
-
-//__align__(64)
 class Ray
 {
 
@@ -42,10 +41,10 @@ public:
 	glm::vec4 origin; //origin and a single value representing the remaining distance this ray can travel in this frame
 	glm::vec4 direction;
 	glm::vec2 bary;
-	Face* currentHit;
+	uint currentHit;
 	uint resultOffset;
 	char job;
-	
+
 private:
 
 

@@ -1,22 +1,45 @@
 #pragma once
 
-#include "Engine Core/Material/Material.h"
-#include "Engine Core/Object/CUDA/Object.cuh"
+#include <cuda_runtime.h>
 
-class Object;
-//__align__(32)
+#include "Utility\Includes\GLMIncludes.h"
+#include "Metrics.h"
+
 class Face
 {
 public:
-	Face();
-	Face(glm::uvec3, Material*);
-	~Face();
-
-	void SetData(glm::uvec3, Material*);
+	__host__ __device__ Face();
+	Face(glm::uvec3, uint);
+	__host__ __device__ ~Face();
 
 	glm::uvec3 indices;
-	Material* materialPointer;
-	Object* objectPointer;
+	uint material;
+
+	__host__ __device__ bool operator==(const Face& other) const {
+		return
+			indices == other.indices &&
+			material == other.material;
+	}
+
+	__host__ __device__ friend void swap(Face& a, Face& b)
+	{
+
+		glm::uvec3 temp = a.indices;
+		a.indices = b.indices;
+		b.indices = temp;
+
+		uint temp1 = a.material;
+		a.material = b.material;
+		b.material = temp1;
+
+	}
+	__host__ __device__ Face& operator=(Face arg)
+	{
+		this->indices = arg.indices;
+		this->material = arg.material;
+
+		return *this;
+	}
 private:
-	
+
 };

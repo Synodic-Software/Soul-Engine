@@ -270,7 +270,7 @@ __host__ __device__ bool AABBIntersect(const BoundingBox& box, const glm::vec3& 
 }
 
 
-__global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const uint raySeed, const Scene* scene, int * nAtomic){
+__global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const uint raySeed, const Scene* scene,int * nAtomic){
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -286,30 +286,30 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 	Ray ray = rays[index];
 
-	Face* faceHit = ray.currentHit;
+	uint faceHit = ray.currentHit;
 	float hitT = ray.direction.w;
 
 	uint localIndex = ray.resultOffset;
 	glm::vec3 col;
 
-	if (faceHit == NULL){
+	if (faceHit == -1){
 
 		col = glm::vec3(ray.storage.x, ray.storage.y, ray.storage.z)*scene->sky->ExtractColour({ ray.direction.x, ray.direction.y, ray.direction.z });
 
 	}
 	else{
 
+		Face face = scene->faces[ray.currentHit];
 
+		Material* mat = scene->materials+face.material;
 
-		Material* mat = ray.currentHit->materialPointer;
-
-		Vertex* vP = faceHit->objectPointer->vertices;
+		Vertex* vP = scene->vertices;
 
 		glm::vec2 bary = ray.bary;
 
-		glm::vec3 n0 = vP[faceHit->indices.x].position;
-		glm::vec3 n1 = vP[faceHit->indices.y].position;
-		glm::vec3 n2 = vP[faceHit->indices.z].position;
+		glm::vec3 n0 = vP[face.indices.x].position;
+		glm::vec3 n1 = vP[face.indices.y].position;
+		glm::vec3 n2 = vP[face.indices.z].position;
 
 		glm::vec3 bestNormal = glm::normalize(glm::cross(n1 - n0, n2 - n0));
 
@@ -319,9 +319,9 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		glm::vec3 bestNormal = (1 - bary.x - bary.y) * n0 + bary.x * n1 + bary.y * n2;*/
 
-		glm::vec2 uv0 = vP[faceHit->indices.x].textureCoord;
-		glm::vec2 uv1 = vP[faceHit->indices.y].textureCoord;
-		glm::vec2 uv2 = vP[faceHit->indices.z].textureCoord;
+		glm::vec2 uv0 = vP[face.indices.x].textureCoord;
+		glm::vec2 uv1 = vP[face.indices.y].textureCoord;
+		glm::vec2 uv2 = vP[face.indices.z].textureCoord;
 
 		glm::vec2 bestUV = (1.0f - bary.x - bary.y) * uv0 + bary.x * uv1 + bary.y * uv2;
 
@@ -341,7 +341,7 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		//unsigned char green = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 1, localIndex);
 		//unsigned char red = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 2, localIndex);
 
-		float4 PicCol = tex2DLod<float4>(mat->image.texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
+		float4 PicCol = tex2DLod<float4>(mat->diffuseImage.texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
 		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
 		ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
 
@@ -454,7 +454,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			stackPtr = 0;
 			currentLeaf = NULL;   // No postponed leaf.
-			currentNode = scene->bvhDevice->GetRoot();   // Start from the root.
+			currentNode = scene->bvh->GetRoot();   // Start from the root.
 			ray.currentHit = NULL;  // No triangle intersected so far.
 		}
 
@@ -464,7 +464,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 		{
 			// Until all threads find a leaf, traverse
 
-			while (!scene->bvhDevice->IsLeaf(currentNode) && currentNode != NULL)
+			while (!scene->bvh->IsLeaf(currentNode) && currentNode != NULL)
 			{
 				// Fetch AABBs of the two child nodes.
 
@@ -527,7 +527,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				// First leaf => postpone and continue traversal.
 
-				if (scene->bvhDevice->IsLeaf(currentNode) && !scene->bvhDevice->IsLeaf(currentLeaf))     // Postpone leaf
+				if (scene->bvh->IsLeaf(currentNode) && !scene->bvh->IsLeaf(currentLeaf))     // Postpone leaf
 				{
 					currentLeaf = currentNode;
 					currentNode = traversalStack[stackPtr--];
@@ -535,7 +535,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				// Once all found, break to the processing
 
-				if (!__any(!scene->bvhDevice->IsLeaf(currentLeaf))){
+				if (!__any(!scene->bvh->IsLeaf(currentLeaf))){
 					break;
 				}
 			}
@@ -543,16 +543,16 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			// Process postponed leaf nodes.
 
-			while (scene->bvhDevice->IsLeaf(currentLeaf))
+			while (scene->bvh->IsLeaf(currentLeaf))
 			{
 				// Tris in TEX (good to fetch as a single batch)
-				glm::uvec3 face = currentLeaf->faceID->indices;
+				glm::uvec3 face = scene->faces[currentLeaf->faceID].indices;
 
 				float bary1;
 				float bary2;
 				float tTemp;
 
-				Vertex* vP = currentLeaf->faceID->objectPointer->vertices;
+				Vertex* vP = scene->vertices;
 
 				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
 				{ origx, origy, origz, }, { dirx, diry, dirz }, { idirx, idiry, idirz },
@@ -565,7 +565,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				//go throught the second postponed leaf
 				currentLeaf = currentNode;
-				if (scene->bvhDevice->IsLeaf(currentNode))
+				if (scene->bvh->IsLeaf(currentNode))
 				{
 					currentNode = traversalStack[stackPtr--];
 				}

@@ -19,7 +19,6 @@ Image::Image()
 	:width(0)
 	, height(0)
 	, format(0)
-	, pixels(NULL)
 {
 
 }
@@ -31,9 +30,6 @@ Image::~Image() {
 	// Free device memory 
 	//cudaFree(cuArray);
 
-	if (pixels != NULL) {
-		delete[] (char*)pixels;
-	}
 }
 
 
@@ -214,7 +210,7 @@ unsigned char* DirectLoad(const char* fileName, int* width, int* height, int*tex
 
 
 void Image::LoadFromFile(const char* filepath, bool clamp, bool mipmap) {
-	pixels = stbi_load(filepath, &width, &height, &format, 0);
+	void* pixels = stbi_load(filepath, &width, &height, &format, 0);
 
 	cuImage im;
 	im.size = make_cudaExtent(width, height, 0);
@@ -279,5 +275,9 @@ void Image::LoadFromFile(const char* filepath, bool clamp, bool mipmap) {
 	texDescr.readMode = cudaReadModeNormalizedFloat;
 
 	CudaCheck(cudaCreateTextureObject(&texObj, &resDescr, &texDescr, NULL));
+
+	if (pixels) {
+		delete[](char*)pixels;
+	}
 
 }
