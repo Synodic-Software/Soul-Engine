@@ -13,6 +13,8 @@ Object::Object(){
 	tetAmount = 0;
 	materialAmount = 0;
 	ready = false;
+	requestRemoval = false;
+	isStatic = false;
 
 }
 Object::Object(std::string name, Material* mat){
@@ -22,6 +24,8 @@ Object::Object(std::string name, Material* mat){
 	tetAmount = 0;
 	materialAmount = 0;
 	ready = false;
+	requestRemoval = false;
+	isStatic = false;
 
 	materials.push_back(*mat);
 	materialAmount++;
