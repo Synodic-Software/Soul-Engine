@@ -81,7 +81,7 @@ void RenderWidget::RecreateData() {
 
 	//update the camera
 	camera->SetAspect(size.x / (float)size.y);
-
+	camera->resolution = size;
 	//remove the rayJob if it exists
 	//TODO
 

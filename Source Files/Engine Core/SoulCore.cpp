@@ -149,6 +149,9 @@ namespace Soul {
 			glfwPollEvents();
 		});
 
+		InputState::GetInstance().ResetOffsets(); //temp, replace input engine at some point
+
+
 		for (auto const& scene : scenes) {
 			scene->Build(deltaTime);
 		}
@@ -263,6 +266,9 @@ double GetDeltaTime() {
 void SetKey(int key, std::function<void(int)> func) {
 	InputState::GetInstance().SetKey(key, func);
 }
+void MouseEvent(std::function<void(double,double)> func) {
+	InputState::GetInstance().AddMouseCallback(func);
+}
 
 void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat) {
 	Object* obj = new Object(file, mat);
@@ -296,7 +302,7 @@ int main()
 	{
 		SoulInit();
 
-		//InputState::GetInstance().ResetMouse = true;
+		InputState::GetInstance().ResetMouse = true;
 
 		SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
@@ -372,22 +378,23 @@ int main()
 		});
 
 
+		SetKey(GLFW_KEY_LEFT_ALT, [deltaTime, &moveSpeed](int action) {
+			if (action == GLFW_PRESS) {
+				moveSpeed = 1 * METER * deltaTime;
+			}
+			else if (action == GLFW_RELEASE) {
+				moveSpeed = 1 * METER * deltaTime;
+			}
+		});
 
-		////set cursor in center
-		//double xPos;
-		//double yPos;
-		//glfwGetCursorPos(mainThread, &xPos, &yPos);
-		//xPos -= (SCREEN_SIZE.x / 2.0);
-		//yPos -= (SCREEN_SIZE.y / 2.0);
+		MouseEvent([&camera](double xPos, double yPos) {
+			glm::dvec2 mouseChangeDegrees;
+			mouseChangeDegrees.x = (float)(xPos / camera->resolution.x *camera->FieldOfView().x);
+			mouseChangeDegrees.y = (float)(yPos / camera->resolution.y *camera->FieldOfView().y);
 
-		//mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x *camera.fieldOfView().x);
-		//mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y *camera.fieldOfView().y);
+			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 
-		//if (freeCam) {
-		//	//set camera for each update
-		//	camera.offsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-		//}
-		//glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
+		});
 
 
 
