@@ -1,7 +1,6 @@
 #include "WindowManager.h"
 
 #include "Utility\Logger.h"
-#include "Window.h"
 #include "Utility\Settings.h"
 #include "Multithreading\Scheduler.h"
 #include "Raster Engine\RasterBackend.h"
@@ -75,11 +74,11 @@ namespace WindowManager {
 	}
 
 	//the moniter number
-	void CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height, std::function<Layout*()> createLayout) {
+	Window* CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height) {
 
 		if (monitor > monitorCount) {
 			S_LOG_ERROR("The specified moniter '", monitor, "' needs to be less than ", monitorCount);
-			return;
+			return nullptr;
 		}
 
 		GLFWmonitor* monitorIn = monitors[monitor];
@@ -93,11 +92,15 @@ namespace WindowManager {
 			windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, sharedCtx));
 		}
 
-		windows.back()->layout.reset(createLayout());
-		windows.back()->layout->UpdateWindow(windows.back().get()->windowHandle);
-		windows.back()->layout->UpdatePositioning( glm::uvec2(x,y), glm::uvec2(width, height));
-		windows.back()->layout->RecreateData();
+		return windows.back().get();
 
+	}
+
+	void SetWindowLayout(Window* window, Layout* layout) {
+		window->layout.reset(layout);
+		window->layout->UpdateWindow(windows.back().get()->windowHandle);
+		window->layout->UpdatePositioning(glm::uvec2(window->xPos, window->yPos), glm::uvec2(window->width, window->height));
+		window->layout->RecreateData();
 	}
 
 

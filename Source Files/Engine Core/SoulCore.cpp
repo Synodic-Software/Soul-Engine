@@ -10,7 +10,6 @@
 #include "Utility/Logger.h"
 
 #include "Engine Core/Frame/Frame.h"
-#include "Engine Core/Camera/CUDA/Camera.cuh"
 #include "Input/InputState.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
@@ -244,7 +243,7 @@ namespace Soul {
 
 /////////////////////////User Interface///////////////////////////
 
-void SoulSignalClose() {
+void SoulSignalClose(int pressType) {
 	Soul::running = false;
 	WindowManager::SignelClose();
 }
@@ -257,8 +256,12 @@ void SoulRun() {
 	Scheduler::Block();
 }
 
-void SetKey(int key, void(*func)(void)) {
-	InputState::GetInstance().SetKey(key, std::bind(func));
+double GetDeltaTime() {
+	return Soul::engineRefreshRate / 60.0;
+}
+
+void SetKey(int key, std::function<void(int)> func) {
+	InputState::GetInstance().SetKey(key, func);
 }
 
 void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat) {
@@ -313,9 +316,82 @@ int main()
 		Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), static_cast<int*>(&typeCast));
 		type = static_cast<WindowType>(typeCast);
 
-		WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize, []() {
-			return new SingleLayout(new RenderWidget());
+		Camera* camera = new Camera();
+
+		camera->SetPosition(glm::vec3(-(METER), METER, -(METER)));
+		camera->OffsetOrientation(135, 45);
+
+		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
+
+		WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(camera)));
+
+		double deltaTime = GetDeltaTime();
+		float moveSpeed = 1 * METER * deltaTime;
+
+		SetKey(GLFW_KEY_S, [&camera, &moveSpeed](int action) {
+			camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
 		});
+
+		SetKey(GLFW_KEY_W, [&camera, &moveSpeed](int action) {
+			camera->OffsetPosition(float(moveSpeed) * camera->Forward());
+		});
+
+		SetKey(GLFW_KEY_A, [&camera, &moveSpeed](int action) {
+			camera->OffsetPosition(float(moveSpeed) * -camera->Right());
+		});
+
+		SetKey(GLFW_KEY_D, [&camera, &moveSpeed](int action) {
+			camera->OffsetPosition(float(moveSpeed) * camera->Right());
+		});
+
+		SetKey(GLFW_KEY_Z, [&camera, &moveSpeed](int action) {
+			camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
+		});
+
+		SetKey(GLFW_KEY_X, [&camera, &moveSpeed](int action) {
+			camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
+		});
+
+
+		SetKey(GLFW_KEY_LEFT_SHIFT, [deltaTime, &moveSpeed](int action) {
+			if (action == GLFW_PRESS) {
+				moveSpeed = 9 * METER * deltaTime;
+			}
+			else if (action == GLFW_RELEASE) {
+				moveSpeed = 1 * METER * deltaTime;
+			}
+		});
+
+		SetKey(GLFW_KEY_LEFT_ALT, [deltaTime, &moveSpeed](int action) {
+			if (action == GLFW_PRESS) {
+				moveSpeed = 1 * METER * deltaTime;
+			}
+			else if (action == GLFW_RELEASE) {
+				moveSpeed = 1 * METER * deltaTime;
+			}
+		});
+
+
+
+		////set cursor in center
+		//double xPos;
+		//double yPos;
+		//glfwGetCursorPos(mainThread, &xPos, &yPos);
+		//xPos -= (SCREEN_SIZE.x / 2.0);
+		//yPos -= (SCREEN_SIZE.y / 2.0);
+
+		//mouseChangeDegrees.x = (float)(xPos / SCREEN_SIZE.x *camera.fieldOfView().x);
+		//mouseChangeDegrees.y = (float)(yPos / SCREEN_SIZE.y *camera.fieldOfView().y);
+
+		//if (freeCam) {
+		//	//set camera for each update
+		//	camera.offsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
+		//}
+		//glfwSetCursorPos(mainThread, SCREEN_SIZE.x / 2.0f, SCREEN_SIZE.y / 2.0f);
+
+
+
+
 
 		/*	WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300, []() {
 				return new SingleLayout(new RenderWidget());

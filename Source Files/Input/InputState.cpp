@@ -1,7 +1,7 @@
 #include "InputState.h"
 #include <list>
 
-std::list<std::function<void()> > keyHash[350];
+std::list<std::function<void(int)> > keyHash[350];
 
 
 bool IsKeyAvailable(int key) {
@@ -10,13 +10,13 @@ bool IsKeyAvailable(int key) {
 
 void InputState::InputKeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (!IsKeyAvailable(key)) {
-		for (std::list<std::function<void()> >::iterator itr = keyHash[key].begin(); itr != keyHash[key].end(); itr++) {
-			(*itr)();
+		for (std::list<std::function<void(int)> >::iterator itr = keyHash[key].begin(); itr != keyHash[key].end(); itr++) {
+			(*itr)(action);
 		}
 	}
 }
 
-bool InputState::SetKey(int key, std::function<void()> function) {
+bool InputState::SetKey(int key, std::function<void(int)> function) {
 
 	keyHash[key].push_back(function);
 	return true;

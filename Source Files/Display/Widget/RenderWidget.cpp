@@ -5,8 +5,9 @@
 
 #include <iostream>
 
-RenderWidget::RenderWidget()
+RenderWidget::RenderWidget(Camera* cameraIn)
 {
+	camera = cameraIn;
 
 	widgetJob = RasterBackend::CreateJob();
 
@@ -72,11 +73,15 @@ void RenderWidget::Draw() {
 
 	//add the rayJob back in
 	buffer->MapResources();
-	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, camera, buffer->GetData());
+	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData());
 
 }
 
 void RenderWidget::RecreateData() {
+
+	//update the camera
+	camera->SetAspect(size.x / (float)size.y);
+
 	//remove the rayJob if it exists
 	//TODO
 
@@ -89,5 +94,5 @@ void RenderWidget::RecreateData() {
 
 	//add the ray job with new sizes
 	buffer->MapResources();
-	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, camera, buffer->GetData());
+	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData());
 }

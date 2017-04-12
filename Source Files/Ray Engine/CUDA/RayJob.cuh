@@ -25,21 +25,6 @@ public:
 	__host__ RayJob(rayType, uint, uint, Camera camera, void* resultsIn);
 	__host__ ~RayJob();
 
-	//Returns a reference to a camera pointer. All the ray shooting information is stored here.
-	__host__ __device__ Camera& GetCamera();
-
-	//Returns the rayType of the job.
-	__host__ __device__ rayType RayType() const;
-
-	//Returns the Ray max of the job as per its initialization params.
-	__host__ __device__ uint RayAmountMax() const;
-
-	//Returns the current rayAmount (modifiable)
-	__host__ __device__ uint& GetRayAmount();
-
-	//Returns the current sample per ray (modifiable)
-	__host__ __device__ uint& GetSampleAmount();
-
 	//result variables
 
 	void* results;
@@ -47,15 +32,15 @@ public:
 	//counting variables
 	uint startIndex;
 
-protected:
-
-private:
-
 	//common variables
 	Camera camera;
 	rayType type;
 	uint rayAmount;
 	uint rayBaseAmount;
 	uint samples;
+protected:
+
+private:
+
 
 };
