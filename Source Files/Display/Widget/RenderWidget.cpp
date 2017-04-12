@@ -12,8 +12,6 @@ RenderWidget::RenderWidget()
 
 	samples = 1;
 
-	camera = new Camera();
-
 	//attach shaders to render a quad and apply a texture
 	widgetJob->AttachShaders({
 		RasterBackend::CreateShader("Resources/Shaders/vertex-shader[Renderer].glsl",VERTEX_SHADER),
@@ -72,9 +70,8 @@ void RenderWidget::Draw() {
 	buffer->BindData(0);
 	widgetJob->Draw();
 
-	buffer->MapResources();
-
 	//add the rayJob back in
+	buffer->MapResources();
 	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, camera, buffer->GetData());
 
 }

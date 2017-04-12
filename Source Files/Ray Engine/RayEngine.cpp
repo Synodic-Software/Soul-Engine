@@ -10,14 +10,14 @@ void RayEngine::Process(const Scene* scene){
 }
 
 void RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
-	uint samples, Camera* camera, void* resultsIn) {
+	uint samples, Camera& camera, void* resultsIn) {
 
 	jobList.push_back({ whatToGet, rayAmount, samples, camera, resultsIn });
 
 }
 
 bool RayEngine::ChangeJob(RayJob* job, uint rayAmount, 
-	float samples, Camera* camera){
+	float samples, Camera& camera){
 
 	if (rayAmount<=job->RayAmountMax()){
 		job->GetRayAmount() = rayAmount;
@@ -30,10 +30,6 @@ bool RayEngine::ChangeJob(RayJob* job, uint rayAmount,
 		return false;
 	}
 
-}
-
-void RayEngine::Clear(){
-	ClearResults(jobList);
 }
 
 void RayEngine::Clean(){

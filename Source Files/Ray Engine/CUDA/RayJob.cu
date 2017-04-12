@@ -1,7 +1,7 @@
 #include "RayJob.cuh"
 #include "Utility/CUDA/CUDAHelper.cuh"
 
-__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, uint newSamples, Camera* cameraN, void* resultsIN) {
+__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, uint newSamples, Camera cameraN, void* resultsIN) {
 
 	type = whatToGet;
 	rayAmount = rayAmountN;
@@ -9,6 +9,7 @@ __host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, uint newSamples, Cam
 	samples = newSamples;
 	camera = cameraN;
 	results = resultsIN;
+	startIndex = 0;
 }
 
 __host__ RayJob::~RayJob() {
@@ -16,7 +17,7 @@ __host__ RayJob::~RayJob() {
 }
 
 //Returns a reference to a camera pointer. All the ray shooting information is stored here.
-__host__ __device__ Camera*& RayJob::GetCamera() {
+__host__ __device__ Camera& RayJob::GetCamera() {
 	return camera;
 }
 
