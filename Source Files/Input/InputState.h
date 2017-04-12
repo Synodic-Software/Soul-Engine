@@ -15,6 +15,7 @@ public:
 	}
 
 	bool SetKey(int, std::function<void(int)>);
+	bool AddMouseCallback(std::function<void(double,double)>);
 	void ResetOffsets();
 
 	bool ResetMouse; //boolean for if mouse should be reset

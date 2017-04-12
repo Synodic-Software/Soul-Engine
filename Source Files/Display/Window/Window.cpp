@@ -74,7 +74,7 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	Window* thisWindow = this;
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, thisWindow]() {
-
+		glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		glfwSetWindowUserPointer(windowHandle, thisWindow);
 
 		//all window related callbacks

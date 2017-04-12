@@ -2,7 +2,7 @@
 #include <list>
 
 std::list<std::function<void(int)> > keyHash[350];
-
+std::list<std::function<void(double, double)> > mouseEvents;
 
 bool IsKeyAvailable(int key) {
 	return keyHash[key].size() == 0;
@@ -20,21 +20,34 @@ bool InputState::SetKey(int key, std::function<void(int)> function) {
 
 	keyHash[key].push_back(function);
 	return true;
+
 }
+
+bool InputState::AddMouseCallback(std::function<void(double, double)> function) {
+
+	mouseEvents.push_back(function);
+	return true;
+
+}
+
 
 //called from glfwPollEvents which is run only on main
 void InputState::InputMouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	int width, height;
 
-		glfwGetWindowSize(window, &width, &height);
+	glfwGetWindowSize(window, &width, &height);
 
-		if (ResetMouse) {
-			glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
-		}
+	if (ResetMouse) {
+		glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
+	}
 
 	xPos = xpos - (width / 2.0);
 	yPos = ypos - (height / 2.0);
+
+	for (std::list<std::function<void(double, double)> >::iterator itr = mouseEvents.begin(); itr != mouseEvents.end(); itr++) {
+		(*itr)(xPos, yPos);
+	}
 }
 
 void InputState::InputScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
