@@ -5,5 +5,4 @@
 #include <vector>
 
 __host__ void ProcessJobs(std::vector<RayJob>&, const Scene*);
-__host__ void ClearResults(std::vector<RayJob>&);
 __host__ void Cleanup();

@@ -57,7 +57,7 @@ namespace Soul {
 
 		//Write the settings into a file
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			Settings::Write("config.ini",TEXT);
+			Settings::Write("config.ini", TEXT);
 		});
 
 		//Clean the RayEngine from stray data
@@ -99,7 +99,7 @@ namespace Soul {
 
 		//open the config file for the duration of the runtime
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			Settings::Read("config.ini",TEXT);
+			Settings::Read("config.ini", TEXT);
 		});
 
 		//extract all available GPU devices
@@ -131,7 +131,7 @@ namespace Soul {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
-		Settings::Get("Engine.Engine_Refresh_Rate",60.0,&engineRefreshRate);
+		Settings::Get("Engine.Engine_Refresh_Rate", 60.0, &engineRefreshRate);
 
 		Scheduler::Block();
 	}
@@ -232,16 +232,9 @@ namespace Soul {
 
 			LateFrameUpdate();
 
-			/*	for (auto const& rend : renderObjects) {
-					int width, height;
-					glfwGetWindowSize(masterWindow, &width, &height);
-					rend.rendererHandle->RenderSetup({ width, height }, deltaTime);
-				}*/
-
-				/*	for (auto const& scene : scenes){
-						RayEngine::Clear();
-						RayEngine::Process(scene);
-					}*/
+			for (auto const& scene : scenes) {
+				RayEngine::Process(scene);
+			}
 
 			Raster();
 
@@ -322,11 +315,11 @@ int main()
 
 		WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize, []() {
 			return new SingleLayout(new RenderWidget());
-		}); 
+		});
 
-	/*	WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300, []() {
-			return new SingleLayout(new RenderWidget());
-		});*/
+		/*	WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300, []() {
+				return new SingleLayout(new RenderWidget());
+			});*/
 
 		Material* whiteGray = new Material();
 		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);

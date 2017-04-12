@@ -150,7 +150,7 @@ namespace WindowManager {
 	void Refresh(GLFWwindow* handler)
 	{
 
-		Window* window = static_cast<Window*>(glfwGetWindowUserPointer(handler));
-		window->Draw();
+		/*Window* window = static_cast<Window*>(glfwGetWindowUserPointer(handler));
+		window->Draw();*/
 	}
 }

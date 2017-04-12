@@ -22,11 +22,11 @@ public:
 	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
 	//@param The amount of buffers used for result storage.
-	__host__ RayJob(rayType, uint, uint, Camera* camera, void* resultsIn);
+	__host__ RayJob(rayType, uint, uint, Camera camera, void* resultsIn);
 	__host__ ~RayJob();
 
 	//Returns a reference to a camera pointer. All the ray shooting information is stored here.
-	__host__ __device__ Camera*& GetCamera();
+	__host__ __device__ Camera& GetCamera();
 
 	//Returns the rayType of the job.
 	__host__ __device__ rayType RayType() const;
@@ -44,15 +44,15 @@ public:
 
 	void* results;
 
+	//counting variables
+	uint startIndex;
+
 protected:
 
 private:
 
-	//counting variables
-	uint startIndex;
-
 	//common variables
-	Camera* camera;
+	Camera camera;
 	rayType type;
 	uint rayAmount;
 	uint rayBaseAmount;

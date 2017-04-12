@@ -46,6 +46,41 @@ class Ray;
 
 		__host__ __device__ void UpdateVariables();
 
+		__host__ __device__ bool operator==(const Camera& other) const {
+			return
+				resolution == other.resolution &&
+				aspectRatio == other.aspectRatio &&
+				circularDistribution == other.circularDistribution &&
+				position == other.position &&
+				forward == other.forward &&
+				right == other.right &&
+				fieldOfView == other.fieldOfView &&
+				aperture == other.aperture &&
+				focalDistance == other.focalDistance &&
+				verticalAxis == other.verticalAxis &&
+				yHelper == other.yHelper &&
+				xHelper == other.xHelper;
+		}
+
+		__host__ __device__ Camera& operator=(Camera arg)
+		{
+			this->resolution = arg.resolution;
+			this->aspectRatio = arg.aspectRatio;
+			this->circularDistribution = arg.circularDistribution;
+			this->position = arg.position;
+			this->forward = arg.forward;
+			this->right = arg.right;
+			this->fieldOfView = arg.fieldOfView;
+			this->aperture = arg.aperture;
+			this->focalDistance = arg.focalDistance;
+			this->verticalAxis = arg.verticalAxis;
+			this->yHelper = arg.yHelper;
+			this->xHelper = arg.xHelper;
+
+			return *this;
+		}
+
+
 		glm::uvec2 resolution;
 
     private:

@@ -7,11 +7,7 @@
 #include "Multithreading\Scheduler.h"
 
 CUDARasterBuffer::CUDARasterBuffer(CUDADevice* device, uint size) {
-	GLenum err;
-	while ((err = glGetError()) != GL_NO_ERROR)
-	{
-		std::cout << err << std::endl;
-	}
+
 	cudaSetDevice(device->order);
 
 	rasterBuffer = RasterBackend::CreateBuffer(size);
