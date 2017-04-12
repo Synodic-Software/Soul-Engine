@@ -3,6 +3,7 @@
 #include "Engine Core/Object/Object.h"
 #include "Engine Core/Object/Character/Character.h"
 #include "Engine Core\Scene\Scene.h"
+#include <functional>
 
 enum RenderType {SPECTRAL, PATH};
 enum GraphicsAPI{ OPENGL,VULKAN };
@@ -11,9 +12,10 @@ void SoulInit();
 void SoulRun();
 void SoulTerminate();
 
-void SoulSignalClose();
+void SoulSignalClose(int);
 
-void SetKey(int, void(*func)(void));
+double GetDeltaTime();
+void SetKey(int, std::function<void(int)>);
 
 void SubmitScene(Scene*);
 void RemoveScene(Scene*);

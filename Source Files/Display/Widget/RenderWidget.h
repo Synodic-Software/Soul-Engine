@@ -9,7 +9,7 @@
 class RenderWidget : public Widget
 {
 public:
-	RenderWidget();
+	RenderWidget(Camera*);
 	~RenderWidget();
 
 	virtual void Draw();
@@ -25,6 +25,6 @@ private:
 	GPURasterBuffer* buffer;
 
 	uint samples;
-	Camera camera;
+	Camera* camera;
 };
 

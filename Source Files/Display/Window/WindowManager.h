@@ -4,11 +4,11 @@
 #include "Metrics.h"
 #include <string>
 #include <functional>
-
+#include "Window.h"
 #include "Display\Layout\Layout.h"
 
 #ifdef WIN32
-	#undef CreateWindow
+#undef CreateWindow
 #endif
 
 namespace WindowManager {
@@ -23,7 +23,9 @@ namespace WindowManager {
 
 	void SignelClose();
 
-	void CreateWindow(WindowType, const std::string&,int monitor, uint x, uint y, uint width, uint height, std::function<Layout*()>);
+	Window* CreateWindow(WindowType, const std::string&, int monitor, uint x, uint y, uint width, uint height);
+
+	void SetWindowLayout(Window*, Layout*);
 
 	void Draw();
 

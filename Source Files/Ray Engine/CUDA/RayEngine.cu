@@ -164,12 +164,12 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 	curandState randState;
 	curand_init(raySeed + index, 0, 0, &randState);
 
-	uint localIndex = (index - startIndex) / job[cur].GetSampleAmount();
+	uint localIndex = (index - startIndex) / job[cur].samples;
 
 	Ray ray;
 	ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ray.resultOffset = localIndex;
-	job[cur].GetCamera().SetupRay(localIndex, ray, randState);
+	job[cur].camera.SetupRay(localIndex, ray, randState);
 
 	rays[index] = ray;
 }
@@ -334,7 +334,7 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		raysNew[FastAtomicAdd(nAtomic)] = ray;
 
 	}
-	col /= job[cur].GetSampleAmount();
+	col /= job[cur].samples;
 
 	//rays[index] = ray;
 
@@ -571,11 +571,11 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 		for (int i = 0; i < jobsSize; ++i) {
 
 			hjobs[i].startIndex = numberResults;
-			numberResults += hjobs[i].GetRayAmount();
-			numberRays += hjobs[i].GetRayAmount()* hjobs[i].GetSampleAmount();
+			numberResults += hjobs[i].rayAmount;
+			numberRays += hjobs[i].rayAmount* hjobs[i].samples;
 
-			if (hjobs[i].GetSampleAmount() > samplesMax) {
-				samplesMax = hjobs[i].GetSampleAmount();
+			if (hjobs[i].samples > samplesMax) {
+				samplesMax = hjobs[i].samples;
 			}
 
 		}
@@ -645,9 +645,9 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 				blockSize = 64;
 				gridSize = (numberRays + blockSize - 1) / blockSize;
 
-				/*RaySetup << <gridSize, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene);
+				RaySetup << <gridSize, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene);
 				CudaCheck(cudaPeekAtLastError());
-				CudaCheck(cudaDeviceSynchronize());*/
+				CudaCheck(cudaDeviceSynchronize());
 
 
 				////start the engine loop

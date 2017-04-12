@@ -146,7 +146,7 @@
 //
 //	//RayEngine::AddRayJob(RayCOLOUR, screen.x*screen.y, samples, camera, bufferData);
 //
-//	//RenderJob->GetSampleAmount()=0.1f;
+//	//RenderJob->samples=0.1f;
 //	CudaCheck(cudaGraphicsMapResources(1, &cudaBuffer, 0));
 //	size_t num_bytes;
 //	CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&bufferData, &num_bytes,

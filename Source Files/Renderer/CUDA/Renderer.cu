@@ -16,7 +16,7 @@ __global__ void IntegrateKernal(const uint n, glm::vec4* A, glm::vec4* B, const 
 __host__ void Integrate(RayJob* RenderJob, glm::vec4* A, glm::vec4* B,const uint counter){
 	//RenderJob->SwapResults(0, 1);
 
-	uint n = RenderJob->GetRayAmount();
+	uint n = RenderJob->rayAmount;
 	uint blockSize = 64;
 	uint gridSize = (n + blockSize - 1) / blockSize;
 

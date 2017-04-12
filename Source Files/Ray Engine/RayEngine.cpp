@@ -19,10 +19,10 @@ void RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
 bool RayEngine::ChangeJob(RayJob* job, uint rayAmount, 
 	float samples, Camera& camera){
 
-	if (rayAmount<=job->RayAmountMax()){
-		job->GetRayAmount() = rayAmount;
-		job->GetSampleAmount() = samples;
-		job->GetCamera() = camera;
+	if (rayAmount<=job->rayBaseAmount){
+		job->rayAmount = rayAmount;
+		job->samples = samples;
+		job->camera = camera;
 
 		return true;
 	}

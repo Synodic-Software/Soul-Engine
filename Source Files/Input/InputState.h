@@ -14,7 +14,7 @@ public:
 		return instance;
 	}
 
-	bool SetKey(int, std::function<void()>);
+	bool SetKey(int, std::function<void(int)>);
 	void ResetOffsets();
 
 	bool ResetMouse; //boolean for if mouse should be reset
