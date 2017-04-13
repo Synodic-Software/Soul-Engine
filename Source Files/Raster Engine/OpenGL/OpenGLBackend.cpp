@@ -97,7 +97,7 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(openglCallbackFunction, nullptr);
 		glDebugMessageControl(
-			GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, true
+			GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true
 		);
 
 		if (err != 0) {

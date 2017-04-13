@@ -45,7 +45,7 @@ void Shader::Release() {
 	assert(referenceCount && *referenceCount > 0);
 	*referenceCount -= 1;
 	if (*referenceCount == 0) {
-		delete referenceCount; referenceCount = NULL;
+		delete referenceCount; referenceCount = nullptr;
 		delete this;	
 	}
 }

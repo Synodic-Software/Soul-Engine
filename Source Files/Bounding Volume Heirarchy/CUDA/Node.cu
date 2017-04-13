@@ -2,8 +2,8 @@
 
 Node::Node(){
 
-	childLeft = NULL;
-	childRight = NULL;
+	childLeft = nullptr;
+	childRight = nullptr;
 }
 Node::~Node(){
 

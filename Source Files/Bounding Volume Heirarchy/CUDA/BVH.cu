@@ -78,8 +78,8 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	nodes[leafOffset + index].rangeLeft = index;
 	nodes[leafOffset + index].rangeRight = index;
 	nodes[leafOffset + index].atomic = 1; // To allow the next thread to process
-	nodes[leafOffset + index].childLeft = NULL; // Second thread to process
-	nodes[leafOffset + index].childRight = NULL; // Second thread to process
+	nodes[leafOffset + index].childLeft = nullptr; // Second thread to process
+	nodes[leafOffset + index].childRight = nullptr; // Second thread to process
 	if (index < leafOffset) {
 		/*nodes[index].rangeLeft = index;   //unneeded as all nodes are touched and updated
 		nodes[index].rangeRight = index + 1;*/
@@ -116,56 +116,49 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 }
 
 void BVH::Build(uint size, uint64* mortonCodes, Face * faces, Vertex * vertices) {
-	cudaEvent_t start, stop;
-	float time;
-	CudaCheck(cudaEventCreate(&start));
-	CudaCheck(cudaEventCreate(&stop));
-	CudaCheck(cudaEventRecord(start, 0));
 
 	currentSize = size;
-	if (currentSize > allocatedSize) {
 
-		Node* nodeTemp;
+	if (currentSize>0) {
+		if (currentSize > allocatedSize) {
 
-		allocatedSize = glm::max(uint(allocatedSize * 1.5f), (currentSize * 2) - 1);
+			Node* nodeTemp;
+
+			allocatedSize = glm::max(uint(allocatedSize * 1.5f), (currentSize * 2) - 1);
 
 
-		CudaCheck(cudaMalloc((void**)&nodeTemp, allocatedSize * sizeof(Node)));
-		if (bvh) {
-			CudaCheck(cudaFree(bvh));
+			CudaCheck(cudaMalloc((void**)&nodeTemp, allocatedSize * sizeof(Node)));
+			if (bvh) {
+				CudaCheck(cudaFree(bvh));
+			}
+			bvh = nodeTemp;
 		}
-		bvh = nodeTemp;
+
+		root = bvh;
+
+		uint blockSize = 64;
+		uint gridSize = (currentSize + blockSize - 1) / blockSize;
+
+		CudaCheck(cudaDeviceSynchronize());
+
+		Reset << <gridSize, blockSize >> > (currentSize, bvh, faces, vertices, mortonCodes, currentSize - 1);
+		CudaCheck(cudaPeekAtLastError());
+		CudaCheck(cudaDeviceSynchronize());
+
+
+		//copy 'this' into the kernal
+		BVH* bvhDevice;
+		CudaCheck(cudaMalloc((void**)&bvhDevice, sizeof(BVH)));
+		CudaCheck(cudaMemcpy(bvhDevice, this, sizeof(BVH), cudaMemcpyHostToDevice));
+
+		BuildTree << <gridSize, blockSize >> > (currentSize, bvh, mortonCodes, currentSize - 1, bvhDevice);
+
+		CudaCheck(cudaPeekAtLastError());
+		CudaCheck(cudaDeviceSynchronize());
+
+		CudaCheck(cudaFree(bvhDevice));
 	}
-
-	root = bvh;
-
-	uint blockSize = 64;
-	uint gridSize = (currentSize + blockSize - 1) / blockSize;
-
-	CudaCheck(cudaDeviceSynchronize());
-
-	Reset << <gridSize, blockSize >> > (currentSize, bvh, faces, vertices, mortonCodes, currentSize - 1);
-	CudaCheck(cudaPeekAtLastError());
-	CudaCheck(cudaDeviceSynchronize());
-
-
-	//copy this into the kernal
-	BVH* bvhDevice;
-	CudaCheck(cudaMalloc((void**)&bvhDevice, sizeof(BVH)));
-	CudaCheck(cudaMemcpy(bvhDevice, this, sizeof(BVH), cudaMemcpyHostToDevice));
-
-	BuildTree << <gridSize, blockSize >> > (currentSize, bvh, mortonCodes, currentSize - 1, bvhDevice);
-
-	CudaCheck(cudaPeekAtLastError());
-	CudaCheck(cudaDeviceSynchronize());
-
-	CudaCheck(cudaFree(bvhDevice));
-
-	CudaCheck(cudaEventRecord(stop, 0));
-	CudaCheck(cudaEventSynchronize(stop));
-	CudaCheck(cudaEventElapsedTime(&time, start, stop));
-	CudaCheck(cudaEventDestroy(start));
-	CudaCheck(cudaEventDestroy(stop));
-
-	S_LOG_TRACE("     BVH Creation Execution: ", time, "ms");
+	else {
+		root = nullptr;
+	}
 }

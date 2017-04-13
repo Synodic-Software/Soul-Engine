@@ -4,14 +4,14 @@
 //ObjectSceneAbstraction::ObjectSceneAbstraction(Object* obj)
 //{
 //	object = obj;
-//	nextObject = NULL;
+//	nextObject = nullptr;
 //}
 //
 //
 //ObjectSceneAbstraction::~ObjectSceneAbstraction()
 //{
 //
-//	if (nextObject!=NULL){
+//	if (nextObject!=nullptr){
 //		delete nextObject;
 //	}
 //

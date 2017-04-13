@@ -69,43 +69,26 @@ __host__ void Scene::Build(float deltaTime) {
 
 	Compile();
 
-	//calculate the morton code for each triangle
-	uint blockSize = 64;
-	uint gridSize = (faceAmount + blockSize - 1) / blockSize;
+	if (faceAmount > 0) {
+		//calculate the morton code for each triangle
+		uint blockSize = 64;
+		uint gridSize = (faceAmount + blockSize - 1) / blockSize;
 
-	CudaCheck(cudaDeviceSynchronize());
 
-	MortonCode::Compute << <gridSize, blockSize >> > (faceAmount, mortonCodes, faces, vertices, sceneBox);
+		MortonCode::Compute << <gridSize, blockSize >> > (faceAmount, mortonCodes, faces, vertices, sceneBox);
 
-	CudaCheck(cudaPeekAtLastError());
-	CudaCheck(cudaDeviceSynchronize());
+		CudaCheck(cudaPeekAtLastError());
+		CudaCheck(cudaDeviceSynchronize());
 
-	thrust::device_ptr<uint64_t> keys(mortonCodes);
-	thrust::device_ptr<Face> values(faces);
+		thrust::device_ptr<uint64_t> keys(mortonCodes);
+		thrust::device_ptr<Face> values(faces);
 
-	CudaCheck(cudaDeviceSynchronize());
+		thrust::sort_by_key(keys, keys + faceAmount, values);
 
-	cudaEvent_t start, stop;
-	float time;
-	CudaCheck(cudaEventCreate(&start));
-	CudaCheck(cudaEventCreate(&stop));
-	CudaCheck(cudaEventRecord(start, 0));
-
-	CudaCheck(cudaDeviceSynchronize());
-
-	thrust::sort_by_key(keys, keys + faceAmount, values);
-
-	CudaCheck(cudaDeviceSynchronize());
-
-	CudaCheck(cudaEventRecord(stop, 0));
-	CudaCheck(cudaEventSynchronize(stop));
-	CudaCheck(cudaEventElapsedTime(&time, start, stop));
-	CudaCheck(cudaEventDestroy(start));
-	CudaCheck(cudaEventDestroy(stop));
-
-	S_LOG_TRACE("     Sorting Execution: ", time, "ms");
+	}
 
 	bvhHost->Build(faceAmount, mortonCodes, faces, vertices);
+
 	CudaCheck(cudaMemcpy(bvh, bvhHost, sizeof(BVH), cudaMemcpyHostToDevice));
 }
 

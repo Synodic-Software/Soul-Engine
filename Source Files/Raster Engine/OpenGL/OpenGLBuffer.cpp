@@ -16,7 +16,7 @@ OpenGLBuffer::OpenGLBuffer(uint sizeInBytes) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
 		glBufferData(GL_SHADER_STORAGE_BUFFER,
 			sizeInBytes,
-			NULL, GL_STATIC_DRAW);
+			nullptr, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
