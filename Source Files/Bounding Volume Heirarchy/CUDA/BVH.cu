@@ -163,6 +163,7 @@ void BVH::Build(uint size, uint64* mortonCodes, Face * faces, Vertex * vertices)
 		CudaCheck(cudaDeviceSynchronize());
 
 		CudaCheck(cudaFree(bvhDevice));
+
 	}
 	else {
 		root = nullptr;
