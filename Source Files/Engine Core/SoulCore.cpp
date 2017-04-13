@@ -393,7 +393,7 @@ int main()
 			mouseChangeDegrees.y = (float)(yPos / camera->resolution.y *camera->FieldOfView().y);
 
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-
+			camera->UpdateVariables();
 		});
 
 

@@ -12,6 +12,10 @@
 #include "GPGPU\CUDA\CUDABackend.h"
 #include "Utility\Logger.h"
 
+#include <thrust/random.h>
+//#include <curand.h>
+//#include <curand_kernel.h>
+
 struct is_marked
 {
 	__host__ __device__
@@ -23,10 +27,14 @@ struct is_marked
 
 Ray* deviceRays = nullptr;
 Ray* deviceRaysB = nullptr;
+
+thrust::default_random_engine* randomState = nullptr;
+
 Scene* scene = nullptr;
 uint raySeedGl = 0;
 uint numRaysAllocated = 0;
-const uint rayDepth = 8;
+uint resultsAllocated = 0;
+const uint rayDepth = 4;
 
 
 template <class T> __host__ __device__ __inline__ void swap(T& a, T& b)
@@ -134,7 +142,7 @@ __host__ __device__ __inline__ uint WangHash(uint a) {
 	return a;
 }
 
-__global__ void EngineResultClear(const uint n, RayJob* jobs, int jobSize) {
+__global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize, thrust::default_random_engine* randomState, const uint raySeed) {
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -146,11 +154,15 @@ __global__ void EngineResultClear(const uint n, RayJob* jobs, int jobSize) {
 	uint startIndex = 0;
 
 	int cur = 0;
+
+	thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
+	randomState[index] = rng;
 
 	((glm::vec4*)jobs[cur].results)[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
 }
 
-__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene) {
+__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, thrust::default_random_engine* randomState ) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -161,15 +173,16 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 	uint startIndex = 0;
 	int cur = 0;
 
-	curandState randState;
-	curand_init(raySeed + index, 0, 0, &randState);
-
 	uint localIndex = (index - startIndex) / job[cur].samples;
+
+	thrust::default_random_engine randState = randomState[localIndex];
+	thrust::uniform_real_distribution<float> uniformDistribution(0, 1);
+
 
 	Ray ray;
 	ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ray.resultOffset = localIndex;
-	job[cur].camera.SetupRay(localIndex, ray, randState);
+	job[cur].camera.SetupRay(localIndex, ray, randState, uniformDistribution);
 
 	rays[index] = ray;
 }
@@ -236,7 +249,7 @@ __host__ __device__ bool AABBIntersect(const BoundingBox& box, const glm::vec3& 
 }
 
 
-__global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const uint raySeed, const Scene* scene, int * nAtomic) {
+__global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const Scene* scene, int * nAtomic, thrust::default_random_engine* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -247,8 +260,6 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 	uint startIndex = 0;
 	int cur = 0;
 
-	curandState randState;
-	curand_init(raySeed + index, 0, 0, &randState);
 
 	Ray ray = rays[index];
 
@@ -256,6 +267,10 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 	float hitT = ray.direction.w;
 
 	uint localIndex = ray.resultOffset;
+
+	thrust::default_random_engine randState = randomState[localIndex];
+	thrust::uniform_real_distribution<float> uniformDistribution(0, 1);
+
 	glm::vec3 col;
 
 	if (faceHit == -1) {
@@ -316,8 +331,8 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		glm::vec3 orientedNormal = glm::dot(bestNormal, glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z)) < 0 ? bestNormal : bestNormal * -1.0f;
 
-		float r1 = 2 * PI * curand_uniform(&randState);
-		float r2 = curand_uniform(&randState);
+		float r1 = 2 * PI * uniformDistribution(randState);
+		float r2 = uniformDistribution(randState);
 		float r2s = sqrtf(r2);
 
 		glm::vec3 u = glm::normalize(glm::cross((glm::abs(orientedNormal.x) > .1 ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0)), orientedNormal));
@@ -352,7 +367,7 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 
 
-__global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const uint raySeed, const Scene* scene, int* counter) {
+__global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
 
 
 	Node * traversalStack[STACK_SIZE];
@@ -421,7 +436,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			stackPtr = 0;
 			currentLeaf = NULL;   // No postponed leaf.
 			currentNode = scene->bvh->GetRoot();   // Start from the root.
-			ray.currentHit = NULL;  // No triangle intersected so far.
+			ray.currentHit = -1;  // No triangle intersected so far.
 		}
 
 		//Traversal starts here
@@ -580,6 +595,17 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 		}
 
+		if (numberResults>resultsAllocated) {
+
+			if (randomState) {
+				CudaCheck(cudaFree(randomState));
+			}
+
+			CudaCheck(cudaMalloc((void**)&randomState, numberResults * sizeof(thrust::default_random_engine)));
+
+			resultsAllocated = numberResults;
+		}
+
 		if (numberResults != 0) {
 
 			//create device jobs
@@ -601,7 +627,7 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 			CudaCheck(cudaEventCreate(&stop));
 			CudaCheck(cudaEventRecord(start, 0));
 
-			EngineResultClear << <gridSize, blockSize >> > (numberResults, jobs, jobsSize);
+			EngineSetup << <gridSize, blockSize >> > (numberResults, jobs, jobsSize, randomState, ++raySeedGl);
 			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -645,152 +671,155 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 				blockSize = 64;
 				gridSize = (numberRays + blockSize - 1) / blockSize;
 
-				RaySetup << <gridSize, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene);
+				RaySetup << <gridSize, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, scene, randomState);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
 
-				////start the engine loop
-				//uint numActive = numberRays;
+				//start the engine loop
+				uint numActive = numberRays;
 
-				//int GridSize;
-				//int BlockSize;
+				int GridSize;
+				int BlockSize;
 
-				//int* counter;
-				//CudaCheck(cudaMallocManaged((void**)&counter, sizeof(int)));
-				//counter[0] = 0;
+				cudaOccupancyMaxPotentialBlockSize(&GridSize, &BlockSize, EngineExecute, 0, 0);
+				dim3 blockSizeDim(BlockSize / CUDABackend::GetBlockHeight(), CUDABackend::GetBlockHeight(), 1);
+				CudaCheck(cudaDeviceSynchronize());
 
-				//cudaOccupancyMaxPotentialBlockSize(&GridSize, &BlockSize, EngineExecute, 0, 0);
-				//dim3 blockSizeDim(BlockSize / CUDABackend::GetBlockHeight(), CUDABackend::GetBlockHeight(), 1);
-				//CudaCheck(cudaDeviceSynchronize());
-
-				//dim3 blockSizeE(CUDABackend::GetWarpSize(), CUDABackend::GetBlockHeight(), 1);
-				//int blockWarps = (blockSizeE.x * blockSizeE.y + (CUDABackend::GetWarpSize() - 1)) / CUDABackend::GetWarpSize();
-				////int numBlocks = (GetCoreCount() + blockWarps - 1) / blockWarps;
-				//int numBlocks = CUDABackend::GetSMCount();
-				//// Launch.
+				dim3 blockSizeE(CUDABackend::GetWarpSize(), CUDABackend::GetBlockHeight(), 1);
+				int blockWarps = (blockSizeE.x * blockSizeE.y + (CUDABackend::GetWarpSize() - 1)) / CUDABackend::GetWarpSize();
+				//int numBlocks = (GetCoreCount() + blockWarps - 1) / blockWarps;
+				int numBlocks = CUDABackend::GetSMCount();
+				// Launch.
 
 
 
-				////return kernel.launchTimed(numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE);
+				//return kernel.launchTimed(numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE);
 
-				//int* hitAtomic;
-				//CudaCheck(cudaMallocManaged((void**)&hitAtomic, sizeof(int)));
-				//*hitAtomic = 0;
+				//setup the counters
+				int zeroHost = 0;
 
+				int* counter;
+				CudaCheck(cudaMalloc((void**)&counter, sizeof(int)));
+				CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 
-				//float EngineExecuteTime = 0.0f;
-				//float CollectHitsTime = 0.0f;
+				int* hitAtomic;
 
-
-				//cudaEvent_t start1, stop1;
-				//float time1;
-				//CudaCheck(cudaEventCreate(&start1));
-				//CudaCheck(cudaEventCreate(&stop1));
-				//CudaCheck(cudaEventRecord(start1, 0));
+				CudaCheck(cudaMalloc((void**)&hitAtomic, sizeof(int)));
+				CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 
 
-				//EngineExecute << <GridSize, blockSizeDim >> > (numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
-				//CudaCheck(cudaPeekAtLastError());
-				//CudaCheck(cudaDeviceSynchronize());
 
-				//CudaCheck(cudaEventRecord(stop1, 0));
-				//CudaCheck(cudaEventSynchronize(stop1));
-				//CudaCheck(cudaEventElapsedTime(&time1, start1, stop1));
-				//CudaCheck(cudaEventDestroy(start1));
-				//CudaCheck(cudaEventDestroy(stop1));
-				//EngineExecuteTime += time1;
+				float EngineExecuteTime = 0.0f;
+				float CollectHitsTime = 0.0f;
 
 
-				//cudaEvent_t start3, stop3;
-				//float time3;
-				//CudaCheck(cudaEventCreate(&start3));
-				//CudaCheck(cudaEventCreate(&stop3));
-				//CudaCheck(cudaEventRecord(start3, 0));
+				cudaEvent_t start1, stop1;
+				float time1;
+				CudaCheck(cudaEventCreate(&start1));
+				CudaCheck(cudaEventCreate(&stop1));
+				CudaCheck(cudaEventRecord(start1, 0));
 
 
-				//CollectHits << <gridSize, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, WangHash(++raySeedGl), scene, hitAtomic);
-				//CudaCheck(cudaPeekAtLastError());
-				//CudaCheck(cudaDeviceSynchronize());
+				EngineExecute << <GridSize, blockSizeDim >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
+				CudaCheck(cudaPeekAtLastError());
+				CudaCheck(cudaDeviceSynchronize());
+
+				CudaCheck(cudaEventRecord(stop1, 0));
+				CudaCheck(cudaEventSynchronize(stop1));
+				CudaCheck(cudaEventElapsedTime(&time1, start1, stop1));
+				CudaCheck(cudaEventDestroy(start1));
+				CudaCheck(cudaEventDestroy(stop1));
+				EngineExecuteTime += time1;
 
 
-				//CudaCheck(cudaEventRecord(stop3, 0));
-				//CudaCheck(cudaEventSynchronize(stop3));
-				//CudaCheck(cudaEventElapsedTime(&time3, start3, stop3));
-				//CudaCheck(cudaEventDestroy(start3));
-				//CudaCheck(cudaEventDestroy(stop3));
-				//CollectHitsTime += time3;
-
-				//swap(deviceRays, deviceRaysB);
-
-				//for (uint i = 0; i < rayDepth - 1 && numActive>0; ++i) {
-
-				//	hitAtomic[0] = 0;
-
-				//	blockSize = 64;
-				//	gridSize = (numActive + blockSize - 1) / blockSize;
-				//	CudaCheck(cudaDeviceSynchronize());
-
-				//	counter[0] = 0;
-				//	CudaCheck(cudaDeviceSynchronize());
-
-				//	cudaEvent_t start2, stop2;
-				//	float time2;
-				//	CudaCheck(cudaEventCreate(&start2));
-				//	CudaCheck(cudaEventCreate(&stop2));
-				//	CudaCheck(cudaEventRecord(start2, 0));
-
-				//	EngineExecute << <GridSize, blockSizeDim >> > (numActive, jobs, jobsSize, deviceRays, WangHash(++raySeedGl), scene, counter);
-				//	CudaCheck(cudaPeekAtLastError());
-				//	CudaCheck(cudaDeviceSynchronize());
+				cudaEvent_t start3, stop3;
+				float time3;
+				CudaCheck(cudaEventCreate(&start3));
+				CudaCheck(cudaEventCreate(&stop3));
+				CudaCheck(cudaEventRecord(start3, 0));
 
 
-				//	CudaCheck(cudaEventRecord(stop2, 0));
-				//	CudaCheck(cudaEventSynchronize(stop2));
-				//	CudaCheck(cudaEventElapsedTime(&time2, start2, stop2));
-				//	CudaCheck(cudaEventDestroy(start2));
-				//	CudaCheck(cudaEventDestroy(stop2));
-				//	EngineExecuteTime += time2;
-
-				//	cudaEvent_t start4, stop4;
-				//	float time4;
-				//	CudaCheck(cudaEventCreate(&start4));
-				//	CudaCheck(cudaEventCreate(&stop4));
-				//	CudaCheck(cudaEventRecord(start4, 0));
-
-				//	CollectHits << <gridSize, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, WangHash(++raySeedGl), scene, hitAtomic);
-				//	CudaCheck(cudaPeekAtLastError());
-				//	CudaCheck(cudaDeviceSynchronize());
-
-				//	CudaCheck(cudaEventRecord(stop4, 0));
-				//	CudaCheck(cudaEventSynchronize(stop4));
-				//	CudaCheck(cudaEventElapsedTime(&time4, start4, stop4));
-				//	CudaCheck(cudaEventDestroy(start4));
-				//	CudaCheck(cudaEventDestroy(stop4));
-				//	CollectHitsTime += time4;
-
-				//	swap(deviceRays, deviceRaysB);
-
-				//	CudaCheck(cudaDeviceSynchronize());
-				//	numActive = hitAtomic[0];
-
-				//}
+				CollectHits << <gridSize, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
+				CudaCheck(cudaPeekAtLastError());
+				CudaCheck(cudaDeviceSynchronize());
 
 
-				//CudaCheck(cudaDeviceSynchronize());
+				CudaCheck(cudaEventRecord(stop3, 0));
+				CudaCheck(cudaEventSynchronize(stop3));
+				CudaCheck(cudaEventElapsedTime(&time3, start3, stop3));
+				CudaCheck(cudaEventDestroy(start3));
+				CudaCheck(cudaEventDestroy(stop3));
+				CollectHitsTime += time3;
 
-				//CudaCheck(cudaFree(counter));
-				//CudaCheck(cudaFree(hitAtomic));
+				swap(deviceRays, deviceRaysB);
 
-				//CudaCheck(cudaEventRecord(stop, 0));
-				//CudaCheck(cudaEventSynchronize(stop));
-				//CudaCheck(cudaEventElapsedTime(&time, start, stop));
-				//CudaCheck(cudaEventDestroy(start));
-				//CudaCheck(cudaEventDestroy(stop));
+				for (uint i = 0; i < rayDepth - 1 && numActive>0; ++i) {
 
-				//S_LOG_TRACE( "RayEngine Execution: " , time , "ms" );
-				//S_LOG_TRACE("     EngineExecute Execution: " , EngineExecuteTime , "ms");
-				//S_LOG_TRACE("     CollectHits Execution: " , CollectHitsTime , "ms" );
+					//reset counters
+
+					CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+					CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+
+					blockSize = 64;
+					gridSize = (numActive + blockSize - 1) / blockSize;
+
+					cudaEvent_t start2, stop2;
+					float time2;
+					CudaCheck(cudaEventCreate(&start2));
+					CudaCheck(cudaEventCreate(&stop2));
+					CudaCheck(cudaEventRecord(start2, 0));
+
+					EngineExecute << <GridSize, blockSizeDim >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
+					CudaCheck(cudaPeekAtLastError());
+					CudaCheck(cudaDeviceSynchronize());
+
+
+					CudaCheck(cudaEventRecord(stop2, 0));
+					CudaCheck(cudaEventSynchronize(stop2));
+					CudaCheck(cudaEventElapsedTime(&time2, start2, stop2));
+					CudaCheck(cudaEventDestroy(start2));
+					CudaCheck(cudaEventDestroy(stop2));
+					EngineExecuteTime += time2;
+
+					cudaEvent_t start4, stop4;
+					float time4;
+					CudaCheck(cudaEventCreate(&start4));
+					CudaCheck(cudaEventCreate(&stop4));
+					CudaCheck(cudaEventRecord(start4, 0));
+
+					CollectHits << <gridSize, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic,randomState);
+					CudaCheck(cudaPeekAtLastError());
+					CudaCheck(cudaDeviceSynchronize());
+
+					CudaCheck(cudaEventRecord(stop4, 0));
+					CudaCheck(cudaEventSynchronize(stop4));
+					CudaCheck(cudaEventElapsedTime(&time4, start4, stop4));
+					CudaCheck(cudaEventDestroy(start4));
+					CudaCheck(cudaEventDestroy(stop4));
+					CollectHitsTime += time4;
+
+					swap(deviceRays, deviceRaysB);
+
+					CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
+
+				}
+
+
+				CudaCheck(cudaDeviceSynchronize());
+
+				CudaCheck(cudaFree(counter));
+				CudaCheck(cudaFree(hitAtomic));
+
+				CudaCheck(cudaEventRecord(stop, 0));
+				CudaCheck(cudaEventSynchronize(stop));
+				CudaCheck(cudaEventElapsedTime(&time, start, stop));
+				CudaCheck(cudaEventDestroy(start));
+				CudaCheck(cudaEventDestroy(stop));
+
+				S_LOG_TRACE( "RayEngine Execution: " , time , "ms" );
+				S_LOG_TRACE("     EngineExecute Execution: " , EngineExecuteTime , "ms");
+				S_LOG_TRACE("     CollectHits Execution: " , CollectHitsTime , "ms" );
 
 				CudaCheck(cudaDeviceSynchronize());
 			}

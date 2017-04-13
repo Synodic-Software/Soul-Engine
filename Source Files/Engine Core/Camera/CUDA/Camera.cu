@@ -61,7 +61,7 @@ __host__ __device__ void Camera::SetRight(glm::vec3& rightn) {
 }
 
 
-__device__ void Camera::SetupRay(uint& index, Ray& ray, curandState& rng){
+__device__ void Camera::SetupRay(const uint& index, Ray& ray, thrust::default_random_engine& randState, thrust::uniform_real_distribution<float>& distribution){
 
 	//OPTIMIZED! int x = index - (y*resolution.y);
 
@@ -108,15 +108,15 @@ __device__ void Camera::SetupRay(uint& index, Ray& ray, curandState& rng){
 
 	uint y = index / resolution.x;
 
-	float sx = ((curand_uniform(&rng) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
-	float sy = ((curand_uniform(&rng) - 0.5f) + y) / (resolution.y - 1);
+	float sx = ((distribution(randState) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
+	float sy = ((distribution(randState) - 0.5f) + y) / (resolution.y - 1);
 
-	float angle = TWO_PI * curand_uniform(&rng);
-	float distance = aperture * sqrt(curand_uniform(&rng));
+	float angle = TWO_PI * distribution(randState);
+	float distance = aperture * sqrt(distribution(randState));
 
 
-	//ALTERNATE aperaturPoint
-	//+ ((cos(angle) * distance) * right) + ((sin(angle) * distance) * verticalAxis)
+	/*ALTERNATE aperaturPoint
+	+ ((cos(angle) * distance) * right) + ((sin(angle) * distance) * verticalAxis)*/
 
 	glm::vec3 aperturePoint = position ;
 	

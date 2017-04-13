@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Ray Engine\CUDA\Ray.cuh"
-#include <curand_kernel.h>
+//#include <curand_kernel.h>
+#include <thrust/random.h>
+
 #include "Metrics.h"
 
 class Ray;
@@ -31,8 +33,8 @@ class Ray;
 
 
 		//Given a positive integer, this function fills in the given ray's values based on the camera's position orientation and lens.
-	//	__host__ __device__ void SetupRay(uint&, Ray&, thrust::default_random_engine&, thrust::uniform_real_distribution<float>&);
-		__device__ void SetupRay(uint&, Ray&, curandState&);
+		__device__ void SetupRay(const uint&, Ray&, thrust::default_random_engine&, thrust::uniform_real_distribution<float>&);
+		//__device__ void SetupRay(const uint&, Ray&, curandState&);
 
 		__host__ __device__ bool IsViewable() const;
 
