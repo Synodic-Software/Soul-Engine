@@ -54,7 +54,7 @@
       <GenerateLineInfo>true</GenerateLineInfo>
       <CudaRuntime>Static</CudaRuntime>
       <CodeGeneration>compute_50,sm_50;compute_52,sm_52;compute_61,sm_61</CodeGeneration>
-      <FastMath>true</FastMath>
+      <FastMath>false</FastMath>
       <UseHostInclude>true</UseHostInclude>
       <Optimization>O2</Optimization>
       <TypeInfo>true</TypeInfo>

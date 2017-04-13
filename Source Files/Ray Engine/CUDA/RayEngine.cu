@@ -632,61 +632,61 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 				CudaCheck(cudaDeviceSynchronize());
 
 
-				////start the engine loop
-				//uint numActive = numberRays;
+				//start the engine loop
+				uint numActive = numberRays;
 
-				//int GridSize;
-				//int BlockSize;
+				int GridSize;
+				int BlockSize;
 
-				//cudaOccupancyMaxPotentialBlockSize(&GridSize, &BlockSize, EngineExecute, 0, 0);
-				//dim3 blockSizeDim(BlockSize / CUDABackend::GetBlockHeight(), CUDABackend::GetBlockHeight(), 1);
-				//CudaCheck(cudaDeviceSynchronize());
+				cudaOccupancyMaxPotentialBlockSize(&GridSize, &BlockSize, EngineExecute, 0, 0);
+				dim3 blockSizeDim(BlockSize / CUDABackend::GetBlockHeight(), CUDABackend::GetBlockHeight(), 1);
+				CudaCheck(cudaDeviceSynchronize());
 
-				//dim3 blockSizeE(CUDABackend::GetWarpSize(), CUDABackend::GetBlockHeight(), 1);
-				//int blockWarps = (blockSizeE.x * blockSizeE.y + (CUDABackend::GetWarpSize() - 1)) / CUDABackend::GetWarpSize();
-				////int numBlocks = (GetCoreCount() + blockWarps - 1) / blockWarps;
-				//int numBlocks = CUDABackend::GetSMCount();
-				//// Launch.
-
-
-
-				////return kernel.launchTimed(numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE);
-
-				////setup the counters
-				//int zeroHost = 0;
-
-				//int* counter;
-				//int* hitAtomic;
-
-				//CudaCheck(cudaMalloc((void**)&counter, sizeof(int)));
-				//CudaCheck(cudaMalloc((void**)&hitAtomic, sizeof(int)));
-
-				//for (uint i = 0; i < rayDepth && numActive>0; ++i) {
-
-				//	//reset counters
-				//	CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
-				//	CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
-
-				//	blockSize = 64;
-				//	gridSize = (numActive + blockSize - 1) / blockSize;
+				dim3 blockSizeE(CUDABackend::GetWarpSize(), CUDABackend::GetBlockHeight(), 1);
+				int blockWarps = (blockSizeE.x * blockSizeE.y + (CUDABackend::GetWarpSize() - 1)) / CUDABackend::GetWarpSize();
+				//int numBlocks = (GetCoreCount() + blockWarps - 1) / blockWarps;
+				int numBlocks = CUDABackend::GetSMCount();
+				// Launch.
 
 
-				//	EngineExecute << <GridSize, blockSizeDim >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
-				//	CudaCheck(cudaPeekAtLastError());
-				//	CudaCheck(cudaDeviceSynchronize());
 
-				//	CollectHits << <gridSize, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
-				//	CudaCheck(cudaPeekAtLastError());
-				//	CudaCheck(cudaDeviceSynchronize());
+				//return kernel.launchTimed(numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE);
 
-				//	swap(deviceRays, deviceRaysB);
+				//setup the counters
+				int zeroHost = 0;
 
-				//	CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
+				int* counter;
+				int* hitAtomic;
 
-				//}
+				CudaCheck(cudaMalloc((void**)&counter, sizeof(int)));
+				CudaCheck(cudaMalloc((void**)&hitAtomic, sizeof(int)));
 
-				//CudaCheck(cudaFree(counter));
-				//CudaCheck(cudaFree(hitAtomic));
+				for (uint i = 0; i < rayDepth && numActive>0; ++i) {
+
+					//reset counters
+					CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+					CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+
+					blockSize = 64;
+					gridSize = (numActive + blockSize - 1) / blockSize;
+
+
+					EngineExecute << <GridSize, blockSizeDim >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
+					CudaCheck(cudaPeekAtLastError());
+					CudaCheck(cudaDeviceSynchronize());
+
+					CollectHits << <gridSize, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
+					CudaCheck(cudaPeekAtLastError());
+					CudaCheck(cudaDeviceSynchronize());
+
+					swap(deviceRays, deviceRaysB);
+
+					CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
+
+				}
+
+				CudaCheck(cudaFree(counter));
+				CudaCheck(cudaFree(hitAtomic));
 
 			}
 
