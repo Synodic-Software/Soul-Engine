@@ -36,6 +36,7 @@ public:
 
 private:
 	BVH* bvhHost;
+	Sky* skyHost;
 
 	//updates the scene representation based on what is in addList or removeList
 	void Compile();

@@ -9,6 +9,7 @@ class BVH{
 public:
 
 	BVH();
+	~BVH();
 
 	__device__ Node* GetRoot(){
 		return root;
