@@ -20,9 +20,3 @@ void MouseEvent(std::function<void(double, double)>);
 
 void SubmitScene(Scene*);
 void RemoveScene(Scene*);
-
-void AddRenderer(Scene*);
-void RemoveRenderer(Scene*);
-
-void AddObject(Scene* scene,glm::vec3& globalPos, const char* file, Material* mat);
-void RemoveObject(void*);

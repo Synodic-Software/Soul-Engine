@@ -56,7 +56,6 @@ void Object::ExtractFromFile(const char* name) {
 
 	assert(shapes.size() == 1);
 
-	verticeAmount = attrib.vertices.size() / 3;
 	faceAmount = shapes[0].mesh.indices.size() / 3;
 
 	glm::vec3 max = glm::vec3(attrib.vertices[0], attrib.vertices[1], attrib.vertices[2]);
@@ -100,6 +99,7 @@ void Object::ExtractFromFile(const char* name) {
 		}
 	}
 
+	verticeAmount = vertices.size();
 	faces.resize(faceAmount);
 	for (uint i = 0; i < facesUngrouped.size() / 3; i++) {
 		faces[i].indices.x = facesUngrouped[i * 3 + 0];

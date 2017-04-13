@@ -218,7 +218,7 @@ namespace Soul {
 				EarlyUpdate();
 
 				for (auto const& scene : scenes) {
-					scene->Build(deltaTime);
+				//	scene->Build(deltaTime);
 				}
 				/*
 				for (auto const& scene : scenes){
@@ -268,14 +268,6 @@ void SetKey(int key, std::function<void(int)> func) {
 }
 void MouseEvent(std::function<void(double,double)> func) {
 	InputState::GetInstance().AddMouseCallback(func);
-}
-
-void AddObject(Scene* scene, glm::vec3& globalPos, const char* file, Material* mat) {
-	Object* obj = new Object(file, mat);
-	scene->AddObject(obj);
-}
-void RemoveObject(void* object) {
-
 }
 
 //Initializes Soul. This should be the first command in a program.
@@ -409,11 +401,18 @@ int main()
 		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 		Scene* scene = new Scene();
-		AddObject(scene, glm::vec3(0, 0, 0), "Resources\\Objects\\Rebellion.obj", whiteGray);
+
+		Object* obj = new Object("Resources\\Objects\\Rebellion.obj", whiteGray);
+		scene->AddObject(obj);
 
 		SubmitScene(scene);
 
 		SoulRun();
+
+		delete whiteGray;
+		delete obj;
+		delete scene;
+
 		SoulTerminate();
 		return EXIT_SUCCESS;
 	}
