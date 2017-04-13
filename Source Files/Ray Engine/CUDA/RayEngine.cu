@@ -12,28 +12,16 @@
 #include "GPGPU\CUDA\CUDABackend.h"
 #include "Utility\Logger.h"
 
-#include <thrust/random.h>
-//#include <curand.h>
-//#include <curand_kernel.h>
-
-struct is_marked
-{
-	__host__ __device__
-		bool operator()(const Ray& x)
-	{
-		return (x.currentHit == -1);
-	}
-};
+#include <curand_kernel.h>
 
 Ray* deviceRays = nullptr;
 Ray* deviceRaysB = nullptr;
 
-thrust::default_random_engine* randomState = nullptr;
+curandState* randomState = nullptr;
 
 Scene* scene = nullptr;
 uint raySeedGl = 0;
 uint numRaysAllocated = 0;
-uint resultsAllocated = 0;
 const uint rayDepth = 4;
 
 
@@ -142,7 +130,7 @@ __host__ __device__ __inline__ uint WangHash(uint a) {
 	return a;
 }
 
-__global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize, thrust::default_random_engine* randomState, const uint raySeed) {
+__global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -155,14 +143,11 @@ __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize, thrust::def
 
 	int cur = 0;
 
-	thrust::default_random_engine rng(randHash(raySeed) * randHash(index));
-	randomState[index] = rng;
-
 	((glm::vec4*)jobs[cur].results)[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 }
 
-__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, thrust::default_random_engine* randomState) {
+__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, curandState* randomState, const uint raySeed) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -175,15 +160,16 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 
 	uint localIndex = (index - startIndex) / job[cur].samples;
 
-	thrust::default_random_engine randState = randomState[localIndex];
-	thrust::uniform_real_distribution<float> uniformDistribution(0, 1);
 
+	curandState randState; 
+	curand_init(raySeed + index, 0, 0, &randState);
 
 	Ray ray;
 	ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ray.resultOffset = localIndex;
-	job[cur].camera.SetupRay(localIndex, ray, randState, uniformDistribution);
+	job[cur].camera.SetupRay(localIndex, ray, randState);
 
+	randomState[index] = randState;
 	rays[index] = ray;
 }
 
@@ -249,7 +235,7 @@ __host__ __device__ bool AABBIntersect(const BoundingBox& box, const glm::vec3& 
 }
 
 
-__global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const Scene* scene, int * nAtomic, thrust::default_random_engine* randomState) {
+__global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const Scene* scene, int * nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -268,8 +254,7 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 	uint localIndex = ray.resultOffset;
 
-	thrust::default_random_engine randState = randomState[localIndex];
-	thrust::uniform_real_distribution<float> uniformDistribution(0, 1);
+	curandState randState = randomState[localIndex];
 
 	glm::vec3 col;
 
@@ -331,8 +316,8 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		glm::vec3 orientedNormal = glm::dot(bestNormal, glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z)) < 0 ? bestNormal : bestNormal * -1.0f;
 
-		float r1 = 2 * PI * uniformDistribution(randState);
-		float r2 = uniformDistribution(randState);
+		float r1 = 2 * PI * curand_uniform(&randState);
+		float r2 = curand_uniform(&randState);
 		float r2s = sqrtf(r2);
 
 		glm::vec3 u = glm::normalize(glm::cross((glm::abs(orientedNormal.x) > .1 ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0)), orientedNormal));
@@ -595,17 +580,6 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 		}
 
-		if (numberResults > resultsAllocated) {
-
-			if (randomState) {
-				CudaCheck(cudaFree(randomState));
-			}
-
-			CudaCheck(cudaMalloc((void**)&randomState, numberResults * sizeof(thrust::default_random_engine)));
-
-			resultsAllocated = numberResults;
-		}
-
 		if (numberResults != 0) {
 
 			//create device jobs
@@ -621,7 +595,7 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 
 			//clear the jobs result memory, required for accumulation of multiple samples
-			EngineSetup << <gridSize, blockSize >> > (numberResults, jobs, jobsSize, randomState, ++raySeedGl);
+			EngineSetup << <gridSize, blockSize >> > (numberResults, jobs, jobsSize);
 			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -635,8 +609,11 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					if (deviceRaysB) {
 						CudaCheck(cudaFree(deviceRaysB));
 					}
+					if (randomState) {
+						CudaCheck(cudaFree(randomState));
+					}
 
-
+					CudaCheck(cudaMalloc((void**)&randomState, numberRays * sizeof(curandState)));
 					CudaCheck(cudaMalloc((void**)&deviceRays, numberRays * sizeof(Ray)));
 					CudaCheck(cudaMalloc((void**)&deviceRaysB, numberRays * sizeof(Ray)));
 					numRaysAllocated = numberRays;
@@ -650,7 +627,7 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 				blockSize = 64;
 				gridSize = (numberRays + blockSize - 1) / blockSize;
 
-				RaySetup << <gridSize, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, scene, randomState);
+				RaySetup << <gridSize, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, scene, randomState, WangHash(++raySeedGl));
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 

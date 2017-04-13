@@ -61,58 +61,15 @@ __host__ __device__ void Camera::SetRight(glm::vec3& rightn) {
 }
 
 
-__device__ void Camera::SetupRay(const uint& index, Ray& ray, thrust::default_random_engine& randState, thrust::uniform_real_distribution<float>& distribution){
-
-	//OPTIMIZED! int x = index - (y*resolution.y);
-
-	// generate random jitter offsets for supersampled antialiasing
-
-	//OPTIMIZED! float jitterValueX = uniformDistribution(rng) - 0.5f;
-	//OPTIMIZED! float jitterValueY = uniformDistribution(rng) - 0.5f;
-
-	// compute important values
-
-	// compute point on image plane
-
-	//OPTIMIZED! glm::vec3 middle = position + forward;
-	//OPTIMIZED! glm::vec3 horizontal = right * tan(glm::radians(fieldOfView.x * 0.5f));
-	//OPTIMIZED! glm::vec3 vertical = verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f))); 
-
-	// move and resize image plane based on focalDistance
-	// could also incorporate this into the original computations of the point
-
-	//OPTIMIZED! glm::vec3 pointOnImagePlane = position + ((((position + forward) + (((2 * sx) - 1) *
-	//	(right * tan(glm::radians(fieldOfView.x * 0.5f)))) + (((2 * sy) - 1) *
-	//	(verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f)))))) - position) * focalDistance); // Important for depth of field!
-
-	// now compute the point on the aperture (or lens)
-
-	// generate random numbers for sampling a point on the aperture
-
-	//OPTIMIZED! float random1 = uniformDistribution(rng);
-	//OPTIMIZED! float random2 = uniformDistribution(rng);
-
-	// sample a point on the circular aperture
-
-	//OPTIMIZED! float apertureX = cos(angle) * distance;
-	//OPTIMIZED! float apertureY = sin(angle) * distance;
-
-	
-
-	//OPTIMIZED!glm::vec3 apertureToImagePlane = (position + ((((position + forward) + (((2 * sx) - 1) *
-	//	(right * tan(glm::radians(fieldOfView.x * 0.5f)))) + (((2 * sy) - 1) *
-	//	(verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f)))))) - position) * focalDistance)) - aperturePoint;
-
-
-
+__device__ void Camera::SetupRay(const uint& index, Ray& ray, curandState& randState){
 
 	uint y = index / resolution.x;
 
-	float sx = ((distribution(randState) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
-	float sy = ((distribution(randState) - 0.5f) + y) / (resolution.y - 1);
+	float sx = ((curand_uniform(&randState) - 0.5f) + (index %resolution.x)) / (resolution.x - 1);
+	float sy = ((curand_uniform(&randState) - 0.5f) + y) / (resolution.y - 1);
 
-	float angle = TWO_PI * distribution(randState);
-	float distance = aperture * sqrt(distribution(randState));
+	float angle = TWO_PI * curand_uniform(&randState);
+	float distance = aperture * sqrt(curand_uniform(&randState));
 
 
 	/*ALTERNATE aperaturPoint
