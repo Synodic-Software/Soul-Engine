@@ -10,6 +10,12 @@ BVH::BVH() {
 	bvh = nullptr;
 }
 
+BVH::~BVH() {
+	if (bvh) {
+		CudaCheck(cudaFree(bvh));
+	}
+}
+
 // Returns the highest differing bit of i and i+1
 __device__ uint HighestBit(uint i, uint64* morton)
 {

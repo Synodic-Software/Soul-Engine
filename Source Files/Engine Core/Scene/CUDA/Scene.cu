@@ -42,7 +42,7 @@ Scene::Scene()
 	bvhHost = new BVH();
 	CudaCheck(cudaMalloc((void **)&bvh, sizeof(BVH)));
 
-	Sky* skyHost = new Sky("Starmap.png");
+	skyHost = new Sky("Starmap.png");
 	CudaCheck(cudaMalloc((void **)&sky, sizeof(Sky)));
 	CudaCheck(cudaMemcpy(sky, skyHost, sizeof(Sky), cudaMemcpyHostToDevice));
 }
@@ -59,6 +59,7 @@ Scene::~Scene()
 	CudaCheck(cudaFree(objects));
 
 	delete bvhHost;
+	delete skyHost;
 
 	CudaCheck(cudaFree(bvh));
 	CudaCheck(cudaFree(sky));
