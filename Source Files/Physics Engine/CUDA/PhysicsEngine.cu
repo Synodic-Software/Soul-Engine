@@ -9,7 +9,7 @@ typedef struct {
 }Collision;
 
 uint sizeAllocated = 0;
-Collision* collisions = NULL;
+Collision* collisions = nullptr;
 
 
 __device__ bool testAABBAABB(const BoundingBox& a, const BoundingBox& b)
@@ -54,7 +54,7 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 	Node* stack[64];
 	short stackPtr = 0;
 
-	stack[stackPtr++] = NULL; // push
+	stack[stackPtr++] = nullptr; // push
 
 	// Traverse nodes starting from the root.
 	Node* node = bvh->GetRoot();
@@ -95,7 +95,7 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 				stack[stackPtr++] = childR; // push
 		}
 
-	} while (node != NULL);
+	} while (node != nullptr);
 
 }
 

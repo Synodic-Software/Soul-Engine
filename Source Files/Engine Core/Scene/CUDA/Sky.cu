@@ -16,5 +16,5 @@ __device__ glm::vec3 Sky::ExtractColour(const glm::vec3& direction){
 	float4 col = tex2D<float4>(image->texObj, theta, gamma );*/
 
 
-	return glm::vec3(135 / 255.0f, 135 / 255.0f, 230 / 255.0f);
+	return glm::mix(glm::vec3(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f),glm::vec3(135 / 255.0f, 206 / 255.0f, 235 / 255.0f), direction.y/2.0f+0.5f);
 }

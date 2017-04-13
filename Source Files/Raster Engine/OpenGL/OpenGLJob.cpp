@@ -78,7 +78,7 @@ void OpenGLJob::AttachShaders(const std::vector<Shader*>& shadersIn) {
 			GLint infoLogLength;
 			glGetProgramiv(job->object, GL_INFO_LOG_LENGTH, &infoLogLength);
 			char* strInfoLog = new char[infoLogLength + 1];
-			glGetProgramInfoLog(job->object, infoLogLength, NULL, strInfoLog);
+			glGetProgramInfoLog(job->object, infoLogLength, nullptr, strInfoLog);
 			msg += strInfoLog;
 			delete[] strInfoLog;
 
@@ -126,7 +126,7 @@ void OpenGLJob::UploadGeometry(float* vertices, uint verticeSize, uint* indices,
 		GLint attrib = GetAttribute("vert_VS_in");
 
 		glEnableVertexAttribArray(attrib);
-		glVertexAttribPointer(attrib, 4, GL_FLOAT, GL_FALSE, VertexSize, NULL);
+		glVertexAttribPointer(attrib, 4, GL_FLOAT, GL_FALSE, VertexSize, nullptr);
 
 		glGenBuffers(1, &ibo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);

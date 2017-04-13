@@ -148,7 +148,7 @@ void generateMipMaps(cudaMipmappedArray_t mipmapArray, cudaExtent size)
 		CudaCheck(cudaGetMipmappedArrayLevel(&levelTo, mipmapArray, level + 1));
 
 		cudaExtent  levelToSize;
-		CudaCheck(cudaArrayGetInfo(NULL, &levelToSize, NULL, levelTo));
+		CudaCheck(cudaArrayGetInfo(nullptr, &levelToSize, nullptr, levelTo));
 		checkHost(levelToSize.width == width);
 		checkHost(levelToSize.height == height);
 		checkHost(levelToSize.depth == 0);
@@ -173,7 +173,7 @@ void generateMipMaps(cudaMipmappedArray_t mipmapArray, cudaExtent size)
 
 		texDescr.readMode = cudaReadModeNormalizedFloat;
 
-		CudaCheck(cudaCreateTextureObject(&texInput, &texRes, &texDescr, NULL));
+		CudaCheck(cudaCreateTextureObject(&texInput, &texRes, &texDescr, nullptr));
 
 		// generate surface object for writing
 
@@ -274,7 +274,7 @@ void Image::LoadFromFile(const char* filepath, bool clamp, bool mipmap) {
 
 	texDescr.readMode = cudaReadModeNormalizedFloat;
 
-	CudaCheck(cudaCreateTextureObject(&texObj, &resDescr, &texDescr, NULL));
+	CudaCheck(cudaCreateTextureObject(&texObj, &resDescr, &texDescr, nullptr));
 
 	if (pixels) {
 		delete[](char*)pixels;

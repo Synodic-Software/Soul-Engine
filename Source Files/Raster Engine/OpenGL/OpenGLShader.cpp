@@ -55,7 +55,7 @@ OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
 			GLint infoLogLength;
 			glGetShaderiv(object, GL_INFO_LOG_LENGTH, &infoLogLength);
 			char* strInfoLog = new char[infoLogLength + 1];
-			glGetShaderInfoLog(object, infoLogLength, NULL, strInfoLog);
+			glGetShaderInfoLog(object, infoLogLength, nullptr, strInfoLog);
 			msg += strInfoLog;
 			delete[] strInfoLog;
 

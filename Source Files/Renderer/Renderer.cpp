@@ -29,7 +29,7 @@
 //	glBindBuffer(GL_SHADER_STORAGE_BUFFER, renderBufferA);
 //	glBufferData(GL_SHADER_STORAGE_BUFFER,
 //		originalScreen.x*originalScreen.y*sizeof(glm::vec4),
-//		NULL, GL_STATIC_DRAW);*/
+//		nullptr, GL_STATIC_DRAW);*/
 //
 //	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 //
@@ -91,7 +91,7 @@
 //	glBufferData(GL_ARRAY_BUFFER, BufferSize, Vertices, GL_STATIC_DRAW);
 //
 //	glEnableVertexAttribArray(CUDAtoScreen->attrib("vert_VS_in"));
-//	glVertexAttribPointer(CUDAtoScreen->attrib("vert_VS_in"), 4, GL_FLOAT, GL_FALSE, VertexSize, NULL);
+//	glVertexAttribPointer(CUDAtoScreen->attrib("vert_VS_in"), 4, GL_FLOAT, GL_FALSE, VertexSize, nullptr);
 //
 //	glGenBuffers(1, &ibo);
 //	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
