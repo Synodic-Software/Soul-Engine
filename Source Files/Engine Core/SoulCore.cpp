@@ -409,7 +409,7 @@ int main()
 		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 		Scene* scene = new Scene();
-		AddObject(scene, glm::vec3(0, 0, 0), "Resources\\Objects\\Box.obj", whiteGray);
+		AddObject(scene, glm::vec3(0, 0, 0), "Resources\\Objects\\Rebellion.obj", whiteGray);
 
 		SubmitScene(scene);
 
