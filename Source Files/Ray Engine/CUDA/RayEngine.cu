@@ -389,7 +389,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 		if (terminated)
 		{
 			if (idxTerminated == 0) {
-				rayBase = atomicAdd(&(*counter), numTerminated);
+				rayBase = atomicAdd(counter, numTerminated);
 			}
 
 			rayidx = rayBase + idxTerminated;
