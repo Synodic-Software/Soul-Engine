@@ -43,9 +43,6 @@
     <Filter Include="Engine Backend\Utility\CUDA">
       <UniqueIdentifier>{b6828cc2-5889-494f-823c-846694d63b55}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Renderer">
-      <UniqueIdentifier>{1ce2842a-1809-4937-b9bc-08963762038d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Engine Core\Frame">
       <UniqueIdentifier>{30e8428f-8300-43b7-b577-1a2ea8ac3315}</UniqueIdentifier>
     </Filter>
@@ -96,9 +93,6 @@
     </Filter>
     <Filter Include="Engine Backend\Ray Engine\OpenCL">
       <UniqueIdentifier>{33124da9-5927-48f7-b83d-b4dfc8d964c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Renderer\CUDA">
-      <UniqueIdentifier>{1cf7e706-0806-40d7-b00b-0224ac3054c7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum">
       <UniqueIdentifier>{9cddc399-5cd1-4f10-b2f0-4bf8331b6488}</UniqueIdentifier>
@@ -387,12 +381,6 @@
     <ClInclude Include="..\Source Files\Ray Engine\RayEngine.h">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Renderer\CUDA\Renderer.cuh">
-      <Filter>Engine Backend\Renderer\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Renderer\Renderer.h">
-      <Filter>Engine Backend\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Utility\CUDA\CUDAMath.h">
       <Filter>Engine Backend\Utility\CUDA</Filter>
     </ClInclude>
@@ -566,9 +554,6 @@
     <ClCompile Include="..\Source Files\Ray Engine\RayEngine.cpp">
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Renderer\Renderer.cpp">
-      <Filter>Engine Backend\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Utility\Logger.cpp">
       <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
@@ -702,9 +687,6 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Ray Engine\CUDA\RayJob.cu">
       <Filter>Engine Backend\Ray Engine\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Renderer\CUDA\Renderer.cu">
-      <Filter>Engine Backend\Renderer\CUDA</Filter>
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Utility\CUDA\CudaHelper.cu">
       <Filter>Engine Backend\Utility\CUDA</Filter>

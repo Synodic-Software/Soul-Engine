@@ -330,6 +330,8 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		raysNew[FastAtomicAdd(nAtomic)] = ray;
 
+		//update the state
+		randomState[index] = randState;
 	}
 	col /= job[cur].samples;
 

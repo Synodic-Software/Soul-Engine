@@ -173,8 +173,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Ray Engine\Ray.h" />
     <ClInclude Include="..\Source Files\Ray Engine\RayEngine.h" />
     <ClInclude Include="..\Source Files\Ray Engine\RayJob.h" />
-    <ClInclude Include="..\Source Files\Renderer\CUDA\Renderer.cuh" />
-    <ClInclude Include="..\Source Files\Renderer\Renderer.h" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CudaHelper.cuh" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CUDAMath.h" />
     <ClInclude Include="..\Source Files\Utility\Includes\GLFWIncludes.h" />
@@ -228,7 +226,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanJob.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="..\Source Files\Ray Engine\RayEngine.cpp" />
-    <ClCompile Include="..\Source Files\Renderer\Renderer.cpp" />
     <ClCompile Include="..\Source Files\Utility\Logger.cpp" />
     <ClCompile Include="..\Source Files\Utility\Settings.cpp" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />
@@ -256,7 +253,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <CudaCompile Include="..\Source Files\Ray Engine\CUDA\Ray.cu" />
     <CudaCompile Include="..\Source Files\Ray Engine\CUDA\RayEngine.cu" />
     <CudaCompile Include="..\Source Files\Ray Engine\CUDA\RayJob.cu" />
-    <CudaCompile Include="..\Source Files\Renderer\CUDA\Renderer.cu" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shaders\fragment-shader[Renderer].glsl">
