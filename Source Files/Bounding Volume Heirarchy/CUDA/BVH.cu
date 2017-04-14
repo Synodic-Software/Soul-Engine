@@ -85,44 +85,53 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 		return;
 	}
 
+	Node temp;
+
 	// Set ranges
-	nodes[leafOffset + index].rangeLeft = index;
-	nodes[leafOffset + index].rangeRight = index;
-	nodes[leafOffset + index].atomic = 1; // To allow the next thread to process
-	nodes[leafOffset + index].childLeft = nullptr; // Second thread to process
-	nodes[leafOffset + index].childRight = nullptr; // Second thread to process
+	temp.rangeLeft = index;
+	temp.rangeRight = index;
+	temp.atomic = 1; // To allow the next thread to process
+	temp.childLeft = nullptr;
+	temp.childRight = nullptr; 
+
 	if (index < leafOffset) {
-		/*nodes[index].rangeLeft = index;   //unneeded as all nodes are touched and updated
-		nodes[index].rangeRight = index + 1;*/
-		nodes[index].atomic = 0; // Second thread to process
-		nodes[index].childLeft = &nodes[leafOffset + index]; // Second thread to process
-		nodes[index].childRight = &nodes[leafOffset + index + 1]; // Second thread to process
+		Node tempF;
+
+		tempF.atomic = 0; 
+		tempF.childLeft = nodes+leafOffset + index; 
+		tempF.childRight = nodes+leafOffset + index + 1; 
+
+		nodes[index] = tempF;
 	}
 
-
 	// Set triangles in leaf
-	Face face = faces[index];
-	nodes[leafOffset + index].faceID = index;
+	temp.faceID = index;
+
+	glm::uvec3 ind = faces[index].indices;
 
 	// Expand bounds using min/max functions
+	glm::vec3 pos0= vertices[ind.x].position;
+	glm::vec3 max = pos0;
+	glm::vec3 min = pos0;
 
-	glm::vec3 max = vertices[face.indices.x].position;
-	glm::vec3 min = vertices[face.indices.x].position;
+	glm::vec3 pos1 = vertices[ind.y].position;
+	max = glm::max(pos1, max);
+	min = glm::min(pos1, min);
 
-	max = glm::max(vertices[face.indices.y].position, max);
-	min = glm::min(vertices[face.indices.y].position, min);
+	glm::vec3 pos2 = vertices[ind.z].position;
+	max = glm::max(pos2, max);
+	min = glm::min(pos2, min);
 
-	max = glm::max(vertices[face.indices.z].position, max);
-	min = glm::min(vertices[face.indices.z].position, min);
+	temp.box.max = max;
+	temp.box.min = min;
 
-	nodes[leafOffset + index].box.max = max;
-	nodes[leafOffset + index].box.min = min;
+	nodes[leafOffset + index] = temp;
 
 	// Special case
 	if (n == 1)
 	{
 		nodes[0].box = nodes[leafOffset + 0].box;
-		nodes[0].childLeft = &nodes[leafOffset + 0];
+		nodes[0].childLeft = nodes+leafOffset + 0;
 	}
 }
 
