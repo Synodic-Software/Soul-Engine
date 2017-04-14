@@ -161,7 +161,7 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 	uint localIndex = (index - startIndex) / job[cur].samples;
 
 
-	curandState randState; 
+	curandState randState;
 	curand_init(raySeed + index, 0, 0, &randState);
 
 	Ray ray;
@@ -258,7 +258,7 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 	glm::vec3 col;
 
-	if (faceHit == -1) {
+	if (faceHit == uint(-1)) {
 
 		col = glm::vec3(ray.storage.x, ray.storage.y, ray.storage.z)*scene->sky->ExtractColour({ ray.direction.x, ray.direction.y, ray.direction.z });
 
@@ -328,15 +328,10 @@ __global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		col = accumulation;
 
-		//newListwithatomics
-
-
 		raysNew[FastAtomicAdd(nAtomic)] = ray;
 
 	}
 	col /= job[cur].samples;
-
-	//rays[index] = ray;
 
 	glm::vec4* pt = &((glm::vec4*)job[cur].results)[localIndex];
 
@@ -375,6 +370,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	float   idirz;
 
 	Ray ray;
+	BVH* bvh = scene->bvh;
 
 	__shared__ volatile int nextRayArray[4]; // Current ray index in global buffer needs the (max) block height.            BlockHeight(make dynamic latter)
 
@@ -420,7 +416,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			stackPtr = 0;
 			currentLeaf = nullptr;   // No postponed leaf.
-			currentNode = scene->bvh->GetRoot();   // Start from the root.
+			currentNode = bvh->GetRoot();   // Start from the root.
 			ray.currentHit = -1;  // No triangle intersected so far.
 		}
 
@@ -430,7 +426,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 		{
 			// Until all threads find a leaf, traverse
 
-			while (!scene->bvh->IsLeaf(currentNode) && currentNode != nullptr)
+			while (!bvh->IsLeaf(currentNode) && currentNode != nullptr)
 			{
 				// Fetch AABBs of the two child nodes.
 
@@ -493,15 +489,14 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				// First leaf => postpone and continue traversal.
 
-				if (scene->bvh->IsLeaf(currentNode) && !scene->bvh->IsLeaf(currentLeaf))     // Postpone leaf
+				if (bvh->IsLeaf(currentNode) && !bvh->IsLeaf(currentLeaf))     // Postpone leaf
 				{
 					currentLeaf = currentNode;
 					currentNode = traversalStack[stackPtr--];
 				}
 
-				// Once all found, break to the processing
 
-				if (!__any(!scene->bvh->IsLeaf(currentLeaf))) {
+				if (!__any(!bvh->IsLeaf(currentLeaf))) {
 					break;
 				}
 			}
@@ -509,7 +504,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			// Process postponed leaf nodes.
 
-			while (scene->bvh->IsLeaf(currentLeaf))
+			while (bvh->IsLeaf(currentLeaf))
 			{
 
 				glm::uvec3 face = scene->faces[currentLeaf->faceID].indices;
@@ -531,7 +526,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				//go through the second postponed leaf
 				currentLeaf = currentNode;
-				if (scene->bvh->IsLeaf(currentNode))
+				if (bvh->IsLeaf(currentNode))
 				{
 					currentNode = traversalStack[stackPtr--];
 				}
@@ -539,8 +534,9 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			//cut the losses
 
-			if (__popc(__ballot(true)) < DYNAMIC_FETCH_THRESHOLD)
+			if (__popc(__ballot(true)) < DYNAMIC_FETCH_THRESHOLD) {
 				break;
+			}
 
 		} // traversal
 
