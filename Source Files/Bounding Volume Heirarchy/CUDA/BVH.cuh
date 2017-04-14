@@ -31,8 +31,7 @@ public:
 	Node* root;
 
 private:
-
-	
+	Node** rootDevice;
 	Node* bvh;
 	uint currentSize;
 	uint allocatedSize;

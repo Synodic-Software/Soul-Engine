@@ -218,7 +218,7 @@ namespace Soul {
 				EarlyUpdate();
 
 				for (auto const& scene : scenes) {
-				//	scene->Build(deltaTime);
+					scene->Build(deltaTime);
 				}
 				/*
 				for (auto const& scene : scenes){

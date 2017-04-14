@@ -8,12 +8,17 @@ BVH::BVH() {
 	allocatedSize = 0;
 
 	bvh = nullptr;
+
+	CudaCheck(cudaMalloc((void**)&rootDevice, sizeof(Node)));
 }
 
 BVH::~BVH() {
 	if (bvh) {
 		CudaCheck(cudaFree(bvh));
 	}
+
+	CudaCheck(cudaFree(rootDevice));
+
 }
 
 // Returns the highest differing bit of i and i+1
@@ -22,7 +27,7 @@ __device__ uint HighestBit(uint i, uint64* morton)
 	return morton[i] ^ morton[i + 1];
 }
 
-__global__ void BuildTree(const uint n, Node* nodes, uint64* mortonCodes, const uint leafOffset, BVH* bvh)
+__global__ void BuildTree(const uint n, Node* nodes, uint64* mortonCodes, const uint leafOffset, Node** root)
 {
 	uint index = getGlobalIdx_1D_1D();
 	if (index >= n)
@@ -46,7 +51,7 @@ __global__ void BuildTree(const uint n, Node* nodes, uint64* mortonCodes, const 
 		uint right = currentNode->rangeRight;
 
 		if (left == 0 && right == leafOffset) {
-			bvh->root = currentNode;
+			*root = currentNode;
 			return;
 		}
 
@@ -75,10 +80,10 @@ __global__ void BuildTree(const uint n, Node* nodes, uint64* mortonCodes, const 
 __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, const uint leafOffset)
 {
 	uint index = getGlobalIdx_1D_1D();
-	if (index >= n)
-		return;
 
-	// Reset parameters for internal and leaf nodes here
+	if (index >= n) {
+		return;
+	}
 
 	// Set ranges
 	nodes[leafOffset + index].rangeLeft = index;
@@ -125,7 +130,7 @@ void BVH::Build(uint size, uint64* mortonCodes, Face * faces, Vertex * vertices)
 
 	currentSize = size;
 
-	if (currentSize>0) {
+	if (currentSize > 0) {
 		if (currentSize > allocatedSize) {
 
 			Node* nodeTemp;
@@ -153,19 +158,37 @@ void BVH::Build(uint size, uint64* mortonCodes, Face * faces, Vertex * vertices)
 
 
 		//copy 'this' into the kernal
-		BVH* bvhDevice;
-		CudaCheck(cudaMalloc((void**)&bvhDevice, sizeof(BVH)));
-		CudaCheck(cudaMemcpy(bvhDevice, this, sizeof(BVH), cudaMemcpyHostToDevice));
+		CudaCheck(cudaMemcpy(rootDevice, &root, sizeof(Node), cudaMemcpyHostToDevice));
 
-		BuildTree << <gridSize, blockSize >> > (currentSize, bvh, mortonCodes, currentSize - 1, bvhDevice);
+		BuildTree << <gridSize, blockSize >> > (currentSize, bvh, mortonCodes, currentSize - 1, rootDevice);
 
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 
-		CudaCheck(cudaFree(bvhDevice));
+		CudaCheck(cudaMemcpy(&root, rootDevice, sizeof(Node), cudaMemcpyDeviceToHost));
 
+		//Node* nodeHost = new Node[currentSize*2-1];
+		//CudaCheck(cudaMemcpy(nodeHost, bvh, (currentSize * 2 - 1) * sizeof(Node), cudaMemcpyDeviceToHost));
+
+		//Node newRoot;
+		//CudaCheck(cudaMemcpy(newRoot, root, (currentSize * 2 - 1) * sizeof(Node), cudaMemcpyDeviceToHost));
+
+
+		//std::cout << "Nodes" << std::endl;
+		//for (int i = 0; i < currentSize - 1; i++) {
+		//	std::cout << nodeHost[i].childLeft- bvh <<" -L, ";
+		//	std::cout << nodeHost[i].childRight- bvh << " -R, ";
+
+		//}
+		//std::cout << std::endl;
+
+		//std::cout << "Faces" << std::endl;
+		//for (int i = currentSize - 1; i < currentSize * 2 - 1; i++) {
+		//	std::cout << nodeHost[i].faceID << ", ";
+		//}
 	}
 	else {
 		root = nullptr;
 	}
+
 }
