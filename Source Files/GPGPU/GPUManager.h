@@ -6,6 +6,8 @@
 namespace GPUManager {
 
 	void ExtractDevices();
+	void DestroyDevices();
+
 	void InitThread();
 
 	GPURasterBuffer* CreateRasterBuffer(int,uint);

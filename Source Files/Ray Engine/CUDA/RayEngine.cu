@@ -22,7 +22,7 @@ curandState* randomState = nullptr;
 Scene* scene = nullptr;
 uint raySeedGl = 0;
 uint numRaysAllocated = 0;
-const uint rayDepth = 4;
+const uint rayDepth = 6;
 
 
 template <class T> __host__ __device__ __inline__ void swap(T& a, T& b)
@@ -374,7 +374,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	Ray ray;
 	BVH* bvh = scene->bvh;
 
-	__shared__ volatile int nextRayArray[4]; // Current ray index in global buffer needs the (max) block height.            BlockHeight(make dynamic latter)
+	extern __shared__ volatile int nextRayArray[]; // Current ray index in global buffer needs the (max) block height. 
 
 	do {
 		const uint tidx = threadIdx.x;
@@ -589,11 +589,11 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 			hjobs.clear();
 
 			uint blockSize = 64;
-			uint gridSize = (numberResults + blockSize - 1) / blockSize;
+			uint blockCount = (numberResults + blockSize - 1) / blockSize;
 
 
 			//clear the jobs result memory, required for accumulation of multiple samples
-			EngineSetup << <gridSize, blockSize >> > (numberResults, jobs, jobsSize);
+			EngineSetup << <blockCount, blockSize >> > (numberResults, jobs, jobsSize);
 			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -623,9 +623,9 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 				CudaCheck(cudaDeviceSynchronize());
 
 				blockSize = 64;
-				gridSize = (numberRays + blockSize - 1) / blockSize;
+				blockCount = (numberRays + blockSize - 1) / blockSize;
 
-				RaySetup << <gridSize, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, scene, randomState, WangHash(++raySeedGl));
+				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, scene, randomState, WangHash(++raySeedGl));
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
@@ -633,22 +633,13 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 				//start the engine loop
 				uint numActive = numberRays;
 
-				int GridSize;
-				int BlockSize;
 
-				cudaOccupancyMaxPotentialBlockSize(&GridSize, &BlockSize, EngineExecute, 0, 0);
-				dim3 blockSizeDim(BlockSize / CUDABackend::GetBlockHeight(), CUDABackend::GetBlockHeight(), 1);
-				CudaCheck(cudaDeviceSynchronize());
-
+				//get the device stats for persistant threads
 				dim3 blockSizeE(CUDABackend::GetWarpSize(), CUDABackend::GetBlockHeight(), 1);
-				int blockWarps = (blockSizeE.x * blockSizeE.y + (CUDABackend::GetWarpSize() - 1)) / CUDABackend::GetWarpSize();
-				//int numBlocks = (GetCoreCount() + blockWarps - 1) / blockWarps;
-				int numBlocks = CUDABackend::GetSMCount();
-				// Launch.
+				uint smCount = CUDABackend::GetSMCount();
+				uint blockCountE = smCount;
 
 
-
-				//return kernel.launchTimed(numBlocks * blockSizeE.x * blockSizeE.y, blockSizeE);
 
 				//setup the counters
 				int zeroHost = 0;
@@ -665,15 +656,18 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 					CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 
+					//grab the current block sizes for collecting hits based on numActive
 					blockSize = 64;
-					gridSize = (numActive + blockSize - 1) / blockSize;
+					blockCount = (numActive + blockSize - 1) / blockSize;
 
+					//reduce engine blocksize based on numActive
+					blockCountE= glm::min(smCount,(numActive + (blockSizeE.x*blockSizeE.y) - 1) / (blockSizeE.x*blockSizeE.y));
 
-					EngineExecute << <GridSize, blockSizeDim >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
+					EngineExecute << <blockCountE, blockSizeE, CUDABackend::GetBlockHeight() >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
-					CollectHits << <gridSize, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
+					CollectHits << <blockCount, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 

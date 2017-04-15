@@ -75,6 +75,11 @@ namespace Soul {
 			glfwTerminate();
 		});
 
+		//extract all available GPU devices
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			GPUManager::DestroyDevices();
+		});
+
 		Scheduler::Block();
 
 		Scheduler::Terminate();
