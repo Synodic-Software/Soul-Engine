@@ -25,7 +25,7 @@ namespace RasterBackend {
 	extern BackendName backend;
 
 
-	void Init();
+	void Initialize();
 
 	//needs to be called from the main thread
 	void SetWindowHints();
