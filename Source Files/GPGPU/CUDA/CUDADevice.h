@@ -5,7 +5,7 @@ class CUDADevice :public GPUDevice {
 
 public:
 	CUDADevice(uint);
-	~CUDADevice();
+	virtual ~CUDADevice();
 
 protected:
 

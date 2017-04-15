@@ -37,6 +37,11 @@ namespace GPUManager {
 		}
 	}
 
+	void DestroyDevices() {
+		devices.clear();
+	}
+
+
 	void InitThread() {
 		CUDABackend::InitThread();
 		OpenCLBackend::InitThread();

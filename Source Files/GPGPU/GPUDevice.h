@@ -8,7 +8,9 @@ class GPUDevice {
 
 public:
 	GPUDevice(uint);
-	~GPUDevice();
+	virtual ~GPUDevice()=0;
+
+
 
 	GPUBackend api;
 	int order;
