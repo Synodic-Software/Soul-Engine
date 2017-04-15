@@ -39,8 +39,7 @@ Scene::Scene()
 	objectAllocated = 0;
 
 	//
-	bvhHost = new BVH();
-	CudaCheck(cudaMalloc((void **)&bvh, sizeof(BVH)));
+	CudaCheck(cudaMalloc((void **)&bvhData, sizeof(BVHData)));
 
 	skyHost = new Sky("Starmap.png");
 	CudaCheck(cudaMalloc((void **)&sky, sizeof(Sky)));
@@ -58,10 +57,9 @@ Scene::~Scene()
 	CudaCheck(cudaFree(materials));
 	CudaCheck(cudaFree(objects));
 
-	delete bvhHost;
 	delete skyHost;
 
-	CudaCheck(cudaFree(bvh));
+	CudaCheck(cudaFree(bvhData));
 	CudaCheck(cudaFree(sky));
 
 }
@@ -88,9 +86,8 @@ __host__ void Scene::Build(float deltaTime) {
 
 	}
 
-	bvhHost->Build(faceAmount, mortonCodes, faces, vertices);
+	bvhHost.Build(faceAmount, bvhData, mortonCodes, faces, vertices);
 
-	CudaCheck(cudaMemcpy(bvh, bvhHost, sizeof(BVH), cudaMemcpyHostToDevice));
 }
 
 void Scene::Compile() {
