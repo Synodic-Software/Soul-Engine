@@ -38,12 +38,14 @@ namespace CUDABackend {
 	int GetCoreCount() {
 		int device;
 		CudaCheck(cudaGetDevice(&device));
-		return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) * deviceProp[device].multiProcessorCount;
+
+		return _GetCoresPerMP(deviceProp[device].major, deviceProp[device].minor) * deviceProp[device].multiProcessorCount;
 	}
 
 	int GetSMCount() {
 		int device;
 		CudaCheck(cudaGetDevice(&device));
+
 		return deviceProp[device].multiProcessorCount;
 	}
 
@@ -54,11 +56,18 @@ namespace CUDABackend {
 		return deviceProp[device].warpSize;
 	}
 
-	int GetBlockHeight() {
+	int GetWarpsPerMP() {
 		int device;
 		CudaCheck(cudaGetDevice(&device));
 
-		return _ConvertSMVer2Cores(deviceProp[device].major, deviceProp[device].minor) / GetWarpSize();
+		return _GetWarpsPerMP(deviceProp[device].major, deviceProp[device].minor);
+	}
+
+	int GetBlocksPerMP() {
+		int device;
+		CudaCheck(cudaGetDevice(&device));
+
+		return _GetBlocksPerMP(deviceProp[device].major, deviceProp[device].minor);
 	}
 
 	void Terminate() {

@@ -17,7 +17,9 @@ namespace CUDABackend {
 
 	int GetSMCount();
 
-	int GetBlockHeight();
+	int GetWarpsPerMP();
+
+	int GetBlocksPerMP();
 
 	void Terminate();
 
