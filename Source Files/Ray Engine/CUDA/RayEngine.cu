@@ -235,7 +235,7 @@ __host__ __device__ bool AABBIntersect(const BoundingBox& box, const glm::vec3& 
 }
 
 
-__global__ void CollectHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const Scene* scene, int * nAtomic, curandState* randomState) {
+__global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const Scene* scene, int * nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -630,15 +630,11 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 				CudaCheck(cudaDeviceSynchronize());
 
 
-				//start the engine loop
-				uint numActive = numberRays;
-
-
 				//get the device stats for persistant threads
-				dim3 blockSizeE(CUDABackend::GetWarpSize(), CUDABackend::GetBlockHeight(), 1);
+				int blockHeight = CUDABackend::GetBlockHeight();
+				dim3 blockSizeE(CUDABackend::GetWarpSize(), blockHeight, 1);
 				uint smCount = CUDABackend::GetSMCount();
 				uint blockCountE = smCount;
-
 
 
 				//setup the counters
@@ -649,6 +645,9 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 				CudaCheck(cudaMalloc((void**)&counter, sizeof(int)));
 				CudaCheck(cudaMalloc((void**)&hitAtomic, sizeof(int)));
+
+				//start the engine loop
+				uint numActive = numberRays;
 
 				for (uint i = 0; i < rayDepth && numActive>0; ++i) {
 
@@ -663,11 +662,13 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					//reduce engine blocksize based on numActive
 					blockCountE= glm::min(smCount,(numActive + (blockSizeE.x*blockSizeE.y) - 1) / (blockSizeE.x*blockSizeE.y));
 
-					EngineExecute << <blockCountE, blockSizeE, CUDABackend::GetBlockHeight() >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
+					//main engine, collects hits
+					EngineExecute << <blockCountE, blockSizeE, blockHeight >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
-					CollectHits << <blockCount, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
+					//processes hits 
+					ProcessHits << <blockCount, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 

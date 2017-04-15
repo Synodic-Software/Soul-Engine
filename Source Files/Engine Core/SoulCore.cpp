@@ -61,7 +61,7 @@ namespace Soul {
 
 		//Clean the RayEngine from stray data
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			//	RayEngine::Clean();
+				RayEngine::Clean();
 		});
 
 		//destroy all windows
