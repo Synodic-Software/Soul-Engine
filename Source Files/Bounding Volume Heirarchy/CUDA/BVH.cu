@@ -4,20 +4,17 @@
 
 BVH::BVH() {
 
-	currentSize = 0;
 	allocatedSize = 0;
-
+	bvhDataHost.currentSize = 0;
 	bvh = nullptr;
 
-	CudaCheck(cudaMalloc((void**)&rootDevice, sizeof(Node)));
 }
 
 BVH::~BVH() {
+
 	if (bvh) {
 		CudaCheck(cudaFree(bvh));
 	}
-
-	CudaCheck(cudaFree(rootDevice));
 
 }
 
@@ -27,7 +24,7 @@ __device__ uint HighestBit(uint i, uint64* morton)
 	return morton[i] ^ morton[i + 1];
 }
 
-__global__ void BuildTree(const uint n, Node* nodes, uint64* mortonCodes, const uint leafOffset, Node** root)
+__global__ void BuildTree(const uint n, BVHData* data, Node* nodes, uint64* mortonCodes, const uint leafOffset)
 {
 	uint index = getGlobalIdx_1D_1D();
 	if (index >= n)
@@ -51,7 +48,7 @@ __global__ void BuildTree(const uint n, Node* nodes, uint64* mortonCodes, const 
 		uint right = currentNode->rangeRight;
 
 		if (left == 0 && right == leafOffset) {
-			*root = currentNode;
+			data->root = currentNode- nodes;
 			return;
 		}
 
@@ -92,14 +89,14 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	temp.rangeRight = index;
 	temp.atomic = 1; // To allow the next thread to process
 	temp.childLeft = nullptr;
-	temp.childRight = nullptr; 
+	temp.childRight = nullptr;
 
 	if (index < leafOffset) {
 		Node tempF;
 
-		tempF.atomic = 0; 
-		tempF.childLeft = nodes+leafOffset + index; 
-		tempF.childRight = nodes+leafOffset + index + 1; 
+		tempF.atomic = 0;
+		tempF.childLeft = nodes + leafOffset + index;
+		tempF.childRight = nodes + leafOffset + index + 1;
 
 		nodes[index] = tempF;
 	}
@@ -110,7 +107,7 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	glm::uvec3 ind = faces[index].indices;
 
 	// Expand bounds using min/max functions
-	glm::vec3 pos0= vertices[ind.x].position;
+	glm::vec3 pos0 = vertices[ind.x].position;
 	glm::vec3 max = pos0;
 	glm::vec3 min = pos0;
 
@@ -131,73 +128,43 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	if (n == 1)
 	{
 		nodes[0].box = nodes[leafOffset + 0].box;
-		nodes[0].childLeft = nodes+leafOffset + 0;
+		nodes[0].childLeft = nodes + leafOffset + 0;
 	}
 }
 
-void BVH::Build(uint size, uint64* mortonCodes, Face * faces, Vertex * vertices) {
+void BVH::Build(uint size, BVHData* data, uint64* mortonCodes, Face * faces, Vertex * vertices) {
 
-	currentSize = size;
+	//set the data for later structs
+	bvhDataHost.currentSize = size;
 
-	if (currentSize > 0) {
-		if (currentSize > allocatedSize) {
+	if (size > 0) {
+		if (size > allocatedSize) {
 
-			Node* nodeTemp;
+			allocatedSize = glm::max(uint(allocatedSize * 1.5f), (size * 2) - 1);
 
-			allocatedSize = glm::max(uint(allocatedSize * 1.5f), (currentSize * 2) - 1);
-
-
-			CudaCheck(cudaMalloc((void**)&nodeTemp, allocatedSize * sizeof(Node)));
 			if (bvh) {
 				CudaCheck(cudaFree(bvh));
 			}
-			bvh = nodeTemp;
+
+			CudaCheck(cudaMalloc((void**)&bvh, allocatedSize * sizeof(Node)));
+			bvhDataHost.bvh = bvh;
 		}
 
-		root = bvh;
+		bvhDataHost.currentSize = size;
+		CudaCheck(cudaMemcpy(data, &bvhDataHost, sizeof(BVHData), cudaMemcpyHostToDevice));
 
 		uint blockSize = 64;
-		uint gridSize = (currentSize + blockSize - 1) / blockSize;
+		uint gridSize = (size + blockSize - 1) / blockSize;
 
 		CudaCheck(cudaDeviceSynchronize());
 
-		Reset << <gridSize, blockSize >> > (currentSize, bvh, faces, vertices, mortonCodes, currentSize - 1);
+		Reset << <gridSize, blockSize >> > (size, bvh, faces, vertices, mortonCodes, size - 1);
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 
-
-		//copy 'this' into the kernal
-		CudaCheck(cudaMemcpy(rootDevice, &root, sizeof(Node), cudaMemcpyHostToDevice));
-
-		BuildTree << <gridSize, blockSize >> > (currentSize, bvh, mortonCodes, currentSize - 1, rootDevice);
-
+		BuildTree << <gridSize, blockSize >> > (size, data, bvh, mortonCodes, size - 1);
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
-
-		CudaCheck(cudaMemcpy(&root, rootDevice, sizeof(Node), cudaMemcpyDeviceToHost));
-
-		//Node* nodeHost = new Node[currentSize*2-1];
-		//CudaCheck(cudaMemcpy(nodeHost, bvh, (currentSize * 2 - 1) * sizeof(Node), cudaMemcpyDeviceToHost));
-
-		//Node newRoot;
-		//CudaCheck(cudaMemcpy(newRoot, root, (currentSize * 2 - 1) * sizeof(Node), cudaMemcpyDeviceToHost));
-
-
-		//std::cout << "Nodes" << std::endl;
-		//for (int i = 0; i < currentSize - 1; i++) {
-		//	std::cout << nodeHost[i].childLeft- bvh <<" -L, ";
-		//	std::cout << nodeHost[i].childRight- bvh << " -R, ";
-
-		//}
-		//std::cout << std::endl;
-
-		//std::cout << "Faces" << std::endl;
-		//for (int i = currentSize - 1; i < currentSize * 2 - 1; i++) {
-		//	std::cout << nodeHost[i].faceID << ", ";
-		//}
-	}
-	else {
-		root = nullptr;
 	}
 
 }

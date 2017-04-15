@@ -5,35 +5,41 @@
 #include "Engine Core\Object\Face.h"
 #include "Engine Core\Object\Vertex.h"
 
+typedef struct BVHData {
+
+	uint root;
+	uint currentSize;
+	Node* bvh;
+
+	__device__ BVHData& operator=(BVHData arg)
+	{
+		this->root = arg.root;
+		this->currentSize = arg.currentSize;
+
+		return *this;
+	}
+
+	__inline__ __device__ bool IsLeaf(Node* test) {
+		return ((test - bvh) >= (currentSize - 1));
+	}
+
+	__inline__ __device__ Node* GetLeaf(int test) {
+		return bvh + ((currentSize - 1) + test);
+	}
+
+}BVHData;
+
 class BVH{
 public:
 
-	BVH();
-	~BVH();
+	__host__ BVH();
+	__host__ ~BVH();
 
-	__device__ Node* GetRoot(){
-		return root;
-	}
-	__device__ Node* GetNodes(){
-		return bvh;
-	}
-	__device__ bool IsLeaf(Node* test){
-		return ((test - bvh) >= (currentSize - 1));
-	}
-	__host__ __device__ uint GetSize(){
-		return currentSize;
-	}
-	__device__ Node* GetLeaf(int test){
-		return bvh+((currentSize - 1) + test);
-	}
-
-	void Build(uint,uint64*, Face *, Vertex*);
-	Node* root;
+	__host__ void Build(uint, BVHData*, uint64*, Face *, Vertex*);
 
 private:
-	Node** rootDevice;
+	BVHData bvhDataHost;
 	Node* bvh;
-	uint currentSize;
 	uint allocatedSize;
 
 };

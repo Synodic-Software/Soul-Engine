@@ -396,7 +396,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	float   idirz;
 
 	Ray ray;
-	BVH* bvh = scene->bvh;
+	BVHData bvh = *(scene->bvhData);
 
 	extern __shared__ volatile int nextRayArray[]; // Current ray index in global buffer needs the (max) block height. 
 
@@ -442,7 +442,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			stackPtr = 0;
 			currentLeaf = nullptr;   // No postponed leaf.
-			currentNode = bvh->GetRoot();   // Start from the root.
+			currentNode = bvh.bvh+bvh.root;   // Start from the root.
 			ray.currentHit = -1;  // No triangle intersected so far.
 		}
 
@@ -452,7 +452,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 		{
 			// Until all threads find a leaf, traverse
 
-			while (!bvh->IsLeaf(currentNode) && currentNode != nullptr)
+			while (!bvh.IsLeaf(currentNode) && currentNode != nullptr)
 			{
 				// Fetch AABBs of the two child nodes.
 
@@ -515,14 +515,14 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				// First leaf => postpone and continue traversal.
 
-				if (bvh->IsLeaf(currentNode) && !bvh->IsLeaf(currentLeaf))     // Postpone leaf
+				if (bvh.IsLeaf(currentNode) && !bvh.IsLeaf(currentLeaf))     // Postpone leaf
 				{
 					currentLeaf = currentNode;
 					currentNode = traversalStack[stackPtr--];
 				}
 
 
-				if (!__any(!bvh->IsLeaf(currentLeaf))) {
+				if (!__any(!bvh.IsLeaf(currentLeaf))) {
 					break;
 				}
 			}
@@ -530,7 +530,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			// Process postponed leaf nodes.
 
-			while (bvh->IsLeaf(currentLeaf))
+			while (bvh.IsLeaf(currentLeaf))
 			{
 
 				glm::uvec3 face = scene->faces[currentLeaf->faceID].indices;
@@ -552,7 +552,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				//go through the second postponed leaf
 				currentLeaf = currentNode;
-				if (bvh->IsLeaf(currentNode))
+				if (bvh.IsLeaf(currentNode))
 				{
 					currentNode = traversalStack[stackPtr--];
 				}

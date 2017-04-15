@@ -25,7 +25,10 @@ public:
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
 	void RemoveObject(Object*);
 
-	BVH* bvh;
+	//the bvh data for the scene
+	BVHData* bvhData;
+
+	//the sky data for the scene
 	Sky* sky;
 
 	Face* faces;
@@ -35,8 +38,9 @@ public:
 	MiniObject* objects;
 
 private:
-	BVH* bvhHost;
 	Sky* skyHost;
+
+	BVH bvhHost;
 
 	//updates the scene representation based on what is in addList or removeList
 	void Compile();
