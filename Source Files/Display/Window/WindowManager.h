@@ -14,7 +14,7 @@
 namespace WindowManager {
 
 	//GLFW needs to be initialized
-	void Init(bool*);
+	void Initialize(bool*);
 
 	//cleanup all windows
 	void Terminate();

@@ -5,4 +5,5 @@
 #include <vector>
 
 __host__ void ProcessJobs(std::vector<RayJob>&, const Scene*);
-__host__ void Cleanup();
+__host__ void GPUInitialize();
+__host__ void GPUTerminate();

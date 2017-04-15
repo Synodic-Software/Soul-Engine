@@ -78,7 +78,7 @@ namespace Scheduler {
 	}
 
 	//Initialize the multithreaded scheduler
-	void Init();
+	void Initialize();
 
 	//Terminate the multithreaded scheduler
 	void Terminate();

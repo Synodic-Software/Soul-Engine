@@ -49,7 +49,7 @@ namespace Scheduler {
 			_aligned_free(ptr);
 		}
 
-		//Init the fiber specific stuff
+		//Initialize the fiber specific stuff
 		void InitPointers() {
 			if (!detail::holdMutex->get()) {
 				detail::holdMutex->reset(new std::mutex);
@@ -255,7 +255,7 @@ namespace Scheduler {
 
 	}
 
-	void Init() {
+	void Initialize() {
 
 
 		threadCount = 0;

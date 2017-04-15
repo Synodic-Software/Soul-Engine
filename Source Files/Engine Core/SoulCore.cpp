@@ -61,7 +61,7 @@ namespace Soul {
 
 		//Clean the RayEngine from stray data
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-				RayEngine::Clean();
+				RayEngine::Terminate();
 		});
 
 		//destroy all windows
@@ -86,10 +86,10 @@ namespace Soul {
 	}
 
 	//Initializes the engine
-	void Init() {
+	void Initialize() {
 
 		//setup the multithreader
-		Scheduler::Init();
+		Scheduler::Initialize();
 
 #if defined(_DEBUG) && !defined(SOUL_SINGLE_STACK) 
 		//log errors to the console for now
@@ -118,7 +118,7 @@ namespace Soul {
 			});
 		});
 
-		//Init glfw context for Window handling
+		//Initialize glfw context for Window handling
 		int didInit;
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&didInit]() {
 			didInit = glfwInit();
@@ -128,7 +128,11 @@ namespace Soul {
 
 		//init main Window
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			WindowManager::Init(&running);
+			WindowManager::Initialize(&running);
+		});
+
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			RayEngine::Initialize();
 		});
 
 		if (!didInit) {
@@ -277,7 +281,7 @@ void MouseEvent(std::function<void(double,double)> func) {
 
 //Initializes Soul. This should be the first command in a program.
 void SoulInit() {
-	Soul::Init();
+	Soul::Initialize();
 }
 
 void SoulTerminate() {

@@ -18,7 +18,7 @@ namespace RasterBackend {
 	BackendName backend;
 
 
-	void Init() {
+	void Initialize() {
 
 		/*if (glfwVulkanSupported() == GLFW_TRUE) {
 			detail::raster.reset(new VulkanBackend());

@@ -22,10 +22,10 @@ static bool* runningFlag;
 
 namespace WindowManager {
 
-	void Init(bool* runningFlagIn) {
+	void Initialize(bool* runningFlagIn) {
 
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			RasterBackend::Init();
+			RasterBackend::Initialize();
 		});
 
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {

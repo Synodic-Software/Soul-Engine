@@ -16,14 +16,24 @@
 
 Ray* deviceRays = nullptr;
 Ray* deviceRaysB = nullptr;
-
+RayJob* jobs = nullptr;
+Scene* scene = nullptr;
 curandState* randomState = nullptr;
 
-Scene* scene = nullptr;
 uint raySeedGl = 0;
-uint numRaysAllocated = 0;
+uint raysAllocated = 0;
+uint jobsAllocated = 0;
+
 const uint rayDepth = 6;
 
+//stored counters
+int* counter;
+int* hitAtomic;
+
+//engine launch config
+uint blockCountE;
+dim3 blockSizeE;
+uint warpPerBlock;
 
 template <class T> __host__ __device__ __inline__ void swap(T& a, T& b)
 {
@@ -130,6 +140,22 @@ __host__ __device__ __inline__ uint WangHash(uint a) {
 	return a;
 }
 
+__global__ void RandomSetup(const uint n, curandState* randomState, const uint raySeed) {
+
+
+	uint index = getGlobalIdx_1D_1D();
+
+	if (index >= n) {
+		return;
+	}
+
+	curandState randState;
+	curand_init(index, 0, 0, &randState);
+
+	randomState[index] = randState;
+
+}
+
 __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 
 
@@ -147,7 +173,7 @@ __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 
 }
 
-__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, curandState* randomState, const uint raySeed) {
+__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -160,9 +186,7 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 
 	uint localIndex = (index - startIndex) / job[cur].samples;
 
-
-	curandState randState;
-	curand_init(raySeed + index, 0, 0, &randState);
+	curandState randState = randomState[index];
 
 	Ray ray;
 	ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -550,23 +574,24 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	} while (true);
 }
 
+//grab the shared memory for a dynamic blocksize
+__host__ int ReturnSharedBytes(int blockSize) {
+	return blockSize / CUDABackend::GetWarpSize() * sizeof(int);
+}
+
+
 __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
-	uint jobsSize = hjobs.size();
-
-	//init the scene memory if it is not ready
-	if (!scene) {
-		CudaCheck(cudaMalloc((void**)&scene, sizeof(Scene)));
-	}
+	uint numberJobs = hjobs.size();
 
 	//only upload data if a job exists
-	if (jobsSize > 0) {
+	if (numberJobs > 0) {
 
 		uint numberResults = 0;
 		uint numberRays = 0;
 		uint samplesMax = 0;
 
-		for (int i = 0; i < jobsSize; ++i) {
+		for (int i = 0; i < numberJobs; ++i) {
 
 			hjobs[i].startIndex = numberResults;
 			numberResults += hjobs[i].rayAmount;
@@ -580,10 +605,20 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 		if (numberResults != 0) {
 
-			//create device jobs
-			RayJob* jobs;
-			CudaCheck(cudaMalloc((void**)&jobs, hjobs.size() * sizeof(RayJob)));
-			CudaCheck(cudaMemcpy(jobs, hjobs.data(), hjobs.size() * sizeof(RayJob), cudaMemcpyHostToDevice));
+			if (numberJobs > jobsAllocated) {
+
+				if (jobs) {
+					CudaCheck(cudaFree(jobs));
+				}
+
+				CudaCheck(cudaMalloc((void**)&jobs, numberJobs * sizeof(RayJob)));
+
+				jobsAllocated = numberJobs;
+
+			}
+
+			//copy device jobs
+			CudaCheck(cudaMemcpy(jobs, hjobs.data(), numberJobs * sizeof(RayJob), cudaMemcpyHostToDevice));
 
 			//remove all the jobs as they are transfered
 			hjobs.clear();
@@ -593,13 +628,17 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 
 			//clear the jobs result memory, required for accumulation of multiple samples
-			EngineSetup << <blockCount, blockSize >> > (numberResults, jobs, jobsSize);
+			EngineSetup << <blockCount, blockSize >> > (numberResults, jobs, numberJobs);
 			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
+			blockSize = 64;
+			blockCount = (numberRays + blockSize - 1) / blockSize;
 
 			if (numberRays != 0) {
-				if (numberRays > numRaysAllocated) {
+
+
+				if (numberRays > raysAllocated) {
 
 					if (deviceRays) {
 						CudaCheck(cudaFree(deviceRays));
@@ -614,37 +653,25 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					CudaCheck(cudaMalloc((void**)&randomState, numberRays * sizeof(curandState)));
 					CudaCheck(cudaMalloc((void**)&deviceRays, numberRays * sizeof(Ray)));
 					CudaCheck(cudaMalloc((void**)&deviceRaysB, numberRays * sizeof(Ray)));
-					numRaysAllocated = numberRays;
+
+					RandomSetup << <blockCount, blockSize >> > (numberRays, randomState, WangHash(++raySeedGl));
+					CudaCheck(cudaPeekAtLastError());
+					CudaCheck(cudaDeviceSynchronize());
+
+					raysAllocated = numberRays;
 
 				}
 
 				//copy the scene over
 				CudaCheck(cudaMemcpy(scene, sceneIn, sizeof(Scene), cudaMemcpyHostToDevice));
-				CudaCheck(cudaDeviceSynchronize());
 
-				blockSize = 64;
-				blockCount = (numberRays + blockSize - 1) / blockSize;
-
-				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, jobsSize, deviceRays, scene, randomState, WangHash(++raySeedGl));
+				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, numberJobs, deviceRays, scene, randomState);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
 
-				//get the device stats for persistant threads
-				uint blockPerSM = CUDABackend::GetBlocksPerMP();
-				uint blockCountE = CUDABackend::GetSMCount()*blockPerSM;
-				uint warpPerBlock = CUDABackend::GetWarpsPerMP() / blockPerSM;
-				dim3 blockSizeE(CUDABackend::GetWarpSize(), warpPerBlock, 1);
-
-
 				//setup the counters
 				int zeroHost = 0;
-
-				int* counter;
-				int* hitAtomic;
-
-				CudaCheck(cudaMalloc((void**)&counter, sizeof(int)));
-				CudaCheck(cudaMalloc((void**)&hitAtomic, sizeof(int)));
 
 				//start the engine loop
 				uint numActive = numberRays;
@@ -659,16 +686,13 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					blockSize = 64;
 					blockCount = (numActive + blockSize - 1) / blockSize;
 
-					////reduce engine blocksize based on numActive
-					//blockCountE = glm::min(blockCountE, (numActive + (blockSizeE.x*blockSizeE.y) - 1) / (blockSizeE.x*blockSizeE.y));
-
 					//main engine, collects hits
-					EngineExecute << <blockCountE, blockSizeE, warpPerBlock >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
+					EngineExecute << <blockCountE, blockSizeE, warpPerBlock >> > (numActive, jobs, numberJobs, deviceRays, scene, counter);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
 					//processes hits 
-					ProcessHits << <blockCount, blockSize >> > (numActive, jobs, jobsSize, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
+					ProcessHits << <blockCount, blockSize >> > (numActive, jobs, numberJobs, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
@@ -677,38 +701,47 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
 
 				}
-
-				CudaCheck(cudaFree(counter));
-				CudaCheck(cudaFree(hitAtomic));
-
 			}
-
-			CudaCheck(cudaFree(jobs));
 		}
 	}
+}
+
+__host__ void GPUInitialize() {
+
+	CudaCheck(cudaMalloc((void**)&scene, sizeof(Scene)));
+	CudaCheck(cudaMalloc((void**)&counter, sizeof(int)));
+	CudaCheck(cudaMalloc((void**)&hitAtomic, sizeof(int)));
+
+	int blockSizeOut;
+	int minGridSize;
+
+	//dynamically ask for the best launch setup
+	CudaCheck(cudaOccupancyMaxPotentialBlockSizeVariableSMem(
+		&minGridSize, &blockSizeOut, EngineExecute, ReturnSharedBytes,
+		CUDABackend::GetSMCount()*CUDABackend::GetBlocksPerMP()));
+
+	//get the device stats for persistant threads
+	uint warpSize = CUDABackend::GetWarpSize();
+	warpPerBlock = blockSizeOut / warpSize;
+	blockCountE = minGridSize;
+	blockSizeE = dim3(warpSize, warpPerBlock, 1);
+
+	///////////////Alternative Hardcoded Calculation/////////////////
+	//uint blockPerSM = CUDABackend::GetBlocksPerMP();
+	//uint blockCountE = CUDABackend::GetSMCount()*blockPerSM;
+	//uint warpPerBlock = CUDABackend::GetWarpsPerMP() / blockPerSM;
+	//dim3 blockSizeE(CUDABackend::GetWarpSize(), warpPerBlock, 1);
 
 }
 
-__host__ void Cleanup() {
+__host__ void GPUTerminate() {
 
-	if (scene) {
-		CudaCheck(cudaFree(scene));
-	}
+	CudaCheck(cudaFree(scene));
+	CudaCheck(cudaFree(counter));
+	CudaCheck(cudaFree(hitAtomic));
+	CudaCheck(cudaFree(jobs));
+	CudaCheck(cudaFree(deviceRays));
+	CudaCheck(cudaFree(deviceRaysB));
+	CudaCheck(cudaFree(randomState));
 
-	// empty the vector
-	//deviceRays.clear();
-
-	// deallocate any capacity which may currently be associated with vec
-	//deviceRays.shrink_to_fit();
 }
-
-//__host__ void ClearResults(std::vector<RayJob*>& jobs){
-//	internals::ClearResults(jobs);
-//}
-//__host__ void ProcessJobs(std::vector<RayJob*>& jobs, const Scene* scene){
-//	internals::ProcessJobs(jobs, scene);
-//}
-//
-//__host__ void Cleanup(){
-//	internals::Cleanup();
-//}

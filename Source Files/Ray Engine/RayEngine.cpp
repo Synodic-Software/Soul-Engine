@@ -31,8 +31,9 @@ bool RayEngine::ChangeJob(RayJob* job, uint rayAmount,
 	}
 
 }
-
-void RayEngine::Clean(){
-	CudaCheck(cudaDeviceSynchronize());
-	Cleanup();
+void RayEngine::Initialize() {
+	GPUInitialize();
+}
+void RayEngine::Terminate(){
+	GPUTerminate();
 }
