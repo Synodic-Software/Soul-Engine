@@ -631,10 +631,10 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 
 				//get the device stats for persistant threads
-				int blockHeight = CUDABackend::GetBlockHeight();
-				dim3 blockSizeE(CUDABackend::GetWarpSize(), blockHeight, 1);
-				uint smCount = CUDABackend::GetSMCount();
-				uint blockCountE = smCount;
+				uint blockPerSM = CUDABackend::GetBlocksPerMP();
+				uint blockCountE = CUDABackend::GetSMCount()*blockPerSM;
+				uint warpPerBlock = CUDABackend::GetWarpsPerMP() / blockPerSM;
+				dim3 blockSizeE(CUDABackend::GetWarpSize(), warpPerBlock, 1);
 
 
 				//setup the counters
@@ -659,11 +659,11 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					blockSize = 64;
 					blockCount = (numActive + blockSize - 1) / blockSize;
 
-					//reduce engine blocksize based on numActive
-					blockCountE= glm::min(smCount,(numActive + (blockSizeE.x*blockSizeE.y) - 1) / (blockSizeE.x*blockSizeE.y));
+					////reduce engine blocksize based on numActive
+					//blockCountE = glm::min(blockCountE, (numActive + (blockSizeE.x*blockSizeE.y) - 1) / (blockSizeE.x*blockSizeE.y));
 
 					//main engine, collects hits
-					EngineExecute << <blockCountE, blockSizeE, blockHeight >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
+					EngineExecute << <blockCountE, blockSizeE, warpPerBlock >> > (numActive, jobs, jobsSize, deviceRays, scene, counter);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
