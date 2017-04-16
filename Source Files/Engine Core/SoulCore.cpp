@@ -325,8 +325,8 @@ int main()
 
 		Camera* camera = new Camera();
 
-		camera->SetPosition(glm::vec3(-(METER), METER, -(METER)));
-		camera->OffsetOrientation(135, 45);
+		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER*5, (DECAMETER) * 5));
+		camera->OffsetOrientation(225, 45);
 
 		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 
@@ -398,20 +398,13 @@ int main()
 		});
 
 
-
-
-
-		/*	WindowManager::CreateWindow(WINDOWED, "test", 0, 0, 0, 300, 300, []() {
-				return new SingleLayout(new RenderWidget());
-			});*/
-
 		Material* whiteGray = new Material();
 		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
 		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 		Scene* scene = new Scene();
 
-		Object* obj = new Object("Resources\\Objects\\Rebellion.obj", whiteGray);
+		Object* obj = new Object("Resources\\Objects\\Lucy_Low.obj", whiteGray);
 		scene->AddObject(obj);
 
 		SubmitScene(scene);
