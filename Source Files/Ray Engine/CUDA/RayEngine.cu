@@ -24,7 +24,7 @@ uint raySeedGl = 0;
 uint raysAllocated = 0;
 uint jobsAllocated = 0;
 
-const uint rayDepth = 6;
+const uint rayDepth = 2;
 
 //stored counters
 int* counter;
@@ -267,7 +267,6 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		return;
 	}
 
-	uint startIndex = 0;
 	int cur = 0;
 
 
@@ -395,8 +394,11 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	float   idiry;
 	float   idirz;
 
+	//scene pointers
 	Ray ray;
 	BVHData bvh = *(scene->bvhData);
+	Vertex* vP = scene->vertices;
+	Face* fP = scene->faces;
 
 	extern __shared__ volatile int nextRayArray[]; // Current ray index in global buffer needs the (max) block height. 
 
@@ -533,13 +535,11 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			while (bvh.IsLeaf(currentLeaf))
 			{
 
-				glm::uvec3 face = scene->faces[currentLeaf->faceID].indices;
+				glm::uvec3 face = fP[currentLeaf->faceID].indices;
 
 				float bary1;
 				float bary2;
 				float tTemp;
-
-				Vertex* vP = scene->vertices;
 
 				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
 				{ origx, origy, origz, }, { dirx, diry, dirz }, { idirx, idiry, idirz },
