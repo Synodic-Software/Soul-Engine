@@ -404,7 +404,7 @@ int main()
 
 		Scene* scene = new Scene();
 
-		Object* obj = new Object("Resources\\Objects\\Lucy_Low.obj", whiteGray);
+		Object* obj = new Object("Resources\\Objects\\Rebellion.obj", whiteGray);
 		scene->AddObject(obj);
 
 		SubmitScene(scene);

@@ -1,6 +1,6 @@
 #include "OpenCLBuffer.h"
 
-OpenCLBuffer::OpenCLBuffer() {
+OpenCLBuffer::OpenCLBuffer(OpenCLDevice* deviceIn, uint sizeIn) {
 
 
 }

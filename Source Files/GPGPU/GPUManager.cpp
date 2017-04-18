@@ -3,6 +3,9 @@
 #include "CUDA\CUDABackend.h"
 #include "OpenCL\OpenCLBackend.h"
 
+#include "CUDA\CUDABuffer.h"
+#include "OpenCL\OpenCLBuffer.h"
+
 #include "CUDA\CUDARasterBuffer.h"
 #include "OpenCL\OpenCLRasterBuffer.h"
 
@@ -57,6 +60,19 @@ namespace GPUManager {
 		}
 		else {
 			buffer = new OpenCLRasterBuffer(static_cast<OpenCLDevice*>(devices[GPU].get()), size);
+		}
+		return buffer;
+	}
+
+	GPUBuffer* CreateBuffer(int GPU, uint size) {
+
+		GPUBuffer* buffer;
+
+		if (devices[GPU]->api == CUDA) {
+			buffer = new CUDABuffer(static_cast<CUDADevice*>(devices[GPU].get()), size);
+		}
+		else {
+			buffer = new OpenCLBuffer(static_cast<OpenCLDevice*>(devices[GPU].get()), size);
 		}
 		return buffer;
 	}

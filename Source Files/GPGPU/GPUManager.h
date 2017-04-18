@@ -11,5 +11,6 @@ namespace GPUManager {
 	void InitThread();
 
 	GPURasterBuffer* CreateRasterBuffer(int,uint);
+	GPUBuffer* CreateBuffer(int, uint);
 	int GetBestGPU();
 }

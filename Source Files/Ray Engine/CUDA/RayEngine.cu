@@ -687,7 +687,7 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					blockCount = (numActive + blockSize - 1) / blockSize;
 
 					//main engine, collects hits
-					EngineExecute << <blockCountE, blockSizeE, warpPerBlock >> > (numActive, jobs, numberJobs, deviceRays, scene, counter);
+					EngineExecute << <blockCountE, blockSizeE, warpPerBlock*sizeof(int) >> > (numActive, jobs, numberJobs, deviceRays, scene, counter);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
@@ -728,9 +728,9 @@ __host__ void GPUInitialize() {
 
 	///////////////Alternative Hardcoded Calculation/////////////////
 	//uint blockPerSM = CUDABackend::GetBlocksPerMP();
-	//uint blockCountE = CUDABackend::GetSMCount()*blockPerSM;
-	//uint warpPerBlock = CUDABackend::GetWarpsPerMP() / blockPerSM;
-	//dim3 blockSizeE(CUDABackend::GetWarpSize(), warpPerBlock, 1);
+	//warpPerBlock = CUDABackend::GetWarpsPerMP() / blockPerSM;
+	//blockCountE = CUDABackend::GetSMCount()*blockPerSM;
+	//blockSizeE = dim3(CUDABackend::GetWarpSize(), warpPerBlock, 1);
 
 }
 
