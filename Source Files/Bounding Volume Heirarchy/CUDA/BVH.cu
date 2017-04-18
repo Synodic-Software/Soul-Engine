@@ -134,9 +134,6 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 
 void BVH::Build(uint size, BVHData* data, uint64* mortonCodes, Face * faces, Vertex * vertices) {
 
-	//set the data for later structs
-	bvhDataHost.currentSize = size;
-
 	if (size > 0) {
 		if (size > allocatedSize) {
 
