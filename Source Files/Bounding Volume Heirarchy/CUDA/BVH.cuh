@@ -7,7 +7,7 @@
 
 typedef struct BVHData {
 
-	uint root;
+	Node* root;
 	uint currentSize;
 	Node* bvh;
 
@@ -20,7 +20,7 @@ typedef struct BVHData {
 	}
 
 	__inline__ __device__ bool IsLeaf(Node* test) {
-		return ((test - bvh) >= (currentSize - 1));
+		return ((test - bvh) >= (currentSize - 1) && (test - bvh) < currentSize * 2 - 1);
 	}
 
 	__inline__ __device__ Node* GetLeaf(int test) {
@@ -29,13 +29,13 @@ typedef struct BVHData {
 
 }BVHData;
 
-class BVH{
+class BVH {
 public:
 
 	__host__ BVH();
 	__host__ ~BVH();
 
-	__host__ void Build(uint, BVHData*, uint64*, Face *, Vertex*);
+	__host__ void Build(uint, BVHData*&, uint64*, Face *, Vertex*);
 
 private:
 	BVHData bvhDataHost;

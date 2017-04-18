@@ -48,7 +48,7 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, uint64* mort
 		uint right = currentNode->rangeRight;
 
 		if (left == 0 && right == leafOffset) {
-			data->root = currentNode- nodes;
+			data->root = currentNode;
 			return;
 		}
 
@@ -132,7 +132,7 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	}
 }
 
-void BVH::Build(uint size, BVHData* data, uint64* mortonCodes, Face * faces, Vertex * vertices) {
+void BVH::Build(uint size, BVHData*& data, uint64* mortonCodes, Face * faces, Vertex * vertices) {
 
 	if (size > 0) {
 		if (size > allocatedSize) {
