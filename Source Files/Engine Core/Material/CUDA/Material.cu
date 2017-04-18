@@ -5,9 +5,9 @@ Material::Material( std::string texName){
 
 
 
-	CudaCheck(cudaDeviceSynchronize());
-	diffuseImage.LoadFromFile(texName.c_str(),false,true);
-	CudaCheck(cudaDeviceSynchronize());
+	//CudaCheck(cudaDeviceSynchronize());
+	//diffuseImage.LoadFromFile(texName.c_str(),false,true);
+	//CudaCheck(cudaDeviceSynchronize());
 
 }
 Material::~Material(){

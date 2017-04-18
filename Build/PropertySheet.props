@@ -69,7 +69,7 @@
     </CudaCompile>
     <CudaLink>
       <Optimization>O2</Optimization>
-      <UseHostLibraryDependencies>false</UseHostLibraryDependencies>
+      <UseHostLibraryDependencies>true</UseHostLibraryDependencies>
       <UseHostLibraryDirectories>false</UseHostLibraryDirectories>
       <PerformDeviceLink>true</PerformDeviceLink>
       <GPUDebugInfo>false</GPUDebugInfo>

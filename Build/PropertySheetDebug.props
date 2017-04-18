@@ -20,7 +20,7 @@
       <PreprocessorDefinitions>WIN64;GLEW_STATIC;GLEW_MX;_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Resources;$(ProjectDir)..\Libraries\glew\include;$(ProjectDir)..\Libraries\tinyObj;$(ProjectDir)..\Libraries\boost;$(ProjectDir)..\Libraries;C:\VulkanSDK\1.0.30.0\Include;$(ProjectDir)..\Include Files;$(ProjectDir)..\Source Files;$(ProjectDir)..\Libraries\glfw\include;$(ProjectDir)..\Libraries\glm;$(AMDAPPSDKROOT)/include;$(ProjectDir)..\Libraries\stb;$(IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
@@ -56,7 +56,7 @@
       <CodeGeneration>compute_50,sm_50;compute_52,sm_52;compute_61,sm_61</CodeGeneration>
       <FastMath>false</FastMath>
       <UseHostInclude>true</UseHostInclude>
-      <Optimization>O2</Optimization>
+      <Optimization>Od</Optimization>
       <TypeInfo>true</TypeInfo>
       <HostDebugInfo>true</HostDebugInfo>
       <RuntimeChecks>Default</RuntimeChecks>
@@ -66,8 +66,8 @@
       <AdditionalOptions>-Wno-deprecated-gpu-targets --default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <CudaLink>
-      <Optimization>O2</Optimization>
-      <UseHostLibraryDependencies>false</UseHostLibraryDependencies>
+      <Optimization>Od</Optimization>
+      <UseHostLibraryDependencies>true</UseHostLibraryDependencies>
       <UseHostLibraryDirectories>false</UseHostLibraryDirectories>
       <PerformDeviceLink>true</PerformDeviceLink>
       <GPUDebugInfo>true</GPUDebugInfo>

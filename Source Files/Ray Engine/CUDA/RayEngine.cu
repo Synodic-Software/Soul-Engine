@@ -330,12 +330,12 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		//unsigned char green = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 1, localIndex);
 		//unsigned char red = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 2, localIndex);
 
-		float4 PicCol = tex2DLod<float4>(mat->diffuseImage.texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
+		//float4 PicCol = tex2DLod<float4>(mat->diffuseImage.texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
 		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
-		ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
+		//ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
 
 
-		//ray.storage *= mat->diffuse;
+		ray.storage *= mat->diffuse;
 
 		glm::vec3 orientedNormal = glm::dot(bestNormal, glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z)) < 0 ? bestNormal : bestNormal * -1.0f;
 
@@ -529,7 +529,6 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 				}
 			}
 
-
 			// Process postponed leaf nodes.
 
 			while (bvh.IsLeaf(currentLeaf))
@@ -569,7 +568,6 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 		//update the data
 
 		rays[rayidx] = ray;
-		//__syncthreads();
 
 	} while (true);
 }
