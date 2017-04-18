@@ -4,6 +4,7 @@
 #include "Metrics.h"
 #include "Raster Engine\RasterBackend.h"
 #include "GPGPU\GPURasterBuffer.h"
+#include "GPGPU\GPUBuffer.h"
 #include "Engine Core\Camera\Camera.h"
 
 class RenderWidget : public Widget
@@ -23,6 +24,8 @@ private:
 
 	glm::uvec2 currentSize;
 	GPURasterBuffer* buffer;
+	GPUBuffer* accumulator;
+	//glm::vec4* accumulator;
 
 	uint samples;
 	Camera* camera;

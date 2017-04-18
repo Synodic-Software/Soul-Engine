@@ -47,7 +47,7 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 
 	
 
-	BVH* bvh = scene->bvh;
+	BVHData* bvh = scene->bvhData;
 	
 	Node* test = bvh->GetLeaf(index);
 
@@ -57,7 +57,7 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 	stack[stackPtr++] = nullptr; // push
 
 	// Traverse nodes starting from the root.
-	Node* node = bvh->GetRoot();
+	Node* node = (bvh->bvh + bvh->root);
 	do
 	{
 		// Check each child node for overlap.
@@ -68,10 +68,10 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 		bool overlapR = (testAABBAABB(test->box,childR->box)
 			&& childR != test);
 
-		if (childL->rangeRight <= test - bvh->GetRoot())
+		if (childL->rangeRight <= test - (bvh->bvh + bvh->root))
 			overlapL = false;
 
-		if (childR->rangeRight <= test - bvh->GetRoot())
+		if (childR->rangeRight <= test - (bvh->bvh+bvh->root))
 			overlapR = false;
 
 
@@ -102,7 +102,7 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 __host__ void ProcessScene(const Scene* scene){
 	CudaCheck(cudaDeviceSynchronize());
 
-	uint n = scene->bvh->GetSize();
+	uint n = scene->bvhData->currentSize;
 
 	if (n <= 0){
 		return;

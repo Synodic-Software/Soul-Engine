@@ -20,7 +20,5 @@ protected:
 private:
 	Buffer* rasterBuffer = nullptr;
 	struct cudaGraphicsResource* cudaBuffer;
-	void* bufferData;
-
 
 };
