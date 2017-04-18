@@ -57,7 +57,7 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 	stack[stackPtr++] = nullptr; // push
 
 	// Traverse nodes starting from the root.
-	Node* node = (bvh->bvh + bvh->root);
+	Node* node = bvh->root;
 	do
 	{
 		// Check each child node for overlap.
@@ -68,10 +68,10 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 		bool overlapR = (testAABBAABB(test->box,childR->box)
 			&& childR != test);
 
-		if (childL->rangeRight <= test - (bvh->bvh + bvh->root))
+		if (childL->rangeRight <= test - bvh->root)
 			overlapL = false;
 
-		if (childR->rangeRight <= test - (bvh->bvh+bvh->root))
+		if (childR->rangeRight <= test - bvh->root)
 			overlapR = false;
 
 

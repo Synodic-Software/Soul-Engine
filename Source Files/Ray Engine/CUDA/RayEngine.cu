@@ -444,7 +444,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			stackPtr = 0;
 			currentLeaf = nullptr;   // No postponed leaf.
-			currentNode = bvh.bvh+bvh.root;   // Start from the root.
+			currentNode = bvh.root;   // Start from the root.
 			ray.currentHit = -1;  // No triangle intersected so far.
 		}
 
@@ -533,8 +533,9 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			while (bvh.IsLeaf(currentLeaf))
 			{
+				uint faceID = currentLeaf->faceID;
 
-				glm::uvec3 face = fP[currentLeaf->faceID].indices;
+				glm::uvec3 face = fP[faceID].indices;
 
 				float bary1;
 				float bary2;
@@ -546,7 +547,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 					ray.direction.w = tTemp;
 					ray.bary = glm::vec2(bary1, bary2);
-					ray.currentHit = currentLeaf->faceID;
+					ray.currentHit = faceID;
 				}
 
 				//go through the second postponed leaf
