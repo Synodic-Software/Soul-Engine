@@ -12,7 +12,7 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 	widgetJob = RasterBackend::CreateJob();
 
-	samples = 1;
+	samples = 4;
 
 	//attach shaders to render a quad and apply a texture
 	widgetJob->AttachShaders({
