@@ -94,6 +94,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
     <ClInclude Include="..\Source Files\Display\Layout\Layout.h" />
     <ClInclude Include="..\Source Files\Display\Layout\SingleLayout.h" />
+    <ClInclude Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cuh" />
     <ClInclude Include="..\Source Files\Display\Widget\RenderWidget.h" />
     <ClInclude Include="..\Source Files\Display\Widget\Widget.h" />
     <ClInclude Include="..\Source Files\Display\Window\Window.h" />
@@ -233,6 +234,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cu" />
+    <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\Material.cu" />
