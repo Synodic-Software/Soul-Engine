@@ -24,7 +24,7 @@ uint raySeedGl = 0;
 uint raysAllocated = 0;
 uint jobsAllocated = 0;
 
-const uint rayDepth = 2;
+const uint rayDepth = 4;
 
 //stored counters
 int* counter;
@@ -290,7 +290,7 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		Face face = scene->faces[ray.currentHit];
 
-		Material* mat = scene->materials + face.material;
+		Material mat = scene->materials[face.material];
 
 		Vertex* vP = scene->vertices;
 
@@ -321,21 +321,21 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 
 		glm::vec3 accumulation;
-		accumulation.x = ray.storage.x * mat->emit.x;
-		accumulation.y = ray.storage.y * mat->emit.y;
-		accumulation.z = ray.storage.z * mat->emit.z;
+		accumulation.x = ray.storage.x * mat.emit.x;
+		accumulation.y = ray.storage.y * mat.emit.y;
+		accumulation.z = ray.storage.z * mat.emit.z;
 
 		//tex2D<float>(texObj, tu, tv)
 		//unsigned char blue = tex2D<unsigned char>(mat->texObj, (4 * localIndex), localIndex);
 		//unsigned char green = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 1, localIndex);
 		//unsigned char red = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 2, localIndex);
 
-		//float4 PicCol = tex2DLod<float4>(mat->diffuseImage.texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
+		float4 PicCol = tex2DLod<float4>(mat.diffuseImage.texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
 		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
-		//ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
+		ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
 
 
-		ray.storage *= mat->diffuse;
+		//ray.storage *= mat->diffuse;
 
 		glm::vec3 orientedNormal = glm::dot(bestNormal, glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z)) < 0 ? bestNormal : bestNormal * -1.0f;
 

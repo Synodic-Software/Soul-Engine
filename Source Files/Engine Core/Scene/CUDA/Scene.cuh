@@ -19,7 +19,7 @@ public:
 
 	//signels the scene that an object should be added when the next 'Build()' is called
 	//modifies the global scene bounding box, making the 3D spatial calculation less accurate
-	void AddObject(Object*);
+	void AddObject(glm::mat4,Object*);
 
 	//signels the scene that an object should be removed when the next 'Build()' is called
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
@@ -62,7 +62,7 @@ private:
 	uint materialAllocated;
 	uint objectAllocated;
 
-	std::vector<Object*> addList;
+	std::vector<std::pair<glm::mat4,Object*>> addList;
 	std::vector<Object*> removeList;
 
 };
