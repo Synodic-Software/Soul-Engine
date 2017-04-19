@@ -29,5 +29,9 @@ private:
 
 	uint samples;
 	Camera* camera;
+
+	uint iCounter;
+	bool integrate;
+	double time;
 };
 

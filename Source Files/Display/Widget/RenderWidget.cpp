@@ -3,8 +3,9 @@
 #include "GPGPU\GPUManager.h"
 #include "Ray Engine/RayEngine.h"
 #include "Utility/CUDA/CudaHelper.cuh"
-
+#include "CUDA\RenderWidget.cuh"
 #include <iostream>
+#include "Input/InputState.h"
 
 RenderWidget::RenderWidget(Camera* cameraIn)
 {
@@ -12,7 +13,7 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 	widgetJob = RasterBackend::CreateJob();
 
-	samples = 4;
+	samples = 1;
 
 	//attach shaders to render a quad and apply a texture
 	widgetJob->AttachShaders({
@@ -59,6 +60,8 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 	widgetJob->UploadGeometry(vertices, sizeof(vertices), indices, sizeof(indices));
 
+	iCounter = 1;
+	integrate = false;
 }
 
 RenderWidget::~RenderWidget()
@@ -67,6 +70,24 @@ RenderWidget::~RenderWidget()
 }
 
 void RenderWidget::Draw() {
+
+	InputState::GetInstance().SetKey(GLFW_KEY_SPACE, [&integrate = integrate, &time = time](int action) {
+		double newTime = glfwGetTime();
+		if (newTime - time > 0.3f) {
+			integrate = !integrate;
+			time = newTime;
+		}
+
+	});
+
+
+	if (integrate) {
+		Integrate(size.x*size.y, (glm::vec4*)buffer->GetData(), (glm::vec4*)accumulator->GetData(), iCounter);
+		iCounter++;
+	}
+	else {
+		iCounter = 1;
+	}
 
 	buffer->UnmapResources();
 	buffer->BindData(0);

@@ -12,7 +12,6 @@ public:
 	~CUDABuffer();
 
 protected:
-	void* bufferData;
 
 private:
 
