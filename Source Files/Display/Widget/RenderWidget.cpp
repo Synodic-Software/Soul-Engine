@@ -87,8 +87,8 @@ void RenderWidget::RecreateData() {
 	//TODO
 
 	//create the new accumulation Buffer
-	//accumulator = GPUManager::CreateBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
-	//CudaCheck(cudaMalloc((void**)&accumulator, size.x*size.y * sizeof(glm::vec4)));
+	accumulator = GPUManager::CreateBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+
 	buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
 
 	if (currentSize != size) {
