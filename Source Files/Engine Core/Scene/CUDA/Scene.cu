@@ -102,10 +102,10 @@ void Scene::Compile() {
 
 		for (int i = 0; i < addList.size(); ++i) {
 
-			tetAmount += addList[i]->tetAmount;
-			faceAmount += addList[i]->faceAmount;
-			vertexAmount += addList[i]->verticeAmount;
-			materialAmount += addList[i]->materialAmount;
+			tetAmount += addList[i].second->tetAmount;
+			faceAmount += addList[i].second->faceAmount;
+			vertexAmount += addList[i].second->verticeAmount;
+			materialAmount += addList[i].second->materialAmount;
 			++objectAmount;
 
 		}
@@ -202,36 +202,44 @@ void Scene::Compile() {
 		for (int i = 0; i < addList.size(); ++i) {
 
 			//update the scene's bounding volume
-			sceneBox.max = glm::max(sceneBox.max, addList[i]->box.max);
-			sceneBox.min = glm::min(sceneBox.min, addList[i]->box.min);
+			sceneBox.max = glm::max(sceneBox.max, addList[i].second->box.max);
+			sceneBox.min = glm::min(sceneBox.min, addList[i].second->box.min);
 
 			//create the modified host data to upload
-			std::vector<Vertex> tempVertices(addList[i]->verticeAmount);
-			std::vector<Face> tempFaces(addList[i]->faceAmount);
-			std::vector<Tet> tempTets(addList[i]->tetAmount);
-			std::vector<Material> tempMaterials(addList[i]->materialAmount);
+			std::vector<Vertex> tempVertices(addList[i].second->verticeAmount);
+			std::vector<Face> tempFaces(addList[i].second->faceAmount);
+			std::vector<Tet> tempTets(addList[i].second->tetAmount);
+			std::vector<Material> tempMaterials(addList[i].second->materialAmount);
 
 			//create the minified object from the input object
-			MiniObject tempObject(*addList[i]);
+			MiniObject tempObject(*addList[i].second);
 
-			uint maxIter = glm::max(addList[i]->materialAmount, glm::max(addList[i]->verticeAmount, glm::max(addList[i]->faceAmount, addList[i]->tetAmount)));
+			uint maxIter = glm::max(addList[i].second->materialAmount, glm::max(addList[i].second->verticeAmount, glm::max(addList[i].second->faceAmount, addList[i].second->tetAmount)));
 
 			for (uint t = 0; t < maxIter; ++t) {
-				if (t < addList[i]->verticeAmount) {
-					tempVertices[t] = addList[i]->vertices[t];
+				if (t < addList[i].second->verticeAmount) {
+					tempVertices[t] = addList[i].second->vertices[t];
+					glm::vec4 pos = glm::vec4(tempVertices[t].position.x, tempVertices[t].position.y, tempVertices[t].position.z, 1.0f);
+					pos = addList[i].first*pos;
+					tempVertices[t].position = glm::vec3(pos.x, pos.y, pos.z);
 					tempVertices[t].object = objectOffset;
 				}
-				if (t < addList[i]->faceAmount) {
-					tempFaces[t] = addList[i]->faces[t];
+				if (t < addList[i].second->faceAmount) {
+					tempFaces[t] = addList[i].second->faces[t];
+
+					tempFaces[t].indices.x += vertexOffset;
+					tempFaces[t].indices.y += vertexOffset;
+					tempFaces[t].indices.z += vertexOffset;
+
 					tempFaces[t].material += materialOffset;
 				}
-				if (t < addList[i]->tetAmount) {
-					tempTets[t] = addList[i]->tets[t];
+				if (t < addList[i].second->tetAmount) {
+					tempTets[t] = addList[i].second->tets[t];
 					tempTets[t].material += materialOffset;
 					tempTets[t].object = objectOffset;
 				}
-				if (t < addList[i]->materialAmount) {
-					tempMaterials[t] = addList[i]->materials[t];
+				if (t < addList[i].second->materialAmount) {
+					tempMaterials[t] = addList[i].second->materials[t];
 				}
 			}
 
@@ -247,10 +255,10 @@ void Scene::Compile() {
 
 
 			//update the offsets
-			tetOffset += addList[i]->tetAmount;
-			faceOffset += addList[i]->faceAmount;
-			vertexOffset += addList[i]->verticeAmount;
-			materialOffset += addList[i]->materialAmount;
+			tetOffset += addList[i].second->tetAmount;
+			faceOffset += addList[i].second->faceAmount;
+			vertexOffset += addList[i].second->verticeAmount;
+			materialOffset += addList[i].second->materialAmount;
 			++objectOffset;
 
 		}
@@ -261,8 +269,8 @@ void Scene::Compile() {
 }
 
 //object pointer is host
-void Scene::AddObject(Object* obj) {
-	addList.push_back(obj);
+void Scene::AddObject(glm::mat4 matrix, Object* obj) {
+	addList.push_back(std::make_pair(matrix, obj));
 }
 
 void Scene::RemoveObject(Object* obj) {

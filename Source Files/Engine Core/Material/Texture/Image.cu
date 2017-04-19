@@ -22,15 +22,12 @@ Image::Image()
 {
 
 }
-
-Image::~Image() {
-
-	CudaCheck(cudaDestroyTextureObject(texObj));
-
-	// Free device memory 
-	//cudaFree(cuArray);
-
-}
+//
+//Image::~Image() {
+//
+//	CudaCheck(cudaDestroyTextureObject(texObj));
+//
+//}
 
 
 #pragma pack(push,4)

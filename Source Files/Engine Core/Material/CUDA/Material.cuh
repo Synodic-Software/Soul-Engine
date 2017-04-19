@@ -8,18 +8,17 @@ class Material {
 public:
 
 	Material(std::string texName = "Resources\\Textures\\SoulDefault.png");
-	~Material();
 
 	glm::vec4 diffuse;
 	glm::vec4 emit;
 
-	//Image diffuseImage;
+	Image diffuseImage;
 
 	__host__ __device__ bool operator==(const Material& other) const {
 		return
 			diffuse == other.diffuse &&
-			emit == other.emit; //&&
-			//diffuseImage == other.diffuseImage;
+			emit == other.emit &&
+			diffuseImage == other.diffuseImage;
 	}
 
 	__host__ __device__ friend void swap(Material& a, Material& b)
@@ -33,13 +32,13 @@ public:
 		a.emit = b.emit;
 		b.emit = temp;
 
-		//swap(a.diffuseImage, b.diffuseImage);
+		swap(a.diffuseImage, b.diffuseImage);
 	}
 	__host__ __device__ Material& operator=(Material arg)
 	{
 		this->diffuse = arg.diffuse;
 		this->emit = arg.emit;
-		//this->diffuseImage = arg.diffuseImage;
+		this->diffuseImage = arg.diffuseImage;
 
 		return *this;
 	}

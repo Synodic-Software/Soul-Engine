@@ -396,23 +396,36 @@ int main()
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 			camera->UpdateVariables();
 		});
-
-
-		Material* whiteGray = new Material();
-		whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
-		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	
 
 		Scene* scene = new Scene();
 
-		Object* obj = new Object("Resources\\Objects\\Rebellion.obj", whiteGray);
-		scene->AddObject(obj);
+		Material* Tree = new Material("Resources\\Textures\\Green.png");
+		Tree->diffuse = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
+		Tree->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+		Material* whiteGray = new Material();
+		whiteGray->diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
+		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+		Material* light = new Material("Resources\\Textures\\White.png");
+		light->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		light->emit = glm::vec4(6.0f, 6.0f, 6.0f, 1.0f);
+
+		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
+		scene->AddObject(glm::mat4(),tree);
+
+		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
+		scene->AddObject(glm::mat4(),plane);
+
+		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
+		scene->AddObject(glm::translate(glm::mat4(), glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10)),sphere);
 
 		SubmitScene(scene);
 
 		SoulRun();
 
 		delete whiteGray;
-		delete obj;
 		delete scene;
 
 		SoulTerminate();

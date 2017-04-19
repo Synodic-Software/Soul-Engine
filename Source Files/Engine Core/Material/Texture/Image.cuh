@@ -7,7 +7,7 @@ public:
 
 	Image();
 	void LoadFromFile(const char*, bool, bool);
-	~Image();
+	//~Image();
 
 	int width;
 	int height;
