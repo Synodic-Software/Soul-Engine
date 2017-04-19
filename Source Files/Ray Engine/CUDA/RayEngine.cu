@@ -277,7 +277,7 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 	uint localIndex = ray.resultOffset;
 
-	curandState randState = randomState[localIndex];
+	curandState randState = randomState[index];
 
 	glm::vec3 col;
 
