@@ -217,9 +217,3 @@ x64/Release/cudart64_75.dll
 /Soul Engine.VC.VC.opendb
 *.opendb
 *.db
-
-# image files
-
-*.png
-*.jpg
-*.jpeg

@@ -394,6 +394,14 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	float   idiry;
 	float   idirz;
 
+	//ray precalc
+	int kz;
+	int kx;
+	int ky;
+	float Sx;
+	float Sy;
+	float Sz;
+
 	//scene pointers
 	Ray ray;
 	BVHData bvh = *(scene->bvhData);
@@ -425,6 +433,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 				break;
 			}
 
+			//ray local storage + precalculations
 			ray = rays[rayidx];
 			origx = ray.origin.x;
 			origy = ray.origin.y;
@@ -439,6 +448,25 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			oodx = origx * idirx;
 			oody = origy * idiry;
 			oodz = origz * idirz;
+
+			//triangle precalc
+			glm::vec3 absDir = glm::abs(ray.direction);
+			if (absDir.x>=absDir.y&&absDir.x>=absDir.z) {
+				kz = 0;
+			}
+			else if (absDir.y>=absDir.x&&absDir.y>=absDir.z) {
+				kz = 1;
+			}
+			else {
+				kz = 2;
+			}
+
+			kx = kz + 1; if (kx == 3) kx = 0;
+			ky = kx + 1; if (ky == 3) ky = 0;
+			if (ray.direction[kz] < 0.0f) {				swap(kx, ky);			}
+			Sx = ray.direction[kx] / ray.direction[kz];
+			Sy = ray.direction[ky] / ray.direction[kz];
+			Sz = 1.0f / ray.direction[kz];
 
 			// Setup traversal.
 
