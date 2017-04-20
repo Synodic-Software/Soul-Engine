@@ -370,8 +370,9 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		glm::vec2 bestUV = (1.0f - bary.x - bary.y) * uv0 + bary.x * uv1 + bary.y * uv2;
 
+		glm::vec3 orientedNormal = glm::dot(bestNormal, glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z)) < 0 ? bestNormal : bestNormal * -1.0f;
 
-		glm::vec3 biasVector = (RAY_BIAS_DISTANCE * bestNormal);
+		glm::vec3 biasVector = (RAY_BIAS_DISTANCE * orientedNormal);
 
 		glm::vec3 bestIntersectionPoint = PositionAlongRay(ray, hitT);
 
@@ -392,8 +393,6 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 
 		//ray.storage *= mat->diffuse;
-
-		glm::vec3 orientedNormal = glm::dot(bestNormal, glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z)) < 0 ? bestNormal : bestNormal * -1.0f;
 
 		float r1 = 2 * PI * curand_uniform(&randState);
 		float r2 = curand_uniform(&randState);
