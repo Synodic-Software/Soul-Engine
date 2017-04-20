@@ -201,6 +201,62 @@ __host__ __device__ __inline__ glm::vec3 PositionAlongRay(const Ray& ray, const 
 	return glm::vec3(ray.origin.x, ray.origin.y, ray.origin.z) + t * glm::vec3(ray.direction.x, ray.direction.y, ray.direction.z);
 }
 
+//woop
+__host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA, const glm::vec3& triB, const glm::vec3& triC,
+	const glm::vec3& rayO, int kx, int ky, int kz, float Sx, float Sy, float Sz,
+	float& t, const float& tMax, float& bary1, float& bary2)
+{
+	const glm::vec3 A = triA - rayO;
+	const glm::vec3 B = triB - rayO;
+	const glm::vec3 C = triC - rayO;
+
+	const float Ax = A[kx] - Sx*A[kz];
+	const float Ay = A[ky] - Sy*A[kz];
+	const float Bx = B[kx] - Sx*B[kz];
+	const float By = B[ky] - Sy*B[kz];
+	const float Cx = C[kx] - Sx*C[kz];
+	const float Cy = C[ky] - Sy*C[kz];
+	float U = Cx*By - Cy*Bx;
+	float V = Ax*Cy - Ay*Cx;
+	float W = Bx*Ay - By*Ax;
+	if (U == 0.0f || V == 0.0f || W == 0.0f) {
+		double CxBy = (double)Cx*(double)By;
+		double CyBx = (double)Cy*(double)Bx;
+		U = (float)(CxBy - CyBx);
+		double AxCy = (double)Ax*(double)Cy;
+		double AyCx = (double)Ay*(double)Cx;
+		V = (float)(AxCy - AyCx);
+		double BxAy = (double)Bx*(double)Ay;
+		double ByAx = (double)By*(double)Ax;
+		W = (float)(BxAy - ByAx);
+	}
+	if ((U < 0.0f || V < 0.0f || W < 0.0f) &&
+		(U > 0.0f || V > 0.0f || W > 0.0f)) {		return false;
+	}
+	float det = U + V + W;
+	if (det == 0.0f) {		return false;
+	}
+	const float Az = Sz*A[kz];
+	const float Bz = Sz*B[kz];
+	const float Cz = Sz*C[kz];
+	const float T = U*Az + V*Bz + W*Cz;
+	/*float det_sign = glm::sign(det);
+	if (xorf(T, det_sign) < 0.0f) ||
+		xorf(T, det_sign) > hit.t * xorf(det, det_sign)){
+		return false;
+	}*/
+
+	const float rcpDet = 1.0f / det;
+
+	bary1 = U*rcpDet;
+	bary2 = V*rcpDet;
+	t = T*rcpDet;
+
+	return true;
+}
+
+
+//Moller-Trumbore
 __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
 	const glm::vec3& rayO, const glm::vec3& rayD, const glm::vec3& invDir,
 	float& t, const float& tMax, float& bary1, float& bary2)
@@ -451,10 +507,10 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			//triangle precalc
 			glm::vec3 absDir = glm::abs(ray.direction);
-			if (absDir.x>=absDir.y&&absDir.x>=absDir.z) {
+			if (absDir.x >= absDir.y&&absDir.x >= absDir.z) {
 				kz = 0;
 			}
-			else if (absDir.y>=absDir.x&&absDir.y>=absDir.z) {
+			else if (absDir.y >= absDir.x&&absDir.y >= absDir.z) {
 				kz = 1;
 			}
 			else {
@@ -714,7 +770,7 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 					blockCount = (numActive + blockSize - 1) / blockSize;
 
 					//main engine, collects hits
-					EngineExecute << <blockCountE, blockSizeE, warpPerBlock*sizeof(int) >> > (numActive, jobs, numberJobs, deviceRays, scene, counter);
+					EngineExecute << <blockCountE, blockSizeE, warpPerBlock * sizeof(int) >> > (numActive, jobs, numberJobs, deviceRays, scene, counter);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
