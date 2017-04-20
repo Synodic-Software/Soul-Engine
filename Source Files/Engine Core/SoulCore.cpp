@@ -328,7 +328,7 @@ int main()
 		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER*5, (DECAMETER) * 5));
 		camera->OffsetOrientation(225, 45);
 
-		Window* mainWindow = WindowManager::CreateWindow(FULLSCREEN, "main", monitor, xPos, yPos, 1920, 1080);
+		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 
 		WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(camera)));
 
