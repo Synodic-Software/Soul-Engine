@@ -17,5 +17,5 @@ __device__ glm::vec3 Sky::ExtractColour(const glm::vec3& direction){
 
 
 	float normalized = direction.y / 2.0f + 0.5f;
-	return glm::mix(glm::vec3(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f),glm::vec3(135 / 255.0f, 200 / 255.0f, 240 / 255.0f),normalized/2.0f+0.5f);
+	return glm::mix(glm::vec3(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f),glm::vec3(135 / 255.0f, 200 / 255.0f, 240 / 255.0f),normalized/2.0f+0.5f)*0.5f;
 }

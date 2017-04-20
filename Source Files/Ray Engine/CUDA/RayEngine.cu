@@ -330,7 +330,7 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		//unsigned char green = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 1, localIndex);
 		//unsigned char red = tex2D<unsigned char>(mat->texObj, (4 * localIndex) + 2, localIndex);
 
-		float4 PicCol = tex2DLod<float4>(mat.diffuseImage.texObj, bestUV.x * 20, bestUV.y * 20, 0.0f);
+		float4 PicCol = tex2DLod<float4>(mat.diffuseImage.texObj, bestUV.x, bestUV.y, 0.0f);
 		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
 		ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
 

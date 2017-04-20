@@ -328,7 +328,7 @@ int main()
 		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER*5, (DECAMETER) * 5));
 		camera->OffsetOrientation(225, 45);
 
-		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
+		Window* mainWindow = WindowManager::CreateWindow(FULLSCREEN, "main", monitor, xPos, yPos, 1920, 1080);
 
 		WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(camera)));
 
@@ -400,7 +400,7 @@ int main()
 
 		Scene* scene = new Scene();
 
-		Material* Tree = new Material("Resources\\Textures\\Green.png");
+		Material* Tree = new Material("Resources\\Textures\\Tree_Color.png");
 		Tree->diffuse = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
 		Tree->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -410,7 +410,7 @@ int main()
 
 		Material* light = new Material("Resources\\Textures\\White.png");
 		light->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		light->emit = glm::vec4(6.0f, 6.0f, 6.0f, 1.0f);
+		light->emit = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 
 		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
 		scene->AddObject(glm::mat4(),tree);
