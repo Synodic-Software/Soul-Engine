@@ -240,7 +240,7 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA,
 	const float Bz = Sz*B[kz];
 	const float Cz = Sz*C[kz];
 	const float T = U*Az + V*Bz + W*Cz;
-	/*float det_sign = glm::sign(det);
+	/*int det_sign = glm::sign(det);
 	if (xorf(T, det_sign) < 0.0f) ||
 		xorf(T, det_sign) > hit.t * xorf(det, det_sign)){
 		return false;
