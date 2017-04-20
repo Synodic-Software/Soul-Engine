@@ -248,11 +248,11 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA,
 
 	const float rcpDet = 1.0f / det;
 
-	bary1 = U*rcpDet;
-	bary2 = V*rcpDet;
+	bary1 = V*rcpDet;
+	bary2 = W*rcpDet;
 	t = T*rcpDet;
 
-	return true;
+	return (t > EPSILON &&t < tMax);
 }
 
 
@@ -625,7 +625,10 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 				float tTemp;
 
 				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
-				{ origx, origy, origz, }, { dirx, diry, dirz }, { idirx, idiry, idirz },
+				{ origx, origy, origz, }, kx,ky,kz,Sx,Sy,Sz,
+
+				//if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
+				//{ origx, origy, origz, }, { dirx, diry, dirz }, { idirx, idiry, idirz },
 					tTemp, ray.direction.w, bary1, bary2)) {
 
 					ray.direction.w = tTemp;
