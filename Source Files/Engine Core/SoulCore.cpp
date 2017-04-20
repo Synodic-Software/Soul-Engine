@@ -418,8 +418,12 @@ int main()
 		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
 		scene->AddObject(glm::mat4(),plane);
 
+		glm::mat4 transform;
+		transform = glm::translate(transform, /*100000000000000000.0f**/glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10));
+		transform = glm::scale(transform, /*100000000000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
+
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
-		scene->AddObject(glm::translate(glm::mat4(), glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10)),sphere);
+		scene->AddObject(transform,sphere);
 
 		SubmitScene(scene);
 

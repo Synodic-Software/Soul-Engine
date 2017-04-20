@@ -71,7 +71,7 @@ namespace Scheduler {
 			public boost::fibers::algo::algorithm_with_properties< FiberProperties > {
 		private:
 			typedef std::list< boost::fibers::context * >  rqueue_t;
-			typedef boost::fibers::scheduler::ready_queue_t lqueue_t;
+			typedef boost::fibers::scheduler::ready_queue_type lqueue_t;
 
 			static rqueue_t     	readyQueue;
 			static std::mutex   	queueMutex;
