@@ -9,8 +9,9 @@
 #include "Utility\Logger.h"
 #include <curand_kernel.h>
 
+//cant have AABB defined and not define WOOP_TRI
 #define WOOP_TRI
-#define WOOP_AABB
+//#define WOOP_AABB
 
 #define STACK_SIZE 64
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
@@ -269,37 +270,37 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA,
 }
 
 
-////Moller-Trumbore
-//__host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
-//	const glm::vec3& rayO, const glm::vec3& rayD, const glm::vec3& invDir,
-//	float& t, const float& tMax, float& bary1, float& bary2)
-//{
-//
-//	glm::vec3 edge1 = b - a;
-//	glm::vec3 edge2 = c - a;
-//
-//	glm::vec3 pvec = glm::cross(rayD, edge2);
-//
-//	float det = glm::dot(edge1, pvec);
-//
-//	if (det == 0.f) {
-//		return false;
-//	}
-//
-//	float inv_det = 1.0f / det;
-//
-//	glm::vec3 tvec = rayO - a;
-//
-//	bary1 = glm::dot(tvec, pvec) * inv_det;
-//
-//	glm::vec3 qvec = glm::cross(tvec, edge1);
-//
-//	bary2 = glm::dot(rayD, qvec) * inv_det;
-//
-//	t = glm::dot(edge2, qvec) * inv_det;
-//
-//	return(t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f));
-//}
+//Moller-Trumbore
+__host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
+	const glm::vec3& rayO, const glm::vec3& rayD, const glm::vec3& invDir,
+	float& t, const float& tMax, float& bary1, float& bary2)
+{
+
+	glm::vec3 edge1 = b - a;
+	glm::vec3 edge2 = c - a;
+
+	glm::vec3 pvec = glm::cross(rayD, edge2);
+
+	float det = glm::dot(edge1, pvec);
+
+	if (det == 0.f) {
+		return false;
+	}
+
+	float inv_det = 1.0f / det;
+
+	glm::vec3 tvec = rayO - a;
+
+	bary1 = glm::dot(tvec, pvec) * inv_det;
+
+	glm::vec3 qvec = glm::cross(tvec, edge1);
+
+	bary2 = glm::dot(rayD, qvec) * inv_det;
+
+	t = glm::dot(edge2, qvec) * inv_det;
+
+	return(t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f));
+}
 
 
 __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const Scene* scene, int * nAtomic, curandState* randomState) {
@@ -432,7 +433,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	Node*   currentNode = nullptr;				// Non-negative: current internal node, negative: second postponed leaf.
 	int     rayidx;
 
-#ifdef WOOP_AABB
+#if defined WOOP_AABB
 
 	float idirxNear;
 	float idiryNear;
@@ -453,13 +454,18 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 #endif
 
+#if defined WOOP_AABB || defined WOOP_TRI
 	//ray precalc
 	int kz;
 	int kx;
 	int ky;
+#endif
+
+#if defined WOOP_TRI
 	float Sx;
 	float Sy;
 	float Sz;
+#endif
 
 	//scene pointers
 	Ray ray;
@@ -495,6 +501,9 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			//ray local storage + precalculations
 			ray = rays[rayidx];
 
+#if defined WOOP_AABB || defined WOOP_TRI
+
+
 			//triangle precalc
 			glm::vec3 absDir = glm::abs(ray.direction);
 			if (absDir.x >= absDir.y&&absDir.x >= absDir.z) {
@@ -513,13 +522,15 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			if (ray.direction[kz] < 0.0f) {
 				swap(kx, ky);
 			}
+#endif
 
+#if	defined WOOP_TRI
 			Sx = ray.direction[kx] / ray.direction[kz];
 			Sy = ray.direction[ky] / ray.direction[kz];
 			Sz = 1.0f / ray.direction[kz];
+#endif
 
-
-#ifdef WOOP_AABB
+#if defined WOOP_AABB
 
 			glm::vec3 rdir = 1.0f / ray.direction;
 			idirxNear = Dn(Dn(rdir[kx]));
@@ -566,7 +577,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 				glm::vec3  b1Min = childR->box.min;
 				glm::vec3  b1Max = childR->box.max;
 
-#ifdef WOOP_AABB
+#if defined WOOP_AABB
 
 				//grab the modifyable bounds
 				float nearX0 = b0Min[kx], farX0 = b0Max[kx];
@@ -717,11 +728,13 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 				float bary2;
 				float tTemp;
 
+#if defined	WOOP_TRI
 				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
-				{ ray.origin }, kx, ky, kz, Sx, Sy, Sz,
-
-					//if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
-					//{ origx, origy, origz, }, { dirx, diry, dirz }, { idirx, idiry, idirz },
+					ray.origin, kx, ky, kz, Sx, Sy, Sz,
+#else
+				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
+					ray.origin, ray.direction, { idirx, idiry, idirz },
+#endif
 					tTemp, ray.direction.w, bary1, bary2)) {
 
 					ray.direction.w = tTemp;
