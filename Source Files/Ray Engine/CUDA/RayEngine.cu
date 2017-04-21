@@ -1,9 +1,5 @@
 #include "RayEngine.cuh"
 
-#define STACK_SIZE 64
-#define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
-#define RAY_BIAS_DISTANCE 0.0002f 
-
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <thrust/remove.h>
@@ -11,8 +7,16 @@
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "GPGPU\CUDA\CUDABackend.h"
 #include "Utility\Logger.h"
-
 #include <curand_kernel.h>
+
+#define WOOP_TRI
+#define WOOP_AABB
+
+#define STACK_SIZE 64
+#define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
+#define RAY_BIAS_DISTANCE 0.0002f 
+#define p (1.0f + 2e-23f)
+#define m (1.0f - 2e-23f)
 
 Ray* deviceRays = nullptr;
 Ray* deviceRaysB = nullptr;
@@ -407,6 +411,13 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 }
 
+__inline__ __device__ float up(float a) { return a > 0.0f ? a*p : a*m; }
+__inline__ __device__ float dn(float a) { return a > 0.0f ? a*m : a*p; }
+
+__inline__ __device__ float Up(float a) { return a*p; }
+__inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
+__inline__ __device__ float Dn(float a) { return a*m; }__inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
+
 
 __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
 
@@ -414,24 +425,33 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	Node * traversalStack[STACK_SIZE];
 	traversalStack[0] = nullptr; // Bottom-most entry.
 
+	float eps = exp2f(-80.0f);
 
 	char    stackPtr;                       // Current position in traversal stack.
 	Node*   currentLeaf;                       // First postponed leaf, non-negative if none.
 	Node*   currentNode = nullptr;				// Non-negative: current internal node, negative: second postponed leaf.
 	int     rayidx;
 
-	float oodxNear;
-	float oodyNear;
-	float oodzNear;
-	float oodxFar;
-	float oodyFar;
-	float oodzFar;
+#ifdef WOOP_AABB
+
 	float idirxNear;
 	float idiryNear;
 	float idirzNear;
 	float idirxFar;
 	float idiryFar;
 	float idirzFar;
+
+#else
+
+	float oodx;
+	float oody;
+	float oodz;
+
+	float idirx;
+	float idiry;
+	float idirz;
+
+#endif
 
 	//ray precalc
 	int kz;
@@ -498,52 +518,30 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			Sy = ray.direction[ky] / ray.direction[kz];
 			Sz = 1.0f / ray.direction[kz];
 
-			float eps = exp2f(-80.0f);
 
-			////reciprical calc
-			/*idirxNear = __frcp_rd(ray.direction[kx]);
-			idiryNear =__frcp_rd(ray.direction[ky]);
-			idirzNear = __frcp_rd(ray.direction[kz]);
-			idirxFar = __frcp_ru(ray.direction[kx]);
-			idiryFar = __frcp_ru(ray.direction[ky]);
-			idirzFar = __frcp_ru(ray.direction[kz]);*/
+#ifdef WOOP_AABB
 
-			idirxNear = 1.0f / (fabsf(ray.direction.x) > eps ? ray.direction.x : copysignf(eps, ray.direction.x));
-			idiryNear = 1.0f / (fabsf(ray.direction.y) > eps ? ray.direction.y : copysignf(eps, ray.direction.y));
-			idirzNear = 1.0f / (fabsf(ray.direction.z) > eps ? ray.direction.z : copysignf(eps, ray.direction.z));
-			idirxFar = 1.0f / (fabsf(ray.direction.x) > eps ? ray.direction.x : copysignf(eps, ray.direction.x));
-			idiryFar = 1.0f / (fabsf(ray.direction.y) > eps ? ray.direction.y : copysignf(eps, ray.direction.y));
-			idirzFar = 1.0f / (fabsf(ray.direction.z) > eps ? ray.direction.z : copysignf(eps, ray.direction.z));
+			glm::vec3 rdir = 1.0f / ray.direction;
+			idirxNear = Dn(Dn(rdir[kx]));
+			idiryNear = Dn(Dn(rdir[ky]));
+			idirzNear = Dn(Dn(rdir[kz]));
+			idirxFar = Up(Up(rdir[kx]));
+			idiryFar = Up(Up(rdir[ky]));
+			idirzFar = Up(Up(rdir[kz]));
 
-			//AABB origin error calculation (needs to be per AABB, not per Ray)
-			/*glm::vec3 lower = __frcp_rd(abs(org - box.lower));
-			glm::vec3 upper = __frcp_ru(abs(org - box.upper));
-			float max_z = max(lower[kz], upper[kz]);
-			float err_near_x = __frcp_ru(lower[kx] + max_z);
-			float err_near_y = __frcp_ru(lower[ky] + max_z);
-			float org_near_x = up(org[kx] + __frcp_ru(eps*err_near_x));
-			float org_near_y = up(org[ky] + __frcp_ru(eps*err_near_y));
-			float org_near_z = org[kz];
-			float err_far_x = __frcp_ru(upper[kx] + max_z);
-			float err_far_y = __frcp_ru(upper[ky] + max_z);
-			float org_far_x = dn(org[kx] - __frcp_ru(eps*err_far_x));
-			float org_far_y = dn(org[ky] - __frcp_ru(eps*err_far_y));
-			float org_far_z = org[kz];
-			if (dir[kx] < 0.0f) swap(org_near_x, org_far_x);
-			if (dir[ky] < 0.0f) swap(org_near_y, org_far_y);*/
+#else
 
-			//non-modid
-			oodxNear = ray.origin.x * idirxNear;
-			oodyNear = ray.origin.y * idiryNear;
-			oodzNear = ray.origin.z * idirzNear;
-			oodxFar = ray.origin.x * idirxFar;
-			oodyFar = ray.origin.y * idiryFar;
-			oodzFar = ray.origin.z * idirzFar;
+			idirx = 1.0f / (fabsf(ray.direction.x) > eps ? ray.direction.x : copysignf(eps, ray.direction.x));
+			idiry = 1.0f / (fabsf(ray.direction.y) > eps ? ray.direction.y : copysignf(eps, ray.direction.y));
+			idirz = 1.0f / (fabsf(ray.direction.z) > eps ? ray.direction.z : copysignf(eps, ray.direction.z));
+			//non-moded
+			oodx = ray.origin.x * idirx;
+			oody = ray.origin.y * idiry;
+			oodz = ray.origin.z * idirz;
 
-
+#endif
 
 			// Setup traversal.
-
 			stackPtr = 0;
 			currentLeaf = nullptr;   // No postponed leaf.
 			currentNode = bvh.root;   // Start from the root.
@@ -565,28 +563,104 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				glm::vec3  b0Min = childL->box.min;
 				glm::vec3  b0Max = childL->box.max;
-
 				glm::vec3  b1Min = childR->box.min;
 				glm::vec3  b1Max = childR->box.max;
 
-				// Intersect the ray against the child nodes.
+#ifdef WOOP_AABB
 
-				const float c0lox = b0Min.x * idirxNear - oodxNear;
-				const float c0hix = b0Max.x * idirxFar - oodxFar;
-				const float c0loy = b0Min.y * idiryNear - oodyNear;
-				const float c0hiy = b0Max.y * idiryFar - oodyFar;
-				const float c0loz = b0Min.z   * idirzNear - oodzNear;
-				const float c0hiz = b0Max.z   * idirzFar - oodzFar;
-				const float c1loz = b1Min.z   * idirzNear - oodzNear;
-				const float c1hiz = b1Max.z   * idirzFar - oodzFar;
+				//grab the modifyable bounds
+				float nearX0 = b0Min[kx], farX0 = b0Max[kx];
+				float nearY0 = b0Min[ky], farY0 = b0Max[ky];
+				float nearZ0 = b0Min[kz], farZ0 = b0Max[kz];
+				float nearX1 = b1Min[kx], farX1 = b1Max[kx];
+				float nearY1 = b1Min[ky], farY1 = b1Max[ky];
+				float nearZ1 = b1Min[kz], farZ1 = b1Max[kz];
+
+				if (ray.direction[kx] < 0.0f) swap(nearX0, farX0);
+				if (ray.direction[ky] < 0.0f) swap(nearY0, farY0);
+				if (ray.direction[kz] < 0.0f) swap(nearZ0, farZ0);				if (ray.direction[kx] < 0.0f) swap(nearX1, farX1);
+				if (ray.direction[ky] < 0.0f) swap(nearY1, farY1);
+				if (ray.direction[kz] < 0.0f) swap(nearZ1, farZ1);
+
+				glm::vec3 lower0 = Dn(glm::abs(glm::vec3(ray.origin) - b0Min));
+				glm::vec3 upper0 = Up(glm::abs(glm::vec3(ray.origin) - b0Max));
+				glm::vec3 lower1 = Dn(abs(glm::vec3(ray.origin) - b1Min));
+				glm::vec3 upper1 = Up(abs(glm::vec3(ray.origin) - b1Max));
+
+				float max_z0 = glm::max(lower0[kz], upper0[kz]);
+				float max_z1 = glm::max(lower1[kz], upper1[kz]);
+
+				//calc the rror and update the origin
+				float err_near_x0 = Up(lower0[kx] + max_z0);
+				float err_near_y0 = Up(lower0[ky] + max_z0);
+				float err_near_x1 = Up(lower1[kx] + max_z1);
+				float err_near_y1 = Up(lower1[ky] + max_z1);
+
+				float oodxNear0 = up(ray.origin[kx] + Up(eps*err_near_x0));
+				float oodyNear0 = up(ray.origin[ky] + Up(eps*err_near_y0));
+				float oodzNear0 = ray.origin[kz];
+				float oodxNear1 = up(ray.origin[kx] + Up(eps*err_near_x1));
+				float oodyNear1 = up(ray.origin[ky] + Up(eps*err_near_y1));
+				float oodzNear1 = ray.origin[kz];
+
+				float err_far_x0 = Up(upper0[kx] + max_z0);
+				float err_far_y0 = Up(upper0[ky] + max_z0);
+				float err_far_x1 = Up(upper1[kx] + max_z1);
+				float err_far_y1 = Up(upper1[ky] + max_z1);
+
+				float oodxFar0 = dn(ray.origin[kx] - Up(eps*err_far_x0));
+				float oodyFar0 = dn(ray.origin[ky] - Up(eps*err_far_y0));
+				float oodzFar0 = ray.origin[kz];
+				float oodxFar1 = dn(ray.origin[kx] - Up(eps*err_far_x1));
+				float oodyFar1 = dn(ray.origin[ky] - Up(eps*err_far_y1));
+				float oodzFar1 = ray.origin[kz];
+
+				if (ray.direction[kx] < 0.0f) swap(oodxNear0, oodxFar0);
+				if (ray.direction[ky] < 0.0f) swap(oodyNear0, oodyFar0);
+				if (ray.direction[kx] < 0.0f) swap(oodxNear1, oodxFar1);
+				if (ray.direction[ky] < 0.0f) swap(oodyNear1, oodyFar1);
+
+
+
+				// Intersect the ray against the child nodes.
+				const float c0lox = (nearX0 - oodxNear0) * idirxNear;
+				const float c0hix = (farX0 - oodxFar0) * idirxFar;
+				const float c0loy = (nearY0 - oodyNear0) * idiryNear;
+				const float c0hiy = (farY0 - oodyFar0) * idiryFar;
+				const float c0loz = (nearZ0 - oodzNear0)   * idirzNear;
+				const float c0hiz = (farZ0 - oodzFar0)   * idirzFar;
+				const float c1loz = (nearZ1 - oodzNear1)   * idirzNear;
+				const float c1hiz = (farZ1 - oodzFar1)   * idirzFar;
 				const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
 				const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
-				const float c1lox = b1Min.x * idirxNear - oodxNear;
-				const float c1hix = b1Max.x * idirxFar - oodxFar;
-				const float c1loy = b1Min.y * idiryNear - oodyNear;
-				const float c1hiy = b1Max.y * idiryFar - oodyFar;
+
+				const float c1lox = (nearX1 - oodxNear1) * idirxNear;
+				const float c1hix = (farX1 - oodxFar1) * idirxFar;
+				const float c1loy = (nearY1 - oodyNear1) * idiryNear;
+				const float c1hiy = (farY1 - oodyFar1) * idiryFar;
 				const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
 				const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
+
+#else
+
+				const float c0lox = b0Min.x * idirx - oodx;
+				const float c0hix = b0Max.x * idirx - oodx;
+				const float c0loy = b0Min.y * idiry - oody;
+				const float c0hiy = b0Max.y * idiry - oody;
+				const float c0loz = b0Min.z   * idirz - oodz;
+				const float c0hiz = b0Max.z   * idirz - oodz;
+				const float c1loz = b1Min.z   * idirz - oodz;
+				const float c1hiz = b1Max.z   * idirz - oodz;
+				const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
+				const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
+				const float c1lox = b1Min.x * idirx - oodx;
+				const float c1hix = b1Max.x * idirx - oodx;
+				const float c1loy = b1Min.y * idiry - oody;
+				const float c1hiy = b1Max.y * idiry - oody;
+				const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
+				const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
+
+#endif
 
 				bool swp = (c1min < c0min);
 
