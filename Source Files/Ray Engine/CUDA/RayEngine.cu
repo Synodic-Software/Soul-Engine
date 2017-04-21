@@ -215,10 +215,12 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA,
 	const float Bx = B[kx] - Sx*B[kz];
 	const float By = B[ky] - Sy*B[kz];
 	const float Cx = C[kx] - Sx*C[kz];
-	const float Cy = C[ky] - Sy*C[kz];
+	const float Cy = C[ky] - Sy*C[kz];
+
 	float U = Cx*By - Cy*Bx;
 	float V = Ax*Cy - Ay*Cx;
-	float W = Bx*Ay - By*Ax;
+	float W = Bx*Ay - By*Ax;
+
 	if (U == 0.0f || V == 0.0f || W == 0.0f) {
 		double CxBy = (double)Cx*(double)By;
 		double CyBx = (double)Cy*(double)Bx;
@@ -229,17 +231,24 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA,
 		double BxAy = (double)Bx*(double)Ay;
 		double ByAx = (double)By*(double)Ax;
 		W = (float)(BxAy - ByAx);
-	}
+	}
+
 	if ((U < 0.0f || V < 0.0f || W < 0.0f) &&
-		(U > 0.0f || V > 0.0f || W > 0.0f)) {		return false;
-	}
-	float det = U + V + W;
-	if (det == 0.0f) {		return false;
-	}
+		(U > 0.0f || V > 0.0f || W > 0.0f)) {
+		return false;
+	}
+
+	float det = U + V + W;
+
+	if (det == 0.0f) {
+		return false;
+	}
+
 	const float Az = Sz*A[kz];
 	const float Bz = Sz*B[kz];
 	const float Cz = Sz*C[kz];
-	const float T = U*Az + V*Bz + W*Cz;
+	const float T = U*Az + V*Bz + W*Cz;
+
 	/*int det_sign = glm::sign(det);
 	if (xorf(T, det_sign) < 0.0f) ||
 		xorf(T, det_sign) > hit.t * xorf(det, det_sign)){
@@ -256,63 +265,37 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA,
 }
 
 
-//Moller-Trumbore
-__host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
-	const glm::vec3& rayO, const glm::vec3& rayD, const glm::vec3& invDir,
-	float& t, const float& tMax, float& bary1, float& bary2)
-{
-
-	glm::vec3 edge1 = b - a;
-	glm::vec3 edge2 = c - a;
-
-	glm::vec3 pvec = glm::cross(rayD, edge2);
-
-	float det = glm::dot(edge1, pvec);
-
-	if (det == 0.f) {
-		return false;
-	}
-
-	float inv_det = 1.0f / det;
-
-	glm::vec3 tvec = rayO - a;
-
-	bary1 = glm::dot(tvec, pvec) * inv_det;
-
-	glm::vec3 qvec = glm::cross(tvec, edge1);
-
-	bary2 = glm::dot(rayD, qvec) * inv_det;
-
-	t = glm::dot(edge2, qvec) * inv_det;
-
-	return(t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f));
-}
-
-
-__host__ __device__ bool AABBIntersect(const BoundingBox& box, const glm::vec3& o, const glm::vec3& dInv, const float& t0, float& t1) {
-
-	float temp1 = (box.min.x - o.x)*dInv.x;
-	float temp2 = (box.max.x - o.x)*dInv.x;
-
-	float tMin = glm::min(temp1, temp2);
-	float tmax = glm::max(temp1, temp2);
-
-	temp1 = (box.min.y - o.y)*dInv.y;
-	temp2 = (box.max.y - o.y)*dInv.y;
-
-	tMin = glm::max(tMin, glm::min(temp1, temp2));
-	tmax = glm::min(tmax, glm::max(temp1, temp2));
-
-	temp1 = (box.min.z - o.z)*dInv.z;
-	temp2 = (box.max.z - o.z)*dInv.z;
-
-	tMin = glm::max(tMin, glm::min(temp1, temp2));
-	tmax = glm::min(tmax, glm::max(temp1, temp2));
-
-	float tTest = t1;
-	t1 = tMin;
-	return tmax >= glm::max(t0, tMin) && tMin < tTest;
-}
+////Moller-Trumbore
+//__host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c,
+//	const glm::vec3& rayO, const glm::vec3& rayD, const glm::vec3& invDir,
+//	float& t, const float& tMax, float& bary1, float& bary2)
+//{
+//
+//	glm::vec3 edge1 = b - a;
+//	glm::vec3 edge2 = c - a;
+//
+//	glm::vec3 pvec = glm::cross(rayD, edge2);
+//
+//	float det = glm::dot(edge1, pvec);
+//
+//	if (det == 0.f) {
+//		return false;
+//	}
+//
+//	float inv_det = 1.0f / det;
+//
+//	glm::vec3 tvec = rayO - a;
+//
+//	bary1 = glm::dot(tvec, pvec) * inv_det;
+//
+//	glm::vec3 qvec = glm::cross(tvec, edge1);
+//
+//	bary2 = glm::dot(rayD, qvec) * inv_det;
+//
+//	t = glm::dot(edge2, qvec) * inv_det;
+//
+//	return(t > EPSILON &&t < tMax && (bary1 >= 0.0f && bary2 >= 0.0f && (bary1 + bary2) <= 1.0f));
+//}
 
 
 __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const Scene* scene, int * nAtomic, curandState* randomState) {
@@ -425,8 +408,6 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 }
 
 
-
-
 __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
 
 
@@ -434,20 +415,23 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 	traversalStack[0] = nullptr; // Bottom-most entry.
 
 
-	float   origx, origy, origz;            // Ray origin.
 	char    stackPtr;                       // Current position in traversal stack.
 	Node*   currentLeaf;                       // First postponed leaf, non-negative if none.
 	Node*   currentNode = nullptr;				// Non-negative: current internal node, negative: second postponed leaf.
 	int     rayidx;
-	float   oodx;
-	float   oody;
-	float   oodz;
-	float   dirx;
-	float   diry;
-	float   dirz;
-	float   idirx;
-	float   idiry;
-	float   idirz;
+
+	float oodxNear;
+	float oodyNear;
+	float oodzNear;
+	float oodxFar;
+	float oodyFar;
+	float oodzFar;
+	float idirxNear;
+	float idiryNear;
+	float idirzNear;
+	float idirxFar;
+	float idiryFar;
+	float idirzFar;
 
 	//ray precalc
 	int kz;
@@ -490,19 +474,6 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			//ray local storage + precalculations
 			ray = rays[rayidx];
-			origx = ray.origin.x;
-			origy = ray.origin.y;
-			origz = ray.origin.z;
-			dirx = ray.direction.x;
-			diry = ray.direction.y;
-			dirz = ray.direction.z;
-			float ooeps = exp2f(-80.0f); // Avoid div by zero.
-			idirx = 1.0f / (fabsf(dirx) > ooeps ? dirx : copysignf(ooeps, dirx));
-			idiry = 1.0f / (fabsf(diry) > ooeps ? diry : copysignf(ooeps, diry));
-			idirz = 1.0f / (fabsf(dirz) > ooeps ? dirz : copysignf(ooeps, dirz));
-			oodx = origx * idirx;
-			oody = origy * idiry;
-			oodz = origz * idirz;
 
 			//triangle precalc
 			glm::vec3 absDir = glm::abs(ray.direction);
@@ -517,11 +488,59 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			}
 
 			kx = kz + 1; if (kx == 3) kx = 0;
-			ky = kx + 1; if (ky == 3) ky = 0;
-			if (ray.direction[kz] < 0.0f) {				swap(kx, ky);			}
+			ky = kx + 1; if (ky == 3) ky = 0;
+
+			if (ray.direction[kz] < 0.0f) {
+				swap(kx, ky);
+			}
+
 			Sx = ray.direction[kx] / ray.direction[kz];
 			Sy = ray.direction[ky] / ray.direction[kz];
-			Sz = 1.0f / ray.direction[kz];
+			Sz = 1.0f / ray.direction[kz];
+
+			float eps = exp2f(-80.0f);
+
+			////reciprical calc
+			/*idirxNear = __frcp_rd(ray.direction[kx]);
+			idiryNear =__frcp_rd(ray.direction[ky]);
+			idirzNear = __frcp_rd(ray.direction[kz]);
+			idirxFar = __frcp_ru(ray.direction[kx]);
+			idiryFar = __frcp_ru(ray.direction[ky]);
+			idirzFar = __frcp_ru(ray.direction[kz]);*/
+
+			idirxNear = 1.0f / (fabsf(ray.direction.x) > eps ? ray.direction.x : copysignf(eps, ray.direction.x));
+			idiryNear = 1.0f / (fabsf(ray.direction.y) > eps ? ray.direction.y : copysignf(eps, ray.direction.y));
+			idirzNear = 1.0f / (fabsf(ray.direction.z) > eps ? ray.direction.z : copysignf(eps, ray.direction.z));
+			idirxFar = 1.0f / (fabsf(ray.direction.x) > eps ? ray.direction.x : copysignf(eps, ray.direction.x));
+			idiryFar = 1.0f / (fabsf(ray.direction.y) > eps ? ray.direction.y : copysignf(eps, ray.direction.y));
+			idirzFar = 1.0f / (fabsf(ray.direction.z) > eps ? ray.direction.z : copysignf(eps, ray.direction.z));
+
+			//AABB origin error calculation (needs to be per AABB, not per Ray)
+			/*glm::vec3 lower = __frcp_rd(abs(org - box.lower));
+			glm::vec3 upper = __frcp_ru(abs(org - box.upper));
+			float max_z = max(lower[kz], upper[kz]);
+			float err_near_x = __frcp_ru(lower[kx] + max_z);
+			float err_near_y = __frcp_ru(lower[ky] + max_z);
+			float org_near_x = up(org[kx] + __frcp_ru(eps*err_near_x));
+			float org_near_y = up(org[ky] + __frcp_ru(eps*err_near_y));
+			float org_near_z = org[kz];
+			float err_far_x = __frcp_ru(upper[kx] + max_z);
+			float err_far_y = __frcp_ru(upper[ky] + max_z);
+			float org_far_x = dn(org[kx] - __frcp_ru(eps*err_far_x));
+			float org_far_y = dn(org[ky] - __frcp_ru(eps*err_far_y));
+			float org_far_z = org[kz];
+			if (dir[kx] < 0.0f) swap(org_near_x, org_far_x);
+			if (dir[ky] < 0.0f) swap(org_near_y, org_far_y);*/
+
+			//non-modid
+			oodxNear = ray.origin.x * idirxNear;
+			oodyNear = ray.origin.y * idiryNear;
+			oodzNear = ray.origin.z * idirzNear;
+			oodxFar = ray.origin.x * idirxFar;
+			oodyFar = ray.origin.y * idiryFar;
+			oodzFar = ray.origin.z * idirzFar;
+
+
 
 			// Setup traversal.
 
@@ -552,20 +571,20 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				// Intersect the ray against the child nodes.
 
-				const float c0lox = b0Min.x * idirx - oodx;
-				const float c0hix = b0Max.x * idirx - oodx;
-				const float c0loy = b0Min.y * idiry - oody;
-				const float c0hiy = b0Max.y * idiry - oody;
-				const float c0loz = b0Min.z   * idirz - oodz;
-				const float c0hiz = b0Max.z   * idirz - oodz;
-				const float c1loz = b1Min.z   * idirz - oodz;
-				const float c1hiz = b1Max.z   * idirz - oodz;
+				const float c0lox = b0Min.x * idirxNear - oodxNear;
+				const float c0hix = b0Max.x * idirxFar - oodxFar;
+				const float c0loy = b0Min.y * idiryNear - oodyNear;
+				const float c0hiy = b0Max.y * idiryFar - oodyFar;
+				const float c0loz = b0Min.z   * idirzNear - oodzNear;
+				const float c0hiz = b0Max.z   * idirzFar - oodzFar;
+				const float c1loz = b1Min.z   * idirzNear - oodzNear;
+				const float c1hiz = b1Max.z   * idirzFar - oodzFar;
 				const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
 				const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
-				const float c1lox = b1Min.x * idirx - oodx;
-				const float c1hix = b1Max.x * idirx - oodx;
-				const float c1loy = b1Min.y * idiry - oody;
-				const float c1hiy = b1Max.y * idiry - oody;
+				const float c1lox = b1Min.x * idirxNear - oodxNear;
+				const float c1hix = b1Max.x * idirxFar - oodxFar;
+				const float c1loy = b1Min.y * idiryNear - oodyNear;
+				const float c1hiy = b1Max.y * idiryFar - oodyFar;
 				const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
 				const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
 
@@ -625,10 +644,10 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 				float tTemp;
 
 				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
-				{ origx, origy, origz, }, kx,ky,kz,Sx,Sy,Sz,
+				{ ray.origin }, kx, ky, kz, Sx, Sy, Sz,
 
-				//if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
-				//{ origx, origy, origz, }, { dirx, diry, dirz }, { idirx, idiry, idirz },
+					//if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
+					//{ origx, origy, origz, }, { dirx, diry, dirz }, { idirx, idiry, idirz },
 					tTemp, ray.direction.w, bary1, bary2)) {
 
 					ray.direction.w = tTemp;
