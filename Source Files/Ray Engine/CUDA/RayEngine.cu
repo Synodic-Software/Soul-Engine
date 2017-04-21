@@ -417,7 +417,8 @@ __inline__ __device__ float dn(float a) { return a > 0.0f ? a*m : a*p; }
 
 __inline__ __device__ float Up(float a) { return a*p; }
 __inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
-__inline__ __device__ float Dn(float a) { return a*m; }__inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
+__inline__ __device__ float Dn(float a) { return a*m; }
+__inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
 
 __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
@@ -544,7 +545,8 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 			idirx = 1.0f / (fabsf(ray.direction.x) > eps ? ray.direction.x : copysignf(eps, ray.direction.x));
 			idiry = 1.0f / (fabsf(ray.direction.y) > eps ? ray.direction.y : copysignf(eps, ray.direction.y));
-			idirz = 1.0f / (fabsf(ray.direction.z) > eps ? ray.direction.z : copysignf(eps, ray.direction.z));
+			idirz = 1.0f / (fabsf(ray.direction.z) > eps ? ray.direction.z : copysignf(eps, ray.direction.z));
+
 			//non-moded
 			oodx = ray.origin.x * idirx;
 			oody = ray.origin.y * idiry;
@@ -589,7 +591,8 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 				if (ray.direction[kx] < 0.0f) swap(nearX0, farX0);
 				if (ray.direction[ky] < 0.0f) swap(nearY0, farY0);
-				if (ray.direction[kz] < 0.0f) swap(nearZ0, farZ0);				if (ray.direction[kx] < 0.0f) swap(nearX1, farX1);
+				if (ray.direction[kz] < 0.0f) swap(nearZ0, farZ0);
+				if (ray.direction[kx] < 0.0f) swap(nearX1, farX1);
 				if (ray.direction[ky] < 0.0f) swap(nearY1, farY1);
 				if (ray.direction[kz] < 0.0f) swap(nearZ1, farZ1);
 
