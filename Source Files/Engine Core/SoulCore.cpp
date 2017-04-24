@@ -425,6 +425,8 @@ int main()
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
 		scene->AddObject(transform,sphere);
 
+		scene->AddCamera(transform, camera);
+
 		SubmitScene(scene);
 
 		SoulRun();
