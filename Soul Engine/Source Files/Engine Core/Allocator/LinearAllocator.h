@@ -6,8 +6,8 @@ public:
 	LinearAllocator(size_t size, void * start);
 	~LinearAllocator();
 
-	void allocate(size_t size, size_t alignment);
-	void deallocate(void* block);
+	void* allocate(size_t size, uint8_t alignment);
+	void* deallocate(void* block);
 	void clear();
 
 private:
