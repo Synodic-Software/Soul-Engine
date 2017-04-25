@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 /*This class will serve as the base class for the engine's linear allocator
   it contains public allocate and deallocate functions which will manage the memory
@@ -7,7 +8,7 @@ class Allocator {
 	public:
 		Allocator(size_t size, void* start);
 		virtual ~Allocator();
-		virtual void* allocate(size_t size, size_t alignment = 4) = 0;
+		virtual void* allocate(size_t size, uint8_t alignment = 4) = 0;
 		virtual void* deallocate(void* block) = 0;
 		void* getStart() {return _start;}
 		size_t getCapacity() {return _capacity;}
@@ -78,4 +79,26 @@ template<Class T> void Allocator::deallocateArr(Allocator& allocator, T* arr) {
 		headerSize += 1;
 	}
 	allocator.deallocate(arr - headerSize);
+}
+
+/*Tools to help make aligned allocatoins*/
+namespace alloc_tools {
+	inline void* align(void* address, uint8_t alignment) {
+		return (void*) ((reinterpret_cast<uintptr_t>(address) + alignment - 1) & ~(alignment - 1));
+	}
+
+	inline uint8_t getAdjust(void* address, uint8_t alignment, uint8_t headerSize = 0) {
+		uint8_t adjustment = alignment - (reinterpret_cast<uintptr_t>(address) & (alignment - 1));
+		if (adjustment == alignment) {
+			adjustment = 0;
+		}
+		if (adjustment < headerSize) {
+			headerSize -= adjustment;
+			adjustment += alignment * (headerSize / alignment);
+			if (headerSize % alignment > 0) {
+				adjustment += alignment;
+			}
+		}
+		return adjustment;
+	}
 }
