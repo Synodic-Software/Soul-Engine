@@ -217,15 +217,15 @@ void Scene::Compile() {
 
 			//create the minified object from the input object
 			MiniObject tempObject(*addList[i].second);
+			CudaCheck(cudaMalloc((void**)&tempObject.transforms, sizeof(SceneNode)*addList[i].first.size()));
+			CudaCheck(cudaMemcpy(tempObject.transforms, addList[i].first.data(), sizeof(SceneNode)*addList[i].first.size(), cudaMemcpyHostToDevice));
 
 			uint maxIter = glm::max(addList[i].second->materialAmount, glm::max(addList[i].second->verticeAmount, glm::max(addList[i].second->faceAmount, addList[i].second->tetAmount)));
 
 			for (uint t = 0; t < maxIter; ++t) {
 				if (t < addList[i].second->verticeAmount) {
 					tempVertices[t] = addList[i].second->vertices[t];
-					glm::vec4 pos = glm::vec4(tempVertices[t].position.x, tempVertices[t].position.y, tempVertices[t].position.z, 1.0f);
-					pos = addList[i].first*pos;
-					tempVertices[t].position = glm::vec3(pos.x, pos.y, pos.z);
+					tempVertices[t].position = glm::vec3(tempVertices[t].position);
 					tempVertices[t].object = objectOffset;
 				}
 				if (t < addList[i].second->faceAmount) {
@@ -268,16 +268,12 @@ void Scene::Compile() {
 		for (int i = 0; i < cameraList.size(); ++i) {
 
 			MiniObject obj;
+			CudaCheck(cudaMalloc((void**)&obj.transforms, sizeof(SceneNode)*cameraList[i].first.size()));
+			CudaCheck(cudaMemcpy(obj.transforms, cameraList[i].first.data(), sizeof(SceneNode)*cameraList[i].first.size(), cudaMemcpyHostToDevice));
 
 			Vertex vertex;
 
-			glm::vec4 pos = glm::vec4(
-				cameraList[i].second->Position().x, 
-				cameraList[i].second->Position().y, 
-				cameraList[i].second->Position().z, 1.0f);
-
-			pos = cameraList[i].first*pos;
-			vertex.position = glm::vec3(pos.x, pos.y, pos.z);
+			vertex.position = glm::vec3(cameraList[i].second->Position());
 			vertex.object = objectOffset;
 
 			Face face;
@@ -312,10 +308,6 @@ void Scene::AddObject(std::vector<SceneNode> matrix, Object* obj) {
 
 void Scene::AddCamera(std::vector<SceneNode> matrix, Camera* camera) {
 	cameraList.push_back(std::make_pair(matrix, camera));
-}
-
-void Scene::OverwriteSceneGraph(SceneNode* root) {
-	sceneGraph = root;
 }
 
 void Scene::RemoveObject(Object* obj) {
