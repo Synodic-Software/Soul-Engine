@@ -256,8 +256,6 @@ void Scene::Compile() {
 			CudaCheck(cudaMemcpy(objects + objectOffset, &tempObject, sizeof(MiniObject), cudaMemcpyHostToDevice));
 
 
-
-
 			//update the offsets
 			tetOffset += addList[i].second->tetAmount;
 			faceOffset += addList[i].second->faceAmount;
@@ -308,12 +306,16 @@ void Scene::Compile() {
 }
 
 //object pointer is host
-void Scene::AddObject(glm::mat4 matrix, Object* obj) {
+void Scene::AddObject(std::vector<SceneNode> matrix, Object* obj) {
 	addList.push_back(std::make_pair(matrix, obj));
 }
 
-void Scene::AddCamera(glm::mat4 matrix, Camera* camera) {
+void Scene::AddCamera(std::vector<SceneNode> matrix, Camera* camera) {
 	cameraList.push_back(std::make_pair(matrix, camera));
+}
+
+void Scene::OverwriteSceneGraph(SceneNode* root) {
+	sceneGraph = root;
 }
 
 void Scene::RemoveObject(Object* obj) {

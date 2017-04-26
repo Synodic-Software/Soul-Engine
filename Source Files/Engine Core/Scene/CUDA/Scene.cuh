@@ -8,6 +8,8 @@
 #include "Bounding Volume Heirarchy\BVH.h"
 #include <vector>
 
+#include "SceneNode.cuh"
+
 class Scene
 {
 public:
@@ -19,9 +21,11 @@ public:
 
 	//signels the scene that an object should be added when the next 'Build()' is called
 	//modifies the global scene bounding box, making the 3D spatial calculation less accurate
-	void AddObject(glm::mat4, Object*);
+	void AddObject(std::vector<SceneNode>, Object*);
 
-	void AddCamera(glm::mat4, Camera*);
+	void AddCamera(std::vector<SceneNode>, Camera*);
+
+	void OverwriteSceneGraph(SceneNode*);
 
 	//signels the scene that an object should be removed when the next 'Build()' is called
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
@@ -44,6 +48,8 @@ private:
 
 	BVH bvhHost;
 
+	SceneNode* sceneGraph;
+
 	//updates the scene representation based on what is in addList or removeList
 	void Compile();
 
@@ -64,8 +70,8 @@ private:
 	uint materialAllocated;
 	uint objectAllocated;
 
-	std::vector<std::pair<glm::mat4, Object*>> addList;
-	std::vector<std::pair<glm::mat4, Camera*>> cameraList;
+	std::vector<std::pair<std::vector<SceneNode>, Object*>> addList;
+	std::vector<std::pair<std::vector<SceneNode>, Camera*>> cameraList;
 	std::vector<Object*> removeList;
 
 };
