@@ -1,13 +1,17 @@
 #include"LinearAllocator.h"
 
+LinearAllocator::LinearAllocator(size_t size, void* start) : Allocator(size, start) {
+	_currPos = start;
+}
+
 void* LinearAllocator::allocate(size_t size, uint8_t alignment) {
-	uint8_t alignment = alloc_tools::getAdjust(_currPos, alignment);
-	if (_usedMem + alignment + size > _capacity) {
+	uint8_t adjustment = alloc_tools::getAdjust(_currPos, alignment);
+	if (_usedMem + adjustment + size > _capacity) {
 		return nullptr;
 	}
-	uint8_t alignedAddress = reinterpret_cast<uintptr_t>(_currPos) + alignment;
-	_currPos += (void*) (alignedAddress + size);
-	_usedMem += alignment + size;
+	uintptr_t* alignedAddress = (uintptr_t*)_currPos + adjustment;
+	_currPos = (void*) (alignedAddress + size);
+	_usedMem += adjustment + size;
 	++_numAllocs;
 	return (void*)alignedAddress;
 }
@@ -17,8 +21,8 @@ LinearAllocator::~LinearAllocator() {
 }
 
 void* LinearAllocator::deallocate(void* block) {
-	Assert.Fail("Linear Allocator does not support individual allocations.
-		"Please use clear() instead");
+    //deallocate should not be used for LinearAllocator
+	return nullptr;
 }
 
 void LinearAllocator::clear() {
