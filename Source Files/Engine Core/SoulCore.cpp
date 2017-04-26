@@ -412,7 +412,7 @@ int main()
 		light->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		light->emit = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 
-		glm::mat4 normalSize = glm::scale(glm::mat4(), 1000.0f * glm::vec3(1.0f, 1.0f, 1.0f));
+		glm::mat4 normalSize = glm::scale(glm::mat4(), (1/1000.0f) * glm::vec3(1.0f, 1.0f, 1.0f));
 		SceneNode Origin(1000, normalSize);
 
 		std::vector<SceneNode> nodesNormal;
@@ -425,8 +425,8 @@ int main()
 		scene->AddObject(nodesNormal,plane);
 
 		glm::mat4 transform;
-		transform = glm::translate(transform, /*100000000000.0f**/glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10));
-		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
+		transform = glm::translate(transform, (1/100.0f)*glm::vec3(-0.5, 1, 0.5));
+		transform = glm::scale(transform, (1/100.0f)*(glm::vec3(1.0f, 1.0f, 1.0f)));
 
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
 
