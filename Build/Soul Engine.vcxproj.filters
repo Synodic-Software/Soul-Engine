@@ -495,6 +495,12 @@
     <ClInclude Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cuh">
       <Filter>Engine Backend\Display\Widget\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Scene\SceneNode.h">
+      <Filter>Engine Backend\Engine Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\SceneNode.cuh">
+      <Filter>Engine Backend\Engine Core\Scene\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -705,6 +711,9 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu">
       <Filter>Engine Backend\Display\Widget\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Engine Core\Scene\CUDA\SceneNode.cu">
+      <Filter>Engine Backend\Engine Core\Scene\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

@@ -16,18 +16,29 @@ public:
 
 	BoundingBox box;
 
-	
+	glm::mat4 transformRight;
+	glm::mat4 transformLeft;
+
+	/*union data{
+		uint faceID;
+		MiniObject* object;
+	}data;*/
+
 	uint faceID;
 	uint atomic;
 	uint rangeRight;
 	uint rangeLeft;
+
+
 
 	__host__ __device__ bool operator==(const Node& other) const {
 		return
 			childLeft == other.childLeft &&
 			childRight == other.childRight &&
 			rangeRight == other.rangeRight &&
-			rangeLeft == other.rangeLeft;
+			rangeLeft == other.rangeLeft&&
+			transformLeft == other.transformLeft&&
+			transformRight == other.transformRight;
 	}
 
 	__host__ __device__ Node& operator=(Node arg)
@@ -39,6 +50,8 @@ public:
 		this->atomic = arg.atomic;
 		this->faceID = arg.faceID;
 		this->box = arg.box;
+		this->transformLeft = arg.transformLeft;
+		this->transformRight = arg.transformRight;
 
 		return *this;
 	}
@@ -47,8 +60,8 @@ public:
 private:
 
 
-	
 
-	
+
+
 
 };
