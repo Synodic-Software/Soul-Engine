@@ -21,9 +21,9 @@ public:
 
 	//signels the scene that an object should be added when the next 'Build()' is called
 	//modifies the global scene bounding box, making the 3D spatial calculation less accurate
-	void AddObject(std::vector<SceneNode>, Object*);
+	void AddObject(std::vector<SceneNode>&, Object*);
 
-	void AddCamera(std::vector<SceneNode>, Camera*);
+	void AddCamera(std::vector<SceneNode>&, Camera*);
 
 	//signels the scene that an object should be removed when the next 'Build()' is called
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was

@@ -11,4 +11,6 @@ namespace MortonCode{
 	__global__ void Compute(const uint n, Face* faces, Vertex* vertices);
 
 	__host__ __device__ uint64 CalculateMorton(const glm::vec3&);
+	__host__ __device__ glm::vec3 DecodeMorton(uint64);
+
 }

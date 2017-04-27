@@ -21,17 +21,21 @@ BVH::~BVH() {
 // Returns the highest differing bit of i and i+1
 __device__ uint HighestBit(MiniObject& objThis, uint64 mortonThis, MiniObject& objNext, uint64 mortonNext)
 {
-	uint zeroCount = __clzll(mortonThis^mortonNext);
-	uint bitCount = 64 - zeroCount;
-	for (int t = glm::max(objThis.tSize, objNext.tSize); t >= 0; --t) {
-		if (t < objThis.tSize) {
 
-		}
-		if (t < objNext.tSize) {
+	uint bitDiff = glm::abs(objThis.tSize - objNext.tSize) * 64;
 
+	int min = glm::min(objThis.tSize, objNext.tSize);
+	for (int t = 0; t < min; ++t) {
+
+		uint64 change = objThis.transforms[t].morton^objNext.transforms[t].morton;
+		if (change != 0) {
+			bitDiff += 64 - __clzll(change);
+			bitDiff += 64 * (min - t - 1);
+			break;
 		}
 	}
-	return bitCount;
+
+	return bitDiff;
 }
 
 __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, Face* faces, Vertex* vertices, MiniObject* objects, const uint leafOffset)
