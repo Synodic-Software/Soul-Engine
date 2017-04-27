@@ -382,13 +382,22 @@ void Scene::Compile() {
 	}
 }
 
-//object pointer is host
-void Scene::AddObject(std::vector<SceneNode> matrix, Object* obj) {
-	addList.push_back(std::make_pair(matrix, obj));
+//TODO //Condense the nodes into the filled slots
+
+std::vector<SceneNode> CondenseNodes(std::vector<SceneNode>& nodes) {
+	return nodes;
 }
 
-void Scene::AddCamera(std::vector<SceneNode> matrix, Camera* camera) {
-	cameraList.push_back(std::make_pair(matrix, camera));
+void Scene::AddObject(std::vector<SceneNode>& nodes, Object* obj) {
+
+	addList.push_back(std::make_pair(CondenseNodes(nodes), obj));
+
+}
+
+void Scene::AddCamera(std::vector<SceneNode>& nodes, Camera* camera) {
+
+	cameraList.push_back(std::make_pair(CondenseNodes(nodes), camera));
+
 }
 
 void Scene::RemoveObject(Object* obj) {
