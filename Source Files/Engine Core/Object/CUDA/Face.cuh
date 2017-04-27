@@ -14,11 +14,13 @@ public:
 
 	glm::uvec3 indices;
 	uint material;
+	uint64 mortonCode;
 
 	__host__ __device__ bool operator==(const Face& other) const {
 		return
 			indices == other.indices &&
-			material == other.material;
+			material == other.material&&
+			mortonCode == other.mortonCode;
 	}
 
 	__host__ __device__ friend void swap(Face& a, Face& b)
@@ -37,6 +39,7 @@ public:
 	{
 		this->indices = arg.indices;
 		this->material = arg.material;
+		this->mortonCode = arg.mortonCode;
 
 		return *this;
 	}

@@ -19,12 +19,22 @@ BVH::~BVH() {
 }
 
 // Returns the highest differing bit of i and i+1
-__device__ uint HighestBit(uint i, uint64* morton)
+__device__ uint HighestBit(MiniObject& objThis, uint64 mortonThis, MiniObject& objNext, uint64 mortonNext)
 {
-	return morton[i] ^ morton[i + 1];
+	uint zeroCount = __clzll(mortonThis^mortonNext);
+	uint bitCount = 64 - zeroCount;
+	for (int t = glm::max(objThis.tSize, objNext.tSize); t >= 0; --t) {
+		if (t < objThis.tSize) {
+
+		}
+		if (t < objNext.tSize) {
+
+		}
+	}
+	return bitCount;
 }
 
-__global__ void BuildTree(const uint n, BVHData* data, Node* nodes, uint64* mortonCodes, const uint leafOffset)
+__global__ void BuildTree(const uint n, BVHData* data, Node* nodes, Face* faces, Vertex* vertices, MiniObject* objects, const uint leafOffset)
 {
 	uint index = getGlobalIdx_1D_1D();
 	if (index >= n)
@@ -53,7 +63,16 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, uint64* mort
 		}
 
 		Node* parent;
-		if (left == 0 || (right < leafOffset && HighestBit(left - 1, mortonCodes) > HighestBit(right, mortonCodes)))
+		Face a = faces[nodes[leafOffset + left - 1].faceID];
+		Face b = faces[nodes[leafOffset + left].faceID];
+		Face c = faces[nodes[leafOffset + right].faceID];
+		Face d = faces[nodes[leafOffset + right + 1].faceID];
+		if (left == 0 || (right < leafOffset && HighestBit(
+			objects[vertices[a.indices.x].object], a.mortonCode,
+			objects[vertices[b.indices.x].object], b.mortonCode) >
+			HighestBit(
+				objects[vertices[c.indices.x].object], c.mortonCode,
+				objects[vertices[d.indices.x].object], d.mortonCode)))
 		{
 			// parent = right, set parent left child and range to node
 			parent = nodes + right;
@@ -74,7 +93,7 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, uint64* mort
 }
 
 
-__global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, const uint leafOffset)
+__global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, const uint leafOffset)
 {
 	uint index = getGlobalIdx_1D_1D();
 
@@ -134,7 +153,7 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	}
 }
 
-void BVH::Build(uint size, BVHData*& data, uint64* mortonCodes, Face * faces, Vertex * vertices) {
+void BVH::Build(uint size, BVHData*& data, Face * faces, Vertex * vertices, MiniObject* objects) {
 
 	if (size > 0) {
 		if (size > allocatedSize) {
@@ -157,11 +176,11 @@ void BVH::Build(uint size, BVHData*& data, uint64* mortonCodes, Face * faces, Ve
 
 		CudaCheck(cudaDeviceSynchronize());
 
-		Reset << <gridSize, blockSize >> > (size, bvh, faces, vertices, mortonCodes, size - 1);
+		Reset << <gridSize, blockSize >> > (size, bvh, faces, vertices, size - 1);
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 
-		BuildTree << <gridSize, blockSize >> > (size, data, bvh, mortonCodes, size - 1);
+		BuildTree << <gridSize, blockSize >> > (size, data, bvh, faces, vertices, objects, size - 1);
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 	}

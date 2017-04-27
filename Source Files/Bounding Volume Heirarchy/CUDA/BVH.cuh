@@ -4,6 +4,7 @@
 #include "Bounding Volume Heirarchy\BoundingBox.h"
 #include "Engine Core\Object\Face.h"
 #include "Engine Core\Object\Vertex.h"
+#include "Engine Core\Object\MiniObject.h"
 
 typedef struct BVHData {
 
@@ -35,7 +36,7 @@ public:
 	__host__ BVH();
 	__host__ ~BVH();
 
-	__host__ void Build(uint, BVHData*&, uint64*, Face *, Vertex*);
+	__host__ void Build(uint, BVHData*&, Face *, Vertex*,MiniObject*);
 
 private:
 	BVHData bvhDataHost;
