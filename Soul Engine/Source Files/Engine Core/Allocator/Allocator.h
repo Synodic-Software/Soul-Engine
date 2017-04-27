@@ -1,10 +1,11 @@
 #pragma once
 #include <cstdint>
 
-/*This class will serve as the base class for the engine's linear allocator
-  it contains public allocate and deallocate functions which will manage the memory
+/*This class will serve as the base class for the engine's linear allocator.
+  It contains public allocate and deallocate functions which will manage the memory.
   These must be implemented by the child linear allocator class itself.*/
 class Allocator {
+	/*Function declarations*/
 	public:
 		Allocator(size_t size, void* start);
 		virtual ~Allocator();
@@ -15,6 +16,7 @@ class Allocator {
 		size_t getUsedMem() {return _usedMem;}
 		size_t getNumAllocs() {return _numAllocs;}
 
+	/*Member variables*/
 	protected:
 		void* _start;
 		size_t _capacity;
@@ -44,12 +46,14 @@ namespace allocator {
 				length - the amount of elements the array will hold
 	 Returns: a pointer to the newly allocated array*/
 	template<class T> T* allocateNewArr(Allocator& allocator, size_t length) {
+		/*Determine the size of the header*/
 		size_t headerSize = sizeof(size_t)/sizeof(T);
 		if (sizeof(size_t) % sizeof(T) > 0) {
 			headerSize += 1;
 		}
+		/*Allocate space for array with header*/
 		T* arr = (T*) allocator.allocate(sizeof(T)*(length + headerSize), __alignof(T)) + headerSize;
-		*(((size_t*)arr) - 1) = length;
+		*(((size_t*)arr) - 1) = length; //set header size
 		for (size_t i = 0; i < length; ++i) {
 			new (arr + i) T;
 		}
@@ -71,7 +75,7 @@ namespace allocator {
 	 Returns: none 
 	*/
 	template<class T> void deallocateArr(Allocator& allocator, T* arr) {
-		size_t length = *(((size_t*)arr) - 1);
+		size_t length = *(((size_t*)arr) - 1); //get the number of elements in the array
 		for (size_t i = 0; i < length; ++i) {
 			*(arr + i).~T();
 		}
@@ -84,15 +88,26 @@ namespace allocator {
 };
 /*Tools to help make aligned allocations*/
 namespace alloc_tools {
+	/*Get next alinged address
+	  arguments: address - the base address
+				 alignment - the alignment for data to be stored in the address
+	  returns: a pointer the next aligned address*/
 	inline void* align(void* address, uint8_t alignment) {
 		return (void*) ((reinterpret_cast<uintptr_t>(address) + alignment - 1) & ~(alignment - 1));
 	}
 
+	/*Get the number of bytes required to make the address block aligned
+	  Arguments: address - the base address
+				 alignment - the alignment for data to be stored
+				 headerSize - optional, used when allocating arrays
+	  Returns: an unsigned, 8 bit integer indicating the number of bytes needed to align the address*/
 	inline uint8_t getAdjust(void* address, uint8_t alignment, uint8_t headerSize = 0) {
+		/*Get the adjustment by masking the address*/
 		uint8_t adjustment = alignment - (reinterpret_cast<uintptr_t>(address) & (alignment - 1));
 		if (adjustment == alignment) {
-			adjustment = 0;
+			adjustment = 0; //address is already aligned
 		}
+		/*Determine adjustment if array header is being used*/
 		if (adjustment < headerSize) {
 			headerSize -= adjustment;
 			adjustment += alignment * (headerSize / alignment);

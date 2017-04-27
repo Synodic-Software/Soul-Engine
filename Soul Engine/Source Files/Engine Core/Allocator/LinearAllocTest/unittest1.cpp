@@ -91,4 +91,26 @@ public:
 		linear.clear();
 		free(buffer);
 	}
+	TEST_METHOD(Accessor_Funcs) {
+		size_t memSize = MAX_MEMSIZE;
+		void* buffer = malloc(memSize);
+		LinearAllocator linear(memSize, buffer);
+		
+		/*Make a couple of allocations to increment the allocation counter*/
+		int* alloc1 = allocator::allocateNew<int>(linear, 1);
+		int* alloc2 = allocator::allocateNew<int>(linear, 2);
+		
+		/*Test Allocator accessor functions*/
+		void* actStart = linear.getStart();
+		size_t actCap = linear.getCapacity();
+		int actNumAllocs = linear.getNumAllocs();
+		int actUsedMem = linear.getUsedMem();
+		int adjust1 = alloc1 - buffer;
+		int adjust2 = alloc2 - (alloc1 + sizeof(int));
+		int expUsedMem = adjust1 + adjust2 + 2*sizeof(int);
+		Assert::AreEqual(buffer, actStart, L"Allocator start address incorrect");
+		Assert::AreEqual(memSize, actCap, L"Memory capacity is incorrect");
+		Assert::AreEqual(2, actNumAllocs, L"Number of allocations is incorrect");
+		Assert::AreEqual(expUsedMem, actUsedMem, L"Used amount of memory incorrect");
+	}
 };
