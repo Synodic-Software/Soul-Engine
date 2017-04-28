@@ -19,10 +19,8 @@ public:
 	glm::mat4 transformRight;
 	glm::mat4 transformLeft;
 
-	/*union data{
-		uint faceID;
-		MiniObject* object;
-	}data;*/
+	uint64 morton;
+	uint bestObjID;
 
 	uint faceID;
 	uint atomic;
@@ -38,7 +36,9 @@ public:
 			rangeRight == other.rangeRight &&
 			rangeLeft == other.rangeLeft&&
 			transformLeft == other.transformLeft&&
-			transformRight == other.transformRight;
+			transformRight == other.transformRight&&
+			morton == other.morton;
+
 	}
 
 	__host__ __device__ Node& operator=(Node arg)
@@ -52,6 +52,7 @@ public:
 		this->box = arg.box;
 		this->transformLeft = arg.transformLeft;
 		this->transformRight = arg.transformRight;
+		this->morton = arg.morton;
 
 		return *this;
 	}
