@@ -16,11 +16,11 @@ public:
 
 	BoundingBox box;
 
-	glm::mat4 transformRight;
-	glm::mat4 transformLeft;
+	glm::mat4 transform;
 
 	uint64 morton;
 	uint bestObjID;
+	uint bitOffset;
 
 	uint faceID;
 	uint atomic;
@@ -35,9 +35,10 @@ public:
 			childRight == other.childRight &&
 			rangeRight == other.rangeRight &&
 			rangeLeft == other.rangeLeft&&
-			transformLeft == other.transformLeft&&
-			transformRight == other.transformRight&&
-			morton == other.morton;
+			transform == other.transform&&
+			morton == other.morton&&
+			bestObjID == other.bestObjID&&
+			bitOffset == other.bitOffset;
 
 	}
 
@@ -50,9 +51,10 @@ public:
 		this->atomic = arg.atomic;
 		this->faceID = arg.faceID;
 		this->box = arg.box;
-		this->transformLeft = arg.transformLeft;
-		this->transformRight = arg.transformRight;
+		this->transform = arg.transform;
 		this->morton = arg.morton;
+		this->bestObjID = arg.bestObjID;
+		this->bitOffset = arg.bitOffset;
 
 		return *this;
 	}
