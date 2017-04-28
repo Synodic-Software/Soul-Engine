@@ -10,7 +10,7 @@ public:
 
 	SceneNode(glm::mat4);
 
-	int bitsUsed;
+	unsigned long bitsUsed;
 	uint64 morton;
 
 private:
