@@ -421,9 +421,6 @@ int main()
 		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
 		scene->AddObject(nodesNormal, tree);
 
-		Object* statue = new Object("Resources\\Objects\\Lucy_Low.obj", whiteGray);
-		scene->AddObject(nodesNormal, statue);
-
 		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
 		scene->AddObject(nodesNormal, plane);
 
@@ -431,12 +428,12 @@ int main()
 		transform = glm::translate(transform, (1 / 100.0f)*glm::vec3(-0.5, 1, 0.5));
 		transform = glm::scale(transform, (1 / 100.0f)*(glm::vec3(1.0f, 1.0f, 1.0f)));
 
+		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
+
 		SceneNode sTransform(transform);
 		std::vector<SceneNode> nodesFar;
 		nodesFar.push_back(sTransform);
 
-
-		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
 		scene->AddObject(nodesFar, sphere);
 
 		scene->AddCamera(nodesFar, camera);

@@ -1,7 +1,6 @@
 #include "BVH.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "Utility/Logger.h"
-#include "Algorithms\Morton Code\MortonCode.h"
 
 BVH::BVH() {
 
@@ -23,38 +22,37 @@ BVH::~BVH() {
 __device__ uint HighestBit(MiniObject& objThis, uint64 mortonThis, MiniObject& objNext, uint64 mortonNext)
 {
 
+	uint bitDiff = glm::abs(objThis.tSize - objNext.tSize) * 64;
+
 	int min = glm::min(objThis.tSize, objNext.tSize);
-	int max = glm::min(objThis.tSize, objNext.tSize);
-
-	uint bitDiff = 0;
-	uint bitCount = (max-min)*64;
-
 	for (int t = 0; t < min; ++t) {
-		bitCount += 64;
+
 		uint64 change = objThis.transforms[t].morton^objNext.transforms[t].morton;
-		bitDiff += __clzll(change);
+		if (change != 0) {
+			bitDiff += __ffsll(change);
+			bitDiff += 64 * (min - t - 1);
+			break;
+		}
 	}
 
-	return bitCount-bitDiff;
+	return bitDiff;
 }
 
-//used for a given offset
-__device__ void HighestBitOffset(MiniObject& objThis, uint64 mortonThis, MiniObject& objNext, uint64 mortonNext, uint& offset)
+__device__ void HighestBitOffset(MiniObject& objThis, uint64 mortonThis, MiniObject& objNext, uint64 mortonNext, uint offset)
 {
 
+	uint bitDiff = glm::abs(objThis.tSize - objNext.tSize) * 64;
+
 	int min = glm::min(objThis.tSize, objNext.tSize);
-	int max = glm::min(objThis.tSize, objNext.tSize);
-
-	uint bitDiff = 0;
-	uint bitCount = (max - min) * 64;
-
 	for (int t = 0; t < min; ++t) {
-		bitCount += 64;
-		uint64 change = objThis.transforms[t].morton^objNext.transforms[t].morton;
-		bitDiff += __clzll(change);
-	}
 
-	//return bitCount - bitDiff;
+		uint64 change = objThis.transforms[t].morton^objNext.transforms[t].morton;
+		if (change != 0) {
+			bitDiff += __ffsll(change);
+			bitDiff += 64 * (min - t - 1);
+			break;
+		}
+	}
 
 
 }
@@ -72,25 +70,14 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, Face* faces,
 		if (atomicAdd(&(currentNode->atomic), 1) != 1)
 			return;
 
-		// Set transform if the node is not a leaf
+		// Set bounding box if the node is not a leaf
 		if (currentNode - nodes < leafOffset)
 		{
-			currentNode->childLeft->parent = currentNode;
-			currentNode->childRight->parent = currentNode;
 
-			uint64 mortLeft = currentNode->childLeft->morton;
-			uint64 mortRight = currentNode->childRight->morton;
-
-			glm::vec3 posLeft = MortonCode::DecodeMorton(mortLeft);
-			glm::vec3 posRight = MortonCode::DecodeMorton(mortRight);
-
-			uint leadingZeros = _lzcnt_u64(mortLeft^mortRight);
-			currentNode->morton = mortRight >> (64 - leadingZeros);
+			HighestBitOffset();
 
 			currentNode->box.max = glm::max(currentNode->childLeft->box.max, currentNode->childRight->box.max);
 			currentNode->box.min = glm::min(currentNode->childLeft->box.min, currentNode->childRight->box.min);
-
-			currentNode->transform = glm::mat4();
 		}
 
 		uint left = currentNode->rangeLeft;
@@ -100,7 +87,6 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, Face* faces,
 			data->root = currentNode;
 			return;
 		}
-
 
 		Node* parent;
 		Face a = faces[nodes[leafOffset + left - 1].faceID];
@@ -128,14 +114,12 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, Face* faces,
 			parent->rangeRight = right;
 		}
 
-
-
 		currentNode = parent;
 	}
 }
 
 
-__global__ void Reset(const uint n, BVHData* data, Node* nodes, Face* faces, Vertex* vertices, const uint leafOffset)
+__global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, const uint leafOffset)
 {
 	uint index = getGlobalIdx_1D_1D();
 
@@ -151,9 +135,8 @@ __global__ void Reset(const uint n, BVHData* data, Node* nodes, Face* faces, Ver
 	temp.atomic = 1; // To allow the next thread to process
 	temp.childLeft = nullptr;
 	temp.childRight = nullptr;
-	temp.parent = nullptr;
 	temp.transform = glm::mat4();
-	//store the camera
+
 	if (index < leafOffset) {
 		Node tempF;
 
@@ -188,10 +171,6 @@ __global__ void Reset(const uint n, BVHData* data, Node* nodes, Face* faces, Ver
 	temp.box.max = max;
 	temp.box.min = min;
 
-	//set camera
-	if (faces[index].isCamera) {
-		data->camera = nodes + leafOffset + index;
-	}
 	nodes[leafOffset + index] = temp;
 
 	// Special case
@@ -225,7 +204,7 @@ void BVH::Build(uint size, BVHData*& data, Face * faces, Vertex * vertices, Mini
 
 		CudaCheck(cudaDeviceSynchronize());
 
-		Reset << <gridSize, blockSize >> > (size, data, bvh, faces, vertices, size - 1);
+		Reset << <gridSize, blockSize >> > (size, bvh, faces, vertices, size - 1);
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 

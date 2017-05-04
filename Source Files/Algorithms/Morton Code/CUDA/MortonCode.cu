@@ -29,6 +29,7 @@ __host__ __device__ uint64 MortonCode::CalculateMorton(const glm::vec3& data) {
 }
 
 
+// HELPER METHOD for Magic bits decoding
 __inline__ __host__ __device__ uint Unsplit(const uint64 m) {
 	uint64 x = m & 0x1249249249249249;
 	x = (x ^ (x >> 2)) & 0x10c30c30c30c30c3;
