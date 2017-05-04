@@ -9,20 +9,18 @@
 
 #include "Algorithms\Morton Code\MortonCode.h"
 
-#include <thrust/execution_policy.h>
 #include <thrust/fill.h>
 #include <thrust/device_ptr.h>
 #include <thrust/scan.h>
 #include <thrust/sort.h>
 #include <thrust/remove.h>
 #include <thrust/functional.h>
-#include <thrust/device_vector.h>
-#include <thrust/copy.h>
 
 Scene::Scene()
 {
 
 	objects = nullptr;
+	mortonCodes = nullptr;
 	faces = nullptr;
 	vertices = nullptr;
 	materials = nullptr;
@@ -52,6 +50,7 @@ Scene::Scene()
 Scene::~Scene()
 {
 
+	CudaCheck(cudaFree(mortonCodes));
 	CudaCheck(cudaFree(faces));
 	CudaCheck(cudaFree(vertices));
 	CudaCheck(cudaFree(tets));
@@ -65,55 +64,6 @@ Scene::~Scene()
 
 }
 
-struct depthAt
-{
-	int depth;
-	Vertex* vertices;
-	MiniObject* objects;
-
-	depthAt(int d, Vertex* vert, MiniObject* obj) :
-		depth(d), vertices(vert), objects(obj) {};
-
-	__host__ __device__
-		bool operator()(const Face& x)
-	{
-		return objects[vertices[x.indices.x].object].tSize >= depth;
-	}
-};
-
-__global__ void GrabMortons(const uint n, const uint depth, uint64* mortons, uint* indices, Face* faces, Vertex* vertices, MiniObject* objects) {
-
-	uint index = getGlobalIdx_1D_1D();
-
-	if (index >= n) {
-		return;
-	}
-
-	Face face = faces[index];
-	MiniObject obj = objects[vertices[face.indices.x].object];
-
-	uint64 mort;
-	if (depth > obj.tSize - 1) {
-		mort = face.mortonCode;
-	}
-	else {
-		mort = obj.transforms[depth].morton;
-	}
-
-	mortons[index] = mort;
-}
-
-__global__ void ScatterFaces(const uint n, uint64* mortons, uint* indices, Face* facesOld,Face* faces) {
-
-	uint index = getGlobalIdx_1D_1D();
-
-	if (index >= n) {
-		return;
-	}
-
-	faces[indices[index]] = facesOld[index];
-}
-
 __host__ void Scene::Build(float deltaTime) {
 
 	Compile();
@@ -123,64 +73,26 @@ __host__ void Scene::Build(float deltaTime) {
 		uint blockSize = 64;
 		uint gridSize = (faceAmount + blockSize - 1) / blockSize;
 
-		MortonCode::Compute << <gridSize, blockSize >> > (faceAmount, faces, vertices);
+
+		MortonCode::Compute << <gridSize, blockSize >> > (faceAmount, mortonCodes, faces, vertices);
+
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 
-		//calc the depth to sort
-		int depth = 0;
-		for (int i = 0; i < addList.size(); ++i) {
-			int size = addList[i].first.size();
-			if (size > depth) {
-				depth = size;
-			}
-		}
+		thrust::device_ptr<uint64_t> keys(mortonCodes);
+		thrust::device_ptr<Face> values(faces);
 
-		for (int i = 0; i < cameraList.size(); ++i) {
-			int size = cameraList[i].first.size();
-			if (size > depth) {
-				depth = size;
-			}
-		}
+		thrust::sort_by_key(keys, keys + faceAmount, values);
 
-		for (int depthToSort = depth; depthToSort >= 0; --depthToSort) {
-
-			thrust::counting_iterator<uint> first(0);
-			thrust::counting_iterator<uint> last = first + faceAmount;
-			thrust::device_vector<uint> resultsIndices(faceAmount);
-			thrust::device_vector<Face> resultsFaces(faceAmount);
-
-			auto resultIndex = thrust::copy_if(thrust::device, first, last, faces, resultsIndices.begin(), depthAt(depthToSort, vertices, objects));
-			auto resultFace = thrust::copy_if(thrust::device, faces, faces + faceAmount, resultsFaces.begin(), depthAt(depthToSort, vertices, objects));
-
-			uint size = resultIndex - resultsIndices.begin();
-			thrust::device_vector<uint64> mortonsToSort(size);
-
-			blockSize = 64;
-			gridSize = (size + blockSize - 1) / blockSize;
-
-			GrabMortons << <gridSize, blockSize >> > (size, depthToSort, thrust::raw_pointer_cast(&mortonsToSort[0]), thrust::raw_pointer_cast(&resultsIndices[0]), thrust::raw_pointer_cast(&resultsFaces[0]), vertices, objects);
-			CudaCheck(cudaPeekAtLastError());
-			CudaCheck(cudaDeviceSynchronize());
-
-			thrust::sort_by_key(thrust::device, mortonsToSort.begin(), mortonsToSort.end(), resultsFaces.begin());
-
-			ScatterFaces << <gridSize, blockSize >> > (size, thrust::raw_pointer_cast(&mortonsToSort[0]), thrust::raw_pointer_cast(&resultsIndices[0]), thrust::raw_pointer_cast(&resultsFaces[0]),faces);
-			CudaCheck(cudaPeekAtLastError());
-			CudaCheck(cudaDeviceSynchronize());
-		}
 	}
 
-	bvhHost.Build(faceAmount, bvhData, faces, vertices,objects);
+	bvhHost.Build(faceAmount, bvhData, mortonCodes, faces, vertices);
 
-	//clear the lists
-	addList.clear();
-	cameraList.clear();
 }
 
 void Scene::Compile() {
 
-	if (addList.size() > 0 || cameraList.size() > 0) {
+	if (addList.size() > 0) {
 
 		uint faceAmountPrevious = faceAmount;
 		uint vertexAmountPrevious = vertexAmount;
@@ -232,6 +144,11 @@ void Scene::Compile() {
 			}
 
 			faces = facesTemp;
+
+			if (mortonCodes) {
+				CudaCheck(cudaFree(mortonCodes));
+			}
+			CudaCheck(cudaMalloc((void**)&mortonCodes, faceAllocated * sizeof(uint64)));
 
 		}
 
@@ -302,7 +219,6 @@ void Scene::Compile() {
 			MiniObject tempObject(*addList[i].second);
 			CudaCheck(cudaMalloc((void**)&tempObject.transforms, sizeof(SceneNode)*addList[i].first.size()));
 			CudaCheck(cudaMemcpy(tempObject.transforms, addList[i].first.data(), sizeof(SceneNode)*addList[i].first.size(), cudaMemcpyHostToDevice));
-			tempObject.tSize = addList[i].first.size();
 
 			uint maxIter = glm::max(addList[i].second->materialAmount, glm::max(addList[i].second->verticeAmount, glm::max(addList[i].second->faceAmount, addList[i].second->tetAmount)));
 
@@ -354,7 +270,6 @@ void Scene::Compile() {
 			MiniObject obj;
 			CudaCheck(cudaMalloc((void**)&obj.transforms, sizeof(SceneNode)*cameraList[i].first.size()));
 			CudaCheck(cudaMemcpy(obj.transforms, cameraList[i].first.data(), sizeof(SceneNode)*cameraList[i].first.size(), cudaMemcpyHostToDevice));
-			obj.tSize = cameraList[i].first.size();
 
 			Vertex vertex;
 
@@ -368,7 +283,7 @@ void Scene::Compile() {
 			face.indices.z = vertexOffset;
 
 			cameraList[i].second->currentVert = vertex;
-			cameraList[i].second->devicePos = vertices + vertexOffset;
+			cameraList[i].second->devicePos = vertices+vertexOffset;
 
 			CudaCheck(cudaMemcpy(vertices + vertexOffset, &vertex, sizeof(Vertex), cudaMemcpyHostToDevice));
 			CudaCheck(cudaMemcpy(faces + faceOffset, &face, sizeof(Face), cudaMemcpyHostToDevice));
@@ -379,6 +294,10 @@ void Scene::Compile() {
 			++objectOffset;
 
 		}
+
+		//clear the list
+		addList.clear();
+		cameraList.clear();
 	}
 }
 

@@ -8,10 +8,11 @@ class SceneNode
 
 public:
 
-	SceneNode(glm::mat4);
+	SceneNode(int, glm::mat4);
 
-	//int bitsUsed;
-	uint64 morton;
+	int scale; 
+	uint64 mortonMin;
+	uint64 mortonMax;
 
 private:
 	
