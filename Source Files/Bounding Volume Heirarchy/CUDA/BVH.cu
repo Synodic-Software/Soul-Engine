@@ -37,7 +37,7 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, uint64* mort
 		if (atomicAdd(&(currentNode->atomic), 1) != 1)
 			return;
 
-		// Set bounding box if the node is not a leaf
+		// Set bounding box if the node is no leaf
 		if (currentNode - nodes < leafOffset)
 		{
 			currentNode->box.max = glm::max(currentNode->childLeft->box.max, currentNode->childRight->box.max);
@@ -90,8 +90,6 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	temp.atomic = 1; // To allow the next thread to process
 	temp.childLeft = nullptr;
 	temp.childRight = nullptr;
-	temp.transformLeft = glm::mat4();
-	temp.transformRight = glm::mat4();
 
 	if (index < leafOffset) {
 		Node tempF;
