@@ -129,11 +129,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Engine Core\Object\Vertex.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\Scene.cuh" />
-    <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\SceneNode.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\Sky.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\OpenCL\CLScene.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\Scene.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Scene\SceneNode.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\Sky.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABackend.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h" />
@@ -242,7 +240,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\Material.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cu" />
-    <CudaCompile Include="..\Source Files\Engine Core\Scene\CUDA\SceneNode.cu" />
     <CudaCompile Include="..\Source Files\Utility\CUDA\CudaHelper.cu" />
   </ItemGroup>
   <ItemGroup>

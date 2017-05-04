@@ -427,10 +427,6 @@ int main()
 
 		scene->AddCamera(transform, camera);
 
-		SceneNode* root = new SceneNode();
-
-		scene->OverwriteSceneGraph(root);
-
 		SubmitScene(scene);
 
 		SoulRun();

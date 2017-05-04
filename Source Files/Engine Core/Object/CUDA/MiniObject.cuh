@@ -17,8 +17,6 @@ public:
 	uint faceAmount;
 	uint tetAmount;
 
-	uint offSet;
-
 protected:
 
 private:
