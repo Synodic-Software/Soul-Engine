@@ -11,7 +11,6 @@ typedef struct BVHData {
 	Node* root;
 	uint currentSize;
 	Node* bvh;
-	Node* camera;
 
 	__device__ BVHData& operator=(BVHData arg)
 	{

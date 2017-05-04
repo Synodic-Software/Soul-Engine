@@ -15,7 +15,7 @@ public:
 	glm::uvec3 indices;
 	uint material;
 	uint64 mortonCode;
-	bool isCamera;
+
 	__host__ __device__ bool operator==(const Face& other) const {
 		return
 			indices == other.indices &&
