@@ -110,11 +110,7 @@ void Scene::Compile() {
 
 		}
 
-		for (int i = 0; i < cameraList.size(); ++i) {
-			++faceAmount;
-			++vertexAmount;
-			++objectAmount;
-		}
+
 
 		//vertex resize
 		if (vertexAmount > vertexAllocated) {
@@ -267,53 +263,14 @@ void Scene::Compile() {
 
 		}
 
-		for (int i = 0; i < cameraList.size(); ++i) {
-
-			MiniObject obj;
-
-			Vertex vertex;
-
-			glm::vec4 pos = glm::vec4(
-				cameraList[i].second->Position().x, 
-				cameraList[i].second->Position().y, 
-				cameraList[i].second->Position().z, 1.0f);
-
-			pos = cameraList[i].first*pos;
-			vertex.position = glm::vec3(pos.x, pos.y, pos.z);
-			vertex.object = objectOffset;
-
-			Face face;
-			face.material = 0;
-			face.indices.x = vertexOffset;
-			face.indices.y = vertexOffset;
-			face.indices.z = vertexOffset;
-
-			cameraList[i].second->currentVert = vertex;
-			cameraList[i].second->devicePos = vertices+vertexOffset;
-
-			CudaCheck(cudaMemcpy(vertices + vertexOffset, &vertex, sizeof(Vertex), cudaMemcpyHostToDevice));
-			CudaCheck(cudaMemcpy(faces + faceOffset, &face, sizeof(Face), cudaMemcpyHostToDevice));
-			CudaCheck(cudaMemcpy(objects + objectOffset, &obj, sizeof(MiniObject), cudaMemcpyHostToDevice));
-
-			++vertexOffset;
-			++faceOffset;
-			++objectOffset;
-
-		}
-
 		//clear the list
 		addList.clear();
-		cameraList.clear();
 	}
 }
 
 //object pointer is host
 void Scene::AddObject(glm::mat4 matrix, Object* obj) {
 	addList.push_back(std::make_pair(matrix, obj));
-}
-
-void Scene::AddCamera(glm::mat4 matrix, Camera* camera) {
-	cameraList.push_back(std::make_pair(matrix, camera));
 }
 
 void Scene::RemoveObject(Object* obj) {

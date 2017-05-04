@@ -4,7 +4,6 @@
 #include <curand_kernel.h>
 
 #include "Metrics.h"
-#include "Engine Core\Object\Vertex.h"
 
 class Ray;
 
@@ -78,16 +77,12 @@ class Ray;
 			this->verticalAxis = arg.verticalAxis;
 			this->yHelper = arg.yHelper;
 			this->xHelper = arg.xHelper;
-			this->devicePos = arg.devicePos;
-			this->currentVert = arg.currentVert;
 
 			return *this;
 		}
 
 
 		glm::uvec2 resolution;
-		Vertex* devicePos;
-		Vertex currentVert;
 
     private:
 		float aspectRatio;
