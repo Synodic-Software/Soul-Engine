@@ -412,31 +412,24 @@ int main()
 		light->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		light->emit = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 
-		glm::mat4 normalSize = glm::scale(glm::mat4(), 1000.0f * glm::vec3(1.0f, 1.0f, 1.0f));
-		SceneNode Origin(1000, normalSize);
-
-		std::vector<SceneNode> nodesNormal;
-		nodesNormal.push_back(Origin);
-
 		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
-		scene->AddObject(nodesNormal,tree);
+		scene->AddObject(glm::mat4(),tree);
 
 		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
-		scene->AddObject(nodesNormal,plane);
+		scene->AddObject(glm::mat4(),plane);
 
 		glm::mat4 transform;
 		transform = glm::translate(transform, /*100000000000.0f**/glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10));
 		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
 
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
+		scene->AddObject(transform,sphere);
 
-		SceneNode sTransform(1000, transform);
-		std::vector<SceneNode> nodesFar;
-		nodesFar.push_back(sTransform);
+		scene->AddCamera(transform, camera);
 
-		scene->AddObject(nodesFar,sphere);
+		SceneNode* root = new SceneNode();
 
-		scene->AddCamera(nodesFar, camera);
+		scene->OverwriteSceneGraph(root);
 
 		SubmitScene(scene);
 

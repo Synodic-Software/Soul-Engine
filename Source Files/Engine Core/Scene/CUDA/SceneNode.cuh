@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility\Includes\GLMIncludes.h"
+#include "Engine Core\Object\MiniObject.h"
 
 class SceneNode
 {
