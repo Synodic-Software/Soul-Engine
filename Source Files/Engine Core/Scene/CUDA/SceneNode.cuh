@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Utility\Includes\GLMIncludes.h"
-#include "Metrics.h"
 
 class SceneNode
 {
@@ -10,9 +9,8 @@ public:
 
 	SceneNode(int, glm::mat4);
 
-	int scale; 
-	uint64 mortonMin;
-	uint64 mortonMax;
+	int scale;
+	glm::mat4 transform; //bounded by unit box
 
 private:
 	
