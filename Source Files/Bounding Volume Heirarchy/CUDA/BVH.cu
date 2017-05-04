@@ -29,7 +29,7 @@ __device__ uint HighestBit(MiniObject& objThis, uint64 mortonThis, MiniObject& o
 
 		uint64 change = objThis.transforms[t].morton^objNext.transforms[t].morton;
 		if (change != 0) {
-			bitDiff += __ffsll(change);
+			bitDiff += 64 - __clzll(change);
 			bitDiff += 64 * (min - t - 1);
 			break;
 		}
@@ -37,7 +37,6 @@ __device__ uint HighestBit(MiniObject& objThis, uint64 mortonThis, MiniObject& o
 
 	return bitDiff;
 }
-
 
 __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, Face* faces, Vertex* vertices, MiniObject* objects, const uint leafOffset)
 {
@@ -129,14 +128,11 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 
 	// Set triangles in leaf
 	temp.faceID = index;
-	temp.morton = faces[index].mortonCode;
+
 	glm::uvec3 ind = faces[index].indices;
 
 	// Expand bounds using min/max functions
 	glm::vec3 pos0 = vertices[ind.x].position;
-
-	temp.bestObjID = vertices[ind.x].object;
-
 	glm::vec3 max = pos0;
 	glm::vec3 min = pos0;
 
