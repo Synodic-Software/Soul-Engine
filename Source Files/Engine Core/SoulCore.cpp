@@ -61,7 +61,7 @@ namespace Soul {
 
 		//Clean the RayEngine from stray data
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			RayEngine::Terminate();
+				RayEngine::Terminate();
 		});
 
 		//destroy all windows
@@ -227,7 +227,7 @@ namespace Soul {
 				EarlyUpdate();
 
 				for (auto const& scene : scenes) {
-					//scene->Build(deltaTime);
+					scene->Build(deltaTime);
 				}
 				/*
 				for (auto const& scene : scenes){
@@ -275,7 +275,7 @@ double GetDeltaTime() {
 void SetKey(int key, std::function<void(int)> func) {
 	InputState::GetInstance().SetKey(key, func);
 }
-void MouseEvent(std::function<void(double, double)> func) {
+void MouseEvent(std::function<void(double,double)> func) {
 	InputState::GetInstance().AddMouseCallback(func);
 }
 
@@ -325,7 +325,7 @@ int main()
 
 		Camera* camera = new Camera();
 
-		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER * 5, (DECAMETER) * 5));
+		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER*5, (DECAMETER) * 5));
 		camera->OffsetOrientation(225, 45);
 
 		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
@@ -396,7 +396,7 @@ int main()
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 			camera->UpdateVariables();
 		});
-
+	
 
 		Scene* scene = new Scene();
 
@@ -412,29 +412,29 @@ int main()
 		light->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		light->emit = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 
-		glm::mat4 normalSize = glm::scale(glm::mat4(), (1 / 1000.0f) * glm::vec3(1.0f, 1.0f, 1.0f));
-		SceneNode Origin(normalSize);
+		glm::mat4 normalSize = glm::scale(glm::mat4(), (1/1000.0f) * glm::vec3(1.0f, 1.0f, 1.0f));
+		SceneNode Origin(1000, normalSize);
 
 		std::vector<SceneNode> nodesNormal;
 		nodesNormal.push_back(Origin);
 
 		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
-		scene->AddObject(nodesNormal, tree);
+		scene->AddObject(nodesNormal,tree);
 
 		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
-		scene->AddObject(nodesNormal, plane);
+		scene->AddObject(nodesNormal,plane);
 
 		glm::mat4 transform;
-		transform = glm::translate(transform, (1 / 100.0f)*glm::vec3(-0.5, 1, 0.5));
-		transform = glm::scale(transform, (1 / 100.0f)*(glm::vec3(1.0f, 1.0f, 1.0f)));
+		transform = glm::translate(transform, (1/100.0f)*glm::vec3(-0.5, 1, 0.5));
+		transform = glm::scale(transform, (1/100.0f)*(glm::vec3(1.0f, 1.0f, 1.0f)));
 
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
 
-		SceneNode sTransform(transform);
+		SceneNode sTransform(1000, transform);
 		std::vector<SceneNode> nodesFar;
 		nodesFar.push_back(sTransform);
 
-		scene->AddObject(nodesFar, sphere);
+		scene->AddObject(nodesFar,sphere);
 
 		scene->AddCamera(nodesFar, camera);
 

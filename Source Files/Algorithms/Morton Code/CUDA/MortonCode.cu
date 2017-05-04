@@ -30,7 +30,7 @@ __host__ __device__ uint64 MortonCode::CalculateMorton(const glm::vec3& data) {
 }
 
 
-__global__ void MortonCode::Compute(const uint n,Face* faces, Vertex* vertices) {
+__global__ void MortonCode::Compute(const uint n, uint64* mortonCodes, Face* faces, Vertex* vertices) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -41,5 +41,5 @@ __global__ void MortonCode::Compute(const uint n,Face* faces, Vertex* vertices) 
 	glm::uvec3 ind = faces[index].indices;
 	glm::vec3 centroid = ((vertices + ind.x)->position + (vertices + ind.y)->position + (vertices + ind.z)->position) / 3.0f;
 
-	faces[index].mortonCode = CalculateMorton(centroid);
+	mortonCodes[index] = CalculateMorton(centroid);
 }

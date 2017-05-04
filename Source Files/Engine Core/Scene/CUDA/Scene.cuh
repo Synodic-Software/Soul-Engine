@@ -52,6 +52,8 @@ private:
 	//scene bounding box
 	BoundingBox sceneBox;
 
+	uint64* mortonCodes; //codes for all the faces
+
 	uint faceAmount;
 	uint vertexAmount;
 	uint tetAmount;

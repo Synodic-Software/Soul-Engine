@@ -19,7 +19,7 @@ public:
 	uint tetAmount;
 
 	SceneNode* transforms;
-	uint tSize;
+
 protected:
 
 private:

@@ -1,5 +1,4 @@
 #pragma once
-#include <stdint.h>
 
 #define KILOMETER 100
 #define HECTOMETER 10
@@ -31,8 +30,8 @@ typedef signed int int32;
 typedef unsigned int uint;
 //#define UINT_MAX 4294967295
 
-typedef int64_t  int64;
-typedef uint64_t  uint64;
+typedef long long int64;
+typedef unsigned long long uint64;
 
 typedef wchar_t wchar;
 
