@@ -25,6 +25,8 @@ public:
 
 	void AddCamera(std::vector<SceneNode>, Camera*);
 
+	void OverwriteSceneGraph(SceneNode*);
+
 	//signels the scene that an object should be removed when the next 'Build()' is called
 	//Does NOT modify the global scene bounding box, meaning 3D spatial accuracy will remain as it was
 	void RemoveObject(Object*);
@@ -45,6 +47,8 @@ private:
 	Sky* skyHost;
 
 	BVH bvhHost;
+
+	SceneNode* sceneGraph;
 
 	//updates the scene representation based on what is in addList or removeList
 	void Compile();

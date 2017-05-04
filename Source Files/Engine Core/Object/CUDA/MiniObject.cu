@@ -9,7 +9,7 @@ MiniObject::MiniObject(Object& obj){
 
 	requestRemoval= obj.requestRemoval;
 	isStatic = obj.isStatic;
-	transforms = nullptr;
+
 }
 
 MiniObject::MiniObject() {
@@ -18,5 +18,4 @@ MiniObject::MiniObject() {
 	verticeAmount = 1;
 	isStatic = false;
 	requestRemoval = false;
-	transforms = nullptr;
 }

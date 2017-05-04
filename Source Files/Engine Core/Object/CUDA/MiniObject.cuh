@@ -2,7 +2,6 @@
 
 #include <vector>
 #include "Engine Core\Object\Object.h"
-#include "Engine Core\Scene\SceneNode.h"
 
 class MiniObject {
 
@@ -18,7 +17,7 @@ public:
 	uint faceAmount;
 	uint tetAmount;
 
-	SceneNode* transforms;
+	uint offSet;
 
 protected:
 
