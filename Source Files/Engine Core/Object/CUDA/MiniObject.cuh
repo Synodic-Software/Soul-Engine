@@ -8,7 +8,6 @@ class MiniObject {
 public:
 
 	MiniObject(Object&);
-	MiniObject();
 
 	bool requestRemoval;
 	bool isStatic;

@@ -97,10 +97,6 @@ void RenderWidget::Draw() {
 	buffer->MapResources();
 	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData());
 
-	camera->currentVert.position = camera->Position();
-	CudaCheck(cudaMemcpy(camera->devicePos, &camera->currentVert, sizeof(Vertex), cudaMemcpyHostToDevice));
-
-
 }
 
 void RenderWidget::RecreateData() {

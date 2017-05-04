@@ -11,11 +11,3 @@ MiniObject::MiniObject(Object& obj){
 	isStatic = obj.isStatic;
 
 }
-
-MiniObject::MiniObject() {
-	faceAmount = 1;
-	tetAmount = 0;
-	verticeAmount = 1;
-	isStatic = false;
-	requestRemoval = false;
-}
