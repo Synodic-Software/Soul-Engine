@@ -320,6 +320,7 @@ void Scene::Compile() {
 					tempFaces[t].indices.z += vertexOffset;
 
 					tempFaces[t].material += materialOffset;
+					tempFaces[t].isCamera = false;
 				}
 				if (t < addList[i].second->tetAmount) {
 					tempTets[t] = addList[i].second->tets[t];
@@ -366,7 +367,7 @@ void Scene::Compile() {
 			face.indices.x = vertexOffset;
 			face.indices.y = vertexOffset;
 			face.indices.z = vertexOffset;
-
+			face.isCamera = true;
 			cameraList[i].second->currentVert = vertex;
 			cameraList[i].second->devicePos = vertices + vertexOffset;
 
