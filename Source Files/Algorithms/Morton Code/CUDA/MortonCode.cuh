@@ -8,6 +8,12 @@
 
 namespace MortonCode{
 
-	__global__ void Compute(const uint n, uint64* mortonCodes, Face* faces, Vertex* vertices,const BoundingBox box);
+	__global__ void ComputeGPU(const uint n, uint64* mortonCodes, Face* faces, Vertex* vertices);
+
+	//given a point in space with the range [0-1] for each dimension
+	__host__ __device__ uint64 Calculate64(const glm::vec3&);
+
+	//returns a point in space with the range [0-1] for each dimension 
+	__host__ __device__ glm::vec3 Decode64(const uint64);
 
 }
