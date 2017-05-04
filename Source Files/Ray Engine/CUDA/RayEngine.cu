@@ -420,11 +420,20 @@ __inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
 __inline__ __device__ float Dn(float a) { return a*m; }
 __inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
+__inline__ __device__ Ray Transform(Ray& ray, glm::mat4& overTransform, glm::mat4& nextTransform) {
+
+	glm::vec4 modOrig = glm::vec4(ray.origin.x, ray.origin.y, ray.origin.z, 1.0f);
+	Ray rayNew = ray;
+	rayNew.origin = modOrig*nextTransform*overTransform;
+	return rayNew;
+}
 
 __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
 
 
 	Node * traversalStack[STACK_SIZE];
+	Ray rayStack[STACK_SIZE];
+
 	traversalStack[0] = nullptr; // Bottom-most entry.
 
 	float eps = exp2f(-80.0f);
@@ -557,213 +566,247 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			// Setup traversal.
 			stackPtr = 0;
 			currentLeaf = nullptr;   // No postponed leaf.
-			currentNode = bvh.root;   // Start from the root.
+			currentNode = bvh.camera;   // set to camera node
 			ray.currentHit = -1;  // No triangle intersected so far.
 		}
 
-		//Traversal starts here
+		//Backwards traversal starts here
+		glm::mat4 currentTransform = glm::mat4();
 
-		while (currentNode != nullptr)
-		{
-			// Until all threads find a leaf, traverse
+		do {
+			Node* prevNode = currentNode;
+			currentNode = currentNode->parent;
+			currentTransform = currentNode->transform*currentTransform;
+			currentNode->childLeft == prevNode ? traversalStack[++stackPtr] = currentNode->childRight : traversalStack[++stackPtr] = currentNode->childLeft;
 
-			while (!bvh.IsLeaf(currentNode) && currentNode != nullptr)
+			glm::mat4 currentTransform = glm::inverse(traversalStack[stackPtr]->transform);
+
+			if (currentNode->childLeft == prevNode) {
+				rayStack[stackPtr] = Transform(ray, currentTransform, currentNode->childRight->transform);
+			}
+			else {
+				rayStack[stackPtr] = Transform(ray, currentTransform, currentNode->childLeft->transform);
+			}
+
+		} while (currentNode != bvh.root);
+
+			//set the current node to the top of the stack //should be the one closest to the camera, for effeciency
+			currentNode = traversalStack[stackPtr--];
+
+
+			//Traversal starts here
+
+			while (currentNode != nullptr)
 			{
-				// Fetch AABBs of the two child nodes.
+				// Until all threads find a leaf, traverse
 
-				Node* childL = currentNode->childLeft;
-				Node* childR = currentNode->childRight;
+				while (!bvh.IsLeaf(currentNode) && currentNode != nullptr)
+				{
+					// Fetch AABBs of the two child nodes.
 
-				glm::vec3  b0Min = childL->box.min;
-				glm::vec3  b0Max = childL->box.max;
-				glm::vec3  b1Min = childR->box.min;
-				glm::vec3  b1Max = childR->box.max;
+
+					Node* childL = currentNode->childLeft;
+					Node* childR = currentNode->childRight;
+
+					glm::vec3  b0Min = childL->box.min;
+					glm::vec3  b0Max = childL->box.max;
+					glm::vec3  b1Min = childR->box.min;
+					glm::vec3  b1Max = childR->box.max;
 
 #if defined WOOP_AABB
 
-				//grab the modifyable bounds
-				float nearX0 = b0Min[kx], farX0 = b0Max[kx];
-				float nearY0 = b0Min[ky], farY0 = b0Max[ky];
-				float nearZ0 = b0Min[kz], farZ0 = b0Max[kz];
-				float nearX1 = b1Min[kx], farX1 = b1Max[kx];
-				float nearY1 = b1Min[ky], farY1 = b1Max[ky];
-				float nearZ1 = b1Min[kz], farZ1 = b1Max[kz];
+					//grab the modifyable bounds
+					float nearX0 = b0Min[kx], farX0 = b0Max[kx];
+					float nearY0 = b0Min[ky], farY0 = b0Max[ky];
+					float nearZ0 = b0Min[kz], farZ0 = b0Max[kz];
+					float nearX1 = b1Min[kx], farX1 = b1Max[kx];
+					float nearY1 = b1Min[ky], farY1 = b1Max[ky];
+					float nearZ1 = b1Min[kz], farZ1 = b1Max[kz];
 
-				if (ray.direction[kx] < 0.0f) swap(nearX0, farX0);
-				if (ray.direction[ky] < 0.0f) swap(nearY0, farY0);
-				if (ray.direction[kz] < 0.0f) swap(nearZ0, farZ0);
-				if (ray.direction[kx] < 0.0f) swap(nearX1, farX1);
-				if (ray.direction[ky] < 0.0f) swap(nearY1, farY1);
-				if (ray.direction[kz] < 0.0f) swap(nearZ1, farZ1);
+					if (ray.direction[kx] < 0.0f) swap(nearX0, farX0);
+					if (ray.direction[ky] < 0.0f) swap(nearY0, farY0);
+					if (ray.direction[kz] < 0.0f) swap(nearZ0, farZ0);
+					if (ray.direction[kx] < 0.0f) swap(nearX1, farX1);
+					if (ray.direction[ky] < 0.0f) swap(nearY1, farY1);
+					if (ray.direction[kz] < 0.0f) swap(nearZ1, farZ1);
 
-				glm::vec3 lower0 = Dn(glm::abs(glm::vec3(ray.origin) - b0Min));
-				glm::vec3 upper0 = Up(glm::abs(glm::vec3(ray.origin) - b0Max));
-				glm::vec3 lower1 = Dn(abs(glm::vec3(ray.origin) - b1Min));
-				glm::vec3 upper1 = Up(abs(glm::vec3(ray.origin) - b1Max));
+					glm::vec3 lower0 = Dn(glm::abs(glm::vec3(ray.origin) - b0Min));
+					glm::vec3 upper0 = Up(glm::abs(glm::vec3(ray.origin) - b0Max));
+					glm::vec3 lower1 = Dn(abs(glm::vec3(ray.origin) - b1Min));
+					glm::vec3 upper1 = Up(abs(glm::vec3(ray.origin) - b1Max));
 
-				float max_z0 = glm::max(lower0[kz], upper0[kz]);
-				float max_z1 = glm::max(lower1[kz], upper1[kz]);
+					float max_z0 = glm::max(lower0[kz], upper0[kz]);
+					float max_z1 = glm::max(lower1[kz], upper1[kz]);
 
-				//calc the rror and update the origin
-				float err_near_x0 = Up(lower0[kx] + max_z0);
-				float err_near_y0 = Up(lower0[ky] + max_z0);
-				float err_near_x1 = Up(lower1[kx] + max_z1);
-				float err_near_y1 = Up(lower1[ky] + max_z1);
+					//calc the rror and update the origin
+					float err_near_x0 = Up(lower0[kx] + max_z0);
+					float err_near_y0 = Up(lower0[ky] + max_z0);
+					float err_near_x1 = Up(lower1[kx] + max_z1);
+					float err_near_y1 = Up(lower1[ky] + max_z1);
 
-				float oodxNear0 = up(ray.origin[kx] + Up(eps*err_near_x0));
-				float oodyNear0 = up(ray.origin[ky] + Up(eps*err_near_y0));
-				float oodzNear0 = ray.origin[kz];
-				float oodxNear1 = up(ray.origin[kx] + Up(eps*err_near_x1));
-				float oodyNear1 = up(ray.origin[ky] + Up(eps*err_near_y1));
-				float oodzNear1 = ray.origin[kz];
+					float oodxNear0 = up(ray.origin[kx] + Up(eps*err_near_x0));
+					float oodyNear0 = up(ray.origin[ky] + Up(eps*err_near_y0));
+					float oodzNear0 = ray.origin[kz];
+					float oodxNear1 = up(ray.origin[kx] + Up(eps*err_near_x1));
+					float oodyNear1 = up(ray.origin[ky] + Up(eps*err_near_y1));
+					float oodzNear1 = ray.origin[kz];
 
-				float err_far_x0 = Up(upper0[kx] + max_z0);
-				float err_far_y0 = Up(upper0[ky] + max_z0);
-				float err_far_x1 = Up(upper1[kx] + max_z1);
-				float err_far_y1 = Up(upper1[ky] + max_z1);
+					float err_far_x0 = Up(upper0[kx] + max_z0);
+					float err_far_y0 = Up(upper0[ky] + max_z0);
+					float err_far_x1 = Up(upper1[kx] + max_z1);
+					float err_far_y1 = Up(upper1[ky] + max_z1);
 
-				float oodxFar0 = dn(ray.origin[kx] - Up(eps*err_far_x0));
-				float oodyFar0 = dn(ray.origin[ky] - Up(eps*err_far_y0));
-				float oodzFar0 = ray.origin[kz];
-				float oodxFar1 = dn(ray.origin[kx] - Up(eps*err_far_x1));
-				float oodyFar1 = dn(ray.origin[ky] - Up(eps*err_far_y1));
-				float oodzFar1 = ray.origin[kz];
+					float oodxFar0 = dn(ray.origin[kx] - Up(eps*err_far_x0));
+					float oodyFar0 = dn(ray.origin[ky] - Up(eps*err_far_y0));
+					float oodzFar0 = ray.origin[kz];
+					float oodxFar1 = dn(ray.origin[kx] - Up(eps*err_far_x1));
+					float oodyFar1 = dn(ray.origin[ky] - Up(eps*err_far_y1));
+					float oodzFar1 = ray.origin[kz];
 
-				if (ray.direction[kx] < 0.0f) swap(oodxNear0, oodxFar0);
-				if (ray.direction[ky] < 0.0f) swap(oodyNear0, oodyFar0);
-				if (ray.direction[kx] < 0.0f) swap(oodxNear1, oodxFar1);
-				if (ray.direction[ky] < 0.0f) swap(oodyNear1, oodyFar1);
+					if (ray.direction[kx] < 0.0f) swap(oodxNear0, oodxFar0);
+					if (ray.direction[ky] < 0.0f) swap(oodyNear0, oodyFar0);
+					if (ray.direction[kx] < 0.0f) swap(oodxNear1, oodxFar1);
+					if (ray.direction[ky] < 0.0f) swap(oodyNear1, oodyFar1);
 
 
 
-				// Intersect the ray against the child nodes.
-				const float c0lox = (nearX0 - oodxNear0) * idirxNear;
-				const float c0hix = (farX0 - oodxFar0) * idirxFar;
-				const float c0loy = (nearY0 - oodyNear0) * idiryNear;
-				const float c0hiy = (farY0 - oodyFar0) * idiryFar;
-				const float c0loz = (nearZ0 - oodzNear0)   * idirzNear;
-				const float c0hiz = (farZ0 - oodzFar0)   * idirzFar;
-				const float c1loz = (nearZ1 - oodzNear1)   * idirzNear;
-				const float c1hiz = (farZ1 - oodzFar1)   * idirzFar;
-				const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
-				const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
+					// Intersect the ray against the child nodes.
+					const float c0lox = (nearX0 - oodxNear0) * idirxNear;
+					const float c0hix = (farX0 - oodxFar0) * idirxFar;
+					const float c0loy = (nearY0 - oodyNear0) * idiryNear;
+					const float c0hiy = (farY0 - oodyFar0) * idiryFar;
+					const float c0loz = (nearZ0 - oodzNear0)   * idirzNear;
+					const float c0hiz = (farZ0 - oodzFar0)   * idirzFar;
+					const float c1loz = (nearZ1 - oodzNear1)   * idirzNear;
+					const float c1hiz = (farZ1 - oodzFar1)   * idirzFar;
+					const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
+					const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
 
-				const float c1lox = (nearX1 - oodxNear1) * idirxNear;
-				const float c1hix = (farX1 - oodxFar1) * idirxFar;
-				const float c1loy = (nearY1 - oodyNear1) * idiryNear;
-				const float c1hiy = (farY1 - oodyFar1) * idiryFar;
-				const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
-				const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
+					const float c1lox = (nearX1 - oodxNear1) * idirxNear;
+					const float c1hix = (farX1 - oodxFar1) * idirxFar;
+					const float c1loy = (nearY1 - oodyNear1) * idiryNear;
+					const float c1hiy = (farY1 - oodyFar1) * idiryFar;
+					const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
+					const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
 
 #else
 
-				const float c0lox = b0Min.x * idirx - oodx;
-				const float c0hix = b0Max.x * idirx - oodx;
-				const float c0loy = b0Min.y * idiry - oody;
-				const float c0hiy = b0Max.y * idiry - oody;
-				const float c0loz = b0Min.z   * idirz - oodz;
-				const float c0hiz = b0Max.z   * idirz - oodz;
-				const float c1loz = b1Min.z   * idirz - oodz;
-				const float c1hiz = b1Max.z   * idirz - oodz;
-				const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
-				const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
-				const float c1lox = b1Min.x * idirx - oodx;
-				const float c1hix = b1Max.x * idirx - oodx;
-				const float c1loy = b1Min.y * idiry - oody;
-				const float c1hiy = b1Max.y * idiry - oody;
-				const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
-				const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
+					const float c0lox = b0Min.x * idirx - oodx;
+					const float c0hix = b0Max.x * idirx - oodx;
+					const float c0loy = b0Min.y * idiry - oody;
+					const float c0hiy = b0Max.y * idiry - oody;
+					const float c0loz = b0Min.z   * idirz - oodz;
+					const float c0hiz = b0Max.z   * idirz - oodz;
+					const float c1loz = b1Min.z   * idirz - oodz;
+					const float c1hiz = b1Max.z   * idirz - oodz;
+					const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
+					const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
+					const float c1lox = b1Min.x * idirx - oodx;
+					const float c1hix = b1Max.x * idirx - oodx;
+					const float c1loy = b1Min.y * idiry - oody;
+					const float c1hiy = b1Max.y * idiry - oody;
+					const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
+					const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
 
 #endif
 
-				bool swp = (c1min < c0min);
+					bool swp = (c1min < c0min);
 
-				bool traverseChild0 = (c0max >= c0min);
-				bool traverseChild1 = (c1max >= c1min);
+					bool traverseChild0 = (c0max >= c0min);
+					bool traverseChild1 = (c1max >= c1min);
 
 
-				if (!traverseChild0 && !traverseChild1)
-				{
-					currentNode = traversalStack[stackPtr--];
-				}
-
-				// Otherwise => fetch child pointers.
-
-				else
-				{
-					currentNode = (traverseChild0) ? childL : childR;
-
-					// Both children were intersected => push the farther one.
-
-					if (traverseChild0 && traverseChild1)
+					if (!traverseChild0 && !traverseChild1)
 					{
-						if (swp) {
-							swap(currentNode, childR);
+						ray = rayStack[stackPtr];
+						currentNode = traversalStack[stackPtr--];
+					}
+
+					// Otherwise => fetch child pointers.
+
+					else
+					{
+						currentNode = (traverseChild0) ? childL : childR;
+
+						// Both children were intersected => push the farther one.
+
+						if (traverseChild0 && traverseChild1)
+						{
+							if (swp) {
+								swap(currentNode, childR);
+							}
+
+
+							traversalStack[++stackPtr] = childR;
+							rayStack[stackPtr] = Transform(ray, currentTransform, childR->transform);
+
 						}
 
-						traversalStack[++stackPtr] = childR;
+						ray = Transform(ray, currentTransform, currentNode->transform);
+
+					}
+
+					// First leaf => postpone and continue traversal.
+
+					if (bvh.IsLeaf(currentNode) && !bvh.IsLeaf(currentLeaf))     // Postpone leaf
+					{
+						currentLeaf = currentNode;
+						ray = rayStack[stackPtr];
+						currentNode = traversalStack[stackPtr--];
+					}
+
+
+					if (!__any(!bvh.IsLeaf(currentLeaf))) {
+						break;
 					}
 				}
 
-				// First leaf => postpone and continue traversal.
+				// Process postponed leaf nodes.
 
-				if (bvh.IsLeaf(currentNode) && !bvh.IsLeaf(currentLeaf))     // Postpone leaf
+				while (bvh.IsLeaf(currentLeaf))
 				{
-					currentLeaf = currentNode;
-					currentNode = traversalStack[stackPtr--];
-				}
+					uint faceID = currentLeaf->faceID;
 
+					glm::uvec3 face = fP[faceID].indices;
 
-				if (!__any(!bvh.IsLeaf(currentLeaf))) {
-					break;
-				}
-			}
-
-			// Process postponed leaf nodes.
-
-			while (bvh.IsLeaf(currentLeaf))
-			{
-				uint faceID = currentLeaf->faceID;
-
-				glm::uvec3 face = fP[faceID].indices;
-
-				float bary1;
-				float bary2;
-				float tTemp;
+					float bary1;
+					float bary2;
+					float tTemp;
 
 #if defined	WOOP_TRI
-				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
-					ray.origin, kx, ky, kz, Sx, Sy, Sz,
+					if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
+						ray.origin, kx, ky, kz, Sx, Sy, Sz,
 #else
-				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
-					ray.origin, ray.direction, { idirx, idiry, idirz },
+					if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
+						ray.origin, ray.direction, { idirx, idiry, idirz },
 #endif
-					tTemp, ray.direction.w, bary1, bary2)) {
+						tTemp, ray.direction.w, bary1, bary2)) {
 
-					ray.direction.w = tTemp;
-					ray.bary = glm::vec2(bary1, bary2);
-					ray.currentHit = faceID;
+						ray.direction.w = tTemp;
+						ray.bary = glm::vec2(bary1, bary2);
+						ray.currentHit = faceID;
+					}
+
+					//go through the second postponed leaf
+					currentLeaf = currentNode;
+					if (bvh.IsLeaf(currentNode))
+					{
+						ray = rayStack[stackPtr];
+						currentNode = traversalStack[stackPtr--];
+					}
 				}
 
-				//go through the second postponed leaf
-				currentLeaf = currentNode;
-				if (bvh.IsLeaf(currentNode))
-				{
-					currentNode = traversalStack[stackPtr--];
+				//cut the losses
+
+				if (__popc(__ballot(true)) < DYNAMIC_FETCH_THRESHOLD) {
+					break;
 				}
-			}
 
-			//cut the losses
+			} // traversal
 
-			if (__popc(__ballot(true)) < DYNAMIC_FETCH_THRESHOLD) {
-				break;
-			}
+			//update the data
 
-		} // traversal
-
-		//update the data
-
-		rays[rayidx] = ray;
+			rays[rayidx] = ray;
 
 	} while (true);
 }

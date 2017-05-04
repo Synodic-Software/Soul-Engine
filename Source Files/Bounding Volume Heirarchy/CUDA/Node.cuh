@@ -13,6 +13,7 @@ public:
 
 	Node* childLeft;
 	Node* childRight;
+	Node* parent;
 
 	BoundingBox box;
 
@@ -21,7 +22,6 @@ public:
 	uint64 morton;
 	uint bestObjID;
 	uint bitOffset;
-
 	uint faceID;
 	uint atomic;
 	uint rangeRight;
