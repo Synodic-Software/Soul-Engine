@@ -38,24 +38,6 @@ __device__ uint HighestBit(MiniObject& objThis, uint64 mortonThis, MiniObject& o
 	return bitDiff;
 }
 
-__device__ void HighestBitOffset(MiniObject& objThis, uint64 mortonThis, MiniObject& objNext, uint64 mortonNext, uint offset)
-{
-
-	uint bitDiff = glm::abs(objThis.tSize - objNext.tSize) * 64;
-
-	int min = glm::min(objThis.tSize, objNext.tSize);
-	for (int t = 0; t < min; ++t) {
-
-		uint64 change = objThis.transforms[t].morton^objNext.transforms[t].morton;
-		if (change != 0) {
-			bitDiff += __ffsll(change);
-			bitDiff += 64 * (min - t - 1);
-			break;
-		}
-	}
-
-
-}
 
 __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, Face* faces, Vertex* vertices, MiniObject* objects, const uint leafOffset)
 {
@@ -73,9 +55,6 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, Face* faces,
 		// Set bounding box if the node is not a leaf
 		if (currentNode - nodes < leafOffset)
 		{
-
-			HighestBitOffset();
-
 			currentNode->box.max = glm::max(currentNode->childLeft->box.max, currentNode->childRight->box.max);
 			currentNode->box.min = glm::min(currentNode->childLeft->box.min, currentNode->childRight->box.min);
 		}
@@ -135,7 +114,8 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	temp.atomic = 1; // To allow the next thread to process
 	temp.childLeft = nullptr;
 	temp.childRight = nullptr;
-	temp.transform = glm::mat4();
+	temp.transformLeft = glm::mat4();
+	temp.transformRight = glm::mat4();
 
 	if (index < leafOffset) {
 		Node tempF;
