@@ -187,6 +187,12 @@
     <Filter Include="Engine Backend\Display\Widget\CUDA">
       <UniqueIdentifier>{27d133b8-3b63-4857-81ee-3961ab723f9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Data Structures">
+      <UniqueIdentifier>{d5b30395-bae2-4fce-94f3-10fb761e65a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Data Structures\Radix Tree">
+      <UniqueIdentifier>{276a7c06-6052-463e-bc85-ec2c5fd34b08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -495,6 +501,9 @@
     <ClInclude Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cuh">
       <Filter>Engine Backend\Display\Widget\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RadixTree.h">
+      <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -631,6 +640,9 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cpp">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RadixTree.cpp">
+      <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
