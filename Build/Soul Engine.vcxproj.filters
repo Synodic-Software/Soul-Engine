@@ -504,6 +504,9 @@
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RadixTree.h">
       <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RTNode.h">
+      <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -642,6 +645,9 @@
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RadixTree.cpp">
+      <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RTNode.cpp">
       <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
     </ClCompile>
   </ItemGroup>

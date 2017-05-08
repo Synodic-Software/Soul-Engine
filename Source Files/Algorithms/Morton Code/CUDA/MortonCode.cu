@@ -5,6 +5,8 @@
 #include <inttypes.h>
 #include <stdint.h>
 
+#define TwoE20 1048575 //2^20-1
+#define TwoE21 2097151 //2^21-1
 
 __inline__ __host__ __device__ uint64 Split64(unsigned int a) {
 	uint64 x = a;
@@ -28,10 +30,10 @@ __inline__ __host__ __device__ uint Unsplit64(const uint64 m) {
 
 __host__ __device__ uint64 MortonCode::Calculate64(const glm::vec3& data) {
 
-	uint max = 2097151;
-	uint x = uint(data.x*max);
-	uint y = uint(data.y*max);
-	uint z = uint(data.z*max);
+	//2^20 mapped to [-1,1] and then 2^21 [0,1]
+	uint x = int(data.x*TwoE20) + TwoE20;
+	uint y = int(data.y*TwoE20) + TwoE20;
+	uint z = int(data.z*TwoE20) + TwoE20;
 
 	uint64 answer = 0;
 	answer |= Split64(x) | Split64(y) << 1 | Split64(z) << 2;
@@ -44,14 +46,13 @@ __host__ __device__ glm::vec3 MortonCode::Decode64(uint64 m) {
 	uint y = Unsplit64(m >> 1);
 	uint z = Unsplit64(m >> 2);
 
-	float max = 2097151;
-	glm::vec3 data = glm::vec3(x / max, y / max, z / max);
+	glm::vec3 data = glm::vec3(x / TwoE20, y / TwoE20, z / TwoE20) - 1.0f;
 
 	return data;
 }
 
 
-__global__ void MortonCode::ComputeGPU(const uint n, uint64* mortonCodes, Face* faces, Vertex* vertices) {
+__global__ void MortonCode::ComputeGPU64(const uint n, uint64* mortonCodes, Face* faces, Vertex* vertices) {
 
 	uint index = getGlobalIdx_1D_1D();
 
