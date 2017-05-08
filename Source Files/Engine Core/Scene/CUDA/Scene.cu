@@ -74,7 +74,7 @@ __host__ void Scene::Build(float deltaTime) {
 		uint gridSize = (faceAmount + blockSize - 1) / blockSize;
 
 
-		MortonCode::ComputeGPU << <gridSize, blockSize >> > (faceAmount, mortonCodes, faces, vertices);
+		MortonCode::ComputeGPU64 << <gridSize, blockSize >> > (faceAmount, mortonCodes, faces, vertices);
 
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
