@@ -6,6 +6,7 @@
 class RTNode
 {
 public:
+	RTNode();
 	RTNode(boost::dynamic_bitset<>&);
 	void AddSequence(boost::dynamic_bitset<>&);
 

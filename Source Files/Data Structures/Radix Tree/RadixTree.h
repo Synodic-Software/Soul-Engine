@@ -3,16 +3,16 @@
 #include "RTNode.h"
 #include <vector>
 #include "Metrics.h"
-#include <boost/multiprecision/gmp.hpp>
+//#include <boost/multiprecision/gmp.hpp>
 
-namespace boost {
-	namespace multiprecision {
-		class gmp_int;
-		typedef number<gmp_int> mpInt;
-	}
-}
-
-typedef boost::multiprecision::mpInt ArbitraryInt;
+//namespace boost {
+//	namespace multiprecision {
+//		class gmp_int;
+//		typedef number<gmp_int> mpInt;
+//	}
+//}
+//
+//typedef boost::multiprecision::mpInt ArbitraryInt;
 
 
 class RadixTree

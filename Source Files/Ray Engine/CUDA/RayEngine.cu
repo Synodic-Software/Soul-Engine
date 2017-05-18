@@ -175,10 +175,11 @@ __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 	int cur = 0;
 
 	((glm::vec4*)jobs[cur].results)[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	jobs[cur].groupData[(index - startIndex)] = 0;
 
 }
 
-__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, curandState* randomState) {
+__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -189,17 +190,26 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 	uint startIndex = 0;
 	int cur = 0;
 
-	uint localIndex = (index - startIndex) / job[cur].samples;
+	float samples = job[cur].samples;
+	uint sampleIndex = (index - startIndex) / glm::ceil(samples);
+	uint localIndex = (index - startIndex) % (int)glm::ceil(samples);
 
 	curandState randState = randomState[index];
 
-	Ray ray;
-	ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ray.resultOffset = localIndex;
-	job[cur].camera.SetupRay(localIndex, ray, randState);
+	if (localIndex < samples || curand_uniform(&randState) < __fsub_rd(samples, glm::floor(samples))) {
+
+		Ray ray;
+		ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		ray.resultOffset = sampleIndex;
+		job[cur].camera.SetupRay(sampleIndex, ray, randState);
+
+		atomicAdd(job[cur].groupData + sampleIndex, 1);
+		//rays[index] = ray;
+		rays[FastAtomicAdd(nAtomic)] = ray;
+	}
 
 	randomState[index] = randState;
-	rays[index] = ray;
+
 }
 
 __host__ __device__ __inline__ glm::vec3 PositionAlongRay(const Ray& ray, const float& t) {
@@ -399,7 +409,7 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		//update the state
 		randomState[index] = randState;
 	}
-	col /= job[cur].samples;
+	col /= job[cur].groupData[localIndex];
 
 	glm::vec4* pt = &((glm::vec4*)job[cur].results)[localIndex];
 
@@ -783,17 +793,17 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 		uint numberResults = 0;
 		uint numberRays = 0;
-		uint samplesMax = 0;
+		//uint samplesMax = 0;
 
 		for (int i = 0; i < numberJobs; ++i) {
 
 			hjobs[i].startIndex = numberResults;
 			numberResults += hjobs[i].rayAmount;
-			numberRays += hjobs[i].rayAmount* hjobs[i].samples;
+			numberRays += hjobs[i].rayAmount* glm::ceil(hjobs[i].samples);
 
-			if (hjobs[i].samples > samplesMax) {
+			/*if (hjobs[i].samples > samplesMax) {
 				samplesMax = hjobs[i].samples;
-			}
+			}*/
 
 		}
 
@@ -859,16 +869,20 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 				//copy the scene over
 				CudaCheck(cudaMemcpy(scene, sceneIn, sizeof(Scene), cudaMemcpyHostToDevice));
 
-				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, numberJobs, deviceRays, scene, randomState);
+				//setup the counters
+				int zeroHost = 0;
+				CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+				CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+
+				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, numberJobs, deviceRays, scene, hitAtomic, randomState);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
 
-				//setup the counters
-				int zeroHost = 0;
 
 				//start the engine loop
-				uint numActive = numberRays;
+				uint numActive;
+				CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
 
 				for (uint i = 0; i < rayDepth && numActive>0; ++i) {
 

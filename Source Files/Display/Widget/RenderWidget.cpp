@@ -13,7 +13,7 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 	widgetJob = RasterBackend::CreateJob();
 
-	samples = 1;
+	samples = 1.0f;
 
 	//attach shaders to render a quad and apply a texture
 	widgetJob->AttachShaders({
@@ -82,7 +82,7 @@ void RenderWidget::Draw() {
 
 
 	if (integrate) {
-		Integrate(size.x*size.y, (glm::vec4*)buffer->GetData(), (glm::vec4*)accumulator->GetData(), iCounter);
+		Integrate(size.x*size.y, (glm::vec4*)buffer->GetData(), (glm::vec4*)accumulator->GetData(), (int*)extraData->GetData(), iCounter);
 		iCounter++;
 	}
 	else {
@@ -95,7 +95,7 @@ void RenderWidget::Draw() {
 
 	//add the rayJob back in
 	buffer->MapResources();
-	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData());
+	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData(), (int*)extraData->GetData());
 
 }
 
@@ -112,6 +112,9 @@ void RenderWidget::RecreateData() {
 
 	buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
 
+	extraData = GPUManager::CreateBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(int));
+
+
 	if (currentSize != size) {
 		currentSize = size;
 		widgetJob->SetUniform(std::string("screen"), size);
@@ -119,5 +122,5 @@ void RenderWidget::RecreateData() {
 
 	//add the ray job with new sizes
 	buffer->MapResources();
-	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData());
+	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData(), (int*)extraData->GetData());
 }

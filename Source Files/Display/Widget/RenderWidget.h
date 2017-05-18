@@ -25,9 +25,9 @@ private:
 	glm::uvec2 currentSize;
 	GPURasterBuffer* buffer;
 	GPUBuffer* accumulator;
-	//glm::vec4* accumulator;
+	GPUBuffer* extraData;
 
-	uint samples;
+	float samples;
 	Camera* camera;
 
 	uint iCounter;
