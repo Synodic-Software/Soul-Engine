@@ -1,5 +1,9 @@
 #include "RTNode.h"
 
+RTNode::RTNode() {
+
+}
+
 RTNode::RTNode(boost::dynamic_bitset<>& sequence) {
 
 }

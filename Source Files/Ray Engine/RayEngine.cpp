@@ -10,9 +10,9 @@ void RayEngine::Process(const Scene* scene){
 }
 
 void RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
-	uint samples, Camera& camera, void* resultsIn) {
+	float samples, Camera& camera, void* resultsIn, int* extraData) {
 
-	jobList.push_back({ whatToGet, rayAmount, samples, camera, resultsIn });
+	jobList.push_back({ whatToGet, rayAmount, samples, camera, resultsIn,extraData });
 
 }
 
