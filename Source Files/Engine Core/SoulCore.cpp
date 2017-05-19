@@ -422,8 +422,8 @@ int main()
 		transform = glm::translate(transform, /*100000000000.0f**/glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10));
 		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
 
-		/*Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
-		scene->AddObject(transform,sphere);*/
+		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
+		scene->AddObject(transform,sphere);
 
 		SubmitScene(scene);
 
