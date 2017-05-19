@@ -23,6 +23,8 @@ protected:
 private:
 
 	glm::uvec2 currentSize;
+	glm::uvec2 renderSize;
+
 	GPURasterBuffer* buffer;
 	GPUBuffer* accumulator;
 	GPUBuffer* extraData;
