@@ -6,6 +6,7 @@
 #include "GPGPU\GPURasterBuffer.h"
 #include "GPGPU\GPUBuffer.h"
 #include "Engine Core\Camera\Camera.h"
+#include "Ray Engine/RayEngine.h"
 
 class RenderWidget : public Widget
 {
@@ -31,6 +32,7 @@ private:
 
 	float samples;
 	Camera* camera;
+	RayJob* rayJob;
 
 	uint iCounter;
 	bool integrate;
