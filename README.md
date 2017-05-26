@@ -5,7 +5,7 @@ system with CUDA (primary) or OpenCL (secondary) support.
 ![Tree Model](Documentation/Tree.png)
 (This is image is produced after 10 seconds of accumulation on a low-tier graphics card)
 
-#Features
+# Features
 These are planned features (partial/incomplete implementations) for aid in the vision of the final application.
 
   - Spectral bidirectional path tracer
