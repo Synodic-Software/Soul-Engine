@@ -193,6 +193,15 @@
     <Filter Include="Engine Backend\Data Structures\Radix Tree">
       <UniqueIdentifier>{276a7c06-6052-463e-bc85-ec2c5fd34b08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Memory">
+      <UniqueIdentifier>{c2f88d66-8971-4d61-9c74-81f655fc7391}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Memory\Allocator">
+      <UniqueIdentifier>{136e21c4-14f9-4749-9657-dd3016180582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Memory\Allocator\Linear Allocator">
+      <UniqueIdentifier>{68060659-cfcf-48cf-aa6e-8d8356cdbfc4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -507,6 +516,15 @@
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RTNode.h">
       <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Utility\Assert.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Memory\Allocator\Allocator.h">
+      <Filter>Engine Backend\Memory\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h">
+      <Filter>Engine Backend\Memory\Allocator\Linear Allocator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -649,6 +667,12 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RTNode.cpp">
       <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Utility\Assert.cpp">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp">
+      <Filter>Engine Backend\Memory\Allocator\Linear Allocator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
