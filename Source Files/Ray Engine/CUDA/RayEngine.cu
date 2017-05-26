@@ -784,7 +784,15 @@ __host__ int ReturnSharedBytes(int blockSize) {
 }
 
 
-__host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
+__host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
+
+	std::vector<RayJob> hjobs(hlist.size());
+
+	int pt = 0;
+	for (auto& ptr : hlist) {
+		hjobs[pt] = *ptr;
+		++pt;
+	}
 
 	uint numberJobs = hjobs.size();
 
@@ -793,17 +801,12 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 		uint numberResults = 0;
 		uint numberRays = 0;
-		//uint samplesMax = 0;
 
 		for (int i = 0; i < numberJobs; ++i) {
 
 			hjobs[i].startIndex = numberResults;
 			numberResults += hjobs[i].rayAmount;
 			numberRays += hjobs[i].rayAmount* glm::ceil(hjobs[i].samples);
-
-			/*if (hjobs[i].samples > samplesMax) {
-				samplesMax = hjobs[i].samples;
-			}*/
 
 		}
 
@@ -823,9 +826,6 @@ __host__ void ProcessJobs(std::vector<RayJob>& hjobs, const Scene* sceneIn) {
 
 			//copy device jobs
 			CudaCheck(cudaMemcpy(jobs, hjobs.data(), numberJobs * sizeof(RayJob), cudaMemcpyHostToDevice));
-
-			//remove all the jobs as they are transfered
-			hjobs.clear();
 
 			uint blockSize = 64;
 			uint blockCount = (numberResults + blockSize - 1) / blockSize;

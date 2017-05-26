@@ -3,33 +3,37 @@
 #include "Utility\CUDA\CUDAHelper.cuh"
 
 
-std::vector<RayJob> jobList;
+static std::list<RayJob*> jobList;
 
 void RayEngine::Process(const Scene* scene){
 	ProcessJobs(jobList, scene);
 }
 
-void RayEngine::AddRayJob(rayType whatToGet, uint rayAmount,
+RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
 	float samples, Camera& camera, void* resultsIn, int* extraData) {
 
-	jobList.push_back({ whatToGet, rayAmount, samples, camera, resultsIn,extraData });
+	RayJob* job= new RayJob(whatToGet, rayAmount, canChange, samples, camera, resultsIn, extraData);
+	jobList.push_back(job);
+
+	return job;
+}
+
+void RayEngine::ModifyJob(RayJob* jobIn, Camera& camera) {
+
+	for (auto& job : jobList) {
+		if (job== jobIn) {
+			job->camera = camera;
+			break;
+		}
+	}
 
 }
 
-bool RayEngine::ChangeJob(RayJob* job, uint rayAmount, 
-	float samples, Camera& camera){
+bool RayEngine::RemoveJob(RayJob* job){
 
-	if (rayAmount<=job->rayBaseAmount){
-		job->rayAmount = rayAmount;
-		job->samples = samples;
-		job->camera = camera;
+	jobList.remove(job);
 
-		return true;
-	}
-	else{
-		return false;
-	}
-
+	return true;
 }
 void RayEngine::Initialize() {
 	GPUInitialize();

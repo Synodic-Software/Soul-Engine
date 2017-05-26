@@ -1,7 +1,6 @@
 #include "RenderWidget.h"
 #include "Raster Engine\Buffer.h"
 #include "GPGPU\GPUManager.h"
-#include "Ray Engine/RayEngine.h"
 #include "Utility/CUDA/CudaHelper.cuh"
 #include "CUDA\RenderWidget.cuh"
 #include <iostream>
@@ -62,6 +61,7 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 	iCounter = 1;
 	integrate = false;
+	currentSize = glm::uvec2(312,720);
 }
 
 RenderWidget::~RenderWidget()
@@ -82,7 +82,7 @@ void RenderWidget::Draw() {
 
 
 	if (integrate) {
-		Integrate(size.x*size.y, (glm::vec4*)buffer->GetData(), (glm::vec4*)accumulator->GetData(), (int*)extraData->GetData(), iCounter);
+		Integrate(renderSize.x*renderSize.y, (glm::vec4*)buffer->GetData(), (glm::vec4*)accumulator->GetData(), (int*)extraData->GetData(), iCounter);
 		iCounter++;
 	}
 	else {
@@ -95,17 +95,17 @@ void RenderWidget::Draw() {
 
 	//add the rayJob back in
 	buffer->MapResources();
-	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData(), (int*)extraData->GetData());
 
+	//get job values
+	widgetJob->SetUniform(std::string("screen"), renderSize);
+
+	RayEngine::ModifyJob(rayJob,*camera);
 }
 
 void RenderWidget::RecreateData() {
 
-	//update the camera
-	camera->SetAspect(size.x / (float)size.y);
-	camera->resolution = size;
 	//remove the rayJob if it exists
-	//TODO
+	RayEngine::RemoveJob(rayJob);
 
 	//create the new accumulation Buffer
 	accumulator = GPUManager::CreateBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
@@ -117,10 +117,15 @@ void RenderWidget::RecreateData() {
 
 	if (currentSize != size) {
 		currentSize = size;
-		widgetJob->SetUniform(std::string("screen"), size);
+		renderSize = size;
+		widgetJob->SetUniform(std::string("screen"), renderSize);
 	}
+
+	//update the camera
+	camera->SetAspect(renderSize.x / (float)renderSize.y);
+	camera->resolution = renderSize;
 
 	//add the ray job with new sizes
 	buffer->MapResources();
-	RayEngine::AddRayJob(RayCOLOUR, size.x*size.y, samples, *camera, buffer->GetData(), (int*)extraData->GetData());
+	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true,samples, *camera, buffer->GetData(), (int*)extraData->GetData());
 }

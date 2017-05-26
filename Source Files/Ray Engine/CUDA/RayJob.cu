@@ -1,7 +1,9 @@
 #include "RayJob.cuh"
 #include "Utility/CUDA/CUDAHelper.cuh"
 
-__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, float newSamples, Camera cameraN, void* resultsIN,int* extraData) {
+static uint counter=0;
+
+__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, bool _canChange, float newSamples, Camera cameraN, void* resultsIN, int* extraData) {
 
 	type = whatToGet;
 	rayAmount = rayAmountN;
@@ -11,9 +13,12 @@ __host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, float newSamples, Ca
 	results = resultsIN;
 	startIndex = 0;
 	groupData = extraData;
+	canChange = _canChange;
+	ID = counter++;
+}
+__host__ RayJob::RayJob() {
 
 }
-
 __host__ RayJob::~RayJob() {
 
 }
