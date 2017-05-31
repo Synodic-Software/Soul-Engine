@@ -101,7 +101,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Display\Widget\Widget.h" />
     <ClInclude Include="..\Source Files\Display\Window\Window.h" />
     <ClInclude Include="..\Source Files\Display\Window\WindowManager.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Allocator\Allocator.h" />
     <ClInclude Include="..\Source Files\Engine Core\BasicDependencies.h" />
     <ClInclude Include="..\Source Files\Engine Core\Camera\Camera.h" />
     <ClInclude Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cuh" />
@@ -199,7 +198,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Display\Widget\Widget.cpp" />
     <ClCompile Include="..\Source Files\Display\Window\Window.cpp" />
     <ClCompile Include="..\Source Files\Display\Window\WindowManager.cpp" />
-    <ClCompile Include="..\Source Files\Engine Core\Allocator\Allocator.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Frame\Frame.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Object\Character\Character.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Object\Loader.cpp" />
