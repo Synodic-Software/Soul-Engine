@@ -130,9 +130,6 @@
     <Filter Include="Engine Backend\Engine Core\Material\Colour\OpenCL">
       <UniqueIdentifier>{0a23ec14-0416-453c-a3fd-e06601ef2c60}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Allocator">
-      <UniqueIdentifier>{05e57c49-4656-4425-be25-75d03925d296}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Display">
       <UniqueIdentifier>{2f2ed3b7-3058-4e14-939f-a6241027892f}</UniqueIdentifier>
     </Filter>
@@ -242,9 +239,6 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Display\Window\Window.h">
       <Filter>Engine Backend\Display\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Allocator\Allocator.h">
-      <Filter>Engine Backend\Engine Core\Allocator</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cuh">
       <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
@@ -547,9 +541,6 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Display\Window\WindowManager.cpp">
       <Filter>Engine Backend\Display\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Engine Core\Allocator\Allocator.cpp">
-      <Filter>Engine Backend\Engine Core\Allocator</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Engine Core\Frame\Frame.cpp">
       <Filter>Engine Backend\Engine Core\Frame</Filter>
