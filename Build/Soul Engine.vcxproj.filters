@@ -199,6 +199,9 @@
     <Filter Include="Engine Backend\Memory\Allocator\Linear Allocator">
       <UniqueIdentifier>{68060659-cfcf-48cf-aa6e-8d8356cdbfc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Message Interface">
+      <UniqueIdentifier>{01c8a694-0a86-4eef-8046-7e99138d9ccc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -519,6 +522,15 @@
     <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h">
       <Filter>Engine Backend\Memory\Allocator\Linear Allocator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Message Interface\MessageTypes.h">
+      <Filter>Engine Backend\Message Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Message Interface\Message.h">
+      <Filter>Engine Backend\Message Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Message Interface\MessageManager.h">
+      <Filter>Engine Backend\Message Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -664,6 +676,15 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp">
       <Filter>Engine Backend\Memory\Allocator\Linear Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Message Interface\Message.cpp">
+      <Filter>Engine Backend\Message Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Message Interface\MessageManager.cpp">
+      <Filter>Engine Backend\Message Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Memory\Allocator\Allocator.cpp">
+      <Filter>Engine Backend\Memory\Allocator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

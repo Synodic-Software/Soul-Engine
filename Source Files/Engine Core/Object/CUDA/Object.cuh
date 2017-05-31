@@ -37,10 +37,6 @@ public:
 	std::vector<Tet> tets;
 	std::vector<Material> materials;
 
-	void Update(double);
-	void UpdateLate(double);
-	void Load();
-
 	BoundingBox box; //in object space
 
 protected:

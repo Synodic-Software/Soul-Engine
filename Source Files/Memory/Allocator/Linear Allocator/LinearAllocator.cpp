@@ -1,4 +1,4 @@
-#include"LinearAllocator.h"
+#include "LinearAllocator.h"
 
 /*Constructor for linear allocator
   Arguments: size - maximum capacity in bytes for the allocator

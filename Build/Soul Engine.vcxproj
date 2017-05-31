@@ -150,6 +150,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Input\InputState.h" />
     <ClInclude Include="..\Source Files\Memory\Allocator\Allocator.h" />
     <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h" />
+    <ClInclude Include="..\Source Files\Message Interface\Message.h" />
+    <ClInclude Include="..\Source Files\Message Interface\MessageManager.h" />
+    <ClInclude Include="..\Source Files\Message Interface\MessageTypes.h" />
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
     <ClInclude Include="..\Source Files\Physics Engine\CUDA\PhysicsEngine.cuh" />
     <ClInclude Include="..\Source Files\Physics Engine\PhysicsEngine.h" />
@@ -216,7 +219,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.cpp" />
     <ClCompile Include="..\Source Files\Input\Input.cpp" />
     <ClCompile Include="..\Source Files\Input\InputState.cpp" />
+    <ClCompile Include="..\Source Files\Memory\Allocator\Allocator.cpp" />
     <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp" />
+    <ClCompile Include="..\Source Files\Message Interface\Message.cpp" />
+    <ClCompile Include="..\Source Files\Message Interface\MessageManager.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />
     <ClCompile Include="..\Source Files\Physics Engine\PhysicsEngine.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\RasterBase.cpp" />
