@@ -19,6 +19,7 @@
 #include "Display\Layout\SingleLayout.h"
 #include "Display\Widget\RenderWidget.h"
 #include "Multithreading\Scheduler.h"
+#include "Events\EventManager.h"
 
 namespace Soul {
 
@@ -170,10 +171,10 @@ namespace Soul {
 	}
 
 	void EarlyFrameUpdate() {
-
+		EventManager::NotifyAll("EarlyFrameUpdate");
 	}
 	void LateFrameUpdate() {
-
+		EventManager::NotifyAll("LateFrameUpdate");
 	}
 
 	void EarlyUpdate() {

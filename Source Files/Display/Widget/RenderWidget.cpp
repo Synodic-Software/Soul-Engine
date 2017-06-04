@@ -5,6 +5,7 @@
 #include "CUDA\RenderWidget.cuh"
 #include <iostream>
 #include "Input/InputState.h"
+#include "Events\EventManager.h"
 
 RenderWidget::RenderWidget(Camera* cameraIn)
 {
@@ -62,6 +63,17 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 	iCounter = 1;
 	integrate = false;
 	currentSize = glm::uvec2(312,720);
+
+	uint id = EventManager::Listen("EarlyFrameUpdate", this,&RenderWidget::EarlyFrameUpdate);
+	id = EventManager::Listen("LateFrameUpdate", this,&RenderWidget::LateFrameUpdate);
+
+}
+
+void RenderWidget::EarlyFrameUpdate() {
+	std::cout << "hi";
+}
+void RenderWidget::LateFrameUpdate() {
+	std::cout << "hi";
 }
 
 RenderWidget::~RenderWidget()
