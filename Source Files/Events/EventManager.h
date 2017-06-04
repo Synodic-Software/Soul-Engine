@@ -69,8 +69,12 @@ namespace EventManager {
 
 	}
 
+	void Remove(std::string name, int ID);
+
+	void Remove(std::string name);
+
 	template <typename... Args>
-	void NotifyAll(std::string name, Args... args)
+	void Emit(std::string name, Args... args)
 	{
 		typedef Event<Args...> EventType;
 		detail::EMap::const_iterator itr = detail::eventMap.find(name);
@@ -79,7 +83,7 @@ namespace EventManager {
 			EventType* evt = dynamic_cast<EventType*>(itr->second.get());
 			if (evt)
 			{
-				(*evt).NotifyAll(args...);
+				(*evt).Emit(args...);
 			}
 		}
 	}

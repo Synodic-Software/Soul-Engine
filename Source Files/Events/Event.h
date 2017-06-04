@@ -2,6 +2,8 @@
 
 #include "Multithreading/Scheduler.h"
 
+#include "Metrics.h"
+
 #include <list>
 #include <functional>
 #include <memory>
@@ -13,6 +15,8 @@ class BaseEvent
 public:
 	BaseEvent() {};
 	virtual ~BaseEvent() {}
+
+	virtual void Remove(uint) {};
 };
 
 template<typename... Args>
@@ -32,14 +36,14 @@ public:
 	//Listener functions
 	template<typename T>
 	void Listen(int ID, T *instance, void(T::*func)(Args...) const) {
-		return Listen(ID, [=](Args... args) {
+		Listen(ID, [=](Args... args) {
 			(instance->*func)(args...);
 		});
 	}
 
 	template<typename T>
 	void Listen(int ID, T *instance, void(T::*func)(Args...)) {
-		return Listen(ID, [=](Args... args) {
+		Listen(ID, [=](Args... args) {
 			(instance->*func)(args...);
 		});
 	}
@@ -53,18 +57,15 @@ public:
 	}
 
 	//Removal functions
-	void Remove(int ID) {
+	virtual void Remove(int ID) {
 		listeners.erase(ID);
 	}
+
 	void RemoveAll() {
 		listeners.clear();
 	}
 	
-	//Notify functions
-	void Notify(int ID,Args... args) {
-
-	}
-	void NotifyAll(Args... args) {
+	void Emit(Args... args) {
 		for (auto itr : listeners) {
 			itr.second(args...);
 		}
