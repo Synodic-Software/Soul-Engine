@@ -70,10 +70,10 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 }
 
 void RenderWidget::EarlyFrameUpdate() {
-	std::cout << "hi";
+
 }
 void RenderWidget::LateFrameUpdate() {
-	std::cout << "hi";
+
 }
 
 RenderWidget::~RenderWidget()

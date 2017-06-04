@@ -171,10 +171,10 @@ namespace Soul {
 	}
 
 	void EarlyFrameUpdate() {
-		EventManager::NotifyAll("EarlyFrameUpdate");
+		EventManager::Emit("EarlyFrameUpdate");
 	}
 	void LateFrameUpdate() {
-		EventManager::NotifyAll("LateFrameUpdate");
+		EventManager::Emit("LateFrameUpdate");
 	}
 
 	void EarlyUpdate() {
