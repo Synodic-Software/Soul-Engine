@@ -28,25 +28,7 @@ public:
 	using signature = std::function<void(Args...)>;
 
 	Event() {}
-	Event(signature f) {}
 	~Event() {}
-
-
-
-	//Listener functions
-	template<typename T>
-	void Listen(int ID, T *instance, void(T::*func)(Args...) const) {
-		Listen(ID, [=](Args... args) {
-			(instance->*func)(args...);
-		});
-	}
-
-	template<typename T>
-	void Listen(int ID, T *instance, void(T::*func)(Args...)) {
-		Listen(ID, [=](Args... args) {
-			(instance->*func)(args...);
-		});
-	}
 
 	void Listen(int ID, const signature& fn) {
 		listeners.insert(std::make_pair(ID, fn));

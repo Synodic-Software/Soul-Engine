@@ -83,6 +83,25 @@ namespace Scheduler {
 	//Terminate the multithreaded scheduler
 	void Terminate();
 
+	//Takes in a member function and the object it is affiliated with
+	template <typename T,
+		typename ... Args>
+		void AddTask(FiberPolicy policy, FiberPriority priority, bool runsOnMain, T *instance, void(T::*func)(Args...) const) {
+		AddTask(policy, priority, runsOnMain, [=](Args... args) {
+			(instance->*func)(args...);
+		});
+	}
+	
+	//Takes in a member function and the object it is affiliated with
+	template <typename T,
+		typename ... Args>
+		void AddTask(FiberPolicy policy, FiberPriority priority, bool runsOnMain, T *instance, void(T::*func)(Args...)) {
+		AddTask(policy, priority, runsOnMain, [=](Args... args) {
+			(instance->*func)(args...);
+		});
+	}
+
+
 	/*
 	Add a task to the fiber system to be executed concurrently
 
