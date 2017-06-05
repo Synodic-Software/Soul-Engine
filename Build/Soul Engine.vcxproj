@@ -188,6 +188,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Utility\Logger.h" />
     <ClInclude Include="..\Source Files\Utility\OpenCL\OpenCLHelper.h" />
     <ClInclude Include="..\Source Files\Utility\Settings.h" />
+    <ClInclude Include="..\Source Files\Utility\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
@@ -241,6 +242,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Utility\Assert.cpp" />
     <ClCompile Include="..\Source Files\Utility\Logger.cpp" />
     <ClCompile Include="..\Source Files\Utility\Settings.cpp" />
+    <ClCompile Include="..\Source Files\Utility\Timer.cpp" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />
     <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
