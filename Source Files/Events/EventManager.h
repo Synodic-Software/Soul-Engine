@@ -22,38 +22,28 @@ namespace EventManager {
 
 	}
 
-	////Listener functions
-	//template <typename Fn,
-	//	typename ... Args>
-	//	void Listen(int ID, T *instance, void(T::*func)(Args...) const) {
-	//	return Listen(ID, [=](Args... args) {
-	//		(instance->*func)(args...);
-	//	});
-	//}
+	//Listener functions
+	template <typename T,
+		typename ... Args>
+		uint Listen(std::string name, T *instance, void(T::*func)(Args...) const) {
+		return Listen(name, [=](Args... args) {
+			(instance->*func)(args...);
+		});
+	}
 
-	//template <typename Fn,
-	//	typename ... Args>
-	//	void Listen(int ID, T *instance, void(T::*func)(Args...)) {
-	//	return Listen(ID, [=](Args... args) {
-	//		(instance->*func)(args...);
-	//	});
-	//}
+	template <typename T,
+		typename ... Args>
+		uint Listen(std::string name, T *instance, void(T::*func)(Args...)) {
+		return Listen(name, [=](Args... args) {
+			(instance->*func)(args...);
+		});
+	}
 
-	//template <typename ... Args>
-	//void Listen(int ID, const std::function<void(Args...)>& fn) {
-	//	listeners.insert(std::make_pair(ID, fn));
-	//}
-
-	//template <typename ... Args>
-	//void Listen(int ID, std::function<void(Args...)>&& fn) {
-	//	listeners.insert(std::make_pair(ID, fn));
-	//}
-
-	template <typename T, typename... Args >
-	uint Listen(std::string name,T *instance, void(T::*func)(Args...))
+	template <typename Fn, typename... Args >
+	uint Listen(std::string name, Fn && func, Args && ... args)
 	{
 
-		typedef Event<std::forward<Args>(func)...> EventType;
+		typedef Event<Args...> EventType;
 
 		std::pair<detail::EMap::iterator, bool> ret;
 		ret = detail::eventMap.insert(std::make_pair(name, detail::EventPtr(new EventType())));
@@ -62,7 +52,7 @@ namespace EventManager {
 
 		if (evt)
 		{
-			(*evt).Listen(detail::id, instance, func);
+			(*evt).Listen(detail::id,func);
 		}
 
 		return detail::id++;
