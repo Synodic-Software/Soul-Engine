@@ -1,6 +1,4 @@
-//Custom Assert Function
 /*
-
 FLAG for disable debugging is #define NDEBUG
 */
 

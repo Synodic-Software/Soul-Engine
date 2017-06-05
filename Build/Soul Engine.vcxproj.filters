@@ -528,6 +528,9 @@
     <ClInclude Include="..\Source Files\Events\Event.h">
       <Filter>Engine Backend\Events</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Utility\Timer.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -682,6 +685,9 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Events\EventManager.cpp">
       <Filter>Engine Backend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Utility\Timer.cpp">
+      <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

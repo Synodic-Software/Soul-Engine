@@ -186,10 +186,13 @@ namespace Soul {
 		InputState::GetInstance().ResetOffsets(); //temp, replace input engine at some point
 
 		Scheduler::Block();
+
+		EventManager::Emit("EarlyUpdate");
+
 	}
 
 	void LateUpdate() {
-
+		EventManager::Emit("LateUpdate");
 	}
 
 	void Run()
