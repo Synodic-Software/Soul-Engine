@@ -5,7 +5,7 @@
 #include "Metrics.h"
 
 #include <functional>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <memory>
 #include <utility>
@@ -15,7 +15,7 @@ namespace EventManager {
 	namespace detail {
 
 		typedef std::shared_ptr<BaseEvent> EventPtr;
-		typedef std::map<std::string, EventPtr> EMap;
+		typedef std::unordered_map<std::string, EventPtr> EMap;
 
 		extern EMap eventMap;
 		extern uint id ;

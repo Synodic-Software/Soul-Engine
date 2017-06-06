@@ -9,6 +9,7 @@
 #include <memory>
 #include <mutex>
 #include <vector>
+#include <unordered_map>
 
 class BaseEvent
 {
@@ -57,6 +58,6 @@ protected:
 
 private:
 
-	mutable std::map<int, signature> listeners;
+	mutable std::unordered_map<int, signature> listeners;
 
 };

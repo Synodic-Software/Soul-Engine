@@ -7,6 +7,7 @@
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "GPGPU\CUDA\CUDABackend.h"
 #include "Utility\Logger.h"
+#include "Utility\Timer.h"
 #include <curand_kernel.h>
 
 //cant have AABB defined and not define WOOP_TRI
@@ -34,6 +35,9 @@ const uint rayDepth = 4;
 //stored counters
 int* counter;
 int* hitAtomic;
+
+//timer
+Timer timer;
 
 //engine launch config
 uint blockCountE;
@@ -430,6 +434,14 @@ __inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
 __inline__ __device__ float Dn(float a) { return a*m; }
 __inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
+
+void UpdateJobs(double in, double target, std::list<RayJob*>& jobs) {
+
+	for (auto& job: jobs) {
+
+	}
+
+}
 
 __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
 
@@ -866,6 +878,9 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 
 				}
 
+				//start the timer once acctual dat movement and calculation starts
+				timer.Reset();
+
 				//copy the scene over
 				CudaCheck(cudaMemcpy(scene, sceneIn, sizeof(Scene), cudaMemcpyHostToDevice));
 
@@ -909,6 +924,9 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 					CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
 
 				}
+
+				UpdateJobs(timer.Elapsed(), 10.0, hlist);
+
 			}
 		}
 	}
