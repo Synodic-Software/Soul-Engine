@@ -8,6 +8,8 @@ public:
 	~Timer();
 
 	void Reset();
+
+	//returns the elapsed time since the last reset in milliseconds
 	double Elapsed();
 
 private:
