@@ -62,7 +62,7 @@ namespace Soul {
 
 		//Clean the RayEngine from stray data
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-				RayEngine::Terminate();
+			RayEngine::Terminate();
 		});
 
 		//destroy all windows
@@ -171,10 +171,10 @@ namespace Soul {
 	}
 
 	void EarlyFrameUpdate() {
-		EventManager::Emit("EarlyFrameUpdate");
+		EventManager::Emit("Update", "EarlyFrame");
 	}
 	void LateFrameUpdate() {
-		EventManager::Emit("LateFrameUpdate");
+		EventManager::Emit("Update", "LateFrame");
 	}
 
 	void EarlyUpdate() {
@@ -187,12 +187,12 @@ namespace Soul {
 
 		Scheduler::Block();
 
-		EventManager::Emit("EarlyUpdate");
+		EventManager::Emit("Update", "Early");
 
 	}
 
 	void LateUpdate() {
-		EventManager::Emit("LateUpdate");
+		EventManager::Emit("Update", "Late");
 	}
 
 	void Run()
@@ -279,7 +279,7 @@ double GetDeltaTime() {
 void SetKey(int key, std::function<void(int)> func) {
 	InputState::GetInstance().SetKey(key, func);
 }
-void MouseEvent(std::function<void(double,double)> func) {
+void MouseEvent(std::function<void(double, double)> func) {
 	InputState::GetInstance().AddMouseCallback(func);
 }
 
@@ -329,7 +329,7 @@ int main()
 
 		Camera* camera = new Camera();
 
-		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER*5, (DECAMETER) * 5));
+		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER * 5, (DECAMETER) * 5));
 		camera->OffsetOrientation(225, 45);
 
 		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
@@ -400,7 +400,7 @@ int main()
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 			camera->UpdateVariables();
 		});
-	
+
 
 		Scene* scene = new Scene();
 
@@ -417,17 +417,17 @@ int main()
 		light->emit = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 
 		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
-		scene->AddObject(glm::mat4(),tree);
+		scene->AddObject(glm::mat4(), tree);
 
 		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
-		scene->AddObject(glm::mat4(),plane);
+		scene->AddObject(glm::mat4(), plane);
 
 		glm::mat4 transform;
 		transform = glm::translate(transform, /*100000000000.0f**/glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10));
 		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
 
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
-		scene->AddObject(transform,sphere);
+		scene->AddObject(transform, sphere);
 
 		SubmitScene(scene);
 

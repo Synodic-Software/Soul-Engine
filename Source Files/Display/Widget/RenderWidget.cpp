@@ -64,8 +64,8 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 	integrate = false;
 	currentSize = glm::uvec2(312,720);
 
-	uint id = EventManager::Listen("EarlyFrameUpdate", this,&RenderWidget::EarlyFrameUpdate);
-	id = EventManager::Listen("LateFrameUpdate", this,&RenderWidget::LateFrameUpdate);
+	uint id = EventManager::Listen("Update", "EarlyFrame",this,&RenderWidget::EarlyFrameUpdate);
+	id = EventManager::Listen("Update", "LateFrame",this,&RenderWidget::LateFrameUpdate);
 
 }
 
