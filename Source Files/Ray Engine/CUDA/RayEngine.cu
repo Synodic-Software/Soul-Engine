@@ -7,7 +7,6 @@
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "GPGPU\CUDA\CUDABackend.h"
 #include "Utility\Logger.h"
-#include "Utility\Timer.h"
 #include <curand_kernel.h>
 
 //cant have AABB defined and not define WOOP_TRI
@@ -35,9 +34,6 @@ const uint rayDepth = 4;
 //stored counters
 int* counter;
 int* hitAtomic;
-
-//timer
-Timer timer;
 
 //engine launch config
 uint blockCountE;
@@ -200,7 +196,7 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 
 	curandState randState = randomState[index];
 
-	if (localIndex < samples || curand_uniform(&randState) < __fsub_rd(samples, glm::floor(samples))) {
+	if (localIndex+1 <= samples || curand_uniform(&randState) < __fsub_rd(samples, glm::floor(samples))) {
 
 		Ray ray;
 		ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -434,15 +430,6 @@ __inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
 __inline__ __device__ float Dn(float a) { return a*m; }
 __inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
-
-void UpdateJobs(double in, double target, std::list<RayJob*>& jobs) {
-
-	for (auto& job: jobs) {
-
-	}
-
-}
-
 __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
 
 
@@ -580,7 +567,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			stackPtr = 0;
 			currentLeaf = nullptr;   // No postponed leaf.
 			currentNode = bvh.root;   // Start from the root.
-			ray.currentHit = -1;  // No triangle intersected so far.
+			ray.currentHit = uint(-1);  // No triangle intersected so far.
 		}
 
 		//Traversal starts here
@@ -806,7 +793,7 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 		++pt;
 	}
 
-	uint numberJobs = hjobs.size();
+	uint numberJobs = uint(hjobs.size());
 
 	//only upload data if a job exists
 	if (numberJobs > 0) {
@@ -814,11 +801,11 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 		uint numberResults = 0;
 		uint numberRays = 0;
 
-		for (int i = 0; i < numberJobs; ++i) {
+		for (uint i = 0; i < numberJobs; ++i) {
 
 			hjobs[i].startIndex = numberResults;
 			numberResults += hjobs[i].rayAmount;
-			numberRays += hjobs[i].rayAmount* glm::ceil(hjobs[i].samples);
+			numberRays += hjobs[i].rayAmount* uint(glm::ceil(hjobs[i].samples));
 
 		}
 
@@ -878,9 +865,6 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 
 				}
 
-				//start the timer once acctual dat movement and calculation starts
-				timer.Reset();
-
 				//copy the scene over
 				CudaCheck(cudaMemcpy(scene, sceneIn, sizeof(Scene), cudaMemcpyHostToDevice));
 
@@ -924,9 +908,6 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 					CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
 
 				}
-
-				UpdateJobs(timer.Elapsed(), 10.0, hlist);
-
 			}
 		}
 	}
