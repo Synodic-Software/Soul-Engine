@@ -23,9 +23,6 @@ protected:
 
 private:
 
-	void EarlyFrameUpdate();
-	void LateFrameUpdate();
-
 	glm::uvec2 currentSize;
 	glm::uvec2 renderSize;
 

@@ -6,19 +6,19 @@
 
 static std::list<RayJob*> jobList;
 
-static std::deque<double> derivatives;
-static double oldTime;
+static std::deque<double> renderDerivatives;
+static double oldRenderTime;
 
 static uint frameHold = 5;
 
 //timer
-static Timer timer;
+static Timer renderTimer;
 
-void UpdateJobs(double in, double target, std::list<RayJob*>& jobs) {
+void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) {
 
 	//if it the first frame, pass the target as the '0th' frame
-	if (derivatives.size() == 0) {
-		oldTime = target;
+	if (renderDerivatives.size() == 0) {
+		oldRenderTime = renderTime;
 	}
 
 	//count the jobs that can be modified
@@ -33,42 +33,47 @@ void UpdateJobs(double in, double target, std::list<RayJob*>& jobs) {
 	double countChange = 1.0f / count;
 
 	//push the new derivative
-	derivatives.push_front(oldTime - in);
-	oldTime = in;
+	renderDerivatives.push_front(oldRenderTime- renderTime);
+	oldRenderTime = renderTime;
 
 	//cull the frame counts
-	if (derivatives.size() > frameHold) {
-		derivatives.pop_back();
+	if (renderDerivatives.size() > frameHold) {
+		renderDerivatives.pop_back();
 	}
 
 	//calculate the average derivative
-	double averageDV = 0.0;
-	for (auto& dv : derivatives) {
-		averageDV += dv / derivatives.size();
+	double averageRenderDV = 0.0;
+
+	for (auto itrR = renderDerivatives.begin(); itrR != renderDerivatives.end(); itrR++) {
+		averageRenderDV += *itrR;
 	}
 
-	//use the average derivative to grab an expected next frametime
-	double expected = in + averageDV;
+	averageRenderDV /= renderDerivatives.size();
 
-	double change = (target / expected);
+	//use the average derivative to grab an expected next frametime
+	double expectedRender = renderTime + averageRenderDV;
+
+	//target time -5% to account for frame instabilities and consitantly stay above target
+	double change = targetTime / expectedRender - 1.0;
 
 	//modify all the sample counts to reflect the change
 	for (auto& job : jobs) {
 		if (job->canChange) {
-			job->samples *= change*countChange;
+			job->samples *= change*countChange + 1.0;
 		}
 	}
 }
 
-void RayEngine::Process(const Scene* scene) {
+void RayEngine::Process(const Scene* scene, double target) {
 
-	//start the timer once acctual dat movement and calculation starts
-	timer.Reset();
+	//start the timer once actual data movement and calculation starts
+	renderTimer.Reset();
 
 	ProcessJobs(jobList, scene);
 
-	UpdateJobs(timer.Elapsed(), 16.6666, jobList);
+	double renderTime = renderTimer.Elapsed();
 
+	UpdateJobs(renderTime / 1000.0, target, jobList);
 }
 
 RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,

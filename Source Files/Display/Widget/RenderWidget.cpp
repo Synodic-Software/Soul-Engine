@@ -62,17 +62,7 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 	iCounter = 1;
 	integrate = false;
-	currentSize = glm::uvec2(312,720);
-
-	uint id = EventManager::Listen("Update", "EarlyFrame",this,&RenderWidget::EarlyFrameUpdate);
-	id = EventManager::Listen("Update", "LateFrame",this,&RenderWidget::LateFrameUpdate);
-
-}
-
-void RenderWidget::EarlyFrameUpdate() {
-
-}
-void RenderWidget::LateFrameUpdate() {
+	currentSize = glm::uvec2(312, 720);
 
 }
 
@@ -111,7 +101,7 @@ void RenderWidget::Draw() {
 	//get job values
 	widgetJob->SetUniform(std::string("screen"), renderSize);
 
-	RayEngine::ModifyJob(rayJob,*camera);
+	RayEngine::ModifyJob(rayJob, *camera);
 }
 
 void RenderWidget::RecreateData() {
@@ -139,5 +129,5 @@ void RenderWidget::RecreateData() {
 
 	//add the ray job with new sizes
 	buffer->MapResources();
-	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true,samples, *camera, buffer->GetData(), (int*)extraData->GetData());
+	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true, samples, *camera, buffer->GetData(), (int*)extraData->GetData());
 }
