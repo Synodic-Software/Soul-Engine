@@ -1,7 +1,6 @@
 ﻿#include "OpenGLBackend.h"
 #include "Utility\Logger.h"
 #include "OpenGLUtility.h"
-#include "Input/InputState.h"
 #include "Multithreading\Scheduler.h"
 
 uint OpenGLBackend::windowCounter = 0;

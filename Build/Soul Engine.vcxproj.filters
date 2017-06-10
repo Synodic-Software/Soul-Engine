@@ -339,12 +339,6 @@
     <ClInclude Include="..\Source Files\GPGPU\GPUManager.h">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Input\InputState.h">
-      <Filter>Engine Backend\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Input\Input.h">
-      <Filter>Engine Backend\Input</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h">
       <Filter>Engine Backend\Multithreading</Filter>
     </ClInclude>
@@ -531,6 +525,12 @@
     <ClInclude Include="..\Source Files\Utility\Timer.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Input\InputManager.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Input\InputSet.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -568,12 +568,6 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\GPUManager.cpp">
       <Filter>Engine Backend\GPGPU</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Input\Input.cpp">
-      <Filter>Engine Backend\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Input\InputState.cpp">
-      <Filter>Engine Backend\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp">
       <Filter>Engine Backend\Multithreading</Filter>
@@ -688,6 +682,12 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Utility\Timer.cpp">
       <Filter>Engine Backend\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Input\InputManager.cpp">
+      <Filter>Engine Backend\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Input\InputSet.cpp">
+      <Filter>Engine Backend\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

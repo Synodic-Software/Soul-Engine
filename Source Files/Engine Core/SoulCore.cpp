@@ -10,7 +10,6 @@
 #include "Utility/Logger.h"
 
 #include "Engine Core/Frame/Frame.h"
-#include "Input/InputState.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
 #include "Bounding Volume Heirarchy/BVH.h"
@@ -159,9 +158,6 @@ namespace Soul {
 			glfwPollEvents();
 		});
 
-		InputState::GetInstance().ResetOffsets(); //temp, replace input engine at some point
-
-
 		for (auto const& scene : scenes) {
 			scene->Build(engineRefreshRate);
 		}
@@ -171,10 +167,14 @@ namespace Soul {
 	}
 
 	void EarlyFrameUpdate() {
+
 		EventManager::Emit("Update", "EarlyFrame");
+
 	}
 	void LateFrameUpdate() {
+
 		EventManager::Emit("Update", "LateFrame");
+
 	}
 
 	void EarlyUpdate() {
@@ -183,16 +183,17 @@ namespace Soul {
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			glfwPollEvents();
 		});
-		InputState::GetInstance().ResetOffsets(); //temp, replace input engine at some point
-
-		Scheduler::Block();
 
 		EventManager::Emit("Update", "Early");
+
+		Scheduler::Block();
 
 	}
 
 	void LateUpdate() {
+
 		EventManager::Emit("Update", "Late");
+
 	}
 
 	void Run()
@@ -271,13 +272,6 @@ double GetDeltaTime() {
 	return Soul::engineRefreshRate;
 }
 
-void SetKey(int key, std::function<void(int)> func) {
-	InputState::GetInstance().SetKey(key, func);
-}
-void MouseEvent(std::function<void(double, double)> func) {
-	InputState::GetInstance().AddMouseCallback(func);
-}
-
 //Initializes Soul. This should be the first command in a program.
 void SoulInit() {
 	Soul::Initialize();
@@ -302,14 +296,12 @@ int main()
 	{
 		SoulInit();
 
-		InputState::GetInstance().ResetMouse = true;
-
-		SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
+		//SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
 		uint xSize;
-		Settings::Get("MainWindow.Width", uint(1024), &xSize);
+		Settings::Get("MainWindow.Width", uint(1600), &xSize);
 		uint ySize;
-		Settings::Get("MainWindow.Height", uint(720), &ySize);
+		Settings::Get("MainWindow.Height", uint(900), &ySize);
 		uint xPos;
 		Settings::Get("MainWindow.X_Position", uint(0), &xPos);
 		uint yPos;
@@ -332,9 +324,9 @@ int main()
 		WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(camera)));
 
 		double deltaTime = GetDeltaTime();
-		float moveSpeed = 1 * METER * deltaTime;
+		float moveSpeed = 10 * METER * deltaTime;
 
-		SetKey(GLFW_KEY_S, [&camera, &moveSpeed](int action) {
+		/*SetKey(GLFW_KEY_S, [&camera, &moveSpeed](int action) {
 			camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
 		});
 
@@ -361,7 +353,7 @@ int main()
 
 		SetKey(GLFW_KEY_LEFT_SHIFT, [deltaTime, &moveSpeed](int action) {
 			if (action == GLFW_PRESS) {
-				moveSpeed = 9 * METER * deltaTime;
+				moveSpeed = 90 * METER * deltaTime;
 			}
 			else if (action == GLFW_RELEASE) {
 				moveSpeed = 1 * METER * deltaTime;
@@ -394,7 +386,7 @@ int main()
 
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 			camera->UpdateVariables();
-		});
+		});*/
 
 
 		Scene* scene = new Scene();

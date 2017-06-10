@@ -5,6 +5,8 @@
 #include "RayJob.h"
 #include <thrust/device_vector.h>
 
+//defined in winspool.h
+#undef AddJob
 
 //The main engine that processes RayJobs
 namespace RayEngine {
