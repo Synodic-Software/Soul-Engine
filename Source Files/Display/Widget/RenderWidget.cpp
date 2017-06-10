@@ -3,9 +3,9 @@
 #include "GPGPU\GPUManager.h"
 #include "Utility/CUDA/CudaHelper.cuh"
 #include "CUDA\RenderWidget.cuh"
-#include <iostream>
-#include "Input/InputState.h"
 #include "Events\EventManager.h"
+
+#include <iostream>
 
 RenderWidget::RenderWidget(Camera* cameraIn)
 {
@@ -73,14 +73,14 @@ RenderWidget::~RenderWidget()
 
 void RenderWidget::Draw() {
 
-	InputState::GetInstance().SetKey(GLFW_KEY_SPACE, [&integrate = integrate, &time = time](int action) {
+	/*InputState::GetInstance().SetKey(GLFW_KEY_SPACE, [&integrate = integrate, &time = time](int action) {
 		double newTime = glfwGetTime();
 		if (newTime - time > 0.3f) {
 			integrate = !integrate;
 			time = newTime;
 		}
 
-	});
+	});*/
 
 
 	if (integrate) {

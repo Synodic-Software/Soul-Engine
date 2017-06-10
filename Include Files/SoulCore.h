@@ -15,8 +15,6 @@ void SoulTerminate();
 void SoulSignalClose(int);
 
 double GetDeltaTime();
-void SetKey(int, std::function<void(int)>);
-void MouseEvent(std::function<void(double, double)>);
 
 void SubmitScene(Scene*);
 void RemoveScene(Scene*);

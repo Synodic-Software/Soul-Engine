@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine Core/Camera/CUDA/Camera.cuh"
-#include "Input/Input.h"
 #include "Engine Core/Material/Material.h"
 #include "Engine Core/Object/CUDA/Vertex.cuh"
 #include "Engine Core/Object/CUDA/Face.cuh"

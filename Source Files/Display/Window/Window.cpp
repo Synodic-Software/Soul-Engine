@@ -1,6 +1,5 @@
 #include "Window.h"
 #include "Utility\Logger.h"
-#include "Input\Input.h"
 #include "Raster Engine\RasterBackend.h"
 #include "Multithreading\Scheduler.h"
 #include "WindowManager.h"
@@ -97,10 +96,6 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 		{
 			WindowManager::Close(w);
 		});
-
-		glfwSetKeyCallback(windowHandle, Input::KeyCallback);
-		glfwSetScrollCallback(windowHandle, Input::ScrollCallback);
-		glfwSetCursorPosCallback(windowHandle, Input::MouseCallback);
 
 		glfwShowWindow(windowHandle);
 
