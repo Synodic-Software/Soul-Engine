@@ -28,6 +28,7 @@ namespace Soul {
 	std::list<Scene*> scenes;
 
 	double engineRefreshRate;
+	double allotedRenderTime;
 	bool running = true;
 	/////////////////////////Synchronization///////////////////////////
 
@@ -140,7 +141,8 @@ namespace Soul {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
-		Settings::Get("Engine.Engine_Refresh_Rate", 60.0, &engineRefreshRate);
+		Settings::Get("Engine.Delta_Time", 1/60.0, &engineRefreshRate);
+		Settings::Get("Engine.Alloted_Render_Time", 0.01, &allotedRenderTime);
 
 		Scheduler::Block();
 	}
@@ -153,8 +155,6 @@ namespace Soul {
 
 	void Warmup() {
 
-		double deltaTime = 1.0 / engineRefreshRate;
-
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			glfwPollEvents();
 		});
@@ -163,7 +163,7 @@ namespace Soul {
 
 
 		for (auto const& scene : scenes) {
-			scene->Build(deltaTime);
+			scene->Build(engineRefreshRate);
 		}
 
 		Scheduler::Block();
@@ -200,9 +200,6 @@ namespace Soul {
 
 		Warmup();
 
-		double deltaTime = 1.0 / engineRefreshRate;
-
-
 		//setup timer info
 		double t = 0.0f;
 		double currentTime = glfwGetTime();
@@ -224,14 +221,12 @@ namespace Soul {
 			EarlyFrameUpdate();
 
 			//consumes time created by the renderer
-			while (accumulator >= deltaTime) {
-
-				deltaTime = 1.0 / engineRefreshRate;
+			while (accumulator >= engineRefreshRate) {
 
 				EarlyUpdate();
 
 				for (auto const& scene : scenes) {
-					scene->Build(deltaTime);
+					scene->Build(engineRefreshRate);
 				}
 				/*
 				for (auto const& scene : scenes){
@@ -240,15 +235,15 @@ namespace Soul {
 
 				LateUpdate();
 
-				t += deltaTime;
-				accumulator -= deltaTime;
+				t += engineRefreshRate;
+				accumulator -= engineRefreshRate;
 			}
 
 
 			LateFrameUpdate();
 
 			for (auto const& scene : scenes) {
-				RayEngine::Process(scene);
+				RayEngine::Process(scene, allotedRenderTime);
 			}
 
 			Raster();
@@ -273,7 +268,7 @@ void SoulRun() {
 }
 
 double GetDeltaTime() {
-	return Soul::engineRefreshRate / 60.0;
+	return Soul::engineRefreshRate;
 }
 
 void SetKey(int key, std::function<void(int)> func) {
@@ -427,7 +422,7 @@ int main()
 		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
 
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
-		scene->AddObject(transform, sphere);
+		//scene->AddObject(transform, sphere);
 
 		SubmitScene(scene);
 

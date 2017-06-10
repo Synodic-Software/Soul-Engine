@@ -805,6 +805,11 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 
 			hjobs[i].startIndex = numberResults;
 			numberResults += hjobs[i].rayAmount;
+
+			if (hjobs[i].samples<0) {
+				hjobs[i].samples = 0.0f;
+			}
+
 			numberRays += hjobs[i].rayAmount* uint(glm::ceil(hjobs[i].samples));
 
 		}

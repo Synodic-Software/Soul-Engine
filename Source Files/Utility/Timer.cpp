@@ -1,7 +1,7 @@
 #include "Timer.h"
 
 Timer::Timer() {
-
+	Reset();
 }
 Timer::~Timer() {
 

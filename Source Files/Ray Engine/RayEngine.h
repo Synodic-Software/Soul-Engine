@@ -24,7 +24,7 @@ namespace RayEngine {
 
 	void ModifyJob(RayJob*, Camera&);
 
-	void Process(const Scene*);
+	void Process(const Scene*, double);
 	void Initialize();
 	void Terminate();
 
