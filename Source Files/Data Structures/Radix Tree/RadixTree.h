@@ -1,7 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\Data Structures\Radix Tree\RadixTree.h.
-//Declares the radix tree class.
-
 #pragma once
 
 #include "RTNode.h"
@@ -19,27 +15,17 @@
 //typedef boost::multiprecision::mpInt ArbitraryInt;
 
 
-//A radix tree.
 class RadixTree
 {
 public:
 
-	//---------------------------------------------------------------------------------------------------
-	//Constructor.
-	//@param	parameter1	The first parameter.
 
 	RadixTree(uint);
-
-	//---------------------------------------------------------------------------------------------------
-	//Adds a sequence.
-	//@param [in,out]	parameter1	The first parameter.
 
 	void AddSequence(boost::dynamic_bitset<>&);
 
 private:
-	//The root
 	RTNode root;
-	//The bits to split
 	uint bitsToSplit;
 };
 

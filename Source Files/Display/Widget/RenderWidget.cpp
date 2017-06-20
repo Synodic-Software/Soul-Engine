@@ -1,7 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\Display\Widget\RenderWidget.cpp.
-//Implements the render widget class.
-
 #include "RenderWidget.h"
 #include "Raster Engine\Buffer.h"
 #include "GPGPU\GPUManager.h"
@@ -10,10 +6,6 @@
 #include "Events\EventManager.h"
 
 #include <iostream>
-
-//---------------------------------------------------------------------------------------------------
-//Constructor.
-//@param [in,out]	cameraIn	If non-null, the camera in.
 
 RenderWidget::RenderWidget(Camera* cameraIn)
 {
@@ -74,13 +66,11 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 }
 
-//Destructor.
 RenderWidget::~RenderWidget()
 {
 
 }
 
-//Draws this object.
 void RenderWidget::Draw() {
 
 	/*InputState::GetInstance().SetKey(GLFW_KEY_SPACE, [&integrate = integrate, &time = time](int action) {
@@ -114,7 +104,6 @@ void RenderWidget::Draw() {
 	RayEngine::ModifyJob(rayJob, *camera);
 }
 
-//Recreate data.
 void RenderWidget::RecreateData() {
 
 	//remove the rayJob if it exists

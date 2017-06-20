@@ -1,7 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\Utility\Logger.cpp.
-//Implements the logger class.
-
 #include "Logger.h"
 
 namespace Logger {
@@ -14,26 +10,14 @@ namespace Logger {
 			"FATAL"
 		};
 
-		//The log mut
 		std::mutex logMut;
-		//The storage
 		std::deque<LogI> storage;
-
-		//---------------------------------------------------------------------------------------------------
-		//Writes an information.
-		//@param [in,out]	oss 	The oss.
-		//@param 		 	file	The file.
-		//@param 		 	line	The line.
 
 		void WriteInfo(std::ostream& oss, const char* file, int line) {
 			std::string baseName = boost::filesystem::path(file).filename().string();
 			oss << "File: " << baseName << " Line: " << line << " | ";
 		}
 	}
-
-	//---------------------------------------------------------------------------------------------------
-	//Gets the get.
-	//@return	A std::string.
 
 	std::string Get() {
 		detail::logMut.lock();
