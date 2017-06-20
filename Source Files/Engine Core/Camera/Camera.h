@@ -1,3 +1,7 @@
+//---------------------------------------------------------------------------------------------------
+//@file	N:\Documents\Soul Engine\Source Files\Engine Core\Camera\Camera.h.
+//Declares the camera class.
+
 #pragma once
 
 //#   if defined(__CUDACC__)

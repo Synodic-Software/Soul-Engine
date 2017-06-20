@@ -1,3 +1,7 @@
+//---------------------------------------------------------------------------------------------------
+//@file	N:\Documents\Soul Engine\Source Files\Ray Engine\Ray.h.
+//Declares the ray class.
+
 #pragma once
 
 //#   if defined(__CUDACC__)

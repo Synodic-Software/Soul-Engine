@@ -1,3 +1,7 @@
+//---------------------------------------------------------------------------------------------------
+//@file	N:\Documents\Soul Engine\Source Files\Raster Engine\OpenGL\OpenGLShader.h.
+//Declares the open gl shader class.
+
 #pragma once
 
 #include <string>
@@ -5,15 +9,39 @@
 #include "OpenGLBackend.h"
 #include "Raster Engine\Shader.h"
 
+//An open gl shader.
 class OpenGLShader : public Shader {
 public:
+
+	//---------------------------------------------------------------------------------------------------
+	//Constructor.
+	//@param	parameter1	The first parameter.
+	//@param	parameter2	The second parameter.
+
 	OpenGLShader(std::string, shader_t);
+
+	//---------------------------------------------------------------------------------------------------
+	//Copy constructor.
+	//@param	other	The other.
+
 	OpenGLShader(const OpenGLShader& other);
+	//Destructor.
 	virtual ~OpenGLShader();
 
+	//---------------------------------------------------------------------------------------------------
+	//Gets the object.
+	//@return	A GLuint.
+
 	GLuint Object() const;
+
+	//---------------------------------------------------------------------------------------------------
+	//Assignment operator.
+	//@param	other	The other.
+	//@return	A shallow copy of this object.
+
 	OpenGLShader& operator =(const OpenGLShader& other);
 
 private:
+	//The object
 	GLuint object;
 };
