@@ -1,7 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\GPGPU\GPUManager.cpp.
-//Implements the GPU manager class.
-
 #include "GPUManager.h"
 
 #include "CUDA\CUDABackend.h"
@@ -20,12 +16,11 @@
 #include <vector>
 #include <memory>
 
-//The devices
 std::vector<std::unique_ptr<GPUDevice>> devices;
 
 namespace GPUManager {
 
-	//Only run the function if there is an available.
+	//Only run the function if there is an available 
 
 
 
@@ -45,23 +40,16 @@ namespace GPUManager {
 		}
 	}
 
-	//Destroys the devices.
 	void DestroyDevices() {
 		devices.clear();
 	}
 
 
-	//Initializes the thread.
 	void InitThread() {
 		CUDABackend::InitThread();
 		OpenCLBackend::InitThread();
 	}
 
-	//---------------------------------------------------------------------------------------------------
-	//Creates raster buffer.
-	//@param	GPU 	The GPU.
-	//@param	size	The size.
-	//@return	Null if it fails, else the new raster buffer.
 
 	GPURasterBuffer* CreateRasterBuffer(int GPU, uint size) {
 
@@ -76,12 +64,6 @@ namespace GPUManager {
 		return buffer;
 	}
 
-	//---------------------------------------------------------------------------------------------------
-	//Creates a buffer.
-	//@param	GPU 	The GPU.
-	//@param	size	The size.
-	//@return	Null if it fails, else the new buffer.
-
 	GPUBuffer* CreateBuffer(int GPU, uint size) {
 
 		GPUBuffer* buffer;
@@ -94,10 +76,6 @@ namespace GPUManager {
 		}
 		return buffer;
 	}
-
-	//---------------------------------------------------------------------------------------------------
-	//Gets best GPU.
-	//@return	The best GPU.
 
 	int GetBestGPU() {
 		return 0;

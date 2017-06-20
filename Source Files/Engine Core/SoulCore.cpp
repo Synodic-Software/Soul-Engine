@@ -22,28 +22,23 @@
 
 namespace Soul {
 
-	//////////////////////Variables and Declarations//////////////////.
+	/////////////////////////Variables and Declarations//////////////////
 
 	std::list<Scene*> scenes;
 
-	//The engine refresh rate.
 	double engineRefreshRate;
-	//The alloted render time.
 	double allotedRenderTime;
-	//True to running.
 	bool running = true;
-	//////////////////////Synchronization///////////////////////////.
+	/////////////////////////Synchronization///////////////////////////
 
 	void SynchCPU() {
 		Scheduler::Block();
 	}
 
-	//Synchronises the GPU.
 	void SynchGPU() {
 		//CudaCheck(cudaDeviceSynchronize());
 	}
 
-	//Synchronises the system.
 	void SynchSystem() {
 		SynchCPU();
 		SynchGPU();
@@ -56,7 +51,7 @@ namespace Soul {
 	/////////////////////////Engine Core/////////////////////////////////
 
 
-	//Call to deconstuct both the engine and its dependencies.
+	//Call to deconstuct both the engine and its dependencies
 	void Terminate() {
 		Soul::SynchSystem();
 
@@ -91,7 +86,7 @@ namespace Soul {
 		Scheduler::Terminate();
 	}
 
-	//Initializes the engine.
+	//Initializes the engine
 	void Initialize() {
 
 		//setup the multithreader
@@ -151,14 +146,12 @@ namespace Soul {
 		Scheduler::Block();
 	}
 
-	//Rasters this object.
 	void Raster() {
 
 		//Backends should handle multithreading
 		WindowManager::Draw();
 	}
 
-	//Warmups this object.
 	void Warmup() {
 
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
@@ -173,20 +166,17 @@ namespace Soul {
 
 	}
 
-	//Early frame update.
 	void EarlyFrameUpdate() {
 
 		EventManager::Emit("Update", "EarlyFrame");
 
 	}
-	//Late frame update.
 	void LateFrameUpdate() {
 
 		EventManager::Emit("Update", "LateFrame");
 
 	}
 
-	//Early update.
 	void EarlyUpdate() {
 
 		//poll events before this update, making the state as close as possible to real-time input
@@ -200,14 +190,12 @@ namespace Soul {
 
 	}
 
-	//Late update.
 	void LateUpdate() {
 
 		EventManager::Emit("Update", "Late");
 
 	}
 
-	//Runs this object.
 	void Run()
 	{
 
@@ -265,16 +253,13 @@ namespace Soul {
 	}
 }
 
-//---------------------------------------------------------------------------------------------------
-////////////////////////User Interface///////////////////////////.
-//@param	pressType	Type of the press.
+/////////////////////////User Interface///////////////////////////
 
 void SoulSignalClose(int pressType) {
 	Soul::running = false;
 	WindowManager::SignelClose();
 }
 
-//Soul run.
 void SoulRun() {
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 		Soul::Run();
@@ -282,10 +267,6 @@ void SoulRun() {
 
 	Scheduler::Block();
 }
-
-//---------------------------------------------------------------------------------------------------
-//Gets delta time.
-//@return	The delta time.
 
 double GetDeltaTime() {
 	return Soul::engineRefreshRate;
@@ -296,30 +277,17 @@ void SoulInit() {
 	Soul::Initialize();
 }
 
-//Soul terminate.
 void SoulTerminate() {
 	Soul::Terminate();
 }
-
-//---------------------------------------------------------------------------------------------------
-//Submit scene.
-//@param [in,out]	scene	If non-null, the scene.
 
 void SubmitScene(Scene* scene) {
 	Soul::scenes.push_back(scene);
 }
 
-//---------------------------------------------------------------------------------------------------
-//Removes the scene described by scene.
-//@param [in,out]	scene	If non-null, the scene.
-
 void RemoveScene(Scene* scene) {
 	Soul::scenes.remove(scene);
 }
-
-//---------------------------------------------------------------------------------------------------
-//Main entry-point for this application.
-//@return	Exit-code for the process - 0 for success, else an error code.
 
 int main()
 {
@@ -349,7 +317,7 @@ int main()
 		Camera* camera = new Camera();
 
 		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER * 5, (DECAMETER) * 5));
-		camera->OffsetOrientation(270, 0);
+		camera->OffsetOrientation(225, 45);
 
 		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 

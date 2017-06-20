@@ -1,7 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\GPGPU\CUDA\CUDARasterBuffer.cpp.
-//Implements the cuda raster buffer class.
-
 #include "CUDARasterBuffer.h"
 
 #include "Utility/CUDA/CudaHelper.cuh"
@@ -9,11 +5,6 @@
 #include "Raster Engine\RasterBackend.h"
 #include <cuda_gl_interop.h>
 #include "Multithreading\Scheduler.h"
-
-//---------------------------------------------------------------------------------------------------
-//Constructor.
-//@param [in,out]	device	If non-null, the device.
-//@param 		 	size  	The size.
 
 CUDARasterBuffer::CUDARasterBuffer(CUDADevice* device, uint size) {
 
@@ -46,13 +37,11 @@ CUDARasterBuffer::CUDARasterBuffer(CUDADevice* device, uint size) {
 
 }
 
-//Destructor.
 CUDARasterBuffer::~CUDARasterBuffer() {
 
 
 }
 
-//Map resources.
 void CUDARasterBuffer::MapResources() {
 
 	if (RasterBackend::backend == OpenGL) {
@@ -81,7 +70,6 @@ void CUDARasterBuffer::MapResources() {
 	}
 }
 
-//Unmap resources.
 void CUDARasterBuffer::UnmapResources() {
 
 	if (RasterBackend::backend == OpenGL) {
@@ -101,10 +89,6 @@ void CUDARasterBuffer::UnmapResources() {
 
 	}
 }
-
-//---------------------------------------------------------------------------------------------------
-//Bind data.
-//@param	pos	The position.
 
 void CUDARasterBuffer::BindData(uint pos) {
 

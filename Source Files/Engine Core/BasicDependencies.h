@@ -1,7 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\Engine Core\BasicDependencies.h.
-//Declares the basic dependencies class.
-
 #pragma once
 
 #include "Utility\Includes\GLMIncludes.h"

@@ -1,29 +1,18 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\Display\Layout\Layout.cpp.
-//Implements the layout class.
-
 #include "Layout.h"
 
-//Default constructor.
 Layout::Layout()
 {
 }
 
-//Destructor.
 Layout::~Layout()
 {
 }
 
-//Draws this object.
 void Layout::Draw() {
 	for (auto& wid : widgets) {
 		wid->Draw();
 	}
 }
-
-//---------------------------------------------------------------------------------------------------
-//Updates the window described by winIn.
-//@param [in,out]	winIn	If non-null, the window in.
 
 void Layout::UpdateWindow(GLFWwindow* winIn) {
 	window = winIn;
@@ -32,11 +21,6 @@ void Layout::UpdateWindow(GLFWwindow* winIn) {
 		wid->UpdateWindow(winIn);
 	}
 }
-
-//---------------------------------------------------------------------------------------------------
-//Updates the positioning.
-//@param	newPosition	The new position.
-//@param	newSize	   	Size of the new.
 
 void Layout::UpdatePositioning( glm::uvec2 newPosition, glm::uvec2 newSize) {
 	size = newSize;
@@ -47,7 +31,6 @@ void Layout::UpdatePositioning( glm::uvec2 newPosition, glm::uvec2 newSize) {
 
 }
 
-//Recreate data.
 void Layout::RecreateData() {
 	for (auto& wid : widgets) {
 		wid->RecreateData();

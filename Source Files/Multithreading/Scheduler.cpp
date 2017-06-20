@@ -1,7 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\Multithreading\Scheduler.cpp.
-//Implements the scheduler class.
-
 #include "Scheduler.h"
 
 #include "Metrics.h"
@@ -17,11 +13,9 @@
 #include "Utility\Settings.h"
 #include "GPGPU\GPUManager.h"
 
-//Scheduler Variables//.
+//Scheduler Variables//
 static std::thread* threads;
-//Number of threads
 static std::size_t threadCount;
-//The thread condition
 static boost::fibers::condition_variable_any threadCondition;
 
 
@@ -29,39 +23,25 @@ namespace Scheduler {
 
 	namespace detail {
 
-		//True if should run
 		bool shouldRun;
-		//True to needs sort
 		bool needsSort;
 
-		//Identifier for the main
 		std::thread::id mainID;
 
-		//Number of fibers
 		std::size_t fiberCount;
-		//The fiber mutex
 		std::mutex fiberMutex;
 
-		//Number of holds
 		boost::fibers::fiber_specific_ptr<std::size_t>* holdCount;
-		//The hold mutex
 		boost::fibers::fiber_specific_ptr<std::mutex>* holdMutex;
-		//The block condition
 		boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any>* blockCondition;
 
-		//---------------------------------------------------------------------------------------------------
 		//clean up the block datatype (needs 64 alignment)
-		//@param [in,out]	ptr	If non-null, the pointer.
-
 		void CleanUpMutex(std::mutex* ptr) {
 			ptr->~mutex();
 			delete ptr;
 		}
 
-		//---------------------------------------------------------------------------------------------------
 		//clean up the block datatype (needs 64 alignment)
-		//@param [in,out]	ptr	If non-null, the pointer.
-
 		void CleanUpAlignedCondition(boost::fibers::condition_variable_any* ptr) {
 			ptr->~condition_variable_any();
 
@@ -69,7 +49,7 @@ namespace Scheduler {
 			_aligned_free(ptr);
 		}
 
-		//Initialize the fiber specific stuff.
+		//Initialize the fiber specific stuff
 		void InitPointers() {
 			if (!detail::holdMutex->get()) {
 				detail::holdMutex->reset(new std::mutex);
@@ -87,43 +67,20 @@ namespace Scheduler {
 			}
 		}
 
-		//A soul scheduler.
 		class SoulScheduler :
 			public boost::fibers::algo::algorithm_with_properties< FiberProperties > {
 		private:
-			//Defines an alias representing the rqueue t.
 			typedef std::list< boost::fibers::context * >  rqueue_t;
-			//Defines an alias representing the lqueue t.
 			typedef boost::fibers::scheduler::ready_queue_type lqueue_t;
 
 			static rqueue_t     	readyQueue;
 			static std::mutex   	queueMutex;
 			static rqueue_t     	mainOnlyQueue;
 
-			//---------------------------------------------------------------------------------------------------
-			//Gets a queue of locals.
-			//@return	A Queue of locals.
-
 			lqueue_t            	localQueue{};
-
-			//---------------------------------------------------------------------------------------------------
-			//Gets the mtx.
-			//@return	The mtx.
-
 			std::mutex              mtx_{};
-
-			//---------------------------------------------------------------------------------------------------
-			//Gets the cnd.
-			//@return	The cnd.
-
 			std::condition_variable cnd_{};
-
-			//---------------------------------------------------------------------------------------------------
-			//Gets a value indicating whether the flag.
-			//@return	True if flag, false if not.
-
 			bool                    flag_{ false };
-			//True to suspend
 			bool                    suspend_;
 
 		public:
@@ -133,30 +90,10 @@ namespace Scheduler {
 				suspend_{ suspend } {
 			}
 
-			//---------------------------------------------------------------------------------------------------
-			//Constructor.
-			//@param	parameter1	The first parameter.
-
 			SoulScheduler(SoulScheduler const&) = delete;
-
-			//---------------------------------------------------------------------------------------------------
-			//Constructor.
-			//@param [in,out]	parameter1	The first parameter.
-
 			SoulScheduler(SoulScheduler &&) = delete;
 
-			//---------------------------------------------------------------------------------------------------
-			//Assignment operator.
-			//@param	parameter1	The first parameter.
-			//@return	A shallow copy of this object.
-
 			SoulScheduler & operator=(SoulScheduler const&) = delete;
-
-			//---------------------------------------------------------------------------------------------------
-			//Move assignment operator.
-			//@param [in,out]	parameter1	The first parameter.
-			//@return	A shallow copy of this object.
-
 			SoulScheduler & operator=(SoulScheduler &&) = delete;
 
 			void InsertContext(rqueue_t& queue, boost::fibers::context*& ctx, int ctxPriority) {
@@ -261,28 +198,12 @@ namespace Scheduler {
 
 		};
 
-		//---------------------------------------------------------------------------------------------------
-		//Gets a queue of readies.
-		//@return	A Queue of readies.
-
 		SoulScheduler::rqueue_t SoulScheduler::readyQueue{};
-
-		//---------------------------------------------------------------------------------------------------
-		//Gets a queue of main onlies.
-		//@return	A Queue of main onlies.
-
 		SoulScheduler::rqueue_t SoulScheduler::mainOnlyQueue{};
-
-		//---------------------------------------------------------------------------------------------------
-		//Gets the queue mutex.
-		//@return	The queue mutex.
-
 		std::mutex SoulScheduler::queueMutex{};
 
-		//---------------------------------------------------------------------------------------------------
-		//launches a thread that waits with a fiber conditional, meaning it still executes fibers
-		//despite waiting for a notify release.
 
+		//launches a thread that waits with a fiber conditional, meaning it still executes fibers despite waiting for a notify release
 		void ThreadRun() {
 			boost::fibers::use_scheduling_algorithm<SoulScheduler >();
 
@@ -294,7 +215,6 @@ namespace Scheduler {
 
 	}
 
-	//Terminates this object.
 	void Terminate() {
 
 		detail::fiberMutex.lock();
@@ -335,7 +255,6 @@ namespace Scheduler {
 
 	}
 
-	//Initializes this object.
 	void Initialize() {
 
 
@@ -373,7 +292,6 @@ namespace Scheduler {
 	}
 
 
-	//Blocks this object.
 	void Block() {
 
 #ifndef	SOUL_SINGLE_STACK
@@ -392,7 +310,6 @@ namespace Scheduler {
 
 	}
 
-	//Defers this object.
 	void Defer() {
 
 #ifndef	SOUL_SINGLE_STACK
@@ -402,10 +319,6 @@ namespace Scheduler {
 #endif
 
 	}
-
-	//---------------------------------------------------------------------------------------------------
-	//Runnings this object.
-	//@return	True if it succeeds, false if it fails.
 
 	bool Running() {
 

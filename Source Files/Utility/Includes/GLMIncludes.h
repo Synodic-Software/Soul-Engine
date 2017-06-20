@@ -1,7 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-//@file	N:\Documents\Soul Engine\Source Files\Utility\Includes\GLMIncludes.h.
-//Declares the glm includes class.
-
 #pragma once
 
 //#  if defined(__CUDACC__)
