@@ -1,3 +1,7 @@
+//---------------------------------------------------------------------------------------------------
+//@file	N:\Documents\Soul Engine\Source Files\Engine Core\Material\Colour\Colour.h.
+//Declares the colour class.
+
 #pragma once
 
 #include "Cuda\Colour.cuh"

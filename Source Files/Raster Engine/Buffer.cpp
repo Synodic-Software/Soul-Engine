@@ -1,3 +1,7 @@
+//---------------------------------------------------------------------------------------------------
+//@file	N:\Documents\Soul Engine\Source Files\Raster Engine\Buffer.cpp.
+//Implements the buffer class.
+
 #include "Buffer.h"
 
 #include <stdexcept>
@@ -9,9 +13,11 @@
 
 #include "Utility\Logger.h"
 
+//Default constructor.
 Buffer::Buffer(){
 
 }
+//Destructor.
 Buffer::~Buffer() {
 
 }

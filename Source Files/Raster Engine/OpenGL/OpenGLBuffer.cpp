@@ -1,3 +1,7 @@
+//---------------------------------------------------------------------------------------------------
+//@file	N:\Documents\Soul Engine\Source Files\Raster Engine\OpenGL\OpenGLBuffer.cpp.
+//Implements the open gl buffer class.
+
 #include "OpenGLBuffer.h"
 
 #include "Utility\Logger.h"
@@ -5,6 +9,10 @@
 #include "Multithreading\Scheduler.h"
 
 #include "Raster Engine\RasterBackend.h"
+
+//---------------------------------------------------------------------------------------------------
+//Constructor.
+//@param	sizeInBytes	The size in bytes.
 
 OpenGLBuffer::OpenGLBuffer(uint sizeInBytes) {
 
@@ -25,6 +33,7 @@ OpenGLBuffer::OpenGLBuffer(uint sizeInBytes) {
 	Scheduler::Block();
 }
 
+//Destructor.
 OpenGLBuffer::~OpenGLBuffer() {
 
 }
