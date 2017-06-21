@@ -7,12 +7,6 @@
 
 #include <iostream>
 
-/*
- *    Constructor.
- *
- *    @param [in,out]	cameraIn	If non-null, the camera in.
- */
-
 RenderWidget::RenderWidget(Camera* cameraIn)
 {
 	camera = cameraIn;
@@ -72,15 +66,11 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 }
 
-/* Destructor. */
-/* Destructor. */
 RenderWidget::~RenderWidget()
 {
 
 }
 
-/* Draws this RenderWidget. */
-/* Draws this RenderWidget. */
 void RenderWidget::Draw() {
 
 	/*InputState::GetInstance().SetKey(GLFW_KEY_SPACE, [&integrate = integrate, &time = time](int action) {
@@ -114,8 +104,6 @@ void RenderWidget::Draw() {
 	RayEngine::ModifyJob(rayJob, *camera);
 }
 
-/* Recreate data. */
-/* Recreate data. */
 void RenderWidget::RecreateData() {
 
 	//remove the rayJob if it exists

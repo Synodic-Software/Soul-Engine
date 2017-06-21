@@ -9,13 +9,9 @@
 
 #include "Utility\Logger.h"
 
-/* Default constructor. */
-/* Default constructor. */
 Buffer::Buffer(){
 
 }
-/* Destructor. */
-/* Destructor. */
 Buffer::~Buffer() {
 
 }

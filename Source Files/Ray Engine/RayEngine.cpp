@@ -4,32 +4,15 @@
 #include "Utility\Timer.h"
 #include <deque>
 
-/* List of jobs */
-/* List of jobs */
 static std::list<RayJob*> jobList;
 
-/* The render derivatives */
-/* The render derivatives */
 static std::deque<double> renderDerivatives;
-/* The old render time */
-/* The old render time */
 static double oldRenderTime;
 
-/* The frame hold */
-/* The frame hold */
 static uint frameHold = 5;
 
-/* timer. */
-/* The render timer */
+//timer
 static Timer renderTimer;
-
-/*
- *    Updates the jobs.
- *
- *    @param 		 	renderTime	The render time.
- *    @param 		 	targetTime	The target time.
- *    @param [in,out]	jobs	  	[in,out] If non-null, the jobs.
- */
 
 void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) {
 
@@ -81,13 +64,6 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	}
 }
 
-/*
- *    Process this RayEngine.
- *
- *    @param	scene 	The scene.
- *    @param	target	Target for the.
- */
-
 void RayEngine::Process(const Scene* scene, double target) {
 
 	//start the timer once actual data movement and calculation starts
@@ -100,20 +76,6 @@ void RayEngine::Process(const Scene* scene, double target) {
 	UpdateJobs(renderTime / 1000.0, target, jobList);
 }
 
-/*
- *    Adds a job.
- *
- *    @param 		 	whatToGet	The what to get.
- *    @param 		 	rayAmount	The ray amount.
- *    @param 		 	canChange	True if this RayEngine can change.
- *    @param 		 	samples  	The samples.
- *    @param [in,out]	camera   	The camera.
- *    @param [in,out]	resultsIn	If non-null, the results in.
- *    @param [in,out]	extraData	If non-null, information describing the extra.
- *
- *    @return	Null if it fails, else a pointer to a RayJob.
- */
-
 RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
 	float samples, Camera& camera, void* resultsIn, int* extraData) {
 
@@ -122,13 +84,6 @@ RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
 
 	return job;
 }
-
-/*
- *    Modify job.
- *
- *    @param [in,out]	jobIn 	If non-null, the job in.
- *    @param [in,out]	camera	The camera.
- */
 
 void RayEngine::ModifyJob(RayJob* jobIn, Camera& camera) {
 
@@ -141,27 +96,15 @@ void RayEngine::ModifyJob(RayJob* jobIn, Camera& camera) {
 
 }
 
-/*
- *    Removes the job described by job.
- *
- *    @param [in,out]	job	If non-null, the job.
- *
- *    @return	True if it succeeds, false if it fails.
- */
-
 bool RayEngine::RemoveJob(RayJob* job) {
 
 	jobList.remove(job);
 
 	return true;
 }
-/* Initializes this RayEngine. */
-/* Initializes this RayEngine. */
 void RayEngine::Initialize() {
 	GPUInitialize();
 }
-/* Terminates this RayEngine. */
-/* Terminates this RayEngine. */
 void RayEngine::Terminate() {
 	GPUTerminate();
 }

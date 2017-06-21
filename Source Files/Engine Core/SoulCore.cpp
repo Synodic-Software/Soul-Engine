@@ -22,35 +22,23 @@
 
 namespace Soul {
 
-	/* //////////////////////Variables and Declarations//////////////////. */
+	/////////////////////////Variables and Declarations//////////////////
 
-	/* The scenes */
 	std::list<Scene*> scenes;
 
-	/* The engine refresh rate */
-	/* The engine refresh rate */
 	double engineRefreshRate;
-	/* The alloted render time */
-	/* The alloted render time */
 	double allotedRenderTime;
-	/* True to running */
-	/* True to running */
 	bool running = true;
-	/* //////////////////////Synchronization///////////////////////////. */
+	/////////////////////////Synchronization///////////////////////////
 
-	/* Synchronises the CPU. */
 	void SynchCPU() {
 		Scheduler::Block();
 	}
 
-	/* Synchronises the GPU. */
-	/* Synchronises the GPU. */
 	void SynchGPU() {
 		//CudaCheck(cudaDeviceSynchronize());
 	}
 
-	/* Synchronises the system. */
-	/* Synchronises the system. */
 	void SynchSystem() {
 		SynchCPU();
 		SynchGPU();
@@ -63,8 +51,7 @@ namespace Soul {
 	/////////////////////////Engine Core/////////////////////////////////
 
 
-	/* Call to deconstuct both the engine and its dependencies. */
-	/* Terminates this object. */
+	//Call to deconstuct both the engine and its dependencies
 	void Terminate() {
 		Soul::SynchSystem();
 
@@ -99,8 +86,7 @@ namespace Soul {
 		Scheduler::Terminate();
 	}
 
-	/* Initializes the engine. */
-	/* Initializes this object. */
+	//Initializes the engine
 	void Initialize() {
 
 		//setup the multithreader
@@ -160,16 +146,12 @@ namespace Soul {
 		Scheduler::Block();
 	}
 
-	/* Rasters this object. */
-	/* Rasters this object. */
 	void Raster() {
 
 		//Backends should handle multithreading
 		WindowManager::Draw();
 	}
 
-	/* Warmups this object. */
-	/* Warmups this object. */
 	void Warmup() {
 
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
@@ -184,23 +166,17 @@ namespace Soul {
 
 	}
 
-	/* Early frame update. */
-	/* Early frame update. */
 	void EarlyFrameUpdate() {
 
 		EventManager::Emit("Update", "EarlyFrame");
 
 	}
-	/* Late frame update. */
-	/* Late frame update. */
 	void LateFrameUpdate() {
 
 		EventManager::Emit("Update", "LateFrame");
 
 	}
 
-	/* Early update. */
-	/* Early update. */
 	void EarlyUpdate() {
 
 		//poll events before this update, making the state as close as possible to real-time input
@@ -214,16 +190,12 @@ namespace Soul {
 
 	}
 
-	/* Late update. */
-	/* Late update. */
 	void LateUpdate() {
 
 		EventManager::Emit("Update", "Late");
 
 	}
 
-	/* Runs this object. */
-	/* Runs this object. */
 	void Run()
 	{
 
@@ -281,19 +253,13 @@ namespace Soul {
 	}
 }
 
-/*
- *    //////////////////////User Interface///////////////////////////.
- *
- *    @param	pressType	Type of the press.
- */
+/////////////////////////User Interface///////////////////////////
 
 void SoulSignalClose(int pressType) {
 	Soul::running = false;
 	WindowManager::SignelClose();
 }
 
-/* Soul run. */
-/* Soul run. */
 void SoulRun() {
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 		Soul::Run();
@@ -302,53 +268,26 @@ void SoulRun() {
 	Scheduler::Block();
 }
 
-/*
- *    Gets delta time.
- *
- *    @return	The delta time.
- */
-
 double GetDeltaTime() {
 	return Soul::engineRefreshRate;
 }
 
-/* Initializes Soul. This should be the first command in a program. */
-/* Soul initialize. */
+//Initializes Soul. This should be the first command in a program.
 void SoulInit() {
 	Soul::Initialize();
 }
 
-/* Soul terminate. */
-/* Soul terminate. */
 void SoulTerminate() {
 	Soul::Terminate();
 }
-
-/*
- *    Submit scene.
- *
- *    @param [in,out]	scene	If non-null, the scene.
- */
 
 void SubmitScene(Scene* scene) {
 	Soul::scenes.push_back(scene);
 }
 
-/*
- *    Removes the scene described by scene.
- *
- *    @param [in,out]	scene	If non-null, the scene.
- */
-
 void RemoveScene(Scene* scene) {
 	Soul::scenes.remove(scene);
 }
-
-/*
- *    Main entry-point for this application.
- *
- *    @return	Exit-code for the process - 0 for success, else an error code.
- */
 
 int main()
 {
