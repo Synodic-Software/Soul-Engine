@@ -4,11 +4,21 @@
 #include "Metrics.h"
 #include "GPGPU\CUDA\CUDADevice.h"
 
+/* Buffer for cuda. */
 class CUDABuffer :public GPUBuffer {
 
 public:
+	/* Default constructor. */
 	CUDABuffer();
+
+	/*
+	 *    Constructor.
+	 *    @param [in,out]	parameter1	If non-null, the first parameter.
+	 *    @param 		 	parameter2	The second parameter.
+	 */
+
 	CUDABuffer(CUDADevice*, uint);
+	/* Destructor. */
 	~CUDABuffer();
 
 protected:
