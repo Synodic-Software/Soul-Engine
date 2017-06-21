@@ -6,23 +6,37 @@
 #include <set>
 #include <map>
 
+/* The validation layers */
+/* The validation layers */
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_LUNARG_standard_validation"
 };
 
+/* The device extensions */
+/* The device extensions */
 const std::vector<const char*> deviceExtensions = {
 	VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
 #ifdef NDEBUG
+/* True to enable, false to disable the validation layers */
+/* True to enable, false to disable the validation layers */
 const bool enableValidationLayers = false;
 #else
+/* True to enable, false to disable the validation layers */
+/* True to enable, false to disable the validation layers */
 const bool enableValidationLayers = true;
 #endif
 
 
+/* A queue family indices. */
+/* A queue family indices. */
 struct QueueFamilyIndices {
+	/* The graphics family */
+	/* The graphics family */
 	int graphicsFamily = -1;
+	/* The present family */
+	/* The present family */
 	int presentFamily = -1;
 
 	bool isComplete() {
@@ -30,23 +44,63 @@ struct QueueFamilyIndices {
 	}
 };
 
+/* A swap chain support details. */
+/* A swap chain support details. */
 struct SwapChainSupportDetails {
+	/* The capabilities */
+	/* The capabilities */
 	VkSurfaceCapabilitiesKHR capabilities;
+	/* The formats */
+	/* The formats */
 	std::vector<VkSurfaceFormatKHR> formats;
+	/* The present modes */
+	/* The present modes */
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
-//////////////////////////////Vulkan variables///////////////////////////////////////////////
+/*
+ *    ///////////////////////////Vulkan
+ *    variables///////////////////////////////////////////////.
+ *
+ *    @return	The instance.
+ */
 
 VulkanWrapper<VkInstance> instance{ vkDestroyInstance };
+
+/*
+ *    Gets the callback.
+ *
+ *    @return	The callback.
+ */
+
 VulkanWrapper<VkDebugReportCallbackEXT> callback{ instance, DestroyDebugReportCallbackEXT };
 
+/* Information about the vk window. */
+/* Information about the vk window. */
 struct VKWindowInformation {
+
+	/*
+	 *    Gets the surface.
+	 *
+	 *    @return	The surface.
+	 */
+
 	VulkanWrapper<VkSurfaceKHR> surface{ instance, vkDestroySurfaceKHR };
+	/* The physical device */
+	/* The physical device */
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
+	/*
+	 *    Gets the device.
+	 *
+	 *    @return	The device.
+	 */
+
 	VulkanWrapper<VkDevice> device{ vkDestroyDevice };
 };
 
+/* The window storage */
+/* The window storage */
 static std::map<GLFWwindow*, std::unique_ptr< VKWindowInformation> > windowStorage;
 
 /////////////////////////Function Declarations/////////////////////////////////////////
@@ -62,7 +116,8 @@ QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surfa
 bool CheckValidationLayerSupport();
 std::vector<const char*> GetRequiredExtensions();
 
-//////////////////////////////////////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////////////////////////////////. */
+/* Creates the instance. */
 void CreateInstance() {
 
 	if (enableValidationLayers && !CheckValidationLayerSupport()) {
@@ -98,6 +153,8 @@ void CreateInstance() {
 	}
 }
 
+/* Sets up the debug callback. */
+/* Sets up the debug callback. */
 void SetupDebugCallback() {
 	if (!enableValidationLayers) return;
 
@@ -111,11 +168,27 @@ void SetupDebugCallback() {
 	}
 }
 
+/*
+ *    Creates a surface.
+ *
+ *    @param [in,out]	window 	If non-null, the window.
+ *    @param [in,out]	surface	If non-null, the surface.
+ */
+
 void CreateSurface(GLFWwindow* window, VkSurfaceKHR* surface) {
 	if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
 		S_LOG(S_ERROR, "Failed to create window surface");
 	}
 }
+
+/*
+ *    Device suitable.
+ *
+ *    @param	device 	The device.
+ *    @param	surface	The surface.
+ *
+ *    @return	True if it succeeds, false if it fails.
+ */
 
 bool DeviceSuitable(const VkPhysicalDevice device, VkSurfaceKHR surface) {
 	QueueFamilyIndices indices = FindQueueFamilies(device, surface);
@@ -130,6 +203,15 @@ bool DeviceSuitable(const VkPhysicalDevice device, VkSurfaceKHR surface) {
 
 	return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
+
+/*
+ *    Swap chain support.
+ *
+ *    @param	device 	The device.
+ *    @param	surface	The surface.
+ *
+ *    @return	The SwapChainSupportDetails.
+ */
 
 SwapChainSupportDetails SwapChainSupport(const VkPhysicalDevice device, VkSurfaceKHR surface) {
 	SwapChainSupportDetails details;
@@ -155,6 +237,14 @@ SwapChainSupportDetails SwapChainSupport(const VkPhysicalDevice device, VkSurfac
 	return details;
 }
 
+/*
+ *    Device extension support.
+ *
+ *    @param	device	The device.
+ *
+ *    @return	True if it succeeds, false if it fails.
+ */
+
 bool DeviceExtensionSupport(const VkPhysicalDevice device) {
 	uint32_t extensionCount;
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -170,6 +260,13 @@ bool DeviceExtensionSupport(const VkPhysicalDevice device) {
 
 	return requiredExtensions.empty();
 }
+
+/*
+ *    Physical device.
+ *
+ *    @param	physicalDevice	The physical device.
+ *    @param	surface		  	The surface.
+ */
 
 void PhysicalDevice(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
 	uint32_t deviceCount = 0;
@@ -194,6 +291,12 @@ void PhysicalDevice(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
 	}
 }
 
+/*
+ *    Gets required extensions.
+ *
+ *    @return	Null if it fails, else the required extensions.
+ */
+
 std::vector<const char*> GetRequiredExtensions() {
 	std::vector<const char*> extensions;
 
@@ -215,6 +318,12 @@ std::vector<const char*> GetRequiredExtensions() {
 
 	return extensions;
 }
+
+/*
+ *    Determines if we can check validation layer support.
+ *
+ *    @return	True if it succeeds, false if it fails.
+ */
 
 bool CheckValidationLayerSupport() {
 	uint32_t layerCount;
@@ -240,6 +349,15 @@ bool CheckValidationLayerSupport() {
 
 	return true;
 }
+
+/*
+ *    Searches for the first queue families.
+ *
+ *    @param	device 	The device.
+ *    @param	surface	The surface.
+ *
+ *    @return	The found queue families.
+ */
 
 QueueFamilyIndices FindQueueFamilies(const VkPhysicalDevice device, VkSurfaceKHR surface) {
 	QueueFamilyIndices indices;
@@ -273,18 +391,36 @@ QueueFamilyIndices FindQueueFamilies(const VkPhysicalDevice device, VkSurfaceKHR
 	return indices;
 }
 
+/* Default constructor. */
+/* Default constructor. */
 VulkanBackend::VulkanBackend() {
 	CreateInstance();
 	SetupDebugCallback();
 }
 
+/* Destructor. */
+/* Destructor. */
 VulkanBackend::~VulkanBackend() {
 
 }
 
+/*
+ *    Resize window.
+ *
+ *    @param [in,out]	win	If non-null, the window.
+ *    @param 		 	x  	The x coordinate.
+ *    @param 		 	y  	The y coordinate.
+ */
+
 void VulkanBackend::ResizeWindow(GLFWwindow* win, int x, int y) {
 
 }
+
+/*
+ *    Builds a window.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ */
 
 void VulkanBackend::BuildWindow(GLFWwindow* window) {
 	windowStorage[window] = std::unique_ptr<VKWindowInformation>(new VKWindowInformation());
@@ -292,21 +428,48 @@ void VulkanBackend::BuildWindow(GLFWwindow* window) {
 	PhysicalDevice(windowStorage[window]->physicalDevice, windowStorage[window]->surface);
 }
 
+/* Sets window hints. */
+/* Sets window hints. */
 void VulkanBackend::SetWindowHints() {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 }
+
+/*
+ *    Pre raster.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ */
 
 void VulkanBackend::PreRaster(GLFWwindow* window) {
 
 }
 
+/*
+ *    Posts a raster.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ */
+
 void VulkanBackend::PostRaster(GLFWwindow* window) {
 
 }
 
+/*
+ *    Draws.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ *    @param [in,out]	job   	If non-null, the job.
+ */
+
 void VulkanBackend::Draw(GLFWwindow* window, RasterJob* job) {
 
 }
+
+/*
+ *    Gets resource context.
+ *
+ *    @return	Null if it fails, else the resource context.
+ */
 
 GLFWwindow* VulkanBackend::GetResourceContext() {
 	return nullptr;

@@ -1,11 +1,14 @@
 #include "RasterBase.h"
 
 
-//backend
+/* backend. */
+/* Default constructor. */
 RasterBase::RasterBase() {
 
 }
 
+/* Destructor. */
+/* Destructor. */
 RasterBase::~RasterBase() {
 
 }

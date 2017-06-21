@@ -1,5 +1,11 @@
 #include "OpenCLDevice.h"
 
+/*
+ *    Constructor.
+ *
+ *    @param	o	An uint to process.
+ */
+
 OpenCLDevice::OpenCLDevice(uint o) :
 GPUDevice(o)
 {
@@ -8,6 +14,8 @@ GPUDevice(o)
 
 }
 
+/* Destructor. */
+/* Destructor. */
 OpenCLDevice::~OpenCLDevice() {
 
 

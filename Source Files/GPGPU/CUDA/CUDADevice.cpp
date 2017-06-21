@@ -3,6 +3,12 @@
 #include <cuda_runtime_api.h>
 #include "Utility/CUDA/CudaHelper.cuh"
 
+/*
+ *    Constructor.
+ *
+ *    @param	o	An uint to process.
+ */
+
 CUDADevice::CUDADevice(uint o) :
 GPUDevice(o)
 {
@@ -11,6 +17,8 @@ GPUDevice(o)
 
 }
 
+/* Destructor. */
+/* Destructor. */
 CUDADevice::~CUDADevice() {
 
 	cudaSetDevice(order);

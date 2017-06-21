@@ -12,15 +12,31 @@
 #include <mutex>
 #include <memory>
 
+/* The windows */
+/* The windows */
 static std::list<std::unique_ptr<Window>> windows;
+/* The master window */
+/* The master window */
 static Window* masterWindow = nullptr;
 
+/* Number of monitors */
+/* Number of monitors */
 static int monitorCount;
+/* The monitors */
+/* The monitors */
 static GLFWmonitor** monitors;
 
+/* True to running flag */
+/* True to running flag */
 static bool* runningFlag;
 
 namespace WindowManager {
+
+	/*
+	 *    Initializes this object.
+	 *
+	 *    @param [in,out]	runningFlagIn	If non-null, true to running flag in.
+	 */
 
 	void Initialize(bool* runningFlagIn) {
 
@@ -41,6 +57,8 @@ namespace WindowManager {
 		//masterWindow = windows.back().get();
 	}
 
+	/* Terminates this object. */
+	/* Terminates this object. */
 	void Terminate() {
 
 		windows.clear();
@@ -49,6 +67,12 @@ namespace WindowManager {
 
 		masterWindow = nullptr;
 	}
+
+	/*
+	 *    Determine if we should close.
+	 *
+	 *    @return	True if it succeeds, false if it fails.
+	 */
 
 	bool ShouldClose() {
 		if (masterWindow != nullptr) {
@@ -60,6 +84,8 @@ namespace WindowManager {
 		}
 	}
 
+	/* Signel close. */
+	/* Signel close. */
 	void SignelClose() {
 
 		for (auto& win : windows) {
@@ -73,7 +99,20 @@ namespace WindowManager {
 		Scheduler::Block();
 	}
 
-	//the moniter number
+	/*
+	 *    the moniter number.
+	 *
+	 *    @param	type   	The type.
+	 *    @param	name   	The name.
+	 *    @param	monitor	The monitor.
+	 *    @param	x	   	An uint to process.
+	 *    @param	y	   	An uint to process.
+	 *    @param	width  	The width.
+	 *    @param	height 	The height.
+	 *
+	 *    @return	Null if it fails, else the new window.
+	 */
+
 	Window* CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height) {
 
 		if (monitor > monitorCount) {
@@ -96,6 +135,13 @@ namespace WindowManager {
 
 	}
 
+	/*
+	 *    Sets window layout.
+	 *
+	 *    @param [in,out]	window	If non-null, the window.
+	 *    @param [in,out]	layout	If non-null, the layout.
+	 */
+
 	void SetWindowLayout(Window* window, Layout* layout) {
 		window->layout.reset(layout);
 		window->layout->UpdateWindow(windows.back().get()->windowHandle);
@@ -105,6 +151,8 @@ namespace WindowManager {
 
 
 
+	/* Draws this object. */
+	/* Draws this object. */
 	void Draw() {
 
 		for (auto& itr : windows) {
@@ -116,6 +164,12 @@ namespace WindowManager {
 
 		Scheduler::Block();
 	}
+
+	/*
+	 *    Closes the given handler.
+	 *
+	 *    @param [in,out]	handler	If non-null, the handler.
+	 */
 
 	void Close(GLFWwindow* handler) {
 
@@ -140,15 +194,36 @@ namespace WindowManager {
 
 	}
 
+	/*
+	 *    Resizes.
+	 *
+	 *    @param [in,out]	handler	If non-null, the handler.
+	 *    @param 		 	width  	The width.
+	 *    @param 		 	height 	The height.
+	 */
 
 	void Resize(GLFWwindow* handler, int width, int height)
 	{
 		RasterBackend::ResizeWindow(handler, width, height);
 	}
-	 
+
+	/*
+	 *    Window position.
+	 *
+	 *    @param [in,out]	handler	If non-null, the handler.
+	 *    @param 		 	x	   	The x coordinate.
+	 *    @param 		 	y	   	The y coordinate.
+	 */
+
 	void WindowPos(GLFWwindow* handler, int x, int y)
 	{
 	}
+
+	/*
+	 *    Refreshes the given handler.
+	 *
+	 *    @param [in,out]	handler	If non-null, the handler.
+	 */
 
 	void Refresh(GLFWwindow* handler)
 	{
