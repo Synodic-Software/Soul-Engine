@@ -6,12 +6,6 @@
 
 #include "Raster Engine\RasterBackend.h"
 
-/*
- *    Constructor.
- *
- *    @param	sizeInBytes	The size in bytes.
- */
-
 OpenGLBuffer::OpenGLBuffer(uint sizeInBytes) {
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&buffer = buffer, sizeInBytes]() {
@@ -31,8 +25,6 @@ OpenGLBuffer::OpenGLBuffer(uint sizeInBytes) {
 	Scheduler::Block();
 }
 
-/* Destructor. */
-/* Destructor. */
 OpenGLBuffer::~OpenGLBuffer() {
 
 }

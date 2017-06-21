@@ -12,13 +12,6 @@
 
 #include "Raster Engine\RasterBackend.h"
 
-/*
- *    Constructor.
- *
- *    @param	filePath  	Full pathname of the file.
- *    @param	shaderType	Type of the shader.
- */
-
 OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
 	: Shader(filePath, shaderType), object(0) {
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&object = object, &name = name, &codeStr = codeStr, shaderType]() {
@@ -77,8 +70,6 @@ OpenGLShader::OpenGLShader(std::string filePath, shader_t shaderType)
 	Scheduler::Block();
 }
 
-/* Destructor. */
-/* Destructor. */
 OpenGLShader::~OpenGLShader() {
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&object = object]() {
@@ -91,13 +82,6 @@ OpenGLShader::~OpenGLShader() {
 	Scheduler::Block();
 
 }
-
-/*
- *    Copy constructor.
- *
- *    @param	other	The other.
- */
-
 OpenGLShader::OpenGLShader(const OpenGLShader& other) :
 	Shader(other.name, other.type),
 	object(other.object)
@@ -106,24 +90,9 @@ OpenGLShader::OpenGLShader(const OpenGLShader& other) :
 	name = other.name;
 	Retain();
 }
-
-/*
- *    Gets the object.
- *
- *    @return	A GLuint.
- */
-
 GLuint OpenGLShader::Object() const {
 	return object;
 }
-
-/*
- *    Assignment operator.
- *
- *    @param	other	The other.
- *
- *    @return	A shallow copy of this object.
- */
 
 OpenGLShader& OpenGLShader::operator = (const OpenGLShader& other) {
 	Release();

@@ -14,8 +14,6 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-/* Default constructor. */
-/* Default constructor. */
 OpenGLJob::OpenGLJob()
 	: RasterJob() {
 
@@ -34,20 +32,11 @@ OpenGLJob::OpenGLJob()
 	Scheduler::Block();
 }
 
-/* Destructor. */
-/* Destructor. */
 OpenGLJob::~OpenGLJob() {
 
 }
 
-/*
- *    should be called in the context of the main thread.
- *
- *    @param	attribName	Name of the attribute.
- *
- *    @return	The attribute.
- */
-
+//should be called in the context of the main thread
 GLint OpenGLJob::GetAttribute(const GLchar* attribName) {
 
 	GLint attrib = glGetAttribLocation(object, attribName);
@@ -57,12 +46,6 @@ GLint OpenGLJob::GetAttribute(const GLchar* attribName) {
 
 	return attrib;
 }
-
-/*
- *    Attach shaders.
- *
- *    @param	shadersIn	The shaders in.
- */
 
 void OpenGLJob::AttachShaders(const std::vector<Shader*>& shadersIn) {
 	shaders = shadersIn;
@@ -108,12 +91,6 @@ void OpenGLJob::AttachShaders(const std::vector<Shader*>& shadersIn) {
 	Scheduler::Block();
 }
 
-/*
- *    Registers the uniform described by uniformName.
- *
- *    @param	uniformName	Name of the uniform.
- */
-
 void OpenGLJob::RegisterUniform(const std::string uniformName) {
 
 	GLint uniform;
@@ -131,15 +108,6 @@ void OpenGLJob::RegisterUniform(const std::string uniformName) {
 
 	(*this)[uniformName] = uniform;
 }
-
-/*
- *    Uploads a geometry.
- *
- *    @param [in,out]	vertices   	If non-null, the vertices.
- *    @param 		 	verticeSize	Size of the vertice.
- *    @param [in,out]	indices	   	If non-null, the indices.
- *    @param 		 	indiceSize 	Size of the indice.
- */
 
 void OpenGLJob::UploadGeometry(float* vertices, uint verticeSize, uint* indices, uint indiceSize) {
 
@@ -171,13 +139,6 @@ void OpenGLJob::UploadGeometry(float* vertices, uint verticeSize, uint* indices,
 	});
 	Scheduler::Block();
 }
-
-/*
- *    Sets an uniform.
- *
- *    @param	uniformName	Name of the uniform.
- *    @param	type	   	The type.
- */
 
 void OpenGLJob::SetUniform(const std::string uniformName, RasterVariant type) {
 
@@ -242,8 +203,6 @@ void OpenGLJob::SetUniform(const std::string uniformName, RasterVariant type) {
 
 }
 
-/* Draws this OpenGLJob. */
-/* Draws this OpenGLJob. */
 void OpenGLJob::Draw() {
 
 	OpenGLJob* job = this;

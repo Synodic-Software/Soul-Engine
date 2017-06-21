@@ -4,22 +4,10 @@
 #include "Metrics.h"
 #include "GPGPU\OpenCL\OpenCLDevice.h"
 
-/* Buffer for open cl. */
-/* Buffer for open cl. */
 class OpenCLBuffer :public GPUBuffer {
 
 public:
-
-	/*
-	 *    Constructor.
-	 *
-	 *    @param [in,out]	parameter1	If non-null, the first parameter.
-	 *    @param 		 	parameter2	The second parameter.
-	 */
-
 	OpenCLBuffer(OpenCLDevice*, uint);
-	/* Destructor. */
-	/* Destructor. */
 	~OpenCLBuffer();
 
 protected:
