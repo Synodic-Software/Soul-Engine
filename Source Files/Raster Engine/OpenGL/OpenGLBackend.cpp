@@ -4,8 +4,26 @@
 #include "Multithreading\Scheduler.h"
 
 uint OpenGLBackend::windowCounter = 0;
+/* Context for the current */
+/* Context for the current */
 OpenGLBackend::WindowInformation* currentContext = nullptr;
+/* The default context */
+/* The default context */
 OpenGLBackend::WindowInformation* defaultContext = nullptr;
+
+/*
+ *    Opengl callback function.
+ *
+ *    @param	source   	Source for the.
+ *    @param	type	 	The type.
+ *    @param	id		 	The identifier.
+ *    @param	severity 	The severity.
+ *    @param	length   	The length.
+ *    @param	message  	The message.
+ *    @param	userParam	The user parameter.
+ *
+ *    @return	An APIENTRY.
+ */
 
 static void APIENTRY openglCallbackFunction(
 	GLenum source,
@@ -24,7 +42,8 @@ static void APIENTRY openglCallbackFunction(
 	}
 }
 
-//the public method that calls the private one
+/* the public method that calls the private one. */
+/* Makes context current. */
 void  OpenGLBackend::MakeContextCurrent() {
 	if (currentContext != defaultContext) {
 		MakeContextCurrent(nullptr);
@@ -32,7 +51,12 @@ void  OpenGLBackend::MakeContextCurrent() {
 	}
 }
 
-//must be called on the main thread, makes the context current
+/*
+ *    must be called on the main thread, makes the context current.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ */
+
 void OpenGLBackend::MakeContextCurrent(GLFWwindow* window)
 {
 	OpenGLBackend::WindowInformation* info;
@@ -47,25 +71,43 @@ void OpenGLBackend::MakeContextCurrent(GLFWwindow* window)
 	currentContext = info;
 }
 
+/*
+ *    Glew get context.
+ *
+ *    @return	Null if it fails, else a pointer to a GLEWContext.
+ */
+
 GLEWContext* glewGetContext()
 {
 	return currentContext->glContext.get();
 }
 
+/* Default constructor. */
+/* Default constructor. */
 OpenGLBackend::OpenGLBackend() {
 	currentContext = nullptr;
 
 }
 
+/* Destructor. */
+/* Destructor. */
 OpenGLBackend::~OpenGLBackend() {
 
 }
+
+/*
+ *    Gets resource context.
+ *
+ *    @return	Null if it fails, else the resource context.
+ */
 
 GLFWwindow* OpenGLBackend::GetResourceContext() {
 	return defaultContext->window;
 }
 
 
+/* Sets window hints. */
+/* Sets window hints. */
 void OpenGLBackend::SetWindowHints() {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -73,6 +115,12 @@ void OpenGLBackend::SetWindowHints() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
+
+/*
+ *    Builds a window.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ */
 
 void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 
@@ -120,7 +168,14 @@ void OpenGLBackend::BuildWindow(GLFWwindow* window) {
 	}
 }
 
-//called by glfwPollEvents meaning no scheduling is needed for the main thread
+/*
+ *    called by glfwPollEvents meaning no scheduling is needed for the main thread.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ *    @param 		 	width 	The width.
+ *    @param 		 	height	The height.
+ */
+
 void OpenGLBackend::ResizeWindow(GLFWwindow* window, int width, int height) {
 	if (windowStorage.find(window) != windowStorage.end()) {
 
@@ -129,6 +184,12 @@ void OpenGLBackend::ResizeWindow(GLFWwindow* window, int width, int height) {
 		MakeContextCurrent(nullptr);
 	}
 }
+
+/*
+ *    Pre raster.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ */
 
 void OpenGLBackend::PreRaster(GLFWwindow* window) {
 
@@ -145,6 +206,12 @@ void OpenGLBackend::PreRaster(GLFWwindow* window) {
 	Scheduler::Block();
 }
 
+/*
+ *    Posts a raster.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ */
+
 void OpenGLBackend::PostRaster(GLFWwindow* window) {
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &window]() {
@@ -159,7 +226,12 @@ void OpenGLBackend::PostRaster(GLFWwindow* window) {
 	Scheduler::Block();
 }
 
-
+/*
+ *    Draws.
+ *
+ *    @param [in,out]	window	If non-null, the window.
+ *    @param [in,out]	job   	If non-null, the job.
+ */
 
 void OpenGLBackend::Draw(GLFWwindow* window, RasterJob* job) {
 

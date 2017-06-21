@@ -16,10 +16,21 @@ namespace Settings {
 	//"Under the hood" functions to handle settings.  Should not be used externally.
 	namespace detail {
 
+		/* Filename of the file */
+		/* Filename of the file */
 		std::string filename;
+		/* The table wrapper */
+		/* The table wrapper */
 		TableWrapper tableWrapper;
 
 	}
+
+	/*
+	 *    Writes.
+	 *
+	 *    @param	_filename	Filename of the file.
+	 *    @param	type	 	The type.
+	 */
 
 	void Write(const std::string & _filename, FileType type) {
 
@@ -35,6 +46,13 @@ namespace Settings {
 			detail::tableWrapper.Write<boost::archive::binary_oarchive>();
 		}
 	}
+
+	/*
+	 *    Reads.
+	 *
+	 *    @param	_filename	Filename of the file.
+	 *    @param	type	 	The type.
+	 */
 
 	void Read(const std::string & _filename, FileType type) {
 		if (boost::filesystem::exists(_filename)) {

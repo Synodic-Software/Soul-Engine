@@ -9,6 +9,13 @@
 
 #include "Utility\Logger.h"
 
+/*
+ *    Constructor.
+ *
+ *    @param	filePath  	Full pathname of the file.
+ *    @param	shaderType	Type of the shader.
+ */
+
 Shader::Shader(std::string filePath, shader_t shaderType) :
 	name(filePath), type(shaderType), referenceCount(nullptr){
 	ExtractShader(filePath);
@@ -16,9 +23,17 @@ Shader::Shader(std::string filePath, shader_t shaderType) :
 	referenceCount = new unsigned;
 	*referenceCount = 1;
 }
+/* Destructor. */
+/* Destructor. */
 Shader::~Shader() {
 	if (referenceCount) Release();
 }
+
+/*
+ *    Extracts the shader described by filePath.
+ *
+ *    @param	filePath	Full pathname of the file.
+ */
 
 void Shader::ExtractShader(const std::string& filePath) {
 
@@ -36,11 +51,15 @@ void Shader::ExtractShader(const std::string& filePath) {
 	//update code
 	codeStr =buffer.str();
 }
+/* Retains this Shader. */
+/* Retains this Shader. */
 void Shader::Retain() {
 	assert(referenceCount);
 	*referenceCount += 1;
 }
 
+/* Releases this Shader. */
+/* Releases this Shader. */
 void Shader::Release() {
 	assert(referenceCount && *referenceCount > 0);
 	*referenceCount -= 1;
