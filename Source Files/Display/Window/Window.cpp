@@ -3,6 +3,7 @@
 #include "Raster Engine\RasterBackend.h"
 #include "Multithreading\Scheduler.h"
 #include "WindowManager.h"
+#include "Input/InputManager.h"
 
 /*
  *    Constructor.
@@ -24,6 +25,7 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	width = iwidth;
 	height = iheight;
 	title = inTitle;
+	windowHandle = nullptr;
 
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, sharedContext, monitorIn ]() {
 
@@ -112,6 +114,8 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 		glfwShowWindow(windowHandle);
 
 	});
+
+	InputManager::AttachWindow(windowHandle);
 
 	Scheduler::Block();
 
