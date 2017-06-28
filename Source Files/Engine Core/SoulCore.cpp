@@ -19,6 +19,7 @@
 #include "Display\Widget\RenderWidget.h"
 #include "Multithreading\Scheduler.h"
 #include "Events\EventManager.h"
+#include "Input/InputManager.h"
 
 namespace Soul {
 
@@ -193,6 +194,9 @@ namespace Soul {
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			glfwPollEvents();
 		});
+
+		//poll input after glfw processes all its callbacks
+		InputManager::Poll();
 
 		EventManager::Emit("Update", "Early");
 
