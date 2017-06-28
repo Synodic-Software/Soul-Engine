@@ -2,19 +2,11 @@
 
 #include "Utility\Includes\GLFWIncludes.h"
 #include "InputSet.h"
-#include <thrust/pair.h>
+#include "Key.h"
+#include <unordered_map>
 
 /* . */
 namespace InputManager {
-
-	enum keyState { PRESS, REPEAT, RELEASE, OPEN };
-
-	struct keyInfo {
-		keyInfo() : timeToRepeat(50.0f) {		
-		}
-
-		float timeToRepeat; //in milliseconds
-	};
 
 	/* . */
 	namespace detail {
@@ -67,7 +59,7 @@ namespace InputManager {
 		void buttonCallback(GLFWwindow* window, int button, int action, int mods);
 
 
-		extern std::pair<keyState, keyInfo> keyStates[348];
+		extern std::unordered_map<std::string, Key> keyStates;
 
 	}
 
