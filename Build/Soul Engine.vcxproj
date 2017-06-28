@@ -150,6 +150,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.h" />
     <ClInclude Include="..\Source Files\Input\InputSet.h" />
     <ClInclude Include="..\Source Files\Input\InputManager.h" />
+    <ClInclude Include="..\Source Files\Input\Key.h" />
     <ClInclude Include="..\Source Files\Memory\Allocator\Allocator.h" />
     <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h" />
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
@@ -221,6 +222,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.cpp" />
     <ClCompile Include="..\Source Files\Input\InputSet.cpp" />
     <ClCompile Include="..\Source Files\Input\InputManager.cpp" />
+    <ClCompile Include="..\Source Files\Input\Key.cpp" />
     <ClCompile Include="..\Source Files\Memory\Allocator\Allocator.cpp" />
     <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />

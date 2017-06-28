@@ -531,6 +531,9 @@
     <ClInclude Include="..\Source Files\Input\InputSet.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Input\Key.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -687,6 +690,9 @@
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Input\InputSet.cpp">
+      <Filter>Engine Backend\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Input\Key.cpp">
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
   </ItemGroup>
