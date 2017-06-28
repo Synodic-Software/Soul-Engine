@@ -2,9 +2,19 @@
 
 #include "Utility\Includes\GLFWIncludes.h"
 #include "InputSet.h"
+#include <thrust/pair.h>
 
 /* . */
 namespace InputManager {
+
+	enum keyState { PRESS, REPEAT, RELEASE, OPEN };
+
+	struct keyInfo {
+		keyInfo() : timeToRepeat(50.0f) {		
+		}
+
+		float timeToRepeat; //in milliseconds
+	};
 
 	/* . */
 	namespace detail {
@@ -55,6 +65,10 @@ namespace InputManager {
 		 */
 
 		void buttonCallback(GLFWwindow* window, int button, int action, int mods);
+
+
+		extern std::pair<keyState, keyInfo> keyStates[348];
+
 	}
 
 	/*
@@ -63,4 +77,11 @@ namespace InputManager {
 	 */
 
 	void AttachWindow(GLFWwindow* window);
+
+	/*
+	 *     Polls this object.
+	 *    @requires GLFW events must be polled this functions (for the frame)
+	 */
+
+	void Poll();
 };
