@@ -1,6 +1,7 @@
 #include "InputManager.h"
 #include "Events/EventManager.h"
 #include "Multithreading/Scheduler.h"
+#include "Utility/Logger.h"
 
 #include <string> 
 
@@ -10,16 +11,22 @@ namespace InputManager {
 
 		void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
-			//TODO cast int into properly named key -> std:string
+			const char* tempName = glfwGetKeyName(key, scancode);
+
+			if(!tempName) {
+				S_LOG_ERROR("glfwGetKeyName returned NULL");
+			}
+
+			std::string name = tempName;
 
 			if (action == GLFW_PRESS) {
-				keyStates[std::to_string(key)].state = PRESS;
+				keyStates[name].state = PRESS;
 			}
 			else if (action == GLFW_REPEAT) {
-
+				keyStates[name].state = REPEAT;
 			}
 			else if (action == GLFW_RELEASE) {
-
+				keyStates[name].state = RELEASE;
 			}
 			else {
 				//case GLFW_UNKNOWN
