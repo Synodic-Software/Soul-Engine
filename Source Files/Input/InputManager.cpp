@@ -13,23 +13,33 @@ namespace InputManager {
 
 			const char* tempName = glfwGetKeyName(key, scancode);
 
-			if(!tempName) {
+			if (!tempName) {
 				S_LOG_ERROR("glfwGetKeyName returned NULL");
 			}
 
 			std::string name = tempName;
 
 			if (action == GLFW_PRESS) {
+
+				//if the state was previously open, start the timer
+				if (keyStates[name].state == OPEN) {
+					keyStates[name].sincePress.Reset();
+				}
+
 				keyStates[name].state = PRESS;
 			}
 			else if (action == GLFW_REPEAT) {
-				keyStates[name].state = REPEAT;
+				//GLFW_REPEAT is handled in GLFW, but we want custimization for input, so this is ignored
+
 			}
 			else if (action == GLFW_RELEASE) {
 				keyStates[name].state = RELEASE;
 			}
 			else {
 				//case GLFW_UNKNOWN
+
+				S_LOG_ERROR("Reached unknown key case");
+
 			}
 		}
 
@@ -71,12 +81,26 @@ namespace InputManager {
 
 	void Poll() {
 
-		//fire off all events
-		for (auto iter : detail::keyStates) {
+		//TODO break into tasks
+		//fire off all events and their logic
+		for (auto& iter : detail::keyStates) {
+
+			//change state if the key timer is beyond the requested.
+			if (iter.second.state == PRESS &&
+				iter.second.sincePress.Elapsed() > iter.second.timeToRepeat) {
+
+				iter.second.state == REPEAT;
+
+			}
+
 			EventManager::Emit("KeyInput", iter.first);
+
+			//handle reset case after emitting a release event
+			if (iter.second.state == RELEASE) {
+				iter.second.state = OPEN;
+			}
 		}
 
-		//reset any states
 	}
 
 }
