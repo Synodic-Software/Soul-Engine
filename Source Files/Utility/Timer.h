@@ -10,12 +10,12 @@ public:
 	/* Destructor. */
 	~Timer();
 
-	/* Resets this object. */
+	/* Resets the Timer. */
 	void Reset();
 
 	/*
 	 *    returns the elapsed time since the last reset in milliseconds.
-	 *    @return	A double.
+	 *    @return	The elapsed time in milliseconds.
 	 */
 
 	double Elapsed();
