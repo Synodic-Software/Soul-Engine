@@ -337,8 +337,6 @@ int main()
 	{
 		SoulInit();
 
-		//SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
-
 		EventManager::Listen("Input", "ESCAPE", [](keyState state) {
 			if (state == RELEASE) {
 				SoulSignalClose();
@@ -372,6 +370,12 @@ int main()
 
 		double deltaTime = GetDeltaTime();
 		float moveSpeed = 10 * METER * deltaTime;
+
+		EventManager::Listen("Input", "S", [&camera, &moveSpeed](keyState state) {
+			if (state == PRESS || state == REPEAT) {
+				camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
+			}
+		});
 
 		/*SetKey(GLFW_KEY_S, [&camera, &moveSpeed](int action) {
 			camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
