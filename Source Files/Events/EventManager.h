@@ -36,8 +36,42 @@ namespace EventManager {
 
 		std::string Join(std::string, std::string);
 
+		/*
+		*    An identity.
+		*    @tparam	T	Generic type parameter.
+		*/
 
-		template <typename... Args>
+		template<typename T>
+		struct identity
+		{
+			using type = void;
+		};
+
+		/*
+		*    A *)( args...) const>.
+		*    @tparam	Ret  	Type of the ret.
+		*    @tparam	Class	Type of the class.
+		*    @tparam	Args 	Type of the arguments.
+		*/
+
+		template<typename Ret, typename Class, typename... Args>
+		struct identity<Ret(Class::*)(Args...) const>
+		{
+			using type = std::function<Ret(Args...)>;
+		};
+
+		/*
+		*    A *)( args...)>.
+		*    @tparam	Ret  	Type of the ret.
+		*    @tparam	Class	Type of the class.
+		*    @tparam	Args 	Type of the arguments.
+		*/
+
+		template<typename Ret, typename Class, typename... Args>
+		struct identity<Ret(Class::*)(Args...)>
+		{
+			using type = std::function<Ret(Args...)>;
+		};
 
 		/*
 		*    Listens.
@@ -48,6 +82,7 @@ namespace EventManager {
 		*    @return	An uint.
 		*/
 
+		template <typename... Args>
 		uint ListenBase(std::string channel, std::string name, const std::function<void(Args...)>& func)
 		{
 
@@ -66,8 +101,6 @@ namespace EventManager {
 
 		}
 
-		template <typename... Args>
-
 		/*
 		*    Listens.
 		*    @param 		 	channel	The channel.
@@ -77,6 +110,7 @@ namespace EventManager {
 		*    @return	An uint.
 		*/
 
+		template <typename... Args>
 		uint ListenBase(std::string channel, std::string name, std::function<void(Args...)>&& func)
 		{
 
@@ -95,43 +129,6 @@ namespace EventManager {
 
 		}
 	}
-
-	/*
-	 *    An identity.
-	 *    @tparam	T	Generic type parameter.
-	 */
-
-	template<typename T>
-	struct identity
-	{
-		using type = void;
-	};
-
-	/*
-	 *    A *)( args...) const>.
-	 *    @tparam	Ret  	Type of the ret.
-	 *    @tparam	Class	Type of the class.
-	 *    @tparam	Args 	Type of the arguments.
-	 */
-
-	template<typename Ret, typename Class, typename... Args>
-	struct identity<Ret(Class::*)(Args...) const>
-	{
-		using type = std::function<Ret(Args...)>;
-	};
-
-	/*
-	 *    A *)( args...)>.
-	 *    @tparam	Ret  	Type of the ret.
-	 *    @tparam	Class	Type of the class.
-	 *    @tparam	Args 	Type of the arguments.
-	 */
-
-	template<typename Ret, typename Class, typename... Args>
-	struct identity<Ret(Class::*)(Args...)>
-	{
-		using type = std::function<Ret(Args...)>;
-	};
 
 
 	/*
@@ -161,7 +158,7 @@ namespace EventManager {
 	template<typename Fn>
 	uint Listen(std::string channel, std::string name, Fn const &func)
 	{
-		typename identity<decltype(&Fn::operator())>::type
+		typename detail::identity<decltype(&Fn::operator())>::type
 			newFunc = func;
 
 		return detail::ListenBase(channel, name, newFunc);
@@ -178,7 +175,7 @@ namespace EventManager {
 	template<typename Fn>
 	uint Listen(std::string channel, std::string name, Fn && func)
 	{
-		typename identity<decltype(&Fn::operator())>::type
+		typename detail::identity<decltype(&Fn::operator())>::type
 			newFunc = func;
 
 		return detail::ListenBase(channel, name, newFunc);
