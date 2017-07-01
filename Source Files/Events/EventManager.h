@@ -9,11 +9,12 @@
 #include <string>
 #include <memory>
 #include <utility>
+#include <type_traits>
 
 /* . */
 namespace EventManager {
 
-/* . */
+	/* . */
 	namespace detail {
 
 		/* Defines an alias representing the event pointer. */
@@ -35,73 +36,152 @@ namespace EventManager {
 
 		std::string Join(std::string, std::string);
 
-	}
 
-	//Listener functions
-	template <typename T,
-		typename ... Args>
+		template <typename... Args>
 
 		/*
-		 *    Listens.
-		 *    @param 		 	channel 	The channel.
-		 *    @param 		 	name		The name.
-		 *    @param [in,out]	instance	If non-null, the instance.
-		 *    @param [in,out]	func		If non-null, the function.
-		 *    @return	An uint.
-		 */
+		*    Listens.
+		*    @param 		 	channel	The channel.
+		*    @param 		 	name   	The name.
+		*    @param [in,out]	func   	The function.
+		*    @param 		 	args   	Variable arguments providing [in,out] The arguments.
+		*    @return	An uint.
+		*/
 
-		uint Listen(std::string channel, std::string name, T *instance, void(T::*func)(Args...) const) {
-		return Listen(channel, name, [=](Args... args) {
-			(instance->*func)(args...);
-		});
-	}
+		uint ListenBase(std::string channel, std::string name, const std::function<void(Args...)>& func)
+		{
 
-	template <typename T,
-		typename ... Args>
+			typedef Event<Args...> EventType;
+
+			auto ret = detail::eventMap.insert(std::make_pair(detail::Join(channel, name), detail::EventPtr(new EventType())));
+
+			EventType* evt = dynamic_cast<EventType*>(ret.first->second.get());
+
+			if (evt)
+			{
+				evt->Listen(detail::id, func);
+			}
+
+			return detail::id++;
+
+		}
+
+		template <typename... Args>
 
 		/*
-		 *    Listens.
-		 *    @param 		 	channel 	The channel.
-		 *    @param 		 	name		The name.
-		 *    @param [in,out]	instance	If non-null, the instance.
-		 *    @param [in,out]	func		If non-null, the function.
-		 *    @return	An uint.
-		 */
+		*    Listens.
+		*    @param 		 	channel	The channel.
+		*    @param 		 	name   	The name.
+		*    @param [in,out]	func   	The function.
+		*    @param 		 	args   	Variable arguments providing [in,out] The arguments.
+		*    @return	An uint.
+		*/
 
-		uint Listen(std::string channel, std::string name, T *instance, void(T::*func)(Args...)) {
-		return Listen(channel, name, [=](Args... args) {
-			(instance->*func)(args...);
-		});
+		uint ListenBase(std::string channel, std::string name, std::function<void(Args...)>&& func)
+		{
+
+			typedef Event<Args...> EventType;
+
+			auto ret = detail::eventMap.insert(std::make_pair(detail::Join(channel, name), detail::EventPtr(new EventType())));
+
+			EventType* evt = dynamic_cast<EventType*>(ret.first->second.get());
+
+			if (evt)
+			{
+				evt->Listen(detail::id, func);
+			}
+
+			return detail::id++;
+
+		}
 	}
 
-	template <typename Fn, typename... Args >
+	/*
+	 *    An identity.
+	 *    @tparam	T	Generic type parameter.
+	 */
+
+	template<typename T>
+	struct identity
+	{
+		using type = void;
+	};
+
+	/*
+	 *    A *)( args...) const>.
+	 *    @tparam	Ret  	Type of the ret.
+	 *    @tparam	Class	Type of the class.
+	 *    @tparam	Args 	Type of the arguments.
+	 */
+
+	template<typename Ret, typename Class, typename... Args>
+	struct identity<Ret(Class::*)(Args...) const>
+	{
+		using type = std::function<Ret(Args...)>;
+	};
+
+	/*
+	 *    A *)( args...)>.
+	 *    @tparam	Ret  	Type of the ret.
+	 *    @tparam	Class	Type of the class.
+	 *    @tparam	Args 	Type of the arguments.
+	 */
+
+	template<typename Ret, typename Class, typename... Args>
+	struct identity<Ret(Class::*)(Args...)>
+	{
+		using type = std::function<Ret(Args...)>;
+	};
+
+
+	/*
+	*    Listens.
+	*    @param 		 	channel	The channel.
+	*    @param 		 	name   	The name.
+	*    @param [in,out]	func   	The function.
+	*    @param 		 	args   	Variable arguments providing [in,out] The arguments.
+	*    @return	An uint.
+	*/
+
+	template <typename... Args>
+	uint Listen(std::string channel, std::string name, void(*func)(Args...))
+	{
+		std::function<void(Args...)> f = func;
+		return detail::ListenBase(channel, name, f);
+	}
 
 	/*
 	 *    Listens.
-	 *    @param 		 	channel	The channel.
-	 *    @param 		 	name   	The name.
-	 *    @param [in,out]	func   	The function.
-	 *    @param 		 	args   	Variable arguments providing [in,out] The arguments.
-	 *    @return	An uint.
+	 *    @param	channel	The channel.
+	 *    @param	name   	The name.
+	 *    @param	func   	The function.
+	 *    @return	A uint. Disables the function template if the function is not a lambda
 	 */
 
-	uint Listen(std::string channel, std::string name, Fn && func, Args && ... args)
+	template<typename Fn>
+	uint Listen(std::string channel, std::string name, Fn const &func)
 	{
+		typename identity<decltype(&Fn::operator())>::type
+			newFunc = func;
 
-		typedef Event<Args...> EventType;
+		return detail::ListenBase(channel, name, newFunc);
+	}
 
-		std::pair<detail::EMap::iterator, bool> ret;
-		ret = detail::eventMap.insert(std::make_pair(detail::Join(channel, name), detail::EventPtr(new EventType())));
+	/*
+	*    Listens.
+	*    @param	channel	The channel.
+	*    @param	name   	The name.
+	*    @param	func   	The function.
+	*    @return	A uint. Disables the function template if the function is not a lambda
+	*/
 
-		EventType* evt = dynamic_cast<EventType*>(ret.first->second.get());
+	template<typename Fn>
+	uint Listen(std::string channel, std::string name, Fn && func)
+	{
+		typename identity<decltype(&Fn::operator())>::type
+			newFunc = func;
 
-		if (evt)
-		{
-			(*evt).Listen(detail::id, func);
-		}
-
-		return detail::id++;
-
+		return detail::ListenBase(channel, name, newFunc);
 	}
 
 	/*

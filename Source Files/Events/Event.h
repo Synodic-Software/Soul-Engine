@@ -25,7 +25,7 @@ public:
 	 *    @param	parameter1	The parameter 1 to remove.
 	 */
 
-	virtual void Remove(uint) {};
+	virtual void Remove(uint) {}
 };
 
 template<typename... Args>
