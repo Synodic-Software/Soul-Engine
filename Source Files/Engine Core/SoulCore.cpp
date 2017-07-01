@@ -146,7 +146,7 @@ namespace Soul {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
-		Settings::Get("Engine.Delta_Time", 1/60.0, &engineRefreshRate);
+		Settings::Get("Engine.Delta_Time", 1 / 60.0, &engineRefreshRate);
 		Settings::Get("Engine.Alloted_Render_Time", 0.01, &allotedRenderTime);
 
 		Scheduler::Block();
@@ -195,7 +195,7 @@ namespace Soul {
 			glfwPollEvents();
 		});
 
-		//poll input after glfw processes all its callbacks
+		//poll input after glfw processes all its callbacks (updating some input states)
 		InputManager::Poll();
 
 		EventManager::Emit("Update", "Early");
@@ -274,7 +274,7 @@ namespace Soul {
  *    @param	pressType	Type of the press.
  */
 
-void SoulSignalClose(int pressType) {
+void SoulSignalClose() {
 	Soul::running = false;
 	WindowManager::SignelClose();
 }
@@ -338,6 +338,12 @@ int main()
 		SoulInit();
 
 		//SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
+
+		EventManager::Listen("Input", "ESCAPE", [](keyState state) {
+			if (state == RELEASE) {
+				SoulSignalClose();
+			}
+		});
 
 		uint xSize;
 		Settings::Get("MainWindow.Width", uint(1600), &xSize);

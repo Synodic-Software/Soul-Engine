@@ -76,4 +76,6 @@ namespace InputManager {
 	 */
 
 	void Poll();
+
+
 };
