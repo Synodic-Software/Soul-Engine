@@ -217,19 +217,23 @@ namespace InputManager {
 		//fire off all events and their logic
 		for (auto& iter : detail::keyStates) {
 
-			//change state if the key timer is beyond the requested.
-			if (iter.second.state == PRESS &&
-				iter.second.sincePress.Elapsed() > iter.second.timeToRepeat) {
+			if (iter.second.state != OPEN) {
 
-				iter.second.state = REPEAT;
+				//change state if the key timer is beyond the requested.
+				if (iter.second.state == PRESS &&
+					iter.second.sincePress.Elapsed() > iter.second.timeToRepeat) {
 
-			}
+					iter.second.state = REPEAT;
 
-			EventManager::Emit("Input", iter.first, iter.second.state);
+				}
 
-			//handle reset case after emitting a release event
-			if (iter.second.state == RELEASE) {
-				iter.second.state = OPEN;
+				EventManager::Emit("Input", iter.first, iter.second.state);
+
+				//handle reset case after emitting a release event
+				if (iter.second.state == RELEASE) {
+					iter.second.state = OPEN;
+				}
+
 			}
 		}
 
