@@ -1,11 +1,10 @@
 #include "RenderWidget.h"
-#include "Raster Engine\Buffer.h"
 #include "GPGPU\GPUManager.h"
 #include "Utility/CUDA/CudaHelper.cuh"
 #include "CUDA\RenderWidget.cuh"
 #include "Events\EventManager.h"
 
-#include <iostream>
+#include "Input/InputManager.h"
 
 /*
  *    Constructor.
@@ -80,15 +79,13 @@ RenderWidget::~RenderWidget()
 /* Draws this object. */
 void RenderWidget::Draw() {
 
-	/*InputState::GetInstance().SetKey(GLFW_KEY_SPACE, [&integrate = integrate, &time = time](int action) {
+	EventManager::Listen("Input", "SPACE", [&integrate = integrate, &time = time](keyState state) {
 		double newTime = glfwGetTime();
 		if (newTime - time > 0.3f) {
 			integrate = !integrate;
 			time = newTime;
 		}
-
-	});*/
-
+	});
 
 	if (integrate) {
 		Integrate(renderSize.x*renderSize.y, (glm::vec4*)buffer->GetData(), (glm::vec4*)accumulator->GetData(), (int*)extraData->GetData(), iCounter);

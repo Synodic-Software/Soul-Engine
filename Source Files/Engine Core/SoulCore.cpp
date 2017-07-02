@@ -452,7 +452,7 @@ int main()
 		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
 
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
-		//scene->AddObject(transform, sphere);
+		scene->AddObject(transform, sphere);
 
 		SubmitScene(scene);
 
