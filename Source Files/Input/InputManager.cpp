@@ -9,6 +9,16 @@ namespace InputManager {
 
 	namespace detail {
 
+		std::unordered_map<std::string, Key> keyStates;
+
+		double mouseXPos;
+		double mouseYPos;
+
+		double mouseXOffset;
+		double mouseYOffset;
+
+		bool firstMouse = true;
+
 		static const char* getKeyName(int key)
 		{
 			switch (key)
@@ -137,6 +147,7 @@ namespace InputManager {
 			case GLFW_KEY_MENU:         return "MENU";
 
 			default:                    return "UNKNOWN";
+
 			}
 		}
 
@@ -179,7 +190,18 @@ namespace InputManager {
 
 		}
 
-		void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+		void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
+
+			if (firstMouse) {
+				mouseXPos = xPos;
+				mouseYPos = yPos;
+				firstMouse = false;
+			}
+
+			mouseXOffset = xPos - mouseXPos;
+			mouseYOffset = yPos - mouseYPos;
+			mouseXPos = xPos;
+			mouseYPos = yPos;
 
 		}
 
@@ -190,9 +212,6 @@ namespace InputManager {
 		void buttonCallback(GLFWwindow* window, int button, int action, int mods) {
 
 		}
-
-		std::unordered_map<std::string, Key> keyStates;
-
 	}
 
 	void AttachWindow(GLFWwindow* window) {
@@ -214,7 +233,8 @@ namespace InputManager {
 	void Poll() {
 
 		//TODO break into tasks
-		//fire off all events and their logic
+
+		//fire off all key events and their logic
 		for (auto& iter : detail::keyStates) {
 
 			if (iter.second.state != OPEN) {
@@ -236,6 +256,19 @@ namespace InputManager {
 
 			}
 		}
+
+		//emit mouse tasks
+		EventManager::Emit("Input", "Mouse Position", detail::mouseXOffset, detail::mouseYOffset);
+
+		//zero offsets
+		detail::mouseXOffset = 0.0;
+		detail::mouseYOffset = 0.0;
+
+	}
+
+	void AfixMouse(Window& win) {
+
+		glfwSetInputMode(win.windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	}
 

@@ -371,74 +371,61 @@ int main()
 		double deltaTime = GetDeltaTime();
 		float moveSpeed = 10 * METER * deltaTime;
 
+		InputManager::AfixMouse(*mainWindow);
+
 		EventManager::Listen("Input", "S", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
 				camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
 			}
 		});
 
-		/*SetKey(GLFW_KEY_S, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
+		EventManager::Listen("Input", "W", [&camera, &moveSpeed](keyState state) {
+			if (state == PRESS || state == REPEAT) {
+				camera->OffsetPosition(float(moveSpeed) * camera->Forward());
+			}
 		});
 
-		SetKey(GLFW_KEY_W, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * camera->Forward());
+		EventManager::Listen("Input", "A", [&camera, &moveSpeed](keyState state) {
+			if (state == PRESS || state == REPEAT) {
+				camera->OffsetPosition(float(moveSpeed) * -camera->Right());
+			}
 		});
 
-		SetKey(GLFW_KEY_A, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * -camera->Right());
+		EventManager::Listen("Input", "D", [&camera, &moveSpeed](keyState state) {
+			if (state == PRESS || state == REPEAT) {
+				camera->OffsetPosition(float(moveSpeed) * camera->Right());
+			}
 		});
 
-		SetKey(GLFW_KEY_D, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * camera->Right());
+		EventManager::Listen("Input", "Z", [&camera, &moveSpeed](keyState state) {
+			if (state == PRESS || state == REPEAT) {
+				camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
+			}
 		});
 
-		SetKey(GLFW_KEY_Z, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
+		EventManager::Listen("Input", "X", [&camera, &moveSpeed](keyState state) {
+			if (state == PRESS || state == REPEAT) {
+				camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
+			}
 		});
 
-		SetKey(GLFW_KEY_X, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
-		});
-
-
-		SetKey(GLFW_KEY_LEFT_SHIFT, [deltaTime, &moveSpeed](int action) {
-			if (action == GLFW_PRESS) {
+		EventManager::Listen("Input", "LEFT SHIFT", [deltaTime, &moveSpeed](keyState state) {
+			if (state == PRESS || state == REPEAT) {
 				moveSpeed = 90 * METER * deltaTime;
 			}
-			else if (action == GLFW_RELEASE) {
-				moveSpeed = 1 * METER * deltaTime;
+			else if (state == RELEASE) {
+				moveSpeed = 10 * METER * deltaTime;
 			}
 		});
 
-		SetKey(GLFW_KEY_LEFT_ALT, [deltaTime, &moveSpeed](int action) {
-			if (action == GLFW_PRESS) {
-				moveSpeed = 1 * METER * deltaTime;
-			}
-			else if (action == GLFW_RELEASE) {
-				moveSpeed = 1 * METER * deltaTime;
-			}
-		});
-
-
-		SetKey(GLFW_KEY_LEFT_ALT, [deltaTime, &moveSpeed](int action) {
-			if (action == GLFW_PRESS) {
-				moveSpeed = 1 * METER * deltaTime;
-			}
-			else if (action == GLFW_RELEASE) {
-				moveSpeed = 1 * METER * deltaTime;
-			}
-		});
-
-		MouseEvent([&camera](double xPos, double yPos) {
+		EventManager::Listen("Input", "Mouse Position", [&camera](double x, double y) {
 			glm::dvec2 mouseChangeDegrees;
-			mouseChangeDegrees.x = (float)(xPos / camera->resolution.x *camera->FieldOfView().x);
-			mouseChangeDegrees.y = (float)(yPos / camera->resolution.y *camera->FieldOfView().y);
+			mouseChangeDegrees.x = x / camera->resolution.x *camera->FieldOfView().x;
+			mouseChangeDegrees.y = y / camera->resolution.y *camera->FieldOfView().y;
 
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 			camera->UpdateVariables();
-		});*/
-
+		});
 
 		Scene* scene = new Scene();
 
