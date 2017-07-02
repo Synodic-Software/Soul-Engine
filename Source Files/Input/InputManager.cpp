@@ -232,7 +232,7 @@ namespace InputManager {
 
 	void Poll() {
 
-		//TODO break into tasks
+		//TODO break into tasks 
 
 		//fire off all key events and their logic
 		for (auto& iter : detail::keyStates) {
