@@ -44,7 +44,7 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	double countChange = 1.0f / count;
 
 	//push the new derivative
-	renderDerivatives.push_front(oldRenderTime- renderTime);
+	renderDerivatives.push_front(oldRenderTime - renderTime);
 	oldRenderTime = renderTime;
 
 	//cull the frame counts
@@ -55,7 +55,7 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	//calculate the average derivative
 	double averageRenderDV = 0.0;
 
-	for (auto itrR = renderDerivatives.begin(); itrR != renderDerivatives.end(); itrR++) {
+	for (auto itrR = renderDerivatives.begin(); itrR != renderDerivatives.end(); ++itrR) {
 		averageRenderDV += *itrR;
 	}
 
@@ -64,13 +64,14 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	//use the average derivative to grab an expected next frametime
 	double expectedRender = renderTime + averageRenderDV;
 
-	//target time -5% to account for frame instabilities and consitantly stay above target
-	double change = targetTime / expectedRender - 1.0;
+	//target time -5% to account for frame instabilities and try to stay above target
+	double change = (targetTime / expectedRender - 1.0)*0.95f;
 
-	//modify all the sample counts to reflect the change
+	//modify all the sample counts/ resolutions to reflect the change
 	for (auto& job : jobs) {
 		if (job->canChange) {
-			job->samples *= change*countChange + 1.0;
+			float tempSamples = job->samples * (change*countChange + 1.0);
+			job->samples = tempSamples;
 		}
 	}
 }
@@ -88,9 +89,7 @@ void RayEngine::Process(const Scene* scene, double target) {
 
 	ProcessJobs(jobList, scene);
 
-	double renderTime = renderTimer.Elapsed();
-
-	UpdateJobs(renderTime / 1000.0, target, jobList);
+	UpdateJobs(renderTimer.Elapsed() / 1000.0, target, jobList);
 }
 
 /*
