@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine Core/Object/Object.h"
-#include "Engine Core/Camera/CUDA/Camera.cuh"
+#include "Camera/CUDA/Camera.cuh"
 #include <vector>
 
 /*
