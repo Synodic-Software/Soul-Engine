@@ -71,7 +71,16 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	for (auto& job : jobs) {
 		if (job->canChange) {
 			float tempSamples = job->samples * (change*countChange + 1.0);
-			job->samples = tempSamples;
+
+			if (tempSamples < 1.0f) {
+				job->samples = 1.0f;
+
+//				job->camera.resolution *= change*countChange + 1.0;
+			}
+			else {
+				job->samples = tempSamples;
+			}
+
 		}
 	}
 }
