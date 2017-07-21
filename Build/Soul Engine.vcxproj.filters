@@ -193,32 +193,35 @@
     <Filter Include="Engine Backend\Events">
       <UniqueIdentifier>{273d6492-3451-446a-80a7-1726e234f035}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera">
+    <Filter Include="Engine Backend\Photography">
       <UniqueIdentifier>{7bf92f47-1f13-4708-9bc3-3fac08e9248b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera\CUDA">
-      <UniqueIdentifier>{03b95353-9483-4534-9aef-e2db676f9ba8}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Photography\Camera">
+      <UniqueIdentifier>{6b700fc8-8f5a-4c91-9610-6c499ff9135a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera\Film">
-      <UniqueIdentifier>{1076b4d2-4bea-4b61-9808-edf8db82aca4}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Photography\Film">
+      <UniqueIdentifier>{7004ec38-afc3-4ac6-9668-2a8663afcc57}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera\Lens">
-      <UniqueIdentifier>{97b43b24-14d1-434d-ab1a-e718e49c4c2b}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Photography\Lens">
+      <UniqueIdentifier>{e3239e1d-399d-463d-99ff-d59e8b833408}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera\OpenCL">
-      <UniqueIdentifier>{881b4f4b-27c9-49d9-8d4b-b09aa94a89a9}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Photography\Lens\CUDA">
+      <UniqueIdentifier>{93d22bde-2fe9-44c6-8145-fd1d3379b3fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera\Film\CUDA">
-      <UniqueIdentifier>{59c61de5-e7f2-48f5-b129-4cda089361b4}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Photography\Lens\OpenCL">
+      <UniqueIdentifier>{d2edea9f-4de8-4498-9498-f571596d3c0d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera\Film\OpenCL">
-      <UniqueIdentifier>{0e9bf58a-107f-4e0a-94fb-dd41be631151}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Photography\Film\CUDA">
+      <UniqueIdentifier>{6b25a01a-e72f-46b3-a438-91fcbe1d522d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera\Lens\CUDA">
-      <UniqueIdentifier>{7cde9b75-a646-4588-a2c3-e940e9b5573f}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Photography\Film\OpenCL">
+      <UniqueIdentifier>{78dc1601-16b8-4b0d-863c-d23f70cc2d37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Camera\Lens\OpenCL">
-      <UniqueIdentifier>{1e9ad8ab-272e-431a-a301-5689731cf7f9}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Photography\Camera\OpenCL">
+      <UniqueIdentifier>{a5a4ae65-c9bb-4db6-9220-c786a383aad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Camera\CUDA">
+      <UniqueIdentifier>{2dc3a446-f0ca-419f-bfc0-879553767450}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -543,26 +546,29 @@
     <ClInclude Include="..\Source Files\Input\Key.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Camera\Camera.h">
-      <Filter>Engine Backend\Camera</Filter>
+    <ClInclude Include="..\Source Files\Photography\CameraManager.h">
+      <Filter>Engine Backend\Photography</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Camera\CUDA\Camera.cuh">
-      <Filter>Engine Backend\Camera\CUDA</Filter>
+    <ClInclude Include="..\Source Files\Photography\Lens\Lens.h">
+      <Filter>Engine Backend\Photography\Lens</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Camera\Film\Film.h">
-      <Filter>Engine Backend\Camera\Film</Filter>
+    <ClInclude Include="..\Source Files\Photography\Lens\CUDA\Lens.cuh">
+      <Filter>Engine Backend\Photography\Lens\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Camera\Film\CUDA\Film.cuh">
-      <Filter>Engine Backend\Camera\Film\CUDA</Filter>
+    <ClInclude Include="..\Source Files\Photography\Film\Film.h">
+      <Filter>Engine Backend\Photography\Film</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Camera\Lens\Lens.h">
-      <Filter>Engine Backend\Camera\Lens</Filter>
+    <ClInclude Include="..\Source Files\Photography\Film\CUDA\Film.cuh">
+      <Filter>Engine Backend\Photography\Film\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Camera\Lens\CUDA\Lens.cuh">
-      <Filter>Engine Backend\Camera\Lens\CUDA</Filter>
+    <ClInclude Include="..\Source Files\Photography\Camera\Camera.h">
+      <Filter>Engine Backend\Photography\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Camera\OpenCL\CLCamera.h">
-      <Filter>Engine Backend\Camera\OpenCL</Filter>
+    <ClInclude Include="..\Source Files\Photography\Camera\OpenCL\CLCamera.h">
+      <Filter>Engine Backend\Photography\Camera\OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\Camera\CUDA\Camera.cuh">
+      <Filter>Engine Backend\Photography\Camera\CUDA</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -725,6 +731,9 @@
     <ClCompile Include="..\Source Files\Input\Key.cpp">
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source Files\Photography\CameraManager.cpp">
+      <Filter>Engine Backend\Photography</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
@@ -796,14 +805,14 @@
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu">
       <Filter>Engine Backend\Display\Widget\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Camera\CUDA\Camera.cu">
-      <Filter>Engine Backend\Camera\CUDA</Filter>
+    <CudaCompile Include="..\Source Files\Photography\Lens\CUDA\Lens.cu">
+      <Filter>Engine Backend\Photography\Lens\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Camera\Film\CUDA\Film.cu">
-      <Filter>Engine Backend\Camera\Film\CUDA</Filter>
+    <CudaCompile Include="..\Source Files\Photography\Film\CUDA\Film.cu">
+      <Filter>Engine Backend\Photography\Film\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Camera\Lens\CUDA\Lens.cu">
-      <Filter>Engine Backend\Camera\Lens\CUDA</Filter>
+    <CudaCompile Include="..\Source Files\Photography\Camera\CUDA\Camera.cu">
+      <Filter>Engine Backend\Photography\Camera\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

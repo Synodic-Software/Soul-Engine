@@ -5,6 +5,7 @@
 #include "GPGPU\GPURasterBuffer.h"
 #include "GPGPU\GPUBuffer.h"
 #include "Ray Engine/RayEngine.h"
+#include "Photography/Camera/Camera.h"
 
 /* A render widget. */
 class RenderWidget : public Widget

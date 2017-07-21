@@ -1,4 +1,4 @@
-#include "Camera/CUDA/Camera.cuh"
+#include "Photography/Camera/CUDA/Camera.cuh"
 #include <glm/gtx/rotate_vector.hpp>
 
 Camera::Camera() :
