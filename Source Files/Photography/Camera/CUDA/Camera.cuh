@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Ray Engine\CUDA\Ray.cuh"
-#include "Camera/Film/Film.h"
+#include "Photography/Film/Film.h"
 #include <curand_kernel.h>
 
 #include "Metrics.h"

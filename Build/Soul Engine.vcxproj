@@ -92,13 +92,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
-    <ClInclude Include="..\Source Files\Camera\Camera.h" />
-    <ClInclude Include="..\Source Files\Camera\CUDA\Camera.cuh" />
-    <ClInclude Include="..\Source Files\Camera\Film\CUDA\Film.cuh" />
-    <ClInclude Include="..\Source Files\Camera\Film\Film.h" />
-    <ClInclude Include="..\Source Files\Camera\Lens\CUDA\Lens.cuh" />
-    <ClInclude Include="..\Source Files\Camera\Lens\Lens.h" />
-    <ClInclude Include="..\Source Files\Camera\OpenCL\CLCamera.h" />
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RadixTree.h" />
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RTNode.h" />
     <ClInclude Include="..\Source Files\Display\Layout\Layout.h" />
@@ -158,6 +151,14 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Memory\Allocator\Allocator.h" />
     <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h" />
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
+    <ClInclude Include="..\Source Files\Photography\CameraManager.h" />
+    <ClInclude Include="..\Source Files\Photography\Camera\Camera.h" />
+    <ClInclude Include="..\Source Files\Photography\Camera\CUDA\Camera.cuh" />
+    <ClInclude Include="..\Source Files\Photography\Camera\OpenCL\CLCamera.h" />
+    <ClInclude Include="..\Source Files\Photography\Film\CUDA\Film.cuh" />
+    <ClInclude Include="..\Source Files\Photography\Film\Film.h" />
+    <ClInclude Include="..\Source Files\Photography\Lens\CUDA\Lens.cuh" />
+    <ClInclude Include="..\Source Files\Photography\Lens\Lens.h" />
     <ClInclude Include="..\Source Files\Physics Engine\CUDA\PhysicsEngine.cuh" />
     <ClInclude Include="..\Source Files\Physics Engine\PhysicsEngine.h" />
     <ClInclude Include="..\Source Files\Raster Engine\RasterBase.h" />
@@ -230,6 +231,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Memory\Allocator\Allocator.cpp" />
     <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />
+    <ClCompile Include="..\Source Files\Photography\CameraManager.cpp" />
     <ClCompile Include="..\Source Files\Physics Engine\PhysicsEngine.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\RasterBase.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Buffer.cpp" />
@@ -254,14 +256,14 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cu" />
-    <CudaCompile Include="..\Source Files\Camera\CUDA\Camera.cu" />
-    <CudaCompile Include="..\Source Files\Camera\Film\CUDA\Film.cu" />
-    <CudaCompile Include="..\Source Files\Camera\Lens\CUDA\Lens.cu" />
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\Material.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cu" />
+    <CudaCompile Include="..\Source Files\Photography\Camera\CUDA\Camera.cu" />
+    <CudaCompile Include="..\Source Files\Photography\Film\CUDA\Film.cu" />
+    <CudaCompile Include="..\Source Files\Photography\Lens\CUDA\Lens.cu" />
     <CudaCompile Include="..\Source Files\Utility\CUDA\CudaHelper.cu" />
   </ItemGroup>
   <ItemGroup>
