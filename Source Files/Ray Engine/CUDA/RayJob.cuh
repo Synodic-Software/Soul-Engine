@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Ray.cuh"
-#include "Engine Core\Camera\Camera.h"
+#include "Camera\Camera.h"
 
 
 enum rayType {

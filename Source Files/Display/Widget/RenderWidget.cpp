@@ -3,7 +3,7 @@
 #include "Utility/CUDA/CudaHelper.cuh"
 #include "CUDA\RenderWidget.cuh"
 #include "Events\EventManager.h"
-
+#include "Raster Engine/RasterBackend.h"
 #include "Input/InputManager.h"
 
 /*

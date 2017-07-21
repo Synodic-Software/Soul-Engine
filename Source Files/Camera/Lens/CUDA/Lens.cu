@@ -1,4 +1,4 @@
-#include "Engine Core/Camera/Lens/CUDA/Lens.cuh"
+#include "Camera/Lens/CUDA/Lens.cuh"
 #include <glm/gtx/rotate_vector.hpp>
 
 Lens::Lens()

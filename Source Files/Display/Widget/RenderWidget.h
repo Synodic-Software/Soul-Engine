@@ -2,10 +2,8 @@
 
 #include "Display\Widget\Widget.h"
 #include "Metrics.h"
-#include "Raster Engine\RasterBackend.h"
 #include "GPGPU\GPURasterBuffer.h"
 #include "GPGPU\GPUBuffer.h"
-#include "Engine Core\Camera\Camera.h"
 #include "Ray Engine/RayEngine.h"
 
 /* A render widget. */

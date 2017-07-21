@@ -22,9 +22,6 @@
     <Filter Include="Engine Backend\Engine Core\Object">
       <UniqueIdentifier>{ad590c37-6f78-45fc-ad10-3410cfbfa4a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera">
-      <UniqueIdentifier>{f689deb8-e1ee-41a0-8059-657282da72dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Engine Core\Material">
       <UniqueIdentifier>{1782d4a1-97aa-41c8-b2c8-b616a6c3a138}</UniqueIdentifier>
     </Filter>
@@ -61,9 +58,6 @@
     <Filter Include="Engine Backend\Bounding Volume Heirarchy\CUDA">
       <UniqueIdentifier>{c5294c1b-e4b7-432b-869b-46cf2a8e0bad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\CUDA">
-      <UniqueIdentifier>{c202798d-1fc2-49c9-83f0-52a2549fb6a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Engine Core\Scene">
       <UniqueIdentifier>{ec1089d9-4d17-4dad-ba40-fc00454f755b}</UniqueIdentifier>
     </Filter>
@@ -72,9 +66,6 @@
     </Filter>
     <Filter Include="Engine Backend\Utility\OpenCL">
       <UniqueIdentifier>{3dbfc2b1-da51-4160-a70c-e684ce58d8b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\OpenCL">
-      <UniqueIdentifier>{0b3e3f96-ff35-4e58-8095-59e525988260}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Engine Core\Scene\CUDA">
       <UniqueIdentifier>{b8677bcf-f38c-4219-890f-e3bcf51f6ce4}</UniqueIdentifier>
@@ -202,23 +193,32 @@
     <Filter Include="Engine Backend\Events">
       <UniqueIdentifier>{273d6492-3451-446a-80a7-1726e234f035}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\Lens">
-      <UniqueIdentifier>{6c238e81-fe34-4e47-b974-02c405d98232}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Camera">
+      <UniqueIdentifier>{7bf92f47-1f13-4708-9bc3-3fac08e9248b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\Lens\CUDA">
-      <UniqueIdentifier>{5b17a050-3c7a-4fc8-b00d-918bc1db87a1}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Camera\CUDA">
+      <UniqueIdentifier>{03b95353-9483-4534-9aef-e2db676f9ba8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\Lens\OpenCL">
-      <UniqueIdentifier>{e0c0b55d-76af-4d74-9e81-1e743e35f4ee}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Camera\Film">
+      <UniqueIdentifier>{1076b4d2-4bea-4b61-9808-edf8db82aca4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\Film">
-      <UniqueIdentifier>{a8720bad-8f6a-4985-97f2-e970d0dd2537}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Camera\Lens">
+      <UniqueIdentifier>{97b43b24-14d1-434d-ab1a-e718e49c4c2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\Film\CUDA">
-      <UniqueIdentifier>{ca93c555-c7a1-4b8d-b147-8295db847be7}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Camera\OpenCL">
+      <UniqueIdentifier>{881b4f4b-27c9-49d9-8d4b-b09aa94a89a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\Film\OpenCL">
-      <UniqueIdentifier>{736ca360-2339-4ffb-9c8e-581915958607}</UniqueIdentifier>
+    <Filter Include="Engine Backend\Camera\Film\CUDA">
+      <UniqueIdentifier>{59c61de5-e7f2-48f5-b129-4cda089361b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Camera\Film\OpenCL">
+      <UniqueIdentifier>{0e9bf58a-107f-4e0a-94fb-dd41be631151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Camera\Lens\CUDA">
+      <UniqueIdentifier>{7cde9b75-a646-4588-a2c3-e940e9b5573f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Camera\Lens\OpenCL">
+      <UniqueIdentifier>{1e9ad8ab-272e-431a-a301-5689731cf7f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -260,15 +260,6 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Display\Window\Window.h">
       <Filter>Engine Backend\Display\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cuh">
-      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\OpenCL\CLCamera.h">
-      <Filter>Engine Backend\Engine Core\Camera\OpenCL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\Camera.h">
-      <Filter>Engine Backend\Engine Core\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Frame\Frame.h">
       <Filter>Engine Backend\Engine Core\Frame</Filter>
@@ -552,17 +543,26 @@
     <ClInclude Include="..\Source Files\Input\Key.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\Lens\Lens.h">
-      <Filter>Engine Backend\Engine Core\Camera\Lens</Filter>
+    <ClInclude Include="..\Source Files\Camera\Camera.h">
+      <Filter>Engine Backend\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\Film\Film.h">
-      <Filter>Engine Backend\Engine Core\Camera\Film</Filter>
+    <ClInclude Include="..\Source Files\Camera\CUDA\Camera.cuh">
+      <Filter>Engine Backend\Camera\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\Lens\CUDA\Lens.cuh">
-      <Filter>Engine Backend\Engine Core\Camera\Lens\CUDA</Filter>
+    <ClInclude Include="..\Source Files\Camera\Film\Film.h">
+      <Filter>Engine Backend\Camera\Film</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\Film\CUDA\Film.cuh">
-      <Filter>Engine Backend\Engine Core\Camera\Film\CUDA</Filter>
+    <ClInclude Include="..\Source Files\Camera\Film\CUDA\Film.cuh">
+      <Filter>Engine Backend\Camera\Film\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Camera\Lens\Lens.h">
+      <Filter>Engine Backend\Camera\Lens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Camera\Lens\CUDA\Lens.cuh">
+      <Filter>Engine Backend\Camera\Lens\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Camera\OpenCL\CLCamera.h">
+      <Filter>Engine Backend\Camera\OpenCL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -739,9 +739,6 @@
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cu">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cu">
-      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cu">
       <Filter>Engine Backend\Engine Core\Material\Colour\CUDA</Filter>
     </CudaCompile>
@@ -799,11 +796,14 @@
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu">
       <Filter>Engine Backend\Display\Widget\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Camera\Lens\CUDA\Lens.cu">
-      <Filter>Engine Backend\Engine Core\Camera\Lens\CUDA</Filter>
+    <CudaCompile Include="..\Source Files\Camera\CUDA\Camera.cu">
+      <Filter>Engine Backend\Camera\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Camera\Film\CUDA\Film.cu">
-      <Filter>Engine Backend\Engine Core\Camera\Film\CUDA</Filter>
+    <CudaCompile Include="..\Source Files\Camera\Film\CUDA\Film.cu">
+      <Filter>Engine Backend\Camera\Film\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Camera\Lens\CUDA\Lens.cu">
+      <Filter>Engine Backend\Camera\Lens\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
