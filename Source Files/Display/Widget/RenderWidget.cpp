@@ -129,8 +129,8 @@ void RenderWidget::RecreateData() {
 	}
 
 	//update the camera
-	camera->SetAspect(renderSize.x / (float)renderSize.y);
-	camera->resolution = renderSize;
+	camera->aspectRatio = renderSize.x / (float)renderSize.y;
+	camera->film.resolution = renderSize;
 
 	//add the ray job with new sizes
 	buffer->MapResources();

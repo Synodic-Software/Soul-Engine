@@ -361,7 +361,7 @@ int main()
 
 		Camera* camera = new Camera();
 
-		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER * 5, (DECAMETER) * 5));
+		camera->position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
 		camera->OffsetOrientation(225, 45);
 
 		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
@@ -375,37 +375,37 @@ int main()
 
 		EventManager::Listen("Input", "S", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
+				camera->position += float(moveSpeed) * -camera->forward;
 			}
 		});
 
 		EventManager::Listen("Input", "W", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->OffsetPosition(float(moveSpeed) * camera->Forward());
+				camera->position += float(moveSpeed) * camera->forward;
 			}
 		});
 
 		EventManager::Listen("Input", "A", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->OffsetPosition(float(moveSpeed) * -camera->Right());
+				camera->position += float(moveSpeed) * -camera->right;
 			}
 		});
 
 		EventManager::Listen("Input", "D", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->OffsetPosition(float(moveSpeed) * camera->Right());
+				camera->position += float(moveSpeed) * camera->right;
 			}
 		});
 
 		EventManager::Listen("Input", "Z", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
+				camera->position += float(moveSpeed) * -glm::vec3(0, 1, 0);
 			}
 		});
 
 		EventManager::Listen("Input", "X", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
+				camera->position += float(moveSpeed) * glm::vec3(0, 1, 0);
 			}
 		});
 
@@ -420,8 +420,8 @@ int main()
 
 		EventManager::Listen("Input", "Mouse Position", [&camera](double x, double y) {
 			glm::dvec2 mouseChangeDegrees;
-			mouseChangeDegrees.x = x / camera->resolution.x *camera->FieldOfView().x;
-			mouseChangeDegrees.y = y / camera->resolution.y *camera->FieldOfView().y;
+			mouseChangeDegrees.x = x / camera->fieldOfView.x;
+			mouseChangeDegrees.y = y / camera->fieldOfView.y;
 
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 			camera->UpdateVariables();

@@ -202,6 +202,24 @@
     <Filter Include="Engine Backend\Events">
       <UniqueIdentifier>{273d6492-3451-446a-80a7-1726e234f035}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera\Lens">
+      <UniqueIdentifier>{6c238e81-fe34-4e47-b974-02c405d98232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera\Lens\CUDA">
+      <UniqueIdentifier>{5b17a050-3c7a-4fc8-b00d-918bc1db87a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera\Lens\OpenCL">
+      <UniqueIdentifier>{e0c0b55d-76af-4d74-9e81-1e743e35f4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera\Film">
+      <UniqueIdentifier>{a8720bad-8f6a-4985-97f2-e970d0dd2537}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera\Film\CUDA">
+      <UniqueIdentifier>{ca93c555-c7a1-4b8d-b147-8295db847be7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Engine Core\Camera\Film\OpenCL">
+      <UniqueIdentifier>{736ca360-2339-4ffb-9c8e-581915958607}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -534,6 +552,18 @@
     <ClInclude Include="..\Source Files\Input\Key.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Camera\Lens\Lens.h">
+      <Filter>Engine Backend\Engine Core\Camera\Lens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Camera\Film\Film.h">
+      <Filter>Engine Backend\Engine Core\Camera\Film</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Camera\Lens\CUDA\Lens.cuh">
+      <Filter>Engine Backend\Engine Core\Camera\Lens\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Camera\Film\CUDA\Film.cuh">
+      <Filter>Engine Backend\Engine Core\Camera\Film\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -768,6 +798,12 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu">
       <Filter>Engine Backend\Display\Widget\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Engine Core\Camera\Lens\CUDA\Lens.cu">
+      <Filter>Engine Backend\Engine Core\Camera\Lens\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Engine Core\Camera\Film\CUDA\Film.cu">
+      <Filter>Engine Backend\Engine Core\Camera\Film\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
