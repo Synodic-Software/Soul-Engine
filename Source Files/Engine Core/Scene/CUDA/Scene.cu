@@ -13,8 +13,6 @@
 #include <thrust/device_ptr.h>
 #include <thrust/scan.h>
 #include <thrust/sort.h>
-#include <thrust/remove.h>
-#include <thrust/functional.h>
 
 Scene::Scene()
 {

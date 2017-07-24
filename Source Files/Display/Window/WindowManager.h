@@ -2,8 +2,6 @@
 
 #include "Utility\Includes\GLFWIncludes.h"
 #include "Metrics.h"
-#include <string>
-#include <functional>
 #include "Window.h"
 #include "Display\Layout\Layout.h"
 

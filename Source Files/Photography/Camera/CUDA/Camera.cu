@@ -1,6 +1,8 @@
 #include "Photography/Camera/CUDA/Camera.cuh"
 #include <glm/gtx/rotate_vector.hpp>
 
+uint* Camera::indicePointer = nullptr;
+
 Camera::Camera() :
 	aspectRatio(0),
     position(0.0f,0.0f,0.0f),

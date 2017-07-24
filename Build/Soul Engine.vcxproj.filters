@@ -223,6 +223,15 @@
     <Filter Include="Engine Backend\Photography\Camera\CUDA">
       <UniqueIdentifier>{2dc3a446-f0ca-419f-bfc0-879553767450}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Sort">
+      <UniqueIdentifier>{7b35ae51-68cd-403f-8b7d-7da3147835d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA">
+      <UniqueIdentifier>{dab13a91-4a82-48af-89c7-c8e626429971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Sort\OpenCL">
+      <UniqueIdentifier>{8c91be81-bbf0-41b9-a7b5-4249ca88ebe0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -570,6 +579,12 @@
     <ClInclude Include="..\Source Files\Photography\Camera\CUDA\Camera.cuh">
       <Filter>Engine Backend\Photography\Camera\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\Sort.h">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cuh">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -813,6 +828,9 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Photography\Camera\CUDA\Camera.cu">
       <Filter>Engine Backend\Photography\Camera\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

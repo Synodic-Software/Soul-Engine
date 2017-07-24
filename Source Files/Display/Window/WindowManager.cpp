@@ -7,9 +7,6 @@
 
 #include "Utility\Includes\GLMIncludes.h"
 
-#include <string>
-#include <vector>
-#include <mutex>
 #include <memory>
 
 /* The windows */
