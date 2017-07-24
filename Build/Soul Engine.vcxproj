@@ -85,6 +85,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h" />
+    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cuh" />
+    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\Sort.h" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h" />
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.h" />
@@ -252,6 +254,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Utility\Settings.cpp" />
     <ClCompile Include="..\Source Files\Utility\Timer.cpp" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />
+    <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu" />
     <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu" />

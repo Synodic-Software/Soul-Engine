@@ -1,4 +1,4 @@
-#include "Camera/Film/CUDA/Film.cuh"
+#include "Photography/Film/CUDA/Film.cuh"
 
 Film::Film() {
 

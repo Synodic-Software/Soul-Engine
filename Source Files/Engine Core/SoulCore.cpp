@@ -20,6 +20,7 @@
 #include "Multithreading\Scheduler.h"
 #include "Events\EventManager.h"
 #include "Input/InputManager.h"
+#include "Photography/CameraManager.h"
 
 namespace Soul {
 
@@ -200,6 +201,8 @@ namespace Soul {
 
 		EventManager::Emit("Update", "Early");
 
+		CameraManager::Update();
+
 		Scheduler::Block();
 
 	}
@@ -359,7 +362,8 @@ int main()
 		Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), static_cast<int*>(&typeCast));
 		type = static_cast<WindowType>(typeCast);
 
-		Camera* camera = new Camera();
+		glm::uvec2 size = glm::uvec2(xSize, ySize);
+		Camera* camera = CameraManager::AddCamera(size);
 
 		camera->position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
 		camera->OffsetOrientation(225, 45);
@@ -424,7 +428,6 @@ int main()
 			mouseChangeDegrees.y = y / camera->fieldOfView.y;
 
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-			camera->UpdateVariables();
 		});
 
 		Scene* scene = new Scene();

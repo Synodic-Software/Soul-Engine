@@ -45,9 +45,12 @@ public:
 		this->verticalAxis = arg.verticalAxis;
 		this->yHelper = arg.yHelper;
 		this->xHelper = arg.xHelper;
+		this->indicePointer = arg.indicePointer;
 
 		return *this;
 	}
+
+	static uint* indicePointer;
 
 	float aspectRatio;
 	glm::vec3 position;
@@ -64,5 +67,6 @@ private:
 	glm::vec3 verticalAxis;
 	glm::vec3 yHelper;
 	glm::vec3 xHelper;
+
 
 };
