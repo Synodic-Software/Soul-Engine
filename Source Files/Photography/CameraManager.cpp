@@ -23,6 +23,7 @@ namespace CameraManager {
 	 *    @param [in,out]	res	The resource.
 	 */
 
+	//TODO move the generation of the read pattern to the ray engine.
 	void UpdateIndices(glm::uvec2& res) {
 
 		if (detail::oldMax != detail::maxSize) {
@@ -49,10 +50,7 @@ namespace CameraManager {
 			//sort
 			detail::indicesD = Sort::Calculate(size, codes.data(), detail::indicesH.data());
 
-			//set the static camera variables
-			for (auto& camera : detail::cameras) {
-				camera->film.indicePointer = detail::indicesD;
-			}
+			//TODO set the read pattern for the ray buffer
 
 			detail::oldMax = detail::maxSize;
 		}
@@ -61,7 +59,7 @@ namespace CameraManager {
 
 	void Update() {
 
-		UpdateIndices(detail::maxSize);
+		//UpdateIndices(detail::maxSize);
 
 		for (auto& camera : detail::cameras) {
 			camera->UpdateVariables();
