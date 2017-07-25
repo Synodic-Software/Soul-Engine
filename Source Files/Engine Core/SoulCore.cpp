@@ -424,8 +424,8 @@ int main()
 
 		EventManager::Listen("Input", "Mouse Position", [&camera](double x, double y) {
 			glm::dvec2 mouseChangeDegrees;
-			mouseChangeDegrees.x = x / camera->fieldOfView.x;
-			mouseChangeDegrees.y = y / camera->fieldOfView.y;
+			mouseChangeDegrees.x = x / camera->fieldOfView.x * 2;
+			mouseChangeDegrees.y = y / camera->fieldOfView.y * 2;
 
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 		});
