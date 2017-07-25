@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Ray Engine\CUDA\Ray.cuh"
 #include "Photography/Film/Film.h"
 #include <curand_kernel.h>
 
@@ -30,7 +29,8 @@ public:
 			focalDistance == other.focalDistance &&
 			verticalAxis == other.verticalAxis &&
 			yHelper == other.yHelper &&
-			xHelper == other.xHelper;
+			xHelper == other.xHelper&&
+			film == other.film;
 	}
 
 	Camera& operator=(Camera arg)
@@ -45,12 +45,10 @@ public:
 		this->verticalAxis = arg.verticalAxis;
 		this->yHelper = arg.yHelper;
 		this->xHelper = arg.xHelper;
-		this->indicePointer = arg.indicePointer;
+		this->film = arg.film;
 
 		return *this;
 	}
-
-	static uint* indicePointer;
 
 	float aspectRatio;
 	glm::vec3 position;

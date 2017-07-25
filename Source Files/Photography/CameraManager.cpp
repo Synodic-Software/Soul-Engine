@@ -4,6 +4,7 @@
 #include "Algorithms/Morton Code/MortonCode.h"
 #include "Algorithms/Data Algorithms/GPU Sort/Sort.h"
 
+#include <vector>
 #include <memory>
 
 namespace CameraManager {
@@ -13,6 +14,7 @@ namespace CameraManager {
 		std::vector<uint> indicesH;
 		uint* indicesD;
 
+		glm::uvec2 oldMax = glm::uvec2(0, 0);
 		glm::uvec2 maxSize = glm::uvec2(0, 0);
 	}
 
@@ -22,12 +24,8 @@ namespace CameraManager {
 	 */
 
 	void UpdateIndices(glm::uvec2& res) {
-		uint increaseX = glm::max(0u, res.x - detail::maxSize.x);
-		uint increaseY = glm::max(0u, res.y - detail::maxSize.y);
 
-		if (increaseX != 0 && increaseY != 0) {
-			detail::maxSize.x += increaseX;
-			detail::maxSize.y += increaseY;
+		if (detail::oldMax != detail::maxSize) {
 
 			uint size = detail::maxSize.x*detail::maxSize.y;
 
@@ -51,18 +49,22 @@ namespace CameraManager {
 			//sort
 			detail::indicesD = Sort::Calculate(size, codes.data(), detail::indicesH.data());
 
-			//set the static camera variable
-			detail::cameras.front()->indicePointer = detail::indicesD;
+			//set the static camera variables
+			for (auto& camera : detail::cameras) {
+				camera->film.indicePointer = detail::indicesD;
+			}
 
+			detail::oldMax = detail::maxSize;
 		}
 
 	}
 
 	void Update() {
+
 		UpdateIndices(detail::maxSize);
 
-		for(auto& camera : detail::cameras) {
-			camera.get()->UpdateVariables();
+		for (auto& camera : detail::cameras) {
+			camera->UpdateVariables();
 		}
 	}
 
@@ -71,7 +73,11 @@ namespace CameraManager {
 
 		Camera* def = detail::cameras.back().get();
 
+		//add the resolution
 		def->film.resolution = res;
+
+		//update the manger maxSize (for index counting)
+		detail::maxSize = glm::max(detail::maxSize, res);
 
 		return def;
 	}

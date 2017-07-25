@@ -191,7 +191,7 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 	int cur = 0;
 
 	float samples = job[cur].samples;
-	uint sampleIndex = (index - startIndex) / glm::ceil(samples);
+	uint sampleIndex = (index - startIndex) / glm::ceil(samples); //the index of the pixel / sample
 	uint localIndex = (index - startIndex) % (int)glm::ceil(samples);
 
 	curandState randState = randomState[index];
@@ -203,11 +203,10 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 		ray.resultOffset = sampleIndex;
 		glm::vec3 orig;
 		glm::vec3 dir;
-		job[cur].camera.GenerateRay(localIndex, orig, dir, randState);
+		job[cur].camera.GenerateRay(sampleIndex, orig, dir, randState);
 		ray.origin = glm::vec4(orig,0.0f);
 		ray.direction = glm::vec4(dir,4000000000000.0f);
 		atomicAdd(job[cur].groupData + sampleIndex, 1);
-		//rays[index] = ray;
 		rays[FastAtomicAdd(nAtomic)] = ray;
 	}
 

@@ -1,8 +1,9 @@
 #pragma once
-#include "GPGPU/GPUBuffer.h"
+
 #include "glm/glm.hpp"
 #include "Metrics.h"
-#include "Utility\CUDA\CUDAHelper.cuh"
+
+#include <curand_kernel.h>
 
 class Film {
 public:
@@ -15,7 +16,7 @@ public:
 	 *    @return	The data at the specified index.
 	 */
 
-	__host__ __device__ uint GetIndex(uint);
+	__device__ uint GetIndex(uint);
 
 	/*
 	 *    Gets a normalized.
@@ -23,16 +24,25 @@ public:
 	 *    @return	The normalized.
 	 */
 
-	__host__ __device__ glm::vec2 GetNormalized(uint);
+	__device__ glm::vec2 GetSample(uint, curandState&);
 
 	glm::uvec2 resolution;
-	
+	uint* indicePointer;
+
+
+	bool operator==(const Film& other) const {
+		return
+			resolution == other.resolution &&
+			indicePointer == other.indicePointer;
+	}
+
+	Film& operator=(Film arg)
+	{
+		this->resolution = arg.resolution;
+		this->indicePointer = arg.indicePointer;
+
+		return *this;
+	}
 private:
-
-	//TODO share this map with other Film Object of different resolution
-	uint64* indexMap;
-
-	GPUBuffer* data;
-
 
 };
