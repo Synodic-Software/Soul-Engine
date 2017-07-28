@@ -9,7 +9,10 @@ class GPURasterBuffer :public GPUBuffer<T>{
 
 public:
 	/* Default constructor. */
-	GPURasterBuffer(){}
+	GPURasterBuffer(GPUDevice& _device, uint _byteCount)
+		: GPUBuffer(_device, _byteCount) {
+		
+	}
 	/* Destructor. */
 	virtual ~GPURasterBuffer(){}
 

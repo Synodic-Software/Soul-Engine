@@ -1,5 +1,4 @@
 #include "CUDADevice.h"
-#include <cuda.h>
 #include <cuda_runtime_api.h>
 #include "Utility/CUDA/CudaHelper.cuh"
 

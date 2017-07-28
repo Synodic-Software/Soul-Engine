@@ -42,10 +42,10 @@ namespace GPUManager {
 		GPURasterBuffer<T>* buffer;
 
 		if (detail::devices[GPU]->api == CUDA) {
-			buffer = new CUDARasterBuffer<T>(static_cast<CUDADevice*>(detail::devices[GPU].get()), size);
+			buffer = new CUDARasterBuffer<T>(*detail::devices[GPU], size);
 		}
 		else {
-			buffer = new OpenCLRasterBuffer<T>(static_cast<OpenCLDevice*>(detail::devices[GPU].get()), size);
+			buffer = new OpenCLRasterBuffer<T>(*detail::devices[GPU], size);
 		}
 		return buffer;
 	}
@@ -63,10 +63,10 @@ namespace GPUManager {
 		GPUBuffer<T>* buffer;
 
 		if (detail::devices[GPU]->api == CUDA) {
-			buffer = new CUDABuffer<T>(static_cast<CUDADevice*>(detail::devices[GPU].get()), size);
+			buffer = new CUDABuffer<T>(*detail::devices[GPU], size);
 		}
 		else {
-			buffer = new OpenCLBuffer<T>(static_cast<OpenCLDevice*>(detail::devices[GPU].get()), size);
+			buffer = new OpenCLBuffer<T>(*detail::devices[GPU], size);
 		}
 		return buffer;
 	}
