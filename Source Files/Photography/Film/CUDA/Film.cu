@@ -1,7 +1,5 @@
 #include "Photography/Film/CUDA/Film.cuh"
 
-#include "cstdio"
-
 Film::Film() {
 
 }

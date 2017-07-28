@@ -5,7 +5,8 @@
 #include "GPGPU\OpenCL\OpenCLDevice.h"
 
 /* Buffer for open cl. */
-class OpenCLBuffer :public GPUBuffer {
+template<class T>
+class OpenCLBuffer :public GPUBuffer<T> {
 
 public:
 
@@ -15,9 +16,9 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	OpenCLBuffer(OpenCLDevice*, uint);
+	OpenCLBuffer(OpenCLDevice*, uint){}
 	/* Destructor. */
-	~OpenCLBuffer();
+	~OpenCLBuffer(){}
 
 protected:
 

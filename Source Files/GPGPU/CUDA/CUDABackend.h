@@ -2,9 +2,6 @@
 
 #include <vector>
 
-#include "Metrics.h"
-#include "GPGPU\CUDA\CUDARasterBuffer.h"
-
 /* . */
 namespace CUDABackend {
 

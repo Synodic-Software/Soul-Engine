@@ -88,7 +88,7 @@ void RenderWidget::Draw() {
 	});
 
 	if (integrate) {
-		Integrate(renderSize.x*renderSize.y, (glm::vec4*)buffer->GetData(), (glm::vec4*)accumulator->GetData(), (int*)extraData->GetData(), iCounter);
+		Integrate(renderSize.x*renderSize.y, (glm::vec4*)buffer->Data(), (glm::vec4*)accumulator->Data(), (int*)extraData->Data(), iCounter);
 		iCounter++;
 	}
 	else {
@@ -105,7 +105,7 @@ void RenderWidget::Draw() {
 	//get job values
 	widgetJob->SetUniform(std::string("screen"), renderSize);
 
-	RayEngine::ModifyJob(rayJob, *camera);
+	RayEngine::ModifyJob(rayJob, camera);
 }
 
 /* Recreate data. */
@@ -115,11 +115,11 @@ void RenderWidget::RecreateData() {
 	RayEngine::RemoveJob(rayJob);
 
 	//create the new accumulation Buffer
-	accumulator = GPUManager::CreateBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+	accumulator = GPUManager::CreateBuffer<glm::vec4>(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
 
-	buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+	buffer = GPUManager::CreateRasterBuffer<glm::vec4>(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
 
-	extraData = GPUManager::CreateBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(int));
+	extraData = GPUManager::CreateBuffer<glm::vec4>(GPUManager::GetBestGPU(), size.x*size.y * sizeof(int));
 
 
 	if (currentSize != size) {
@@ -134,5 +134,5 @@ void RenderWidget::RecreateData() {
 
 	//add the ray job with new sizes
 	buffer->MapResources();
-	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true, samples, *camera, buffer->GetData(), (int*)extraData->GetData());
+	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true, samples, camera, buffer->Data(), (int*)extraData->Data());
 }

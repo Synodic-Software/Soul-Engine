@@ -23,6 +23,19 @@ public:
 		job = a.job;
 	}
 
+
+	glm::vec4 storage;
+	glm::vec4 origin; //origin and a single value representing the remaining distance this ray can travel in this frame
+	glm::vec4 direction;
+	glm::vec2 bary;
+	uint currentHit;
+	uint resultOffset;
+	char job;
+
+private:
+
+public:
+
 	__host__ __device__ Ray& Ray::operator= (const Ray &a)
 	{
 
@@ -36,16 +49,5 @@ public:
 
 		return *this;
 	}
-
-	glm::vec4 storage;
-	glm::vec4 origin; //origin and a single value representing the remaining distance this ray can travel in this frame
-	glm::vec4 direction;
-	glm::vec2 bary;
-	uint currentHit;
-	uint resultOffset;
-	char job;
-
-private:
-
 
 };
