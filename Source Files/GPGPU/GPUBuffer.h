@@ -2,20 +2,22 @@
 
 
 /* Buffer for gpu. */
+
+template <class T>
 class GPUBuffer {
 
 public:
 	/* Default constructor. */
-	GPUBuffer();
+	GPUBuffer(){}
 	/* Destructor. */
-	~GPUBuffer();
+	virtual ~GPUBuffer(){}
 
 	/*
 	 *    Gets the data.
 	 *    @return	Null if it fails, else the data.
 	 */
 
-	void* GetData() {
+	void* Data() {
 		return data;
 	}
 

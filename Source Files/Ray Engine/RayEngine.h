@@ -25,7 +25,7 @@ namespace RayEngine {
 	 *    @return	Null if it fails, else a pointer to a RayJob.
 	 */
 	
-	RayJob* AddJob(rayType, uint, bool,float, Camera&, void*,int*);
+	RayJob* AddJob(rayType, uint, bool,float, Camera*, void*,int*);
 
 	//A varient that does not copy the results to the CPU but instead returns a cuda* that can be procesed further.
 	//adds a job with a hint to keep its allocated data for ray storage. Speed gains if large ray bundles are given.
@@ -46,7 +46,7 @@ namespace RayEngine {
 	 *    @param [in,out]	parameter2	The second parameter.
 	 */
 
-	void ModifyJob(RayJob*, Camera&);
+	void ModifyJob(RayJob*, Camera*);
 
 	/*
 	 *    Process this object.

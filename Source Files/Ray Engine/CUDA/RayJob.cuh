@@ -21,7 +21,7 @@ public:
 	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
 	//@param The amount of buffers used for result storage.
-	__host__ RayJob(rayType, uint, bool, float, Camera camera, void* resultsIn,int*);
+	__host__ RayJob(rayType, uint, bool, float, Camera* camera, void* resultsIn, int*);
 	__host__ RayJob();
 	__host__ ~RayJob();
 
@@ -34,7 +34,7 @@ public:
 	uint startIndex;
 	uint ID;
 	//common variables
-	Camera camera;
+	Camera* camera;
 	rayType type;
 	uint rayAmount;
 	uint rayBaseAmount;
@@ -45,5 +45,37 @@ protected:
 
 private:
 
+	//operator overloads
+public:
+	bool operator==(const RayJob& other) const {
+		return
+			results == other.results &&
+			groupData == other.groupData &&
+			startIndex == other.startIndex &&
+			ID == other.ID &&
+			camera == other.camera &&
+			type == other.type &&
+			rayAmount == other.rayAmount &&
+			rayBaseAmount == other.rayBaseAmount &&
+			samples == other.samples &&
+			canChange == other.canChange;
+
+	}
+
+	RayJob& operator=(RayJob arg)
+	{
+		this->results = arg.results;
+		this->groupData = arg.groupData;
+		this->startIndex = arg.startIndex;
+		this->ID = arg.ID;
+		this->camera = arg.camera;
+		this->type = arg.type;
+		this->rayAmount = arg.rayAmount;
+		this->rayBaseAmount = arg.rayBaseAmount;
+		this->samples = arg.samples;
+		this->canChange = arg.canChange;
+
+		return *this;
+	}
 
 };

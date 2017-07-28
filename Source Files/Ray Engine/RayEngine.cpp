@@ -65,19 +65,24 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	double expectedRender = renderTime + averageRenderDV;
 
 	//target time -5% to account for frame instabilities and try to stay above target
-	double change = (targetTime / expectedRender - 1.0)*0.95f;
+	double change = (targetTime / expectedRender - 1.0)*0.95f *countChange;
 
 	//modify all the sample counts/ resolutions to reflect the change
 	for (auto& job : jobs) {
 		if (job->canChange) {
-			float tempSamples = job->samples * (change*countChange + 1.0);
+			float tempSamples = job->samples * (change + 1.0);
 
 			if (tempSamples < 1.0f) {
-				job->samples = 1.0f;
+				float percentChanged = (job->samples - 1.0f) / (job->samples - tempSamples); ;
 
-//				job->camera.resolution *= change*countChange + 1.0;
+				job->samples = 1.0f;
+				job->camera->film.resolution *= (1.0f - percentChanged)*change - 1.0;
+				job->camera->film.resolution = glm::uvec2(0);
 			}
 			else {
+				if (job->camera->film.resolution != job->camera->film.resolutionMax) {
+					//job->camera.film.resolution *= change*countChange + 1.0;
+				}
 				job->samples = tempSamples;
 			}
 
@@ -114,7 +119,7 @@ void RayEngine::Process(const Scene* scene, double target) {
  */
 
 RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
-	float samples, Camera& camera, void* resultsIn, int* extraData) {
+	float samples, Camera* camera, void* resultsIn, int* extraData) {
 
 	RayJob* job = new RayJob(whatToGet, rayAmount, canChange, samples, camera, resultsIn, extraData);
 	jobList.push_back(job);
@@ -128,7 +133,7 @@ RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
  *    @param [in,out]	camera	The camera.
  */
 
-void RayEngine::ModifyJob(RayJob* jobIn, Camera& camera) {
+void RayEngine::ModifyJob(RayJob* jobIn, Camera* camera) {
 
 	for (auto& job : jobList) {
 		if (job == jobIn) {

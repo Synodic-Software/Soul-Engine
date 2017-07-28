@@ -4,18 +4,19 @@
 #include "GPGPU\CUDA\CUDADevice.h"
 
 /* Buffer for GPU raster. */
-class GPURasterBuffer :public GPUBuffer{
+template <class T>
+class GPURasterBuffer :public GPUBuffer<T>{
 
 public:
 	/* Default constructor. */
-	GPURasterBuffer();
+	GPURasterBuffer(){}
 	/* Destructor. */
-	~GPURasterBuffer();
+	virtual ~GPURasterBuffer(){}
 
 	/* Map resources. */
-	virtual void MapResources()=0;
+	virtual void MapResources() = 0;
 	/* Unmap resources. */
-	virtual void UnmapResources()=0;
+	virtual void UnmapResources() = 0;
 
 	/*
 	 *    Bind data.

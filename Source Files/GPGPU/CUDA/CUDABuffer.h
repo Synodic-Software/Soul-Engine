@@ -3,13 +3,15 @@
 
 #include "Metrics.h"
 #include "GPGPU\CUDA\CUDADevice.h"
+#include "Utility/CUDA/CudaHelper.cuh"
 
 /* Buffer for cuda. */
-class CUDABuffer :public GPUBuffer {
+template<class T>
+class CUDABuffer :public GPUBuffer<T> {
 
 public:
 	/* Default constructor. */
-	CUDABuffer();
+	CUDABuffer(){}
 
 	/*
 	 *    Constructor.
@@ -17,9 +19,14 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	CUDABuffer(CUDADevice*, uint);
+	CUDABuffer(CUDADevice* deviceIn, uint sizeIn) {
+
+		CudaCheck(cudaMalloc((void**)&data, sizeIn));
+
+	}
+
 	/* Destructor. */
-	~CUDABuffer();
+	~CUDABuffer(){}
 
 protected:
 

@@ -5,7 +5,8 @@
 #include "Metrics.h"
 
 /* Buffer for open cl raster. */
-class OpenCLRasterBuffer :public GPURasterBuffer {
+template<class T>
+class OpenCLRasterBuffer :public GPURasterBuffer<T> {
 
 public:
 
@@ -15,21 +16,21 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	OpenCLRasterBuffer(OpenCLDevice*, uint);
+	OpenCLRasterBuffer(OpenCLDevice*, uint){}
 	/* Destructor. */
-	~OpenCLRasterBuffer();
+	~OpenCLRasterBuffer(){}
 
 	/* Map resources. */
-	void MapResources();
+	void MapResources(){}
 	/* Unmap resources. */
-	void UnmapResources();
+	void UnmapResources(){}
 
 	/*
 	 *    Bind data.
 	 *    @param	parameter1	The first parameter.
 	 */
 
-	void BindData(uint);
+	void BindData(uint){}
 
 protected:
 

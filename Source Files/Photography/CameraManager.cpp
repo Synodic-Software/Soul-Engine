@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <memory>
+#include <iostream>
 
 namespace CameraManager {
 	namespace detail {
@@ -63,6 +64,7 @@ namespace CameraManager {
 
 		for (auto& camera : detail::cameras) {
 			camera->UpdateVariables();
+			std::cout << camera->film.resolution.x << std::endl;
 		}
 	}
 
@@ -73,6 +75,7 @@ namespace CameraManager {
 
 		//add the resolution
 		def->film.resolution = res;
+		def->film.resolutionMax = res;
 
 		//update the manger maxSize (for index counting)
 		detail::maxSize = glm::max(detail::maxSize, res);
