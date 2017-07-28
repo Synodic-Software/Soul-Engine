@@ -41,5 +41,15 @@ protected:
 	uint byteCount;
 
 private:
+
+	//operator overloads
+public:
+
+	/*
+	 *    T* casting operator.
+	 *    @return	The device data. Facilitates passing in a GPUBuffer object to a kernal
+	 */
+
+	operator T*() const { return deviceData; }
 	
 };
