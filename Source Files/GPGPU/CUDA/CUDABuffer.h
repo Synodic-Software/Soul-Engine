@@ -10,23 +10,24 @@ template<class T>
 class CUDABuffer :public GPUBuffer<T> {
 
 public:
-	/* Default constructor. */
-	CUDABuffer(){}
 
-	/*
-	 *    Constructor.
-	 *    @param [in,out]	parameter1	If non-null, the first parameter.
-	 *    @param 		 	parameter2	The second parameter.
-	 */
-
-	CUDABuffer(CUDADevice* deviceIn, uint sizeIn) {
-
-		CudaCheck(cudaMalloc((void**)&data, sizeIn));
-
+	CUDABuffer(GPUDevice& _device, uint _byteCount)
+		: GPUBuffer(_device, _byteCount) {
+		CudaCheck(cudaMalloc((void**)&deviceData, byteCount));
 	}
 
+
+	void TransferToHost(GPUDevice& device) override {
+		CudaCheck(cudaMemcpy(hostData, deviceData, byteCount, cudaMemcpyDeviceToHost));
+	}
+
+	void TransferToDevice(GPUDevice& device) override {
+		CudaCheck(cudaMemcpy(deviceData, hostData, byteCount, cudaMemcpyHostToDevice));
+	}
+
+
 	/* Destructor. */
-	~CUDABuffer(){}
+	~CUDABuffer() {}
 
 protected:
 

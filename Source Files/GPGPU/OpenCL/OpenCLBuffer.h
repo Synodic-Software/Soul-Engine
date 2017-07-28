@@ -16,9 +16,13 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	OpenCLBuffer(OpenCLDevice*, uint){}
+	OpenCLBuffer(GPUDevice& _device, uint _byteCount)
+		: GPUBuffer(_device, _byteCount) {
+
+	}
+
 	/* Destructor. */
-	~OpenCLBuffer(){}
+	~OpenCLBuffer() {}
 
 protected:
 

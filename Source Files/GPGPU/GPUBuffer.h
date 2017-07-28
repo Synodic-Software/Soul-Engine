@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GPGPU/GPUDevice.h"
 
 /* Buffer for gpu. */
 
@@ -8,9 +9,20 @@ class GPUBuffer {
 
 public:
 	/* Default constructor. */
-	GPUBuffer(){}
+	GPUBuffer(GPUDevice& deviceIn, uint _byteCount) {
+		byteCount = _byteCount;
+	}
 	/* Destructor. */
 	virtual ~GPUBuffer(){}
+
+
+	virtual void TransferToDevice(GPUDevice& device) {
+		
+	}
+
+	virtual void TransferToHost(GPUDevice& device) {
+		
+	}
 
 	/*
 	 *    Gets the data.
@@ -18,12 +30,15 @@ public:
 	 */
 
 	void* Data() {
-		return data;
+		return hostData;
 	}
 
 protected:
 	/* The data */
-	void* data;
+	T* hostData;
+	T* deviceData;
+
+	uint byteCount;
 
 private:
 	

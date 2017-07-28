@@ -16,7 +16,10 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	OpenCLRasterBuffer(OpenCLDevice*, uint){}
+	OpenCLRasterBuffer(GPUDevice& _device, uint _byteCount)
+		: GPURasterBuffer(_device, _byteCount) {
+		
+	}
 	/* Destructor. */
 	~OpenCLRasterBuffer(){}
 

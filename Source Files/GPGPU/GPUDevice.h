@@ -17,8 +17,7 @@ public:
 
 	GPUDevice(uint);
 	/* Destructor. */
-	virtual ~GPUDevice()=0;
-
+	virtual ~GPUDevice();
 
 
 	/* The API */

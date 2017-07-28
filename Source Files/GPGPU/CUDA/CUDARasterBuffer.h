@@ -24,11 +24,12 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	CUDARasterBuffer(CUDADevice* device, uint size) {
+	CUDARasterBuffer(GPUDevice& _device, uint _byteCount)
+		: GPURasterBuffer(_device, _byteCount) {
 
-		cudaSetDevice(device->order);
+		cudaSetDevice(_device.order);
 
-		rasterBuffer = RasterBackend::CreateBuffer(size);
+		rasterBuffer = RasterBackend::CreateBuffer(_byteCount);
 
 		if (RasterBackend::backend == OpenGL) {
 
@@ -69,7 +70,7 @@ public:
 				CudaCheck(cudaGraphicsMapResources(1, &buff->cudaBuffer, 0));
 
 				size_t num_bytes;
-				CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&buff->data, &num_bytes,
+				CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&buff->deviceData, &num_bytes,
 					buff->cudaBuffer));
 
 			});
