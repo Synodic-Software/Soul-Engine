@@ -1,20 +1,21 @@
 #pragma once
 
 #include "Multithreading\Scheduler.h"
-#include "GPGPU\GPURasterBuffer.h"
+#include "GPGPU\GPURasterBufferBase.h"
 #include "Raster Engine\RasterBackend.h"
 #include "Raster Engine\OpenGL\OpenGLBuffer.h"
 
 #include "Metrics.h"
 
-#include "GPGPU\CUDA\CUDADevice.h"
+#include "GPGPU\GPUDevice.h"
 #include "Utility/CUDA/CudaHelper.cuh"
 
+#include <cuda_runtime_api.h>
 #include <cuda_gl_interop.h>
 
 /* Buffer for cuda raster. */
 template <class T>
-class CUDARasterBuffer :public GPURasterBuffer<T> {
+class CUDARasterBuffer :public GPURasterBufferBase<T> {
 
 public:
 
@@ -24,42 +25,18 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	CUDARasterBuffer(GPUDevice& _device, uint _byteCount)
-		: GPURasterBuffer(_device, _byteCount) {
+	CUDARasterBuffer(GPUDevice& _device, uint _count)
+		: GPURasterBufferBase(_device, _count) {
 
-		cudaSetDevice(_device.order);
+		CUDARasterBuffer::resize(_count);
 
-		rasterBuffer = RasterBackend::CreateBuffer(_byteCount);
-
-		if (RasterBackend::backend == OpenGL) {
-
-			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
-				RasterBackend::MakeContextCurrent();
-
-				OpenGLBuffer* oglBuffer = static_cast<OpenGLBuffer*>(rasterBuffer);
-
-
-				CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
-					, oglBuffer->GetBufferID()
-					, cudaGraphicsRegisterFlagsWriteDiscard));
-
-			});
-			Scheduler::Block();
-
-		}
-		else {
-			//TODO
-			//Vulkan Stuff
-
-
-		}
-
+		device = _device.order;
 	}
 	/* Destructor. */
 	~CUDARasterBuffer() {}
 
 	/* Map resources. */
-	void MapResources() {
+	void MapResources() override {
 
 		if (RasterBackend::backend == OpenGL) {
 
@@ -87,7 +64,7 @@ public:
 		}
 	}
 	/* Unmap resources. */
-	void UnmapResources() {
+	void UnmapResources() override {
 
 		if (RasterBackend::backend == OpenGL) {
 
@@ -112,7 +89,7 @@ public:
 	 *    @param	parameter1	The first parameter.
 	 */
 
-	void BindData(uint pos) {
+	void BindData(uint pos) override {
 
 
 		if (RasterBackend::backend == OpenGL) {
@@ -138,6 +115,39 @@ public:
 
 	}
 
+	void resize(uint newSize) override {
+
+		GPUBufferBase<T>::resize(newSize);
+
+		if (newSize > 0) {
+
+			CudaCheck(cudaSetDevice(device));
+			rasterBuffer = RasterBackend::CreateBuffer(newSize*sizeof(T));
+
+			if (RasterBackend::backend == OpenGL) {
+
+				Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
+					RasterBackend::MakeContextCurrent();
+
+					OpenGLBuffer* oglBuffer = static_cast<OpenGLBuffer*>(rasterBuffer);
+
+					CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
+						, oglBuffer->GetBufferID()
+						, cudaGraphicsRegisterFlagsWriteDiscard));
+
+				});
+				Scheduler::Block();
+
+			}
+			else {
+				//TODO
+				//Vulkan Stuff
+
+
+			}
+		}
+	}
+
 protected:
 
 private:
@@ -145,5 +155,7 @@ private:
 	Buffer* rasterBuffer = nullptr;
 	/* A cuda graphics resource*. */
 	struct cudaGraphicsResource* cudaBuffer;
+
+	int device;
 
 };

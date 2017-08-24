@@ -1,12 +1,14 @@
 #include "RayEngine.cuh"
 
 #include <thrust/host_vector.h>
-#include <thrust/remove.h>
+
 #include <cuda_runtime.h>
-#include "Utility\CUDA\CUDAHelper.cuh"
-#include "GPGPU\CUDA\CUDABackend.h"
-#include "Utility\Logger.h"
 #include <curand_kernel.h>
+#include "Utility\CUDA\CUDAHelper.cuh"
+
+#include "GPGPU\GPUManager.h"
+#include "Utility\Logger.h"
+#include "Photography/CameraManager.h"
 
 //cant have AABB defined and not define WOOP_TRI
 #define WOOP_TRI
@@ -172,13 +174,12 @@ __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 	uint startIndex = 0;
 
 	int cur = 0;
-
-	((glm::vec4*)jobs[cur].results)[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	jobs[cur].groupData[(index - startIndex)] = 0;
+	((glm::vec4*)jobs[cur].results)[index - startIndex] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	jobs[cur].groupData[index - startIndex] = 0;
 
 }
 
-__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* nAtomic, curandState* randomState) {
+__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, Camera* cameras, const Scene* scene, int* nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -202,7 +203,7 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 		ray.resultOffset = sampleIndex;
 		glm::vec3 orig;
 		glm::vec3 dir;
-		job[cur].camera->GenerateRay(sampleIndex, orig, dir, randState);
+		cameras[job[cur].camera].GenerateRay(sampleIndex, orig, dir, randState);
 		ray.origin = glm::vec4(orig,0.0f);
 		ray.direction = glm::vec4(dir,4000000000000.0f);
 		atomicAdd(job[cur].groupData + sampleIndex, 1);
@@ -780,7 +781,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 //grab the shared memory for a dynamic blocksize
 __host__ int ReturnSharedBytes(int blockSize) {
-	return blockSize / CUDABackend::GetWarpSize() * sizeof(int);
+	return blockSize / GPUManager::GetBestGPU().GetWarpSize() * sizeof(int);
 }
 
 
@@ -879,7 +880,10 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 				CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 				CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 
-				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, numberJobs, deviceRays, scene, hitAtomic, randomState);
+				GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
+				cameraBuffer->TransferToDevice();
+
+				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, numberJobs, deviceRays, *cameraBuffer,scene, hitAtomic, randomState);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
@@ -931,10 +935,10 @@ __host__ void GPUInitialize() {
 	//dynamically ask for the best launch setup
 	CudaCheck(cudaOccupancyMaxPotentialBlockSizeVariableSMem(
 		&minGridSize, &blockSizeOut, EngineExecute, ReturnSharedBytes,
-		CUDABackend::GetSMCount()*CUDABackend::GetBlocksPerMP()));
+		GPUManager::GetBestGPU().GetSMCount()*GPUManager::GetBestGPU().GetBlocksPerMP()));
 
 	//get the device stats for persistant threads
-	uint warpSize = CUDABackend::GetWarpSize();
+	uint warpSize = GPUManager::GetBestGPU().GetWarpSize();
 	warpPerBlock = blockSizeOut / warpSize;
 	blockCountE = minGridSize;
 	blockSizeE = dim3(warpSize, warpPerBlock, 1);

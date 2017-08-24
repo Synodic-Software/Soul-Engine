@@ -5,12 +5,15 @@
 #include "Algorithms/Data Algorithms/GPU Sort/Sort.h"
 
 #include <vector>
-#include <memory>
 #include <iostream>
 
+#include "GPGPU/GPUManager.h"
+
 namespace CameraManager {
+
 	namespace detail {
-		std::vector<std::unique_ptr<Camera>> cameras;
+
+		GPUBuffer<Camera>* cameras;
 
 		std::vector<uint> indicesH;
 		uint* indicesD;
@@ -24,7 +27,7 @@ namespace CameraManager {
 	 *    @param [in,out]	res	The resource.
 	 */
 
-	//TODO move the generation of the read pattern to the ray engine.
+	 //TODO move the generation of the read pattern to the GPUBuffer.
 	void UpdateIndices(glm::uvec2& res) {
 
 		if (detail::oldMax != detail::maxSize) {
@@ -58,20 +61,30 @@ namespace CameraManager {
 
 	}
 
+	void Initialize() {
+		detail::cameras = new GPUBuffer<Camera>(GPUManager::GetBestGPU());
+	}
+
+	void Terminate() {
+		delete detail::cameras;
+	}
+
 	void Update() {
 
 		//UpdateIndices(detail::maxSize);
 
-		for (auto& camera : detail::cameras) {
-			camera->UpdateVariables();
-			std::cout << camera->film.resolution.x << std::endl;
+		for (auto& camera : *detail::cameras) {
+			camera.UpdateVariables();
+			std::cout << camera.film.resolution.x << std::endl;
 		}
 	}
 
+	//TODO return a pointer or ID, not
 	Camera* AddCamera(glm::uvec2& res) {
-		detail::cameras.emplace_back(new Camera());
 
-		Camera* def = detail::cameras.back().get();
+		detail::cameras->push_back(Camera());
+
+		Camera* def = detail::cameras->back();
 
 		//add the resolution
 		def->film.resolution = res;
@@ -83,6 +96,12 @@ namespace CameraManager {
 		return def;
 	}
 
+	GPUBuffer<Camera>* GetCameraBuffer() {
+		return detail::cameras;
+	}
+
+
+	//TODO add functionality (AddCamera return needs revisit)
 	void RemoveCamera() {
 
 	}

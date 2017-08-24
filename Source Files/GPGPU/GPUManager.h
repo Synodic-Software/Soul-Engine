@@ -2,11 +2,8 @@
 
 #include "Metrics.h"
 
-#include "CUDA\CUDABuffer.h"
-#include "OpenCL\OpenCLBuffer.h"
-
-#include "CUDA\CUDARasterBuffer.h"
-#include "OpenCL\OpenCLRasterBuffer.h"
+#include "CUDA/CUDABackend.h"
+#include "OpenCL/OpenCLBackend.h"
 
 #include <memory>
 #include <vector>
@@ -18,7 +15,8 @@ namespace GPUManager {
 
 		/* The devices */
 		extern std::vector<std::unique_ptr<GPUDevice>> devices;
-
+		extern CUDABackend cudaBackend;
+		extern OpenCLBackend openCLBackend;
 	}
 
 	/* Extracts the devices. */
@@ -30,45 +28,32 @@ namespace GPUManager {
 	void InitThread();
 
 	/*
-	 *    Creates raster buffer.
-	 *    @param	parameter1	The first parameter.
-	 *    @param	parameter2	The second parameter.
-	 *    @return	Null if it fails, else the new raster buffer.
+	 *    Transfer to device.
+	 *    @tparam	T	Generic type parameter.
+	 *    @param [in,out]	device	The device.
 	 */
 
-	template<typename T>
-	GPURasterBuffer<T>* CreateRasterBuffer(int GPU, uint size) {
+	template <typename T>
+	void TransferToDevice(GPUDevice& device, std::vector<GPUBuffer<T>> buffer) {
+		//TODO implement for each backend
 
-		GPURasterBuffer<T>* buffer;
-
-		if (detail::devices[GPU]->api == CUDA) {
-			buffer = new CUDARasterBuffer<T>(*detail::devices[GPU], size);
+		if (device.api == CUDA) {
+			detail::cudaBackend.TransferToDevice(device, buffer);
 		}
-		else {
-			buffer = new OpenCLRasterBuffer<T>(*detail::devices[GPU], size);
+		else if (device.api == OpenCL) {
+			detail::openCLBackend.TransferToDevice(device, buffer);
 		}
-		return buffer;
 	}
 
 	/*
-	 *    Creates a buffer.
-	 *    @param	parameter1	The first parameter.
-	 *    @param	parameter2	The second parameter.
-	 *    @return	Null if it fails, else the new buffer.
+	 *    Transfer to host.
+	 *    @tparam	T	Generic type parameter.
+	 *    @param [in,out]	device	The device.
 	 */
-	 
-	template<typename T>
-	GPUBuffer<T>* CreateBuffer(int GPU, uint size) {
 
-		GPUBuffer<T>* buffer;
-
-		if (detail::devices[GPU]->api == CUDA) {
-			buffer = new CUDABuffer<T>(*detail::devices[GPU], size);
-		}
-		else {
-			buffer = new OpenCLBuffer<T>(*detail::devices[GPU], size);
-		}
-		return buffer;
+	template <typename T>
+	void TransferToHost(GPUDevice& device, std::vector<GPUBuffer<T>>) {
+		//TODO implement
 	}
 
 	/*
@@ -76,5 +61,5 @@ namespace GPUManager {
 	 *    @return	The best GPU.
 	 */
 
-	int GetBestGPU();
+	GPUDevice& GetBestGPU();
 }
