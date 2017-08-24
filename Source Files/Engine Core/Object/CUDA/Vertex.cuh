@@ -63,13 +63,3 @@ public:
 private:
 	
 };
-
-namespace std {
-	template<> struct hash<Vertex> {
-		size_t operator()(Vertex const& vertex) const {
-			return (hash<float>()(vertex.position.x) ^
-				hash<float>()(vertex.position.y) ^
-				hash<float>()(vertex.position.z));
-		}
-	};
-}
