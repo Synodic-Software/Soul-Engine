@@ -76,6 +76,12 @@ namespace Soul {
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			WindowManager::Terminate();
 		});
+
+		//destroy all cameras
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			CameraManager::Terminate();
+		});
+
 		Scheduler::Block();
 
 		//destroy glfw, needs to wait on the window manager
@@ -143,6 +149,10 @@ namespace Soul {
 			RayEngine::Initialize();
 		});
 
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			CameraManager::Initialize();
+		});
+
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
@@ -151,6 +161,7 @@ namespace Soul {
 		Settings::Get("Engine.Alloted_Render_Time", 0.01, &allotedRenderTime);
 
 		Scheduler::Block();
+
 	}
 
 	/* Rasters this object. */

@@ -139,10 +139,13 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUBackendBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUBufferBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUDevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUManager.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPURasterBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPURasterBufferBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.h" />
@@ -219,10 +222,13 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUBufferBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUDevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUManager.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPURasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPURasterBufferBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.cpp" />

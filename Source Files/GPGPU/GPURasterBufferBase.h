@@ -1,0 +1,70 @@
+//Pure virtual function for the basis of all GPUBuffers
+
+#pragma once
+
+#include "GPGPU/GPUDevice.h"
+
+#include "GPUBufferBase.h"
+/*
+*    Buffer for gpu/cpu communication and storage.
+*    @tparam	T	Generic type parameter.
+*/
+
+template <class T>
+class GPURasterBufferBase : public GPUBufferBase<T> {
+
+public:
+
+	/*
+	*    Constructor.
+	*    @param [in,out]	deviceIn		The device in.
+	*    @param 		 	_objectCount	(Optional) Number of objects.
+	*/
+
+	GPURasterBufferBase(const GPUDevice& deviceIn, uint _size = 0)
+		:GPUBufferBase(deviceIn, _size) {
+		
+	}
+
+	/* Destructor. */
+	virtual ~GPURasterBufferBase() {
+
+	}
+
+	/* Map resources. */
+	virtual void MapResources() {
+
+	}
+	/* Unmap resources. */
+	virtual void UnmapResources() {
+
+	}
+
+
+	/*
+	*    Transfer to host.
+	*    @param [in,out]	device	The device.
+	*/
+
+	virtual void TransferToHost() const {
+
+	}
+
+	/*
+	*    Transfer to device.
+	*    @param [in,out]	device	The device.
+	*/
+
+	virtual void TransferToDevice() const {
+
+	}
+	/*
+	*    Bind data.
+	*    @param	parameter1	The first parameter.
+	*/
+
+	virtual void BindData(uint) {
+
+	}
+
+};

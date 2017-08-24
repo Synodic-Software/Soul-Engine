@@ -1,11 +1,18 @@
 #pragma once
 
 #include "Camera/Camera.h"
+#include "GPGPU/GPUBuffer.h"
 
 namespace CameraManager {
 
 	namespace detail {
 	}
+	
+	/* Initializes this object. */
+	void Initialize();
+
+	/* Terminates this object. */
+	void Terminate();
 
 	/* Updates this object. */
 	void Update();
@@ -17,6 +24,8 @@ namespace CameraManager {
 	 */
 
 	Camera* AddCamera(glm::uvec2&);
+
+	GPUBuffer<Camera>* GetCameraBuffer();
 
 	/* Removes the camera. */
 	void RemoveCamera();

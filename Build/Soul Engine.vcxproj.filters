@@ -585,6 +585,15 @@
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cuh">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUBackendBase.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUBufferBase.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPURasterBufferBase.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -748,6 +757,15 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Photography\CameraManager.cpp">
       <Filter>Engine Backend\Photography</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUBufferBase.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPURasterBufferBase.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

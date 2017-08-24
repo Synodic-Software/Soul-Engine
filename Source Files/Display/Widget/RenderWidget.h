@@ -38,11 +38,11 @@ private:
 	glm::uvec2 renderSize;
 
 	/* The buffer */
-	GPURasterBuffer<glm::vec4>* buffer;
+	GPURasterBuffer<glm::vec4> buffer;
 	/* The accumulator */
-	GPUBuffer<glm::vec4>* accumulator;
+	GPUBuffer<glm::vec4> accumulator;
 	/* Information describing the extra */
-	GPUBuffer<glm::vec4>* extraData;
+	GPUBuffer<int> extraData;
 
 	/* The samples */
 	float samples;

@@ -1,10 +1,10 @@
 #include "RenderWidget.h"
 #include "GPGPU\GPUManager.h"
-#include "Utility/CUDA/CudaHelper.cuh"
 #include "CUDA\RenderWidget.cuh"
 #include "Events\EventManager.h"
 #include "Raster Engine/RasterBackend.h"
 #include "Input/InputManager.h"
+#include "GPGPU/GPUBuffer.h"
 
 /*
  *    Constructor.
@@ -12,6 +12,7 @@
  */
 
 RenderWidget::RenderWidget(Camera* cameraIn)
+	: buffer(GPUManager::GetBestGPU()), accumulator(GPUManager::GetBestGPU()), extraData(GPUManager::GetBestGPU())
 {
 	camera = cameraIn;
 
@@ -88,24 +89,25 @@ void RenderWidget::Draw() {
 	});
 
 	if (integrate) {
-		Integrate(renderSize.x*renderSize.y, (glm::vec4*)buffer->Data(), (glm::vec4*)accumulator->Data(), (int*)extraData->Data(), iCounter);
+		Integrate(renderSize.x*renderSize.y, (glm::vec4*)buffer.data(), (glm::vec4*)accumulator.data(), (int*)extraData.data(), iCounter);
 		iCounter++;
 	}
 	else {
 		iCounter = 1;
 	}
 
-	buffer->UnmapResources();
-	buffer->BindData(0);
+	buffer.UnmapResources();
+	buffer.BindData(0);
 	widgetJob->Draw();
 
 	//add the rayJob back in
-	buffer->MapResources();
+	buffer.MapResources();
 
 	//get job values
 	widgetJob->SetUniform(std::string("screen"), renderSize);
 
-	RayEngine::ModifyJob(rayJob, camera);
+	//TODO update id
+	RayEngine::ModifyJob(rayJob, 0);
 }
 
 /* Recreate data. */
@@ -115,11 +117,11 @@ void RenderWidget::RecreateData() {
 	RayEngine::RemoveJob(rayJob);
 
 	//create the new accumulation Buffer
-	accumulator = GPUManager::CreateBuffer<glm::vec4>(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+	accumulator.resize(size.x*size.y);
 
-	buffer = GPUManager::CreateRasterBuffer<glm::vec4>(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+	buffer.resize(size.x*size.y);
 
-	extraData = GPUManager::CreateBuffer<glm::vec4>(GPUManager::GetBestGPU(), size.x*size.y * sizeof(int));
+	extraData.resize(size.x*size.y);
 
 
 	if (currentSize != size) {
@@ -133,6 +135,8 @@ void RenderWidget::RecreateData() {
 	camera->film.resolution = renderSize;
 
 	//add the ray job with new sizes
-	buffer->MapResources();
-	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true, samples, camera, buffer->Data(), (int*)extraData->Data());
+	buffer.MapResources();
+
+	//TODO update id
+	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true, samples, 0, buffer, extraData);
 }

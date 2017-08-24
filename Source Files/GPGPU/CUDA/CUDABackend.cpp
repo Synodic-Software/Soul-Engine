@@ -7,105 +7,33 @@
 
 /* Number of devices */
 static int deviceCount;
-/* The device property */
-static cudaDeviceProp* deviceProp;
 
-namespace CUDABackend {
 
-	/*
-	 *    Extracts the devices described by devices.
-	 *    @param [in,out]	devices	The devices.
-	 */
+/*
+ *    Extracts the devices described by devices.
+ *    @param [in,out]	devices	The devices.
+ */
 
-	void ExtractDevices(std::vector<int>& devices) {
-		cudaError_t error = cudaGetDeviceCount(&deviceCount);
+void CUDABackend::ExtractDevices(std::vector<GPUDevice>& devices) {
+	cudaError_t error = cudaGetDeviceCount(&deviceCount);
 
-		if (deviceCount == 0)
-		{
-			return;
-		}
-
-		deviceProp = new cudaDeviceProp[deviceCount];
-
-		for (int dev = 0; dev < deviceCount; ++dev) {
-
-			CudaCheck(cudaSetDevice(dev));
-			CudaCheck(cudaGetDeviceProperties(&deviceProp[dev], dev));
-			devices.push_back(dev);
-		}
-
-		CudaCheck(cudaSetDevice(0));
-
+	if (deviceCount == 0) {
+		return;
 	}
 
-	/* Initializes the thread. */
-	void InitThread() {
-		cudaSetDevice(0);
+	for (int dev = 0; dev < deviceCount; ++dev) {
+
+		devices.push_back(dev);
+
 	}
+}
 
-	/*
-	 *    Gets core count.
-	 *    @return	The core count.
-	 */
+/* Initializes the thread. */
+void CUDABackend::InitThread() {
+	cudaSetDevice(0);
+}
 
-	int GetCoreCount() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return _GetCoresPerMP(deviceProp[device].major, deviceProp[device].minor) * deviceProp[device].multiProcessorCount;
-	}
-
-	/*
-	 *    Gets sm count.
-	 *    @return	The sm count.
-	 */
-
-	int GetSMCount() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return deviceProp[device].multiProcessorCount;
-	}
-
-	/*
-	 *    Gets warp size.
-	 *    @return	The warp size.
-	 */
-
-	int GetWarpSize() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return deviceProp[device].warpSize;
-	}
-
-	/*
-	 *    Gets warps per mp.
-	 *    @return	The warps per mp.
-	 */
-
-	int GetWarpsPerMP() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return _GetWarpsPerMP(deviceProp[device].major, deviceProp[device].minor);
-	}
-
-	/*
-	 *    Gets blocks per mp.
-	 *    @return	The blocks per mp.
-	 */
-
-	int GetBlocksPerMP() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return _GetBlocksPerMP(deviceProp[device].major, deviceProp[device].minor);
-	}
-
-	/* Terminates this object. */
-	void Terminate() {
-		CudaCheck(cudaDeviceReset());
-	}
-
+/* Terminates this object. */
+void CUDABackend::Terminate() {
+	CudaCheck(cudaDeviceReset());
 }

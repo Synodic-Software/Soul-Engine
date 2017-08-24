@@ -1,12 +1,12 @@
 #pragma once
-#include "GPGPU\GPUBuffer.h"
+#include "GPGPU\GPUBufferBase.h"
 
 #include "Metrics.h"
-#include "GPGPU\OpenCL\OpenCLDevice.h"
+#include "GPGPU\GPUDevice.h"
 
 /* Buffer for open cl. */
 template<class T>
-class OpenCLBuffer :public GPUBuffer<T> {
+class OpenCLBuffer :public GPUBufferBase<T> {
 
 public:
 
@@ -16,13 +16,22 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	OpenCLBuffer(GPUDevice& _device, uint _byteCount)
-		: GPUBuffer(_device, _byteCount) {
+	OpenCLBuffer(const GPUDevice& _device, uint _byteCount)
+		: GPUBufferBase(_device, _byteCount) {
 
 	}
 
 	/* Destructor. */
 	~OpenCLBuffer() {}
+
+
+	void TransferToHost() const override {
+
+	}
+
+	void TransferToDevice() const override {
+
+	}
 
 protected:
 

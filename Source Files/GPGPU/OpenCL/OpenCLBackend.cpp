@@ -4,68 +4,64 @@
 
 /* Number of devices */
 static int deviceCount;
-//cudaDeviceProp* deviceProp;
 
-namespace OpenCLBackend {
 
 	/*
 	 *    Extracts the devices described by devices.
 	 *    @param [in,out]	devices	The devices.
 	 */
 
-	void ExtractDevices(std::vector<int>& devices) {
+void OpenCLBackend::ExtractDevices(std::vector<GPUDevice>& devices) {
 
-		S_LOG_WARNING("OpenCL is not supported yet");
-	}
+	S_LOG_WARNING("OpenCL is not supported yet");
+}
 
-	/* Initializes the thread. */
-	void InitThread() {
+/* Initializes the thread. */
+void OpenCLBackend::InitThread() {
 
-	}
+}
 
-	/*
-	 *    Gets core count.
-	 *    @return	The core count.
-	 */
+/*
+ *    Gets core count.
+ *    @return	The core count.
+ */
 
-	int GetCoreCount() {
+int OpenCLBackend::GetCoreCount() {
 
-		return 0;
-	}
+	return 0;
+}
 
-	/*
-	 *    Gets sm count.
-	 *    @return	The sm count.
-	 */
+/*
+ *    Gets sm count.
+ *    @return	The sm count.
+ */
 
-	int GetSMCount() {
+int OpenCLBackend::GetSMCount() {
 
-		return 0;
-	}
+	return 0;
+}
 
-	/*
-	 *    Gets warp size.
-	 *    @return	The warp size.
-	 */
+/*
+ *    Gets warp size.
+ *    @return	The warp size.
+ */
 
-	int GetWarpSize() {
-		
-		return 0;
-	}
+int OpenCLBackend::GetWarpSize() {
 
-	/*
-	 *    Gets block height.
-	 *    @return	The block height.
-	 */
+	return 0;
+}
 
-	int GetBlockHeight() {
-		
-		return 0;
-	}
+/*
+ *    Gets block height.
+ *    @return	The block height.
+ */
 
-	/* Terminates this object. */
-	void Terminate() {
-		
-	}
+int OpenCLBackend::GetBlockHeight() {
+
+	return 0;
+}
+
+/* Terminates this object. */
+void OpenCLBackend::Terminate() {
 
 }

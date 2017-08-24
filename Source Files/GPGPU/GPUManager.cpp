@@ -1,8 +1,5 @@
 #include "GPUManager.h"
 
-#include "CUDA\CUDABackend.h"
-#include "OpenCL\OpenCLBackend.h"
-
 #include "GPUDevice.h"
 #include "CUDA\CUDADevice.h"
 #include "OpenCL\OpenCLDevice.h"
@@ -16,21 +13,30 @@ namespace GPUManager {
 		/* The devices */
 		std::vector<std::unique_ptr<GPUDevice>> devices;
 
+		CUDABackend cudaBackend;
+		OpenCLBackend openCLBackend;
+
 	}
 
 	void ExtractDevices() {
-		std::vector<int> cudaDevices;
-		CUDABackend::ExtractDevices(cudaDevices);
+		std::vector<GPUDevice> cudaDevices;
+		detail::cudaBackend.ExtractDevices(cudaDevices);
+
+		int cudaCounter = 0;
+		int clCounter = 0;
 
 		for (auto &var : cudaDevices) {
-			detail::devices.emplace_back(new CUDADevice(var));
+			detail::devices.emplace_back(new CUDADevice(cudaCounter));
+			++cudaCounter;
 		}
 
-		std::vector<int> openCLDevices;
-		OpenCLBackend::ExtractDevices(openCLDevices);
+		std::vector<GPUDevice> openCLDevices;
+		detail::openCLBackend.ExtractDevices(openCLDevices);
 
 		for (auto &var : openCLDevices) {
-			detail::devices.emplace_back(new OpenCLDevice(var));
+			detail::devices.emplace_back(new OpenCLDevice(clCounter));
+
+			++clCounter;
 		}
 	}
 
@@ -39,11 +45,10 @@ namespace GPUManager {
 		detail::devices.clear();
 	}
 
-
 	/* Initializes the thread. */
 	void InitThread() {
-		CUDABackend::InitThread();
-		OpenCLBackend::InitThread();
+		detail::cudaBackend.InitThread();
+		detail::openCLBackend.InitThread();
 	}
 
 	/*
@@ -51,8 +56,8 @@ namespace GPUManager {
 	 *    @return	The best GPU.
 	 */
 
-	int GetBestGPU() {
-		return 0;
+	GPUDevice& GetBestGPU() {
+		return *detail::devices[0].get();
 	}
 
 

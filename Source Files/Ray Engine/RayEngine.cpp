@@ -1,6 +1,7 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
+#include "Photography/CameraManager.h"
 #include "Utility\Timer.h"
 #include <deque>
 
@@ -72,15 +73,20 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 		if (job->canChange) {
 			float tempSamples = job->samples * (change + 1.0);
 
+			GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
+
+			Camera& camera = (*cameraBuffer)[job->camera];
+
 			if (tempSamples < 1.0f) {
-				float percentChanged = (job->samples - 1.0f) / (job->samples - tempSamples); ;
+				float percentChanged = (job->samples - 1.0f) / (job->samples - tempSamples);
 
 				job->samples = 1.0f;
-				job->camera->film.resolution *= (1.0f - percentChanged)*change - 1.0;
-				job->camera->film.resolution = glm::uvec2(0);
+
+				camera.film.resolution *= (1.0f - percentChanged)*change - 1.0;
+				camera.film.resolution = glm::uvec2(0);
 			}
 			else {
-				if (job->camera->film.resolution != job->camera->film.resolutionMax) {
+				if (camera.film.resolution != camera.film.resolutionMax) {
 					//job->camera.film.resolution *= change*countChange + 1.0;
 				}
 				job->samples = tempSamples;
@@ -119,7 +125,7 @@ void RayEngine::Process(const Scene* scene, double target) {
  */
 
 RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
-	float samples, Camera* camera, void* resultsIn, int* extraData) {
+	float samples, uint camera, void* resultsIn, int* extraData) {
 
 	RayJob* job = new RayJob(whatToGet, rayAmount, canChange, samples, camera, resultsIn, extraData);
 	jobList.push_back(job);
@@ -133,7 +139,7 @@ RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
  *    @param [in,out]	camera	The camera.
  */
 
-void RayEngine::ModifyJob(RayJob* jobIn, Camera* camera) {
+void RayEngine::ModifyJob(RayJob* jobIn, uint camera) {
 
 	for (auto& job : jobList) {
 		if (job == jobIn) {
