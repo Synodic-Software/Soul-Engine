@@ -4,6 +4,7 @@
 
 #include "Utility\Includes\GLMIncludes.h"
 #include "Metrics.h"
+#include <functional>
 
 class  Vertex
 {
@@ -24,9 +25,9 @@ public:
 			position == other.position &&
 			normal == other.normal &&
 			textureCoord == other.textureCoord &&
-			velocity == other.velocity ;
+			velocity == other.velocity;
 	}
-	
+
 	__host__ __device__ friend void swap(Vertex& a, Vertex& b)
 	{
 
@@ -61,5 +62,18 @@ public:
 		return *this;
 	}
 private:
-	
+
 };
+
+namespace std {
+	template<> struct hash<Vertex> {
+		size_t operator()(Vertex const& vertex) const {
+			return (hash<float>()(vertex.position.x) ^
+				hash<float>()(vertex.position.y) ^
+				hash<float>()(vertex.position.z));
+
+		}
+
+	};
+
+}
