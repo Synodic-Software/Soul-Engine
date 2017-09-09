@@ -3,41 +3,13 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/xe6bh7hiiofmkh49?svg=true)](https://ci.appveyor.com/project/AsherNorland/soul-engine)
 
 # What is Soul Engine?
-Soul Engine is a physically based renderer and engine for real-time applications on any 
-system with CUDA (primary) or OpenCL (secondary) support. 
+Soul Engine is a physically based renderer and engine for real-time applications. It is cross-platform with CUDA (primary) or OpenCL (secondary) support for computation tasks. 
 
 ![Tree Model](Documentation/Tree.png)
-(This is image is produced after 10 seconds of accumulation on a low-tier graphics card)
-
-# Features
-These are planned features (partial/incomplete implementations) for aid in the vision of the final application.
-
-  - Spectral bidirectional path tracer
-  
-  - GPU physics pipeline which includes an FEM solver for all objects
-  
-  - A ray engine which handles ray requests and processes them in bulk.
-  
-  - Sound path tracing with a multi-listener setup.
-  
-  - Shader system allowing for immediate artist controlled changes.
-  
-  - Fiber implementation for task based CPU processing.
-  
-  - Calculation determinism allowing for lockstep networking.
-  
-Completed features:
-
-  - The ray engine allows for any code to request a parrallel ray job near rendertime. Jobs are coalesced, at the cost of minor overhead, and sent into the scene to collect information. 
-  
-  - Basic path tracing is available using only diffuse materials.
-  
-  - LBVH implementation is complete
-  
-  - Scenes can be created and sent for rendering
+(This is image is produced after 5 seconds of accumulation on a consumer graphics card)
 
 Ways to interact with Soul Engine beyond this repository are currently being investigated.
-For your propiertery purposes, an alternate license will be also made available once the project is in a decent enough shape.
+For your propiertery purposes, an alternate license will be also made available once the project is near feature complete.
 
 Check out the currently open [issues](https://github.com/Behemyth/Soul-Engine/issues) for opportunities to contribute!
 
@@ -52,7 +24,7 @@ To compile within the visual studio project dependancies with the following must
   
   - Vulkan SDK    - https://lunarg.com/vulkan-sdk/
   
-  - Boost 1.63    - http://www.boost.org/
+  - Boost 1.64    - http://www.boost.org/
   
   - GLEW          - http://glew.sourceforge.net/ 
   
@@ -66,20 +38,22 @@ Soul Engine can be compiled in Microsoft Visual Studio 2015.
   
 # Example Usage
 
-```c++
+```
 
 #include "SoulCore.h"
 
 int main()
 {
-	SoulInit(OPENGL);
+	SoulInit();
+
+	EventManager::Listen("Input", "ESCAPE", [](keyState state) {
+		if (state == RELEASE) {
+			SoulSignalClose();
+		}
+	});
 
 	//create a Window
 	GLFWwindow* win=SoulCreateWindow(0, 0.95f, 0.95f);
-
-	InputState::GetInstance().ResetMouse = true;
-
-	SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
 
 	Material* whiteGray = new Material();
 	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
