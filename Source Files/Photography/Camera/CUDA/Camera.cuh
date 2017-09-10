@@ -33,7 +33,7 @@ public:
 			film == other.film;
 	}
 
-	Camera& operator=(Camera arg)
+	Camera& operator=(const Camera& arg)
 	{
 		this->aspectRatio = arg.aspectRatio;
 		this->position = arg.position;

@@ -116,12 +116,14 @@ void RenderWidget::RecreateData() {
 	//remove the rayJob if it exists
 	RayEngine::RemoveJob(rayJob);
 
+	uint jobsize = size.x*size.y;
+
 	//create the new accumulation Buffer
-	accumulator.resize(size.x*size.y);
+	accumulator.resize(jobsize);
 
-	buffer.resize(size.x*size.y);
+	buffer.resize(jobsize);
 
-	extraData.resize(size.x*size.y);
+	extraData.resize(jobsize);
 
 
 	if (currentSize != size) {

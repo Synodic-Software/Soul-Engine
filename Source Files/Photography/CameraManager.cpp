@@ -73,9 +73,9 @@ namespace CameraManager {
 
 		//UpdateIndices(detail::maxSize);
 
-		for (auto& camera : *detail::cameras) {
+		for (int i = 0; i < detail::cameras->size(); ++i) {
+			Camera& camera = (*detail::cameras)[i];
 			camera.UpdateVariables();
-			std::cout << camera.film.resolution.x << std::endl;
 		}
 	}
 

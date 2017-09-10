@@ -28,7 +28,7 @@ public:
 
 	}
 
-	Film& operator=(Film arg)
+	Film& operator=(const Film& arg)
 	{
 		this->resolution = arg.resolution;
 		this->resolutionMax = arg.resolutionMax;
