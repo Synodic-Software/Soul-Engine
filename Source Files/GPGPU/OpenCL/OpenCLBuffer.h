@@ -1,14 +1,37 @@
 #pragma once
-#include "GPGPU\GPUBuffer.h"
+#include "GPGPU\GPUBufferBase.h"
 
 #include "Metrics.h"
-#include "GPGPU\OpenCL\OpenCLDevice.h"
+#include "GPGPU\GPUDevice.h"
 
-class OpenCLBuffer :public GPUBuffer {
+/* Buffer for open cl. */
+template<class T>
+class OpenCLBuffer :public GPUBufferBase<T> {
 
 public:
-	OpenCLBuffer(OpenCLDevice*, uint);
-	~OpenCLBuffer();
+
+	/*
+	 *    Constructor.
+	 *    @param [in,out]	parameter1	If non-null, the first parameter.
+	 *    @param 		 	parameter2	The second parameter.
+	 */
+
+	OpenCLBuffer(const GPUDevice& _device, uint _byteCount)
+		: GPUBufferBase(_device, _byteCount) {
+
+	}
+
+	/* Destructor. */
+	~OpenCLBuffer() {}
+
+
+	void TransferToHost() override {
+
+	}
+
+	void TransferToDevice() override {
+
+	}
 
 protected:
 

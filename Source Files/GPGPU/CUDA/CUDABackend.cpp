@@ -5,73 +5,35 @@
 #include "Utility/CUDA/CudaHelper.cuh"
 
 
+/* Number of devices */
 static int deviceCount;
-static cudaDeviceProp* deviceProp;
 
-namespace CUDABackend {
 
-	void ExtractDevices(std::vector<int>& devices) {
-		cudaError_t error = cudaGetDeviceCount(&deviceCount);
+/*
+ *    Extracts the devices described by devices.
+ *    @param [in,out]	devices	The devices.
+ */
 
-		if (deviceCount == 0)
-		{
-			return;
-		}
+void CUDABackend::ExtractDevices(std::vector<GPUDevice>& devices) {
+	cudaError_t error = cudaGetDeviceCount(&deviceCount);
 
-		deviceProp = new cudaDeviceProp[deviceCount];
-
-		for (int dev = 0; dev < deviceCount; ++dev) {
-
-			CudaCheck(cudaSetDevice(dev));
-			CudaCheck(cudaGetDeviceProperties(&deviceProp[dev], dev));
-			devices.push_back(dev);
-		}
-
-		CudaCheck(cudaSetDevice(0));
-
+	if (deviceCount == 0) {
+		return;
 	}
 
-	void InitThread() {
-		cudaSetDevice(0);
+	for (int dev = 0; dev < deviceCount; ++dev) {
+
+		devices.push_back(dev);
+
 	}
+}
 
-	int GetCoreCount() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
+/* Initializes the thread. */
+void CUDABackend::InitThread() {
+	cudaSetDevice(0);
+}
 
-		return _GetCoresPerMP(deviceProp[device].major, deviceProp[device].minor) * deviceProp[device].multiProcessorCount;
-	}
-
-	int GetSMCount() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return deviceProp[device].multiProcessorCount;
-	}
-
-	int GetWarpSize() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return deviceProp[device].warpSize;
-	}
-
-	int GetWarpsPerMP() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return _GetWarpsPerMP(deviceProp[device].major, deviceProp[device].minor);
-	}
-
-	int GetBlocksPerMP() {
-		int device;
-		CudaCheck(cudaGetDevice(&device));
-
-		return _GetBlocksPerMP(deviceProp[device].major, deviceProp[device].minor);
-	}
-
-	void Terminate() {
-		CudaCheck(cudaDeviceReset());
-	}
-
+/* Terminates this object. */
+void CUDABackend::Terminate() {
+	CudaCheck(cudaDeviceReset());
 }

@@ -1,13 +1,14 @@
 #include "RayEngine.cuh"
 
 #include <thrust/host_vector.h>
-#include <thrust/device_vector.h>
-#include <thrust/remove.h>
+
 #include <cuda_runtime.h>
-#include "Utility\CUDA\CUDAHelper.cuh"
-#include "GPGPU\CUDA\CUDABackend.h"
-#include "Utility\Logger.h"
 #include <curand_kernel.h>
+#include "Utility\CUDA\CUDAHelper.cuh"
+
+#include "GPGPU\GPUManager.h"
+#include "Utility\Logger.h"
+#include "Photography/CameraManager.h"
 
 //cant have AABB defined and not define WOOP_TRI
 #define WOOP_TRI
@@ -173,13 +174,12 @@ __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 	uint startIndex = 0;
 
 	int cur = 0;
-
-	((glm::vec4*)jobs[cur].results)[(index - startIndex)] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	jobs[cur].groupData[(index - startIndex)] = 0;
+	((glm::vec4*)jobs[cur].results)[index - startIndex] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	jobs[cur].groupData[index - startIndex] = 0;
 
 }
 
-__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* nAtomic, curandState* randomState) {
+__global__ void RaySetup(const uint n, int jobSize, RayJob* job, Ray* rays, Camera* cameras, int* nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -191,21 +191,24 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, cons
 	int cur = 0;
 
 	float samples = job[cur].samples;
-	uint sampleIndex = (index - startIndex) / glm::ceil(samples);
+	uint sampleIndex = (index - startIndex) / glm::ceil(samples); //the index of the pixel / sample
 	uint localIndex = (index - startIndex) % (int)glm::ceil(samples);
 
 	curandState randState = randomState[index];
 
-	if (localIndex < samples || curand_uniform(&randState) < __fsub_rd(samples, glm::floor(samples))) {
+	if (localIndex + 1 <= samples || curand_uniform(&randState) < __fsub_rd(samples, glm::floor(samples))) {
 
 		Ray ray;
 		ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		ray.resultOffset = sampleIndex;
-		job[cur].camera.SetupRay(sampleIndex, ray, randState);
-
+		glm::vec3 orig;
+		glm::vec3 dir;
+		cameras[job[cur].camera].GenerateRay(sampleIndex, orig, dir, randState);
+		ray.origin = glm::vec4(orig, 0.0f);
+		ray.direction = glm::vec4(dir, 4000000000000.0f);
 		atomicAdd(job[cur].groupData + sampleIndex, 1);
-		//rays[index] = ray;
 		rays[FastAtomicAdd(nAtomic)] = ray;
+
 	}
 
 	randomState[index] = randState;
@@ -323,10 +326,10 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 	int cur = 0;
 
-
 	Ray ray = rays[index];
 
 	uint faceHit = ray.currentHit;
+
 	float hitT = ray.direction.w;
 
 	uint localIndex = ray.resultOffset;
@@ -342,7 +345,7 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 	}
 	else {
 
-		Face face = scene->faces[ray.currentHit];
+		Face face = scene->faces[faceHit];
 
 		Material mat = scene->materials[face.material];
 
@@ -374,7 +377,6 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		glm::vec3 bestIntersectionPoint = PositionAlongRay(ray, hitT);
 
-
 		glm::vec3 accumulation;
 		accumulation.x = ray.storage.x * mat.emit.x;
 		accumulation.y = ray.storage.y * mat.emit.y;
@@ -388,7 +390,6 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		float4 PicCol = tex2DLod<float4>(mat.diffuseImage.texObj, bestUV.x, bestUV.y, 0.0f);
 		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
 		ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
-
 
 		//ray.storage *= mat->diffuse;
 
@@ -409,7 +410,10 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		//update the state
 		randomState[index] = randState;
 	}
-	col /= job[cur].groupData[localIndex];
+
+	int samples = job[cur].groupData[localIndex];
+
+	col /= samples;
 
 	glm::vec4* pt = &((glm::vec4*)job[cur].results)[localIndex];
 
@@ -430,9 +434,7 @@ __inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
 __inline__ __device__ float Dn(float a) { return a*m; }
 __inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
-
 __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
-
 
 	Node * traversalStack[STACK_SIZE];
 	traversalStack[0] = nullptr; // Bottom-most entry.
@@ -568,7 +570,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 			stackPtr = 0;
 			currentLeaf = nullptr;   // No postponed leaf.
 			currentNode = bvh.root;   // Start from the root.
-			ray.currentHit = -1;  // No triangle intersected so far.
+			ray.currentHit = uint(-1);  // No triangle intersected so far.
 		}
 
 		//Traversal starts here
@@ -780,7 +782,7 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 
 //grab the shared memory for a dynamic blocksize
 __host__ int ReturnSharedBytes(int blockSize) {
-	return blockSize / CUDABackend::GetWarpSize() * sizeof(int);
+	return blockSize / GPUManager::GetBestGPU().GetWarpSize() * sizeof(int);
 }
 
 
@@ -794,7 +796,7 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 		++pt;
 	}
 
-	uint numberJobs = hjobs.size();
+	uint numberJobs = uint(hjobs.size());
 
 	//only upload data if a job exists
 	if (numberJobs > 0) {
@@ -802,11 +804,16 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 		uint numberResults = 0;
 		uint numberRays = 0;
 
-		for (int i = 0; i < numberJobs; ++i) {
+		for (uint i = 0; i < numberJobs; ++i) {
 
 			hjobs[i].startIndex = numberResults;
 			numberResults += hjobs[i].rayAmount;
-			numberRays += hjobs[i].rayAmount* glm::ceil(hjobs[i].samples);
+
+			if (hjobs[i].samples < 0) {
+				hjobs[i].samples = 0.0f;
+			}
+
+			numberRays += hjobs[i].rayAmount* uint(glm::ceil(hjobs[i].samples));
 
 		}
 
@@ -829,6 +836,8 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 
 			uint blockSize = 64;
 			uint blockCount = (numberResults + blockSize - 1) / blockSize;
+
+
 
 
 			//clear the jobs result memory, required for accumulation of multiple samples
@@ -874,13 +883,23 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 				CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 				CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 
-				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, numberJobs, deviceRays, scene, hitAtomic, randomState);
+				GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
+				cameraBuffer->TransferToDevice();
+
+				RaySetup << <blockCount, blockSize >> > (numberRays, numberJobs, jobs, deviceRays, *cameraBuffer, hitAtomic, randomState);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
+				/*	Ray* hostRays = new Ray[numberRays];
+					CudaCheck(cudaMemcpy(hostRays, deviceRays, numberRays *sizeof(Ray), cudaMemcpyDeviceToHost));
 
+					for (int i = 0; i < numberRays; ++i) {
 
-				//start the engine loop
+					}
+
+					delete hostRays;*/
+
+					//start the engine loop
 				uint numActive;
 				CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
 
@@ -926,10 +945,10 @@ __host__ void GPUInitialize() {
 	//dynamically ask for the best launch setup
 	CudaCheck(cudaOccupancyMaxPotentialBlockSizeVariableSMem(
 		&minGridSize, &blockSizeOut, EngineExecute, ReturnSharedBytes,
-		CUDABackend::GetSMCount()*CUDABackend::GetBlocksPerMP()));
+		GPUManager::GetBestGPU().GetSMCount()*GPUManager::GetBestGPU().GetBlocksPerMP()));
 
 	//get the device stats for persistant threads
-	uint warpSize = CUDABackend::GetWarpSize();
+	uint warpSize = GPUManager::GetBestGPU().GetWarpSize();
 	warpPerBlock = blockSizeOut / warpSize;
 	blockCountE = minGridSize;
 	blockSizeE = dim3(warpSize, warpPerBlock, 1);

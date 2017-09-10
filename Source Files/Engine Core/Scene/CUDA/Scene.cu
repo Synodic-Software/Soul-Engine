@@ -13,8 +13,6 @@
 #include <thrust/device_ptr.h>
 #include <thrust/scan.h>
 #include <thrust/sort.h>
-#include <thrust/remove.h>
-#include <thrust/functional.h>
 
 Scene::Scene()
 {
@@ -219,9 +217,7 @@ void Scene::Compile() {
 			for (uint t = 0; t < maxIter; ++t) {
 				if (t < addList[i].second->verticeAmount) {
 					tempVertices[t] = addList[i].second->vertices[t];
-					glm::vec4 pos = glm::vec4(tempVertices[t].position.x, tempVertices[t].position.y, tempVertices[t].position.z, 1.0f);
-					pos = addList[i].first*pos;
-					tempVertices[t].position = glm::vec3(pos.x, pos.y, pos.z);
+					tempVertices[t].position = glm::vec3(tempVertices[t].position);
 					tempVertices[t].object = objectOffset;
 				}
 				if (t < addList[i].second->faceAmount) {

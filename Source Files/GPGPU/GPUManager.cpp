@@ -1,84 +1,63 @@
 #include "GPUManager.h"
 
-#include "CUDA\CUDABackend.h"
-#include "OpenCL\OpenCLBackend.h"
-
-#include "CUDA\CUDABuffer.h"
-#include "OpenCL\OpenCLBuffer.h"
-
-#include "CUDA\CUDARasterBuffer.h"
-#include "OpenCL\OpenCLRasterBuffer.h"
-
 #include "GPUDevice.h"
 #include "CUDA\CUDADevice.h"
 #include "OpenCL\OpenCLDevice.h"
 
-#include <vector>
-#include <memory>
-
-std::vector<std::unique_ptr<GPUDevice>> devices;
-
 namespace GPUManager {
 
-	//Only run the function if there is an available 
+	/* Only run the function if there is an available. */
 
+	namespace detail {
 
+		/* The devices */
+		std::vector<std::unique_ptr<GPUDevice>> devices;
+
+		CUDABackend cudaBackend;
+		OpenCLBackend openCLBackend;
+
+	}
 
 	void ExtractDevices() {
-		std::vector<int> cudaDevices;
-		CUDABackend::ExtractDevices(cudaDevices);
+		std::vector<GPUDevice> cudaDevices;
+		detail::cudaBackend.ExtractDevices(cudaDevices);
+
+		int cudaCounter = 0;
+		int clCounter = 0;
 
 		for (auto &var : cudaDevices) {
-			devices.emplace_back(new CUDADevice(var));
+			detail::devices.emplace_back(new CUDADevice(cudaCounter));
+			++cudaCounter;
 		}
 
-		std::vector<int> openCLDevices;
-		OpenCLBackend::ExtractDevices(openCLDevices);
+		std::vector<GPUDevice> openCLDevices;
+		detail::openCLBackend.ExtractDevices(openCLDevices);
 
 		for (auto &var : openCLDevices) {
-			devices.emplace_back(new OpenCLDevice(var));
+			detail::devices.emplace_back(new OpenCLDevice(clCounter));
+
+			++clCounter;
 		}
 	}
 
+	/* Destroys the devices. */
 	void DestroyDevices() {
-		devices.clear();
+		detail::devices.clear();
 	}
 
-
+	/* Initializes the thread. */
 	void InitThread() {
-		CUDABackend::InitThread();
-		OpenCLBackend::InitThread();
+		detail::cudaBackend.InitThread();
+		detail::openCLBackend.InitThread();
 	}
 
+	/*
+	 *    Gets best GPU.
+	 *    @return	The best GPU.
+	 */
 
-	GPURasterBuffer* CreateRasterBuffer(int GPU, uint size) {
-
-		GPURasterBuffer* buffer;
-
-		if (devices[GPU]->api == CUDA) {
-			buffer = new CUDARasterBuffer(static_cast<CUDADevice*>(devices[GPU].get()),size);
-		}
-		else {
-			buffer = new OpenCLRasterBuffer(static_cast<OpenCLDevice*>(devices[GPU].get()), size);
-		}
-		return buffer;
-	}
-
-	GPUBuffer* CreateBuffer(int GPU, uint size) {
-
-		GPUBuffer* buffer;
-
-		if (devices[GPU]->api == CUDA) {
-			buffer = new CUDABuffer(static_cast<CUDADevice*>(devices[GPU].get()), size);
-		}
-		else {
-			buffer = new OpenCLBuffer(static_cast<OpenCLDevice*>(devices[GPU].get()), size);
-		}
-		return buffer;
-	}
-
-	int GetBestGPU() {
-		return 0;
+	GPUDevice& GetBestGPU() {
+		return *detail::devices[0].get();
 	}
 
 

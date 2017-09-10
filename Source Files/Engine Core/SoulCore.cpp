@@ -10,7 +10,6 @@
 #include "Utility/Logger.h"
 
 #include "Engine Core/Frame/Frame.h"
-#include "Input/InputState.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
 #include "Bounding Volume Heirarchy/BVH.h"
@@ -19,25 +18,34 @@
 #include "Display\Layout\SingleLayout.h"
 #include "Display\Widget\RenderWidget.h"
 #include "Multithreading\Scheduler.h"
+#include "Events\EventManager.h"
+#include "Input/InputManager.h"
+#include "Photography/CameraManager.h"
 
 namespace Soul {
 
-	/////////////////////////Variables and Declarations//////////////////
+	/* //////////////////////Variables and Declarations//////////////////. */
 
 	std::list<Scene*> scenes;
 
+	/* The engine refresh rate */
 	double engineRefreshRate;
+	/* The alloted render time */
+	double allotedRenderTime;
+	/* True to running */
 	bool running = true;
-	/////////////////////////Synchronization///////////////////////////
+	/* //////////////////////Synchronization///////////////////////////. */
 
 	void SynchCPU() {
 		Scheduler::Block();
 	}
 
+	/* Synchronises the GPU. */
 	void SynchGPU() {
 		//CudaCheck(cudaDeviceSynchronize());
 	}
 
+	/* Synchronises the system. */
 	void SynchSystem() {
 		SynchCPU();
 		SynchGPU();
@@ -50,7 +58,7 @@ namespace Soul {
 	/////////////////////////Engine Core/////////////////////////////////
 
 
-	//Call to deconstuct both the engine and its dependencies
+	/* Call to deconstuct both the engine and its dependencies. */
 	void Terminate() {
 		Soul::SynchSystem();
 
@@ -61,13 +69,19 @@ namespace Soul {
 
 		//Clean the RayEngine from stray data
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-				RayEngine::Terminate();
+			RayEngine::Terminate();
 		});
 
 		//destroy all windows
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			WindowManager::Terminate();
 		});
+
+		//destroy all cameras
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			CameraManager::Terminate();
+		});
+
 		Scheduler::Block();
 
 		//destroy glfw, needs to wait on the window manager
@@ -85,7 +99,7 @@ namespace Soul {
 		Scheduler::Terminate();
 	}
 
-	//Initializes the engine
+	/* Initializes the engine. */
 	void Initialize() {
 
 		//setup the multithreader
@@ -135,69 +149,87 @@ namespace Soul {
 			RayEngine::Initialize();
 		});
 
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			CameraManager::Initialize();
+		});
+
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
-		Settings::Get("Engine.Engine_Refresh_Rate", 60.0, &engineRefreshRate);
+		Settings::Get("Engine.Delta_Time", 1 / 60.0, &engineRefreshRate);
+		Settings::Get("Engine.Alloted_Render_Time", 0.01, &allotedRenderTime);
 
 		Scheduler::Block();
+
 	}
 
+	/* Rasters this object. */
 	void Raster() {
 
 		//Backends should handle multithreading
 		WindowManager::Draw();
 	}
 
+	/* Warmups this object. */
 	void Warmup() {
-
-		double deltaTime = 1.0 / engineRefreshRate;
 
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			glfwPollEvents();
 		});
 
-		InputState::GetInstance().ResetOffsets(); //temp, replace input engine at some point
-
-
 		for (auto const& scene : scenes) {
-			scene->Build(deltaTime);
+			scene->Build(engineRefreshRate);
 		}
 
 		Scheduler::Block();
 
 	}
 
+	/* Early frame update. */
 	void EarlyFrameUpdate() {
 
+		EventManager::Emit("Update", "EarlyFrame");
+
 	}
+	/* Late frame update. */
 	void LateFrameUpdate() {
 
+		EventManager::Emit("Update", "LateFrame");
+
 	}
 
+	/* Early update. */
 	void EarlyUpdate() {
 
 		//poll events before this update, making the state as close as possible to real-time input
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
 			glfwPollEvents();
 		});
-		InputState::GetInstance().ResetOffsets(); //temp, replace input engine at some point
+
+		//poll input after glfw processes all its callbacks (updating some input states)
+		InputManager::Poll();
+
+		EventManager::Emit("Update", "Early");
+
+		CameraManager::Update();
 
 		Scheduler::Block();
+
 	}
 
+	/* Late update. */
 	void LateUpdate() {
 
+		EventManager::Emit("Update", "Late");
+
 	}
 
+	/* Runs this object. */
 	void Run()
 	{
 
 		Warmup();
-
-		double deltaTime = 1.0 / engineRefreshRate;
-
 
 		//setup timer info
 		double t = 0.0f;
@@ -220,14 +252,12 @@ namespace Soul {
 			EarlyFrameUpdate();
 
 			//consumes time created by the renderer
-			while (accumulator >= deltaTime) {
-
-				deltaTime = 1.0 / engineRefreshRate;
+			while (accumulator >= engineRefreshRate) {
 
 				EarlyUpdate();
 
 				for (auto const& scene : scenes) {
-					scene->Build(deltaTime);
+					scene->Build(engineRefreshRate);
 				}
 				/*
 				for (auto const& scene : scenes){
@@ -236,15 +266,15 @@ namespace Soul {
 
 				LateUpdate();
 
-				t += deltaTime;
-				accumulator -= deltaTime;
+				t += engineRefreshRate;
+				accumulator -= engineRefreshRate;
 			}
 
 
 			LateFrameUpdate();
 
 			for (auto const& scene : scenes) {
-				RayEngine::Process(scene);
+				RayEngine::Process(scene, allotedRenderTime);
 			}
 
 			Raster();
@@ -253,13 +283,17 @@ namespace Soul {
 	}
 }
 
-/////////////////////////User Interface///////////////////////////
+/*
+ *    //////////////////////User Interface///////////////////////////.
+ *    @param	pressType	Type of the press.
+ */
 
-void SoulSignalClose(int pressType) {
+void SoulSignalClose() {
 	Soul::running = false;
 	WindowManager::SignelClose();
 }
 
+/* Soul run. */
 void SoulRun() {
 	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 		Soul::Run();
@@ -268,33 +302,47 @@ void SoulRun() {
 	Scheduler::Block();
 }
 
+/*
+ *    Gets delta time.
+ *    @return	The delta time.
+ */
+
 double GetDeltaTime() {
-	return Soul::engineRefreshRate / 60.0;
+	return Soul::engineRefreshRate;
 }
 
-void SetKey(int key, std::function<void(int)> func) {
-	InputState::GetInstance().SetKey(key, func);
-}
-void MouseEvent(std::function<void(double,double)> func) {
-	InputState::GetInstance().AddMouseCallback(func);
-}
-
-//Initializes Soul. This should be the first command in a program.
+/* Initializes Soul. This should be the first command in a program. */
 void SoulInit() {
 	Soul::Initialize();
 }
 
+/* Soul terminate. */
 void SoulTerminate() {
 	Soul::Terminate();
 }
+
+/*
+ *    Submit scene.
+ *    @param [in,out]	scene	If non-null, the scene.
+ */
 
 void SubmitScene(Scene* scene) {
 	Soul::scenes.push_back(scene);
 }
 
+/*
+ *    Removes the scene described by scene.
+ *    @param [in,out]	scene	If non-null, the scene.
+ */
+
 void RemoveScene(Scene* scene) {
 	Soul::scenes.remove(scene);
 }
+
+/*
+ *    Main entry-point for this application.
+ *    @return	Exit-code for the process - 0 for success, else an error code.
+ */
 
 int main()
 {
@@ -303,14 +351,16 @@ int main()
 	{
 		SoulInit();
 
-		InputState::GetInstance().ResetMouse = true;
-
-		SetKey(GLFW_KEY_ESCAPE, SoulSignalClose);
+		EventManager::Listen("Input", "ESCAPE", [](keyState state) {
+			if (state == RELEASE) {
+				SoulSignalClose();
+			}
+		});
 
 		uint xSize;
-		Settings::Get("MainWindow.Width", uint(1024), &xSize);
+		Settings::Get("MainWindow.Width", uint(800), &xSize);
 		uint ySize;
-		Settings::Get("MainWindow.Height", uint(720), &ySize);
+		Settings::Get("MainWindow.Height", uint(450), &ySize);
 		uint xPos;
 		Settings::Get("MainWindow.X_Position", uint(0), &xPos);
 		uint yPos;
@@ -323,9 +373,11 @@ int main()
 		Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), static_cast<int*>(&typeCast));
 		type = static_cast<WindowType>(typeCast);
 
-		Camera* camera = new Camera();
+		glm::uvec2 size = glm::uvec2(xSize, ySize);
+		uint cameraID = CameraManager::AddCamera(size);
+		Camera* camera = CameraManager::GetCamera(cameraID);
 
-		camera->SetPosition(glm::vec3((DECAMETER) * 5, DECAMETER*5, (DECAMETER) * 5));
+		camera->position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
 		camera->OffsetOrientation(225, 45);
 
 		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
@@ -333,70 +385,76 @@ int main()
 		WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(camera)));
 
 		double deltaTime = GetDeltaTime();
-		float moveSpeed = 1 * METER * deltaTime;
+		float moveSpeed = 10 * METER * deltaTime;
 
-		SetKey(GLFW_KEY_S, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * -camera->Forward());
-		});
+		InputManager::AfixMouse(*mainWindow);
 
-		SetKey(GLFW_KEY_W, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * camera->Forward());
-		});
+		EventManager::Listen("Input", "S", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
 
-		SetKey(GLFW_KEY_A, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * -camera->Right());
-		});
-
-		SetKey(GLFW_KEY_D, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * camera->Right());
-		});
-
-		SetKey(GLFW_KEY_Z, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * -glm::vec3(0, 1, 0));
-		});
-
-		SetKey(GLFW_KEY_X, [&camera, &moveSpeed](int action) {
-			camera->OffsetPosition(float(moveSpeed) * glm::vec3(0, 1, 0));
-		});
-
-
-		SetKey(GLFW_KEY_LEFT_SHIFT, [deltaTime, &moveSpeed](int action) {
-			if (action == GLFW_PRESS) {
-				moveSpeed = 9 * METER * deltaTime;
-			}
-			else if (action == GLFW_RELEASE) {
-				moveSpeed = 1 * METER * deltaTime;
+			if (state == PRESS || state == REPEAT) {
+				camera->position += float(moveSpeed) * -camera->forward;
 			}
 		});
 
-		SetKey(GLFW_KEY_LEFT_ALT, [deltaTime, &moveSpeed](int action) {
-			if (action == GLFW_PRESS) {
-				moveSpeed = 1 * METER * deltaTime;
-			}
-			else if (action == GLFW_RELEASE) {
-				moveSpeed = 1 * METER * deltaTime;
+		EventManager::Listen("Input", "W", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
+			if (state == PRESS || state == REPEAT) {
+				camera->position += float(moveSpeed) * camera->forward;
 			}
 		});
 
+		EventManager::Listen("Input", "A", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
 
-		SetKey(GLFW_KEY_LEFT_ALT, [deltaTime, &moveSpeed](int action) {
-			if (action == GLFW_PRESS) {
-				moveSpeed = 1 * METER * deltaTime;
-			}
-			else if (action == GLFW_RELEASE) {
-				moveSpeed = 1 * METER * deltaTime;
+			if (state == PRESS || state == REPEAT) {
+				camera->position += float(moveSpeed) * -camera->right;
 			}
 		});
 
-		MouseEvent([&camera](double xPos, double yPos) {
+		EventManager::Listen("Input", "D", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
+			if (state == PRESS || state == REPEAT) {
+				camera->position += float(moveSpeed) * camera->right;
+			}
+		});
+
+		EventManager::Listen("Input", "Z", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
+			if (state == PRESS || state == REPEAT) {
+				camera->position += float(moveSpeed) * -glm::vec3(0, 1, 0);
+			}
+		});
+
+		EventManager::Listen("Input", "X", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
+			if (state == PRESS || state == REPEAT) {
+				camera->position += float(moveSpeed) * glm::vec3(0, 1, 0);
+			}
+		});
+
+		EventManager::Listen("Input", "LEFT SHIFT", [deltaTime, &moveSpeed](keyState state) {
+			if (state == PRESS || state == REPEAT) {
+				moveSpeed = 90 * METER * deltaTime;
+			}
+			else if (state == RELEASE) {
+				moveSpeed = 10 * METER * deltaTime;
+			}
+		});
+
+		EventManager::Listen("Input", "Mouse Position", [cameraID](double x, double y) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
 			glm::dvec2 mouseChangeDegrees;
-			mouseChangeDegrees.x = (float)(xPos / camera->resolution.x *camera->FieldOfView().x);
-			mouseChangeDegrees.y = (float)(yPos / camera->resolution.y *camera->FieldOfView().y);
+			mouseChangeDegrees.x = x / camera->fieldOfView.x * 2;
+			mouseChangeDegrees.y = y / camera->fieldOfView.y * 2;
 
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-			camera->UpdateVariables();
 		});
-	
 
 		Scene* scene = new Scene();
 
@@ -413,17 +471,17 @@ int main()
 		light->emit = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 
 		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
-		scene->AddObject(glm::mat4(),tree);
+		scene->AddObject(glm::mat4(), tree);
 
 		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
-		scene->AddObject(glm::mat4(),plane);
+		scene->AddObject(glm::mat4(), plane);
 
 		glm::mat4 transform;
 		transform = glm::translate(transform, /*100000000000.0f**/glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10));
 		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
 
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
-		scene->AddObject(transform,sphere);
+		scene->AddObject(transform, sphere);
 
 		SubmitScene(scene);
 

@@ -31,6 +31,7 @@
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>
       </WholeProgramOptimization>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)..\Libraries\glew\lib\Release MX\x64;$(AMDAPPSDKROOT)/lib/x86_64;$(ProjectDir)..\Libraries\boost\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)..\Libraries\glfw\bin;$(ProjectDir)..\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)..\Libraries</AdditionalLibraryDirectories>
@@ -51,7 +52,6 @@
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <NvccCompilation>compile</NvccCompilation>
-      <GenerateLineInfo>true</GenerateLineInfo>
       <CudaRuntime>Static</CudaRuntime>
       <CodeGeneration>compute_50,sm_50;compute_52,sm_52;compute_61,sm_61</CodeGeneration>
       <FastMath>false</FastMath>
@@ -71,7 +71,7 @@
       <UseHostLibraryDirectories>false</UseHostLibraryDirectories>
       <PerformDeviceLink>true</PerformDeviceLink>
       <GPUDebugInfo>true</GPUDebugInfo>
-      <AdditionalDependencies>cudart64_80.lib;cudadevrt.lib</AdditionalDependencies>
+      <AdditionalDependencies>cudart64_90.lib;cudadevrt.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(CUDA_LIB_PATH)</AdditionalLibraryDirectories>
     </CudaLink>
   </ItemDefinitionGroup>

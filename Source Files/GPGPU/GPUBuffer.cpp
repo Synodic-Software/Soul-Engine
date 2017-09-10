@@ -1,11 +1,2 @@
 #include "GPUBuffer.h"
-
-GPUBuffer::GPUBuffer() {
-
-
-}
-
-GPUBuffer::~GPUBuffer() {
-
-
-}
+//templated class. Unused

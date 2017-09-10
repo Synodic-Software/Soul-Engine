@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Engine Core/Camera/CUDA/Camera.cuh"
-#include "Input/Input.h"
+#include "Photography/Camera/CUDA/Camera.cuh"
 #include "Engine Core/Material/Material.h"
 #include "Engine Core/Object/CUDA/Vertex.cuh"
 #include "Engine Core/Object/CUDA/Face.cuh"
@@ -36,10 +35,6 @@ public:
 	std::vector<Face> faces;
 	std::vector<Tet> tets;
 	std::vector<Material> materials;
-
-	void Update(double);
-	void UpdateLate(double);
-	void Load();
 
 	BoundingBox box; //in object space
 

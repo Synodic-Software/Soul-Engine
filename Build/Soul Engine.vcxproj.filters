@@ -22,9 +22,6 @@
     <Filter Include="Engine Backend\Engine Core\Object">
       <UniqueIdentifier>{ad590c37-6f78-45fc-ad10-3410cfbfa4a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera">
-      <UniqueIdentifier>{f689deb8-e1ee-41a0-8059-657282da72dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Engine Core\Material">
       <UniqueIdentifier>{1782d4a1-97aa-41c8-b2c8-b616a6c3a138}</UniqueIdentifier>
     </Filter>
@@ -61,9 +58,6 @@
     <Filter Include="Engine Backend\Bounding Volume Heirarchy\CUDA">
       <UniqueIdentifier>{c5294c1b-e4b7-432b-869b-46cf2a8e0bad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\CUDA">
-      <UniqueIdentifier>{c202798d-1fc2-49c9-83f0-52a2549fb6a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Engine Core\Scene">
       <UniqueIdentifier>{ec1089d9-4d17-4dad-ba40-fc00454f755b}</UniqueIdentifier>
     </Filter>
@@ -72,9 +66,6 @@
     </Filter>
     <Filter Include="Engine Backend\Utility\OpenCL">
       <UniqueIdentifier>{3dbfc2b1-da51-4160-a70c-e684ce58d8b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Engine Core\Camera\OpenCL">
-      <UniqueIdentifier>{0b3e3f96-ff35-4e58-8095-59e525988260}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Engine Core\Scene\CUDA">
       <UniqueIdentifier>{b8677bcf-f38c-4219-890f-e3bcf51f6ce4}</UniqueIdentifier>
@@ -129,9 +120,6 @@
     </Filter>
     <Filter Include="Engine Backend\Engine Core\Material\Colour\OpenCL">
       <UniqueIdentifier>{0a23ec14-0416-453c-a3fd-e06601ef2c60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Engine Core\Allocator">
-      <UniqueIdentifier>{05e57c49-4656-4425-be25-75d03925d296}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Display">
       <UniqueIdentifier>{2f2ed3b7-3058-4e14-939f-a6241027892f}</UniqueIdentifier>
@@ -202,6 +190,48 @@
     <Filter Include="Engine Backend\Memory\Allocator\Linear Allocator">
       <UniqueIdentifier>{68060659-cfcf-48cf-aa6e-8d8356cdbfc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Events">
+      <UniqueIdentifier>{273d6492-3451-446a-80a7-1726e234f035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography">
+      <UniqueIdentifier>{7bf92f47-1f13-4708-9bc3-3fac08e9248b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Camera">
+      <UniqueIdentifier>{6b700fc8-8f5a-4c91-9610-6c499ff9135a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Film">
+      <UniqueIdentifier>{7004ec38-afc3-4ac6-9668-2a8663afcc57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Lens">
+      <UniqueIdentifier>{e3239e1d-399d-463d-99ff-d59e8b833408}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Lens\CUDA">
+      <UniqueIdentifier>{93d22bde-2fe9-44c6-8145-fd1d3379b3fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Lens\OpenCL">
+      <UniqueIdentifier>{d2edea9f-4de8-4498-9498-f571596d3c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Film\CUDA">
+      <UniqueIdentifier>{6b25a01a-e72f-46b3-a438-91fcbe1d522d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Film\OpenCL">
+      <UniqueIdentifier>{78dc1601-16b8-4b0d-863c-d23f70cc2d37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Camera\OpenCL">
+      <UniqueIdentifier>{a5a4ae65-c9bb-4db6-9220-c786a383aad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Photography\Camera\CUDA">
+      <UniqueIdentifier>{2dc3a446-f0ca-419f-bfc0-879553767450}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Sort">
+      <UniqueIdentifier>{7b35ae51-68cd-403f-8b7d-7da3147835d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA">
+      <UniqueIdentifier>{dab13a91-4a82-48af-89c7-c8e626429971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Sort\OpenCL">
+      <UniqueIdentifier>{8c91be81-bbf0-41b9-a7b5-4249ca88ebe0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -242,18 +272,6 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Display\Window\Window.h">
       <Filter>Engine Backend\Display\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Allocator\Allocator.h">
-      <Filter>Engine Backend\Engine Core\Allocator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cuh">
-      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\OpenCL\CLCamera.h">
-      <Filter>Engine Backend\Engine Core\Camera\OpenCL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Camera\Camera.h">
-      <Filter>Engine Backend\Engine Core\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Frame\Frame.h">
       <Filter>Engine Backend\Engine Core\Frame</Filter>
@@ -341,12 +359,6 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\GPGPU\GPUManager.h">
       <Filter>Engine Backend\GPGPU</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Input\InputState.h">
-      <Filter>Engine Backend\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Input\Input.h">
-      <Filter>Engine Backend\Input</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h">
       <Filter>Engine Backend\Multithreading</Filter>
@@ -525,6 +537,63 @@
     <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h">
       <Filter>Engine Backend\Memory\Allocator\Linear Allocator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Events\EventManager.h">
+      <Filter>Engine Backend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Events\Event.h">
+      <Filter>Engine Backend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Utility\Timer.h">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Input\InputManager.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Input\InputSet.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Input\Key.h">
+      <Filter>Engine Backend\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\CameraManager.h">
+      <Filter>Engine Backend\Photography</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\Lens\Lens.h">
+      <Filter>Engine Backend\Photography\Lens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\Lens\CUDA\Lens.cuh">
+      <Filter>Engine Backend\Photography\Lens\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\Film\Film.h">
+      <Filter>Engine Backend\Photography\Film</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\Film\CUDA\Film.cuh">
+      <Filter>Engine Backend\Photography\Film\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\Camera\Camera.h">
+      <Filter>Engine Backend\Photography\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\Camera\OpenCL\CLCamera.h">
+      <Filter>Engine Backend\Photography\Camera\OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Photography\Camera\CUDA\Camera.cuh">
+      <Filter>Engine Backend\Photography\Camera\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\Sort.h">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cuh">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUBackendBase.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUBufferBase.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPURasterBufferBase.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -548,9 +617,6 @@
     <ClCompile Include="..\Source Files\Display\Window\WindowManager.cpp">
       <Filter>Engine Backend\Display\Window</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Engine Core\Allocator\Allocator.cpp">
-      <Filter>Engine Backend\Engine Core\Allocator</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Engine Core\Frame\Frame.cpp">
       <Filter>Engine Backend\Engine Core\Frame</Filter>
     </ClCompile>
@@ -565,12 +631,6 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\GPUManager.cpp">
       <Filter>Engine Backend\GPGPU</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Input\Input.cpp">
-      <Filter>Engine Backend\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Input\InputState.cpp">
-      <Filter>Engine Backend\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp">
       <Filter>Engine Backend\Multithreading</Filter>
@@ -674,6 +734,39 @@
     <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp">
       <Filter>Engine Backend\Memory\Allocator\Linear Allocator</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source Files\Memory\Allocator\Allocator.cpp">
+      <Filter>Engine Backend\Memory\Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Events\Event.cpp">
+      <Filter>Engine Backend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Events\EventManager.cpp">
+      <Filter>Engine Backend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Utility\Timer.cpp">
+      <Filter>Engine Backend\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Input\InputManager.cpp">
+      <Filter>Engine Backend\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Input\InputSet.cpp">
+      <Filter>Engine Backend\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Input\Key.cpp">
+      <Filter>Engine Backend\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Photography\CameraManager.cpp">
+      <Filter>Engine Backend\Photography</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUBufferBase.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPURasterBufferBase.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
@@ -687,9 +780,6 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cu">
       <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cu">
-      <Filter>Engine Backend\Engine Core\Camera\CUDA</Filter>
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cu">
       <Filter>Engine Backend\Engine Core\Material\Colour\CUDA</Filter>
@@ -747,6 +837,18 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu">
       <Filter>Engine Backend\Display\Widget\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Photography\Lens\CUDA\Lens.cu">
+      <Filter>Engine Backend\Photography\Lens\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Photography\Film\CUDA\Film.cu">
+      <Filter>Engine Backend\Photography\Film\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Photography\Camera\CUDA\Camera.cu">
+      <Filter>Engine Backend\Photography\Camera\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu">
+      <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
