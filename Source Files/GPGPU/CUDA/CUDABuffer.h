@@ -23,11 +23,23 @@ public:
 	}
 
 
-	void TransferToHost() const override {
+	void TransferToHost() override {
+
+		//perform size checks
+		if (device_size > host_size) {
+			GPUBufferBase<T>::resize(device_size);
+		}
+
 		CudaCheck(cudaMemcpy(hostData, deviceData, device_size * sizeof(T), cudaMemcpyDeviceToHost));
 	}
 
-	void TransferToDevice() const override {
+	void TransferToDevice() override {
+
+		//perform size checks
+		if (host_size > device_size) {
+			this->resize(host_size);
+		}
+
 		CudaCheck(cudaMemcpy(deviceData, hostData, device_size * sizeof(T), cudaMemcpyHostToDevice));
 	}
 

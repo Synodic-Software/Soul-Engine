@@ -179,7 +179,7 @@ __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 
 }
 
-__global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, Camera* cameras, const Scene* scene, int* nAtomic, curandState* randomState) {
+__global__ void RaySetup(const uint n, int jobSize, RayJob* job, Ray* rays, Camera* cameras, int* nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -196,7 +196,7 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, Came
 
 	curandState randState = randomState[index];
 
-	if (localIndex+1 <= samples || curand_uniform(&randState) < __fsub_rd(samples, glm::floor(samples))) {
+	if (localIndex + 1 <= samples || curand_uniform(&randState) < __fsub_rd(samples, glm::floor(samples))) {
 
 		Ray ray;
 		ray.storage = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -204,10 +204,11 @@ __global__ void RaySetup(const uint n, RayJob* job, int jobSize, Ray* rays, Came
 		glm::vec3 orig;
 		glm::vec3 dir;
 		cameras[job[cur].camera].GenerateRay(sampleIndex, orig, dir, randState);
-		ray.origin = glm::vec4(orig,0.0f);
-		ray.direction = glm::vec4(dir,4000000000000.0f);
+		ray.origin = glm::vec4(orig, 0.0f);
+		ray.direction = glm::vec4(dir, 4000000000000.0f);
 		atomicAdd(job[cur].groupData + sampleIndex, 1);
 		rays[FastAtomicAdd(nAtomic)] = ray;
+
 	}
 
 	randomState[index] = randState;
@@ -325,10 +326,10 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 	int cur = 0;
 
-
 	Ray ray = rays[index];
 
 	uint faceHit = ray.currentHit;
+
 	float hitT = ray.direction.w;
 
 	uint localIndex = ray.resultOffset;
@@ -344,7 +345,7 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 	}
 	else {
 
-		Face face = scene->faces[ray.currentHit];
+		Face face = scene->faces[faceHit];
 
 		Material mat = scene->materials[face.material];
 
@@ -376,7 +377,6 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 		glm::vec3 bestIntersectionPoint = PositionAlongRay(ray, hitT);
 
-
 		glm::vec3 accumulation;
 		accumulation.x = ray.storage.x * mat.emit.x;
 		accumulation.y = ray.storage.y * mat.emit.y;
@@ -390,7 +390,6 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		float4 PicCol = tex2DLod<float4>(mat.diffuseImage.texObj, bestUV.x, bestUV.y, 0.0f);
 		//float PicCol = tex2D<float>(mat->texObj, bestUV.x * 50, bestUV.y * 50);
 		ray.storage *= glm::vec4(PicCol.x, PicCol.y, PicCol.z, 1.0f);
-
 
 		//ray.storage *= mat->diffuse;
 
@@ -411,7 +410,10 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		//update the state
 		randomState[index] = randState;
 	}
-	col /= job[cur].groupData[localIndex];
+
+	int samples = job[cur].groupData[localIndex];
+
+	col /= samples;
 
 	glm::vec4* pt = &((glm::vec4*)job[cur].results)[localIndex];
 
@@ -433,7 +435,6 @@ __inline__ __device__ float Dn(float a) { return a*m; }
 __inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
 __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
-
 
 	Node * traversalStack[STACK_SIZE];
 	traversalStack[0] = nullptr; // Bottom-most entry.
@@ -808,7 +809,7 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 			hjobs[i].startIndex = numberResults;
 			numberResults += hjobs[i].rayAmount;
 
-			if (hjobs[i].samples<0) {
+			if (hjobs[i].samples < 0) {
 				hjobs[i].samples = 0.0f;
 			}
 
@@ -835,6 +836,8 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 
 			uint blockSize = 64;
 			uint blockCount = (numberResults + blockSize - 1) / blockSize;
+
+
 
 
 			//clear the jobs result memory, required for accumulation of multiple samples
@@ -883,13 +886,20 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 				GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
 				cameraBuffer->TransferToDevice();
 
-				RaySetup << <blockCount, blockSize >> > (numberRays, jobs, numberJobs, deviceRays, *cameraBuffer,scene, hitAtomic, randomState);
+				RaySetup << <blockCount, blockSize >> > (numberRays, numberJobs, jobs, deviceRays, *cameraBuffer, hitAtomic, randomState);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
+				/*	Ray* hostRays = new Ray[numberRays];
+					CudaCheck(cudaMemcpy(hostRays, deviceRays, numberRays *sizeof(Ray), cudaMemcpyDeviceToHost));
 
+					for (int i = 0; i < numberRays; ++i) {
 
-				//start the engine loop
+					}
+
+					delete hostRays;*/
+
+					//start the engine loop
 				uint numActive;
 				CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
 
