@@ -14,6 +14,9 @@ namespace CameraManager {
 	namespace detail {
 
 		GPUBuffer<Camera>* cameras;
+		std::list<uint> cameraIDs;
+
+		uint globalID = 0;
 
 		std::vector<uint> indicesH;
 		uint* indicesD;
@@ -72,7 +75,6 @@ namespace CameraManager {
 	void Update() {
 
 		//UpdateIndices(detail::maxSize);
-
 		for (int i = 0; i < detail::cameras->size(); ++i) {
 			Camera& camera = (*detail::cameras)[i];
 			camera.UpdateVariables();
@@ -80,9 +82,12 @@ namespace CameraManager {
 	}
 
 	//TODO return a pointer or ID, not
-	Camera* AddCamera(glm::uvec2& res) {
+	uint AddCamera(glm::uvec2& res) {
+
+		uint id = detail::globalID++;
 
 		detail::cameras->push_back(Camera());
+		detail::cameraIDs.push_back(id);
 
 		Camera* def = detail::cameras->back();
 
@@ -93,11 +98,24 @@ namespace CameraManager {
 		//update the manger maxSize (for index counting)
 		detail::maxSize = glm::max(detail::maxSize, res);
 
-		return def;
+		return id;
 	}
 
 	GPUBuffer<Camera>* GetCameraBuffer() {
 		return detail::cameras;
+	}
+
+	Camera* GetCamera(uint id) {
+
+		int index = std::distance(
+			detail::cameraIDs.begin(), 
+			std::find(
+				detail::cameraIDs.begin(), 
+				detail::cameraIDs.end(),
+				id)
+		);
+
+		return (*detail::cameras).begin()+index;
 	}
 
 
