@@ -358,9 +358,9 @@ int main()
 		});
 
 		uint xSize;
-		Settings::Get("MainWindow.Width", uint(400), &xSize);
+		Settings::Get("MainWindow.Width", uint(800), &xSize);
 		uint ySize;
-		Settings::Get("MainWindow.Height", uint(225), &ySize);
+		Settings::Get("MainWindow.Height", uint(450), &ySize);
 		uint xPos;
 		Settings::Get("MainWindow.X_Position", uint(0), &xPos);
 		uint yPos;

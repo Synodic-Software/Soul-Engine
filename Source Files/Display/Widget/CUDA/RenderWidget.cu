@@ -2,9 +2,9 @@
 #include "Utility\CUDA\CUDAHelper.cuh"
 
 static uint allocatedSize = 0;
-static uint* weights = 0;
+static uint* deviceWeights = 0;
 
-__global__ void IntegrateKernal(const uint n, glm::vec4* A, glm::vec4* B, int* mask, uint* counters, const uint counter) {
+__global__ void IntegrateKernal(const uint n, glm::vec4* A, glm::vec4* B, int* mask, uint* weights, const uint counter) {
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -14,9 +14,9 @@ __global__ void IntegrateKernal(const uint n, glm::vec4* A, glm::vec4* B, int* m
 	}
 
 	if (mask[index] > 0) {
-		counters[index]++;
+		weights[index]++;
 
-		B[index] = glm::mix(B[index], A[index], 1.0f / counters[index]);
+		B[index] = glm::mix(B[index], A[index], 1.0f / weights[index]);
 	}
 
 	A[index] = B[index];
@@ -28,19 +28,19 @@ __host__ void Integrate(uint size, glm::vec4* A, glm::vec4* B, int* mask, const 
 
 	if (size > allocatedSize) {
 		allocatedSize = size;
-		CudaCheck(cudaMalloc((void**)&weights, size * sizeof(uint)));
+		CudaCheck(cudaMalloc((void**)&deviceWeights, size * sizeof(uint)));
 	}
 
-	//clear b and 
+	//clear b and deviceWeights
 	if (counter == 1) {
-		cudaMemset(weights, 0, size * sizeof(uint));
+		cudaMemset(deviceWeights, 0, size * sizeof(uint));
 		cudaMemset(B, 0, size * sizeof(glm::vec4));
 	}
 
 	uint blockSize = 64;
 	uint gridSize = (size + blockSize - 1) / blockSize;
 
-	IntegrateKernal << <gridSize, blockSize >> > (size, A, B, mask, weights, counter);
+	IntegrateKernal << <gridSize, blockSize >> > (size, A, B, mask, deviceWeights, counter);
 	CudaCheck(cudaPeekAtLastError());
 	CudaCheck(cudaDeviceSynchronize());
 

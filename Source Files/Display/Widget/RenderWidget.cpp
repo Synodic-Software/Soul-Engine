@@ -89,7 +89,7 @@ void RenderWidget::Draw() {
 	});
 
 	if (integrate) {
-		Integrate(renderSize.x*renderSize.y, (glm::vec4*)buffer.data(), (glm::vec4*)accumulator.data(), (int*)extraData.data(), iCounter);
+		Integrate(renderSize.x*renderSize.y, buffer, accumulator, extraData, iCounter);
 		iCounter++;
 	}
 	else {
