@@ -2,42 +2,66 @@
 
 #include "Utility\Logger.h"
 
+/* Number of devices */
 static int deviceCount;
-//cudaDeviceProp* deviceProp;
 
-namespace OpenCLBackend {
 
-	void ExtractDevices(std::vector<int>& devices) {
+	/*
+	 *    Extracts the devices described by devices.
+	 *    @param [in,out]	devices	The devices.
+	 */
 
-		S_LOG_WARNING("OpenCL is not supported yet");
-	}
+void OpenCLBackend::ExtractDevices(std::vector<GPUDevice>& devices) {
 
-	void InitThread() {
+	S_LOG_WARNING("OpenCL is not supported yet");
+}
 
-	}
+/* Initializes the thread. */
+void OpenCLBackend::InitThread() {
 
-	int GetCoreCount() {
+}
 
-		return 0;
-	}
+/*
+ *    Gets core count.
+ *    @return	The core count.
+ */
 
-	int GetSMCount() {
+int OpenCLBackend::GetCoreCount() {
 
-		return 0;
-	}
+	return 0;
+}
 
-	int GetWarpSize() {
-		
-		return 0;
-	}
+/*
+ *    Gets sm count.
+ *    @return	The sm count.
+ */
 
-	int GetBlockHeight() {
-		
-		return 0;
-	}
+int OpenCLBackend::GetSMCount() {
 
-	void Terminate() {
-		
-	}
+	return 0;
+}
+
+/*
+ *    Gets warp size.
+ *    @return	The warp size.
+ */
+
+int OpenCLBackend::GetWarpSize() {
+
+	return 0;
+}
+
+/*
+ *    Gets block height.
+ *    @return	The block height.
+ */
+
+int OpenCLBackend::GetBlockHeight() {
+
+	return 0;
+}
+
+/* Terminates this object. */
+void OpenCLBackend::Terminate() {
 
 }

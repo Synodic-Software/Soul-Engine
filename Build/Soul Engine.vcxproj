@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -14,7 +14,7 @@
     <ProjectGuid>{BD3E2897-1EFF-406A-A3B7-4B90699BB122}</ProjectGuid>
     <RootNamespace>Phasma_Engine</RootNamespace>
     <ProjectName>Soul Engine</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -32,7 +32,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 8.0.props" />
+    <Import Project="$(VCTargetsPath14)\BuildCustomizations\CUDA 8.0.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -85,6 +85,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h" />
+    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cuh" />
+    <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\Sort.h" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h" />
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.h" />
@@ -101,11 +103,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Display\Widget\Widget.h" />
     <ClInclude Include="..\Source Files\Display\Window\Window.h" />
     <ClInclude Include="..\Source Files\Display\Window\WindowManager.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Allocator\Allocator.h" />
     <ClInclude Include="..\Source Files\Engine Core\BasicDependencies.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Camera\Camera.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cuh" />
-    <ClInclude Include="..\Source Files\Engine Core\Camera\OpenCL\CLCamera.h" />
     <ClInclude Include="..\Source Files\Engine Core\Frame\Frame.h" />
     <ClInclude Include="..\Source Files\Engine Core\Material\Colour\Colour.h" />
     <ClInclude Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cuh" />
@@ -135,23 +133,37 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Engine Core\Scene\OpenCL\CLScene.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\Scene.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\Sky.h" />
+    <ClInclude Include="..\Source Files\Events\Event.h" />
+    <ClInclude Include="..\Source Files\Events\EventManager.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABackend.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUBackendBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUBufferBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUDevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUManager.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPURasterBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPURasterBufferBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.h" />
-    <ClInclude Include="..\Source Files\Input\Input.h" />
-    <ClInclude Include="..\Source Files\Input\InputState.h" />
+    <ClInclude Include="..\Source Files\Input\InputSet.h" />
+    <ClInclude Include="..\Source Files\Input\InputManager.h" />
+    <ClInclude Include="..\Source Files\Input\Key.h" />
     <ClInclude Include="..\Source Files\Memory\Allocator\Allocator.h" />
     <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h" />
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
+    <ClInclude Include="..\Source Files\Photography\CameraManager.h" />
+    <ClInclude Include="..\Source Files\Photography\Camera\Camera.h" />
+    <ClInclude Include="..\Source Files\Photography\Camera\CUDA\Camera.cuh" />
+    <ClInclude Include="..\Source Files\Photography\Camera\OpenCL\CLCamera.h" />
+    <ClInclude Include="..\Source Files\Photography\Film\CUDA\Film.cuh" />
+    <ClInclude Include="..\Source Files\Photography\Film\Film.h" />
+    <ClInclude Include="..\Source Files\Photography\Lens\CUDA\Lens.cuh" />
+    <ClInclude Include="..\Source Files\Photography\Lens\Lens.h" />
     <ClInclude Include="..\Source Files\Physics Engine\CUDA\PhysicsEngine.cuh" />
     <ClInclude Include="..\Source Files\Physics Engine\PhysicsEngine.h" />
     <ClInclude Include="..\Source Files\Raster Engine\RasterBase.h" />
@@ -187,6 +199,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Utility\Logger.h" />
     <ClInclude Include="..\Source Files\Utility\OpenCL\OpenCLHelper.h" />
     <ClInclude Include="..\Source Files\Utility\Settings.h" />
+    <ClInclude Include="..\Source Files\Utility\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
@@ -199,27 +212,34 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Display\Widget\Widget.cpp" />
     <ClCompile Include="..\Source Files\Display\Window\Window.cpp" />
     <ClCompile Include="..\Source Files\Display\Window\WindowManager.cpp" />
-    <ClCompile Include="..\Source Files\Engine Core\Allocator\Allocator.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Frame\Frame.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Object\Character\Character.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Object\Loader.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\SoulCore.cpp" />
+    <ClCompile Include="..\Source Files\Events\Event.cpp" />
+    <ClCompile Include="..\Source Files\Events\EventManager.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABackend.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUBufferBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUDevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUManager.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPURasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPURasterBufferBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.cpp" />
-    <ClCompile Include="..\Source Files\Input\Input.cpp" />
-    <ClCompile Include="..\Source Files\Input\InputState.cpp" />
+    <ClCompile Include="..\Source Files\Input\InputSet.cpp" />
+    <ClCompile Include="..\Source Files\Input\InputManager.cpp" />
+    <ClCompile Include="..\Source Files\Input\Key.cpp" />
+    <ClCompile Include="..\Source Files\Memory\Allocator\Allocator.cpp" />
     <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />
+    <ClCompile Include="..\Source Files\Photography\CameraManager.cpp" />
     <ClCompile Include="..\Source Files\Physics Engine\PhysicsEngine.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\RasterBase.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Buffer.cpp" />
@@ -238,17 +258,21 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Utility\Assert.cpp" />
     <ClCompile Include="..\Source Files\Utility\Logger.cpp" />
     <ClCompile Include="..\Source Files\Utility\Settings.cpp" />
+    <ClCompile Include="..\Source Files\Utility\Timer.cpp" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />
+    <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu" />
     <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cu" />
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu" />
-    <CudaCompile Include="..\Source Files\Engine Core\Camera\CUDA\Camera.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\Material.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cu" />
+    <CudaCompile Include="..\Source Files\Photography\Camera\CUDA\Camera.cu" />
+    <CudaCompile Include="..\Source Files\Photography\Film\CUDA\Film.cu" />
+    <CudaCompile Include="..\Source Files\Photography\Lens\CUDA\Lens.cu" />
     <CudaCompile Include="..\Source Files\Utility\CUDA\CudaHelper.cu" />
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +304,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 8.0.targets" />
+    <Import Project="$(VCTargetsPath14)\BuildCustomizations\CUDA 8.0.targets" />
   </ImportGroup>
 </Project>

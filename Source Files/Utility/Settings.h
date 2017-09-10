@@ -24,6 +24,7 @@
 #include <iostream>
 #include <fstream>
 
+/* Values that represent file types. */
 enum FileType { BINARY, XML, TEXT };
 
 //Publically Accessible Methods
@@ -31,6 +32,7 @@ namespace Settings {
 
 
 	//"Under the hood" functions to handle settings.  Should not be used externally.
+/* . */
 	namespace detail {
 
 		//Type definitions for data structures used to store settings of
@@ -46,40 +48,70 @@ namespace Settings {
 		};*/
 
 
+		/* Defines an alias representing list of types of the one bytes. */
 		typedef boost::variant<std::int8_t, std::uint8_t> OneByteTypes;
+		/* Defines an alias representing list of types of the two bytes. */
 		typedef boost::variant<std::int16_t, std::uint16_t> TwoByteTypes;
+		/* Defines an alias representing list of types of the four bytes. */
 		typedef boost::variant<std::int32_t, std::uint32_t, float> FourByteTypes;
+		/* Defines an alias representing list of types of the eight bytes. */
 		typedef boost::variant<std::int64_t, std::uint64_t, double> EightByteTypes;
 
+		/* Defines an alias representing the obm. */
 		typedef std::unordered_map<std::string, OneByteTypes> OBM;
+		/* Defines an alias representing the tbm. */
 		typedef std::unordered_map<std::string, TwoByteTypes> TBM;
+		/* Defines an alias representing the fbm. */
 		typedef std::unordered_map<std::string, FourByteTypes> FBM;
+		/* Defines an alias representing the ebm. */
 		typedef std::unordered_map<std::string, EightByteTypes> EBM;
 
 
+		/* A table. */
 		class Table {
 
 		private:
+			/* The obt */
 			OBM obt;
+			/* The tbt */
 			TBM tbt;
+			/* The fbt */
 			FBM fbt;
+			/* The ebt */
 			EBM ebt;
 
-			//Used to allow boost to serialize the object
+			/* Used to allow boost to serialize the object. */
 			friend class boost::serialization::access;
 
 			//Used for serialization of class with boost::serialization
 			template <class Archive>
+
+			/*
+			 *    Serialize this object to the given stream.
+			 *    @param [in,out]	ar	   	The archive.
+			 *    @param 		 	version	The version.
+			 */
+
 			void serialize(Archive & ar, const unsigned int version) {
+				/* The boost serialization make nvp */
 				ar & boost::serialization::make_nvp("OneByteTypes", this->obt);
+				/* The boost serialization make nvp */
 				ar & boost::serialization::make_nvp("TwoByteTypes", this->tbt);
+				/* The boost serialization make nvp */
 				ar & boost::serialization::make_nvp("FourByteTypes", this->fbt);
+				/* The boost serialization make nvp */
 				ar & boost::serialization::make_nvp("EightByteTypes", this->ebt);
 			}
 
 			//Helper function for retrieving settings
 			template <class V, typename T>
 			std::pair<T, bool> get(const std::unordered_map<std::string, V> & dict,
+
+				/*
+				 *    Gets the default value)
+				 *    @return	The default value)
+				 */
+
 				const std::string & propertyName, T defaultValue) {
 				auto itr = dict.find(propertyName);
 				if (itr == dict.end()) return std::make_pair(defaultValue, false);
@@ -99,13 +131,26 @@ namespace Settings {
 			//These allow data to be set only when the type of the property value
 			//and unordered map match
 
-
-			//Setting OneByteTypes
+			/*
+			 *    Setting OneByteTypes.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
 
 			bool set(OBM & dict, const std::string & propertyName, std::int8_t propertyValue) {
 				dict[propertyName] = OneByteTypes(propertyValue);
 				return true;
 			}
+
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
 
 			bool set(OBM & dict, const std::string & propertyName, std::uint8_t propertyValue) {
 				dict[propertyName] = OneByteTypes(propertyValue);
@@ -113,17 +158,39 @@ namespace Settings {
 			}
 
 			template <class T>
+
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool set(OBM & dict, const std::string & propertyName, T propertyValue) {
 				return false;
 			}
 
-
-			//Setting TwoByteTypes
+			/*
+			 *    Setting TwoByteTypes.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
 
 			bool set(TBM & dict, const std::string & propertyName, std::int16_t propertyValue) {
 				dict[propertyName] = TwoByteTypes(propertyValue);
 				return true;
 			}
+
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
 
 			bool set(TBM & dict, const std::string & propertyName, std::uint16_t propertyValue) {
 				dict[propertyName] = TwoByteTypes(propertyValue);
@@ -131,22 +198,52 @@ namespace Settings {
 			}
 
 			template <class T>
+
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool set(TBM & dict, const std::string & propertyName, T propertyValue) {
 				return false;
 			}
 
-
-			//Setting FourByteTypes
+			/*
+			 *    Setting FourByteTypes.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
 
 			bool set(FBM & dict, const std::string & propertyName, std::int32_t propertyValue) {
 				dict[propertyName] = FourByteTypes(propertyValue);
 				return true;
 			}
 
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool set(FBM & dict, const std::string & propertyName, std::uint32_t propertyValue) {
 				dict[propertyName] = FourByteTypes(propertyValue);
 				return true;
 			}
+
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
 
 			bool set(FBM & dict, const std::string & propertyName, float propertyValue) {
 				dict[propertyName] = FourByteTypes(propertyValue);
@@ -154,22 +251,52 @@ namespace Settings {
 			}
 
 			template <class T>
+
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool set(FBM & dict, const std::string & propertyName, T propertyValue) {
 				return false;
 			}
 
-
-			//Setting EightByteTypes
+			/*
+			 *    Setting EightByteTypes.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
 
 			bool set(EBM & dict, const std::string & propertyName, std::int64_t propertyValue) {
 				dict[propertyName] = EightByteTypes(propertyValue);
 				return true;
 			}
 
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool set(EBM & dict, const std::string & propertyName, std::uint64_t propertyValue) {
 				dict[propertyName] = EightByteTypes(propertyValue);
 				return true;
 			}
+
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
 
 			bool set(EBM & dict, const std::string & propertyName, double propertyValue) {
 				dict[propertyName] = EightByteTypes(propertyValue);
@@ -177,19 +304,36 @@ namespace Settings {
 			}
 
 			template <class T>
+
+			/*
+			 *    Sets.
+			 *    @param [in,out]	dict		 	The dictionary.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool set(EBM & dict, const std::string & propertyName, T propertyValue) {
 				return false;
 			}
 
 
 		public:
-			//Default Constructor
+			/* Default Constructor. */
 			Table() = default;
 
 			//Retrieves a value at the specified placeholder. Cannot accept user defined types, only system types
 			//If a template T is not explicitly provided, defaultvalue must be the same exact type as the value you 
 			//are retrieving.  For example, if you are retrieving a float, default value must be 1.0f and not 1.
 			template <typename T>
+
+			/*
+			 *    Gets.
+			 *    @param	propertyName	Name of the property.
+			 *    @param	defaultValue	The default value.
+			 *    @return	A T.
+			 */
+
 			T Get(const std::string & propertyName, T defaultValue) {
 				T propertyValue;
 				Get(propertyName, defaultValue, &propertyValue);
@@ -202,6 +346,15 @@ namespace Settings {
 			//Retrieved value is assigned to the given pointer.
 			//returns true if value was retrieved, and false if defaultvalue was assigned to pointer.
 			template <typename T>
+
+			/*
+			 *    Gets.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	defaultValue 	The default value.
+			 *    @param [in,out]	propertyValue	If non-null, the property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool Get(const std::string & propertyName, T defaultValue, T* propertyValue) {
 				std::size_t s = sizeof(T);
 				std::pair<T, bool> pr;
@@ -231,6 +384,14 @@ namespace Settings {
 			//Set value, overriding any point
 			//Returns true if data was successfully set, else false
 			template <typename T>
+
+			/*
+			 *    Sets.
+			 *    @param	propertyName 	Name of the property.
+			 *    @param	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool Set(const std::string & propertyName, T propertyValue) {
 				if (std::is_same<std::int8_t, T>::value || std::is_same<std::uint8_t, T>::value)
 					return this->set(this->obt, propertyName, propertyValue);
@@ -247,55 +408,125 @@ namespace Settings {
 
 		};
 
-		//Simple wrapper around table to allow dynamic creation of tables.
-		//This makes reading tables from files easier and more efficient.
+		/*
+		 *    Simple wrapper around table to allow dynamic creation of tables. This makes reading
+		 *    tables from files easier and more efficient.
+		 */
+
 		class TableWrapper {
 		private:
+			/* The table */
 			Table* table;
 		public:
 
-			//Constructor and Destructor
+			/* Constructor and Destructor. */
 			TableWrapper() : table(new Table()) {}
+			/* Destructor. */
 			~TableWrapper() { delete table; }
 
 			//Read settings from file
 			//T is a boost text, xml, or binary iarchive.  Wide character archives are not supported.
 			template <class T>
+
+			/*
+			 *    Reads the given filename.
+			 *    @param	_filename	The filename to read.
+			 */
+
 			void Read(const std::string & _filename) {
+				/* . */
 				detail::filename = _filename;
+
+				/*
+				 *    Ifs the given parameter 1.
+				 *    @param	parameter1	The first parameter.
+				 *    @return	A std::ifstream.
+				 */
+
 				std::ifstream ifs(detail::filename);
+
+				/*
+				 *    Archives the given parameter 1.
+				 *    @param	parameter1	The first parameter.
+				 *    @return	A T.
+				 */
+
 				T ar(ifs);
 				//boost::archive::text_iarchive ar(ifs);
+				/* The pointer */
 				Table* ptr = new Table();
+				/* The boost serialization make nvp */
 				ar & boost::serialization::make_nvp("Table", *ptr);
 				if (this->table != nullptr) delete this->table;
+				/* . */
 				this->table = ptr;
 			}
 
 			//Write settings to file
 			//T is a boost text, xml, or binary oarchive.  Wide character archives are not supported.
 			template <class T>
+			/* Writes this object. */
 			void Write() {
+
+				/*
+				 *    Ofs the given parameter 1.
+				 *    @param	parameter1	The first parameter.
+				 *    @return	A std::ofstream.
+				 */
+
 				std::ofstream ofs(detail::filename);
+
+				/*
+				 *    Archives the given parameter 1.
+				 *    @param	parameter1	The first parameter.
+				 *    @return	A T.
+				 */
+
 				T ar(ofs);
 				//boost::archive::text_oarchive ar(ofs);
+				/* The boost serialization make nvp */
 				ar & boost::serialization::make_nvp("Table", *(this->table));
 			}
 
 			//See Settings::Table::Get(const std::string&,T) for more info
 			template <typename T>
+
+			/*
+			 *    Gets.
+			 *    @param	propertyName	Name of the property.
+			 *    @param	defaultValue	The default value.
+			 *    @return	A T.
+			 */
+
 			T Get(const std::string & propertyName, T defaultValue) {
 				return this->table->Get(propertyName, defaultValue);
 			}
 
 			//See Settings::Table::Get(const std::string&,T,T*) for more info
 			template <typename T>
+
+			/*
+			 *    Gets.
+			 *    @param 		 	propertyName 	Name of the property.
+			 *    @param 		 	defaultValue 	The default value.
+			 *    @param [in,out]	propertyValue	If non-null, the property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool Get(const std::string & propertyName, T defaultValue, T* propertyValue) {
 				return this->table->Get(propertyName, defaultValue, propertyValue);
 			}
 
 			//See Settings::Table::Set(const std::string&,T) for more info
 			template <typename T>
+
+			/*
+			 *    Sets.
+			 *    @param	propertyName 	Name of the property.
+			 *    @param	propertyValue	The property value.
+			 *    @return	True if it succeeds, false if it fails.
+			 */
+
 			bool Set(const std::string & propertyName, T propertyValue) {
 				return this->table->Set(propertyName, propertyValue);
 			}
@@ -303,7 +534,9 @@ namespace Settings {
 		};
 
 
+		/* Filename of the file */
 		extern std::string filename;
+		/* The table wrapper */
 		extern TableWrapper tableWrapper;
 
 	}
@@ -314,6 +547,14 @@ namespace Settings {
 	//are retrieving.  For example, if you are retrieving a float, default value must be 1.0f and not 1.
 	//default values are not created
 	template<typename T>
+
+	/*
+	 *    Gets.
+	 *    @param	propertyName	Name of the property.
+	 *    @param	defaultValue	The default value.
+	 *    @return	A T.
+	 */
+
 	T Get(const std::string & propertyName, T defaultValue) {
 		return detail::tableWrapper.Get<T>(propertyName, defaultValue);
 	}
@@ -325,6 +566,15 @@ namespace Settings {
 	//returns true if value was retrieved without being created, and false if defaultvalue was assigned to pointer
 	//and the value was created.
 	template<typename T>
+
+	/*
+	 *    Gets.
+	 *    @param 		 	propertyName 	Name of the property.
+	 *    @param 		 	defaultValue 	The default value.
+	 *    @param [in,out]	propertyValue	If non-null, the property value.
+	 *    @return	True if it succeeds, false if it fails.
+	 */
+
 	bool Get(const std::string & propertyName, T defaultValue, T* propertyValue) {
 		if (!propertyValue) {
 			std::cerr << "Error: a null pointer was passed as 'propertyValue'" << std::endl;
@@ -341,15 +591,33 @@ namespace Settings {
 	//Set value, overriding any point
 	//Returns true if data was successfully set, else false
 	template<typename T>
+
+	/*
+	 *    Sets.
+	 *    @param	propertyName 	Name of the property.
+	 *    @param	propertyValue	The property value.
+	 *    @return	True if it succeeds, false if it fails.
+	 */
+
 	bool Set(const std::string & propertyName, T propertyValue) {
 		return detail::tableWrapper.Set<T>(propertyName, propertyValue);
 	}
 
-	//Writes settings to the file _filename
-	//T is a boost text, XML, or binary oarchive.  Wide character archives are not supported.
+	/*
+	 *    Writes settings to the file _filename T is a boost text, XML, or binary oarchive.  Wide
+	 *    character archives are not supported.
+	 *    @param	_filename	Filename of the file.
+	 *    @param	type	 	(Optional) The type.
+	 */
+
 	void Write(const std::string & _filename, FileType type = TEXT);
 
-	//Deletes all currently stored settings and reads new ones from _filename.
-	//T is a boost text, XML, or binary iarchive.  Wide character archives are not supported.
+	/*
+	 *    Deletes all currently stored settings and reads new ones from _filename. T is a boost
+	 *    text, XML, or binary iarchive.  Wide character archives are not supported.
+	 *    @param	_filename	Filename of the file.
+	 *    @param	type	 	(Optional) The type.
+	 */
+
 	void Read(const std::string & _filename, FileType type = TEXT);
 }

@@ -1,12 +1,18 @@
 #include "RenderWidget.h"
-#include "Raster Engine\Buffer.h"
 #include "GPGPU\GPUManager.h"
-#include "Utility/CUDA/CudaHelper.cuh"
 #include "CUDA\RenderWidget.cuh"
-#include <iostream>
-#include "Input/InputState.h"
+#include "Events\EventManager.h"
+#include "Raster Engine/RasterBackend.h"
+#include "Input/InputManager.h"
+#include "GPGPU/GPUBuffer.h"
+
+/*
+ *    Constructor.
+ *    @param [in,out]	cameraIn	If non-null, the camera in.
+ */
 
 RenderWidget::RenderWidget(Camera* cameraIn)
+	: buffer(GPUManager::GetBestGPU()), accumulator(GPUManager::GetBestGPU()), extraData(GPUManager::GetBestGPU())
 {
 	camera = cameraIn;
 
@@ -61,58 +67,63 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 
 	iCounter = 1;
 	integrate = false;
-	currentSize = glm::uvec2(312,720);
+	currentSize = glm::uvec2(312, 720);
+
 }
 
+/* Destructor. */
 RenderWidget::~RenderWidget()
 {
 
 }
 
+/* Draws this object. */
 void RenderWidget::Draw() {
 
-	InputState::GetInstance().SetKey(GLFW_KEY_SPACE, [&integrate = integrate, &time = time](int action) {
+	EventManager::Listen("Input", "SPACE", [&integrate = integrate, &time = time](keyState state) {
 		double newTime = glfwGetTime();
 		if (newTime - time > 0.3f) {
 			integrate = !integrate;
 			time = newTime;
 		}
-
 	});
 
-
 	if (integrate) {
-		Integrate(renderSize.x*renderSize.y, (glm::vec4*)buffer->GetData(), (glm::vec4*)accumulator->GetData(), (int*)extraData->GetData(), iCounter);
+		Integrate(renderSize.x*renderSize.y, buffer, accumulator, extraData, iCounter);
 		iCounter++;
 	}
 	else {
 		iCounter = 1;
 	}
 
-	buffer->UnmapResources();
-	buffer->BindData(0);
+	buffer.UnmapResources();
+	buffer.BindData(0);
 	widgetJob->Draw();
 
 	//add the rayJob back in
-	buffer->MapResources();
+	buffer.MapResources();
 
 	//get job values
 	widgetJob->SetUniform(std::string("screen"), renderSize);
 
-	RayEngine::ModifyJob(rayJob,*camera);
+	//TODO update id
+	RayEngine::ModifyJob(rayJob, 0);
 }
 
+/* Recreate data. */
 void RenderWidget::RecreateData() {
 
 	//remove the rayJob if it exists
 	RayEngine::RemoveJob(rayJob);
 
+	uint jobsize = size.x*size.y;
+
 	//create the new accumulation Buffer
-	accumulator = GPUManager::CreateBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+	accumulator.resize(jobsize);
 
-	buffer = GPUManager::CreateRasterBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(glm::vec4));
+	buffer.resize(jobsize);
 
-	extraData = GPUManager::CreateBuffer(GPUManager::GetBestGPU(), size.x*size.y * sizeof(int));
+	extraData.resize(jobsize);
 
 
 	if (currentSize != size) {
@@ -122,10 +133,12 @@ void RenderWidget::RecreateData() {
 	}
 
 	//update the camera
-	camera->SetAspect(renderSize.x / (float)renderSize.y);
-	camera->resolution = renderSize;
+	camera->aspectRatio = renderSize.x / (float)renderSize.y;
+	camera->film.resolution = renderSize;
 
 	//add the ray job with new sizes
-	buffer->MapResources();
-	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true,samples, *camera, buffer->GetData(), (int*)extraData->GetData());
+	buffer.MapResources();
+
+	//TODO update id
+	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true, samples, 0, buffer, extraData);
 }

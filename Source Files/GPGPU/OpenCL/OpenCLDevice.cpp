@@ -1,5 +1,10 @@
 #include "OpenCLDevice.h"
 
+/*
+ *    Constructor.
+ *    @param	o	An uint to process.
+ */
+
 OpenCLDevice::OpenCLDevice(uint o) :
 GPUDevice(o)
 {
@@ -8,7 +13,28 @@ GPUDevice(o)
 
 }
 
+/* Destructor. */
 OpenCLDevice::~OpenCLDevice() {
 
 
+}
+
+int OpenCLDevice::GetCoreCount() {
+	return 0;
+}
+
+int OpenCLDevice::GetWarpSize() {
+	return 0;
+}
+
+int OpenCLDevice::GetSMCount() {
+	return 0;
+}
+
+int OpenCLDevice::GetWarpsPerMP() {
+	return 0;
+}
+
+int OpenCLDevice::GetBlocksPerMP() {
+	return 0;
 }
