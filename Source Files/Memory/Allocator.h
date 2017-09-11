@@ -25,7 +25,7 @@ class Allocator {
 
 
 };
-namespace allocator {
+namespace Memory {
 	/*Allocates space for a new object of type T using the specified allocator
 	 Arguments: allocator - a reference to the allocator to use
 	 Returns: a pointer to the newly allocated memory*/
