@@ -77,20 +77,20 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 
 			Camera& camera = (*cameraBuffer)[job->camera];
 
-			if (tempSamples < 1.0f) {
-				float percentChanged = (job->samples - 1.0f) / (job->samples - tempSamples);
+			//if (tempSamples < 1.0f) {
+			//	float percentChanged = (job->samples - 1.0f) / (job->samples - tempSamples);
 
-				job->samples = 1.0f;
+			//	job->samples = 1.0f;
 
-				camera.film.resolution *= (1.0f - percentChanged)*change - 1.0;
-				camera.film.resolution = glm::uvec2(0);
-			}
-			else {
-				if (camera.film.resolution != camera.film.resolutionMax) {
-					//job->camera.film.resolution *= change*countChange + 1.0;
-				}
-				job->samples = tempSamples;
-			}
+			//	camera.film.resolution *= (1.0f - percentChanged)*change - 1.0;
+			//	camera.film.resolution = glm::uvec2(0);
+			//}
+			//else {
+			//	if (camera.film.resolution != camera.film.resolutionMax) {
+			//		//job->camera.film.resolution *= change*countChange + 1.0;
+			//	}
+			//	job->samples = tempSamples;
+			//}
 
 		}
 	}

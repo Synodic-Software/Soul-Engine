@@ -25,11 +25,11 @@ public:
 	~OpenCLBuffer() {}
 
 
-	void TransferToHost() const override {
+	void TransferToHost() override {
 
 	}
 
-	void TransferToDevice() const override {
+	void TransferToDevice() override {
 
 	}
 

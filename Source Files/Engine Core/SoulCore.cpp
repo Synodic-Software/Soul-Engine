@@ -358,9 +358,9 @@ int main()
 		});
 
 		uint xSize;
-		Settings::Get("MainWindow.Width", uint(1600), &xSize);
+		Settings::Get("MainWindow.Width", uint(800), &xSize);
 		uint ySize;
-		Settings::Get("MainWindow.Height", uint(900), &ySize);
+		Settings::Get("MainWindow.Height", uint(450), &ySize);
 		uint xPos;
 		Settings::Get("MainWindow.X_Position", uint(0), &xPos);
 		uint yPos;
@@ -374,7 +374,8 @@ int main()
 		type = static_cast<WindowType>(typeCast);
 
 		glm::uvec2 size = glm::uvec2(xSize, ySize);
-		Camera* camera = CameraManager::AddCamera(size);
+		uint cameraID = CameraManager::AddCamera(size);
+		Camera* camera = CameraManager::GetCamera(cameraID);
 
 		camera->position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
 		camera->OffsetOrientation(225, 45);
@@ -388,37 +389,49 @@ int main()
 
 		InputManager::AfixMouse(*mainWindow);
 
-		EventManager::Listen("Input", "S", [&camera, &moveSpeed](keyState state) {
+		EventManager::Listen("Input", "S", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
 			if (state == PRESS || state == REPEAT) {
 				camera->position += float(moveSpeed) * -camera->forward;
 			}
 		});
 
-		EventManager::Listen("Input", "W", [&camera, &moveSpeed](keyState state) {
+		EventManager::Listen("Input", "W", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
 			if (state == PRESS || state == REPEAT) {
 				camera->position += float(moveSpeed) * camera->forward;
 			}
 		});
 
-		EventManager::Listen("Input", "A", [&camera, &moveSpeed](keyState state) {
+		EventManager::Listen("Input", "A", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
 			if (state == PRESS || state == REPEAT) {
 				camera->position += float(moveSpeed) * -camera->right;
 			}
 		});
 
-		EventManager::Listen("Input", "D", [&camera, &moveSpeed](keyState state) {
+		EventManager::Listen("Input", "D", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
 			if (state == PRESS || state == REPEAT) {
 				camera->position += float(moveSpeed) * camera->right;
 			}
 		});
 
-		EventManager::Listen("Input", "Z", [&camera, &moveSpeed](keyState state) {
+		EventManager::Listen("Input", "Z", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
 			if (state == PRESS || state == REPEAT) {
 				camera->position += float(moveSpeed) * -glm::vec3(0, 1, 0);
 			}
 		});
 
-		EventManager::Listen("Input", "X", [&camera, &moveSpeed](keyState state) {
+		EventManager::Listen("Input", "X", [cameraID, &moveSpeed](keyState state) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
 			if (state == PRESS || state == REPEAT) {
 				camera->position += float(moveSpeed) * glm::vec3(0, 1, 0);
 			}
@@ -433,7 +446,9 @@ int main()
 			}
 		});
 
-		EventManager::Listen("Input", "Mouse Position", [&camera](double x, double y) {
+		EventManager::Listen("Input", "Mouse Position", [cameraID](double x, double y) {
+			Camera* camera = CameraManager::GetCamera(cameraID);
+
 			glm::dvec2 mouseChangeDegrees;
 			mouseChangeDegrees.x = x / camera->fieldOfView.x * 2;
 			mouseChangeDegrees.y = y / camera->fieldOfView.y * 2;

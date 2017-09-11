@@ -23,9 +23,10 @@ namespace CameraManager {
 	 *    @return	Null if it fails, else a pointer to a Camera.
 	 */
 
-	Camera* AddCamera(glm::uvec2&);
+	uint AddCamera(glm::uvec2&);
 
 	GPUBuffer<Camera>* GetCameraBuffer();
+	Camera* GetCamera(uint id);
 
 	/* Removes the camera. */
 	void RemoveCamera();

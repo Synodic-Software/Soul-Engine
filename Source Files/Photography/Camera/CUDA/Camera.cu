@@ -23,7 +23,6 @@ __device__ void Camera::GenerateRay(const uint sampleID, glm::vec3& origin, glm:
 	//float angle = TWO_PI * curand_uniform(&randState);
 	//float distance = aperture * sqrt(curand_uniform(&randState));
 
-
 	/*ALTERNATE aperaturPoint
 	+ ((cos(angle) * distance) * right) + ((sin(angle) * distance) * verticalAxis)*/
 
@@ -31,6 +30,7 @@ __device__ void Camera::GenerateRay(const uint sampleID, glm::vec3& origin, glm:
 
 	glm::vec3 pointOnPlaneOneUnitAwayFromEye =
 		aperturePoint + forward + (2 * sample.x - 1) * xHelper + (2 * sample.y - 1) * yHelper;
+	//printf("%f %f\n", xHelper.x, xHelper.y);
 
 	origin = glm::vec3(aperturePoint.x, aperturePoint.y, aperturePoint.z);
 	glm::vec3 tmp = glm::normalize(position + (pointOnPlaneOneUnitAwayFromEye - position) * focalDistance - aperturePoint);
