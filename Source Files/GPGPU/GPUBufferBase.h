@@ -47,14 +47,14 @@ public:
 	*    @param [in,out]	device	The device.
 	*/
 
-	virtual void TransferToHost() const = 0;
+	virtual void TransferToHost() = 0;
 
 	/*
 	*    Transfer to device.
 	*    @param [in,out]	device	The device.
 	*/
 
-	virtual void TransferToDevice() const = 0;
+	virtual void TransferToDevice() = 0;
 
 	/*
 	*    Reserves the given new size.
@@ -134,7 +134,7 @@ public:
 	*/
 
 	T* begin() {
-		return hostData + host_size - 1;
+		return hostData;
 	}
 
 	/*

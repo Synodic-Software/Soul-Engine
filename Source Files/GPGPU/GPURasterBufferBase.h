@@ -46,7 +46,7 @@ public:
 	*    @param [in,out]	device	The device.
 	*/
 
-	virtual void TransferToHost() const {
+	virtual void TransferToHost() {
 
 	}
 
@@ -55,7 +55,7 @@ public:
 	*    @param [in,out]	device	The device.
 	*/
 
-	virtual void TransferToDevice() const {
+	virtual void TransferToDevice() {
 
 	}
 	/*
