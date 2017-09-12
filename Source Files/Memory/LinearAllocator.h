@@ -1,5 +1,5 @@
 #pragma once
-#include "Memory/Allocator/Allocator.h"
+#include "Allocator.h"
 #include<cassert>
 
 /*This class extends the base allocator class and provides
