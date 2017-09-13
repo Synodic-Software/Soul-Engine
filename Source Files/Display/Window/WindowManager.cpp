@@ -1,7 +1,7 @@
 #include "WindowManager.h"
 
 #include "Utility\Logger.h"
-#include "Utility\Settings.h"
+#include "Transput\Settings.h"
 #include "Multithreading\Scheduler.h"
 #include "Raster Engine\RasterBackend.h"
 

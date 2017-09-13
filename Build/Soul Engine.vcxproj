@@ -153,8 +153,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Input\InputSet.h" />
     <ClInclude Include="..\Source Files\Input\InputManager.h" />
     <ClInclude Include="..\Source Files\Input\Key.h" />
-    <ClInclude Include="..\Source Files\Memory\Allocator\Allocator.h" />
-    <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h" />
+    <ClInclude Include="..\Source Files\Memory\Allocator.h" />
+    <ClInclude Include="..\Source Files\Memory\LinearAllocator.h" />
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
     <ClInclude Include="..\Source Files\Photography\CameraManager.h" />
     <ClInclude Include="..\Source Files\Photography\Camera\Camera.h" />
@@ -190,6 +190,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Ray Engine\Ray.h" />
     <ClInclude Include="..\Source Files\Ray Engine\RayEngine.h" />
     <ClInclude Include="..\Source Files\Ray Engine\RayJob.h" />
+    <ClInclude Include="..\Source Files\Transput\Settings.h" />
     <ClInclude Include="..\Source Files\Utility\Assert.h" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CudaHelper.cuh" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CUDAMath.h" />
@@ -198,7 +199,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Utility\Includes\OpenCLIncludes.h" />
     <ClInclude Include="..\Source Files\Utility\Logger.h" />
     <ClInclude Include="..\Source Files\Utility\OpenCL\OpenCLHelper.h" />
-    <ClInclude Include="..\Source Files\Utility\Settings.h" />
     <ClInclude Include="..\Source Files\Utility\Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -236,8 +236,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Input\InputSet.cpp" />
     <ClCompile Include="..\Source Files\Input\InputManager.cpp" />
     <ClCompile Include="..\Source Files\Input\Key.cpp" />
-    <ClCompile Include="..\Source Files\Memory\Allocator\Allocator.cpp" />
-    <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp" />
+    <ClCompile Include="..\Source Files\Memory\Allocator.cpp" />
+    <ClCompile Include="..\Source Files\Memory\LinearAllocator.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />
     <ClCompile Include="..\Source Files\Photography\CameraManager.cpp" />
     <ClCompile Include="..\Source Files\Physics Engine\PhysicsEngine.cpp" />
@@ -255,9 +255,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanJob.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="..\Source Files\Ray Engine\RayEngine.cpp" />
+    <ClCompile Include="..\Source Files\Transput\Settings.cpp" />
     <ClCompile Include="..\Source Files\Utility\Assert.cpp" />
     <ClCompile Include="..\Source Files\Utility\Logger.cpp" />
-    <ClCompile Include="..\Source Files\Utility\Settings.cpp" />
     <ClCompile Include="..\Source Files\Utility\Timer.cpp" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu" />

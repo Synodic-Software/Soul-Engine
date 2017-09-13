@@ -2,7 +2,7 @@
 #include "stdio.h"
 
 Film::Film() {
-
+	resolutionRatio = 1.0f;
 }
 
 Film::~Film() {
