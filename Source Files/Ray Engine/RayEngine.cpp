@@ -1,8 +1,8 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
-#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility/CUDA/CUDAHelper.cuh"
 #include "Photography/CameraManager.h"
-#include "Utility\Timer.h"
+#include "Utility/Timer.h"
 #include <deque>
 
 /* List of jobs */
@@ -66,24 +66,58 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	double expectedRender = renderTime + averageRenderDV;
 
 	//target time -5% to account for frame instabilities and try to stay above target
-	double change = (targetTime / expectedRender - 1.0)*0.95f *countChange;
+	//double change = (targetTime / expectedRender - 1.0) * 0.95f * countChange + 1.0;
+
+	double change = (targetTime - renderTime) / targetTime;
+
+
 
 	//modify all the sample counts/ resolutions to reflect the change
 	for (auto& job : jobs) {
 		if (job->canChange) {
-			float tempSamples = job->samples * (change + 1.0);
 
 			GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
-
 			Camera& camera = (*cameraBuffer)[job->camera];
 
+			float delta = change*camera.film.resolutionRatio;
+			float newRatio = camera.film.resolutionRatio + delta;
+
+			if (camera.film.resolutionMax.x * newRatio < 64) {
+
+				newRatio = 64 / (float)camera.film.resolutionMax.x;
+
+			}
+
+			if (newRatio >= 1.0f) {
+
+				camera.film.resolution = camera.film.resolutionMax;
+				job->samples = newRatio;
+
+			}
+			else {
+
+				camera.film.resolution.x = camera.film.resolutionMax.x * newRatio;
+				camera.film.resolution.y = camera.film.resolutionMax.y * newRatio;
+				job->samples = 1.0f;
+
+			}
+
+			//modify the job and update the camera ratio
+			job->rayAmount = camera.film.resolution.x * camera.film.resolution.y;
+			camera.film.resolutionRatio = newRatio;
+
+			//float tempSamples = job->samples * change;
+
+			//GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
+
+			//Camera& camera = (*cameraBuffer)[job->camera];
+
 			//if (tempSamples < 1.0f) {
-			//	float percentChanged = (job->samples - 1.0f) / (job->samples - tempSamples);
 
 			//	job->samples = 1.0f;
-
-			//	camera.film.resolution *= (1.0f - percentChanged)*change - 1.0;
-			//	camera.film.resolution = glm::uvec2(0);
+			//	float value = (1.0f - (job->samples - 1.0f) / (job->samples - tempSamples)) * change;
+			//	camera.film.resolution.x = camera.film.resolutionMax.x * value;
+			//	camera.film.resolution.y = camera.film.resolutionMax.y * value;
 			//}
 			//else {
 			//	if (camera.film.resolution != camera.film.resolutionMax) {
@@ -162,10 +196,12 @@ bool RayEngine::RemoveJob(RayJob* job) {
 
 	return true;
 }
+
 /* Initializes this object. */
 void RayEngine::Initialize() {
 	GPUInitialize();
 }
+
 /* Terminates this object. */
 void RayEngine::Terminate() {
 	GPUTerminate();

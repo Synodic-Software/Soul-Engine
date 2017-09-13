@@ -10,7 +10,7 @@
 #include <list>
 #include <malloc.h>  
 
-#include "Utility\Settings.h"
+#include "Transput\Settings.h"
 #include "GPGPU\GPUManager.h"
 
 /* Scheduler Variables//. */

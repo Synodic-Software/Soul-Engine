@@ -106,7 +106,7 @@ void RenderWidget::Draw() {
 	//get job values
 	widgetJob->SetUniform(std::string("screen"), renderSize);
 
-	//TODO update id
+	//TODO update camera id
 	RayEngine::ModifyJob(rayJob, 0);
 }
 

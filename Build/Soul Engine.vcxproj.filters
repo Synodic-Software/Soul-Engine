@@ -184,12 +184,6 @@
     <Filter Include="Engine Backend\Memory">
       <UniqueIdentifier>{c2f88d66-8971-4d61-9c74-81f655fc7391}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Memory\Allocator">
-      <UniqueIdentifier>{136e21c4-14f9-4749-9657-dd3016180582}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Memory\Allocator\Linear Allocator">
-      <UniqueIdentifier>{68060659-cfcf-48cf-aa6e-8d8356cdbfc4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Events">
       <UniqueIdentifier>{273d6492-3451-446a-80a7-1726e234f035}</UniqueIdentifier>
     </Filter>
@@ -231,6 +225,9 @@
     </Filter>
     <Filter Include="Engine Backend\Algorithms\Data Algorithms\GPU Sort\OpenCL">
       <UniqueIdentifier>{8c91be81-bbf0-41b9-a7b5-4249ca88ebe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Transput">
+      <UniqueIdentifier>{2a0ffafe-523d-41b3-8ff2-b8cdbdff1bac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -429,9 +426,6 @@
     <ClInclude Include="..\Source Files\Utility\OpenCL\OpenCLHelper.h">
       <Filter>Engine Backend\Utility\OpenCL</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Utility\Settings.h">
-      <Filter>Engine Backend\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Utility\Logger.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
@@ -531,12 +525,6 @@
     <ClInclude Include="..\Source Files\Utility\Assert.h">
       <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Memory\Allocator\Allocator.h">
-      <Filter>Engine Backend\Memory\Allocator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.h">
-      <Filter>Engine Backend\Memory\Allocator\Linear Allocator</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Events\EventManager.h">
       <Filter>Engine Backend\Events</Filter>
     </ClInclude>
@@ -593,6 +581,15 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\GPGPU\GPURasterBufferBase.h">
       <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Transput\Settings.h">
+      <Filter>Engine Backend\Transput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Memory\LinearAllocator.h">
+      <Filter>Engine Backend\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Memory\Allocator.h">
+      <Filter>Engine Backend\Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -651,9 +648,6 @@
       <Filter>Engine Backend\Ray Engine</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Utility\Logger.cpp">
-      <Filter>Engine Backend\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Utility\Settings.cpp">
       <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Raster Engine\RasterJob.cpp">
@@ -731,12 +725,6 @@
     <ClCompile Include="..\Source Files\Utility\Assert.cpp">
       <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Memory\Allocator\Linear Allocator\LinearAllocator.cpp">
-      <Filter>Engine Backend\Memory\Allocator\Linear Allocator</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Memory\Allocator\Allocator.cpp">
-      <Filter>Engine Backend\Memory\Allocator</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Events\Event.cpp">
       <Filter>Engine Backend\Events</Filter>
     </ClCompile>
@@ -766,6 +754,15 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\GPURasterBufferBase.cpp">
       <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Transput\Settings.cpp">
+      <Filter>Engine Backend\Transput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Memory\Allocator.cpp">
+      <Filter>Engine Backend\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Memory\LinearAllocator.cpp">
+      <Filter>Engine Backend\Memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
