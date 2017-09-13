@@ -6,7 +6,7 @@
 #include "Raster Engine/RasterBackend.h"
 #include "Engine Core/BasicDependencies.h"
 
-#include "Utility/Settings.h"
+#include "Transput/Settings.h"
 #include "Utility/Logger.h"
 
 #include "Engine Core/Frame/Frame.h"
@@ -450,8 +450,8 @@ int main()
 			Camera* camera = CameraManager::GetCamera(cameraID);
 
 			glm::dvec2 mouseChangeDegrees;
-			mouseChangeDegrees.x = x / camera->fieldOfView.x * 2;
-			mouseChangeDegrees.y = y / camera->fieldOfView.y * 2;
+			mouseChangeDegrees.x = x / camera->fieldOfView.x * 4;
+			mouseChangeDegrees.y = y / camera->fieldOfView.y * 4;
 
 			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 		});
