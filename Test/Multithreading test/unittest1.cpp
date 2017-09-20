@@ -1,17 +1,19 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
+#include <boost/fiber/all.hpp>
+#include "Source Files/Multithreading/Scheduler.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace Multithreadingtest
 {		
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(unittest1)
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		TEST_METHOD(fiber_spawning)
 		{
-			// TODO: Your test code here
+			Assert::IsTrue(true);
 		}
 
 	};
