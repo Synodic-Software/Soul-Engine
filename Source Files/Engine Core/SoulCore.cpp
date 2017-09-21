@@ -102,6 +102,12 @@ namespace Soul {
 	/* Initializes the engine. */
 	void Initialize() {
 
+		//create the listener for threads initializeing
+		EventManager::Listen("Thread","Initialize",[]()
+		{
+			GPUManager::InitThread();
+		});
+
 		//setup the multithreader
 		Scheduler::Initialize();
 
@@ -157,10 +163,27 @@ namespace Soul {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
+
 		Settings::Get("Engine.Delta_Time", 1 / 60.0, &engineRefreshRate);
 		Settings::Get("Engine.Alloted_Render_Time", 0.01, &allotedRenderTime);
 
 		Scheduler::Block();
+
+	}
+
+	
+
+	/* Ray pre process */
+	void RayPreProcess() {
+
+		RayEngine::PreProcess();
+
+	}
+	
+	/* Ray post process */
+	void RayPostProcess() {
+
+		RayEngine::PostProcess();
 
 	}
 
@@ -169,6 +192,7 @@ namespace Soul {
 
 		//Backends should handle multithreading
 		WindowManager::Draw();
+
 	}
 
 	/* Warmups this object. */
@@ -273,9 +297,13 @@ namespace Soul {
 
 			LateFrameUpdate();
 
+			RayPreProcess();
+
 			for (auto const& scene : scenes) {
 				RayEngine::Process(scene, allotedRenderTime);
 			}
+
+			RayPostProcess();
 
 			Raster();
 
