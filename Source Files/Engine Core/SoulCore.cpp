@@ -102,6 +102,12 @@ namespace Soul {
 	/* Initializes the engine. */
 	void Initialize() {
 
+		//create the listener for threads initializeing
+		EventManager::Listen("Thread","Initialize",[]()
+		{
+			GPUManager::InitThread();
+		});
+
 		//setup the multithreader
 		Scheduler::Initialize();
 
@@ -156,6 +162,7 @@ namespace Soul {
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
+
 
 		Settings::Get("Engine.Delta_Time", 1 / 60.0, &engineRefreshRate);
 		Settings::Get("Engine.Alloted_Render_Time", 0.01, &allotedRenderTime);
