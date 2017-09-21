@@ -229,6 +229,12 @@
     <Filter Include="Engine Backend\Transput">
       <UniqueIdentifier>{2a0ffafe-523d-41b3-8ff2-b8cdbdff1bac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Algorithms\Filters">
+      <UniqueIdentifier>{0da5e1cc-c471-4b46-924f-709e864e0c14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Filters\CUDA">
+      <UniqueIdentifier>{7a70c345-552f-41ff-8e39-c06066c53fc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -591,6 +597,12 @@
     <ClInclude Include="..\Source Files\Memory\Allocator.h">
       <Filter>Engine Backend\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Filters\Filter.h">
+      <Filter>Engine Backend\Algorithms\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cuh">
+      <Filter>Engine Backend\Algorithms\Filters\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -764,6 +776,9 @@
     <ClCompile Include="..\Source Files\Memory\LinearAllocator.cpp">
       <Filter>Engine Backend\Memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source Files\Algorithms\Filters\Filter.cpp">
+      <Filter>Engine Backend\Algorithms\Filters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
@@ -846,6 +861,9 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cu">
+      <Filter>Engine Backend\Algorithms\Filters\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,23 +1,18 @@
 #include "RayJob.cuh"
 
-static uint counter=0;
+static uint counter = 0;
 
-__host__ RayJob::RayJob(rayType whatToGet, uint rayAmountN, bool _canChange, float newSamples, uint _camera, void* resultsIN, int* extraData) {
+__host__ RayJob::RayJob(rayType whatToGet, bool _canChange, float newSamples, Camera _camera) :
+	camera(_camera)
+{
 
 	type = whatToGet;
-	rayAmount = rayAmountN;
-	rayBaseAmount = rayAmount;
 	samples = newSamples;
-	camera = _camera;
-	results = resultsIN;
 	startIndex = 0;
-	groupData = extraData;
 	canChange = _canChange;
-	ID = counter++;
+	id = counter++;
 }
-__host__ RayJob::RayJob() {
 
-}
 __host__ RayJob::~RayJob() {
 
 }
