@@ -164,11 +164,28 @@ namespace Soul {
 
 	}
 
+	
+
+	/* Ray pre process */
+	void RayPreProcess() {
+
+		RayEngine::PreProcess();
+
+	}
+	
+	/* Ray post process */
+	void RayPostProcess() {
+
+		RayEngine::PostProcess();
+
+	}
+
 	/* Rasters this object. */
 	void Raster() {
 
 		//Backends should handle multithreading
 		WindowManager::Draw();
+
 	}
 
 	/* Warmups this object. */
@@ -273,9 +290,13 @@ namespace Soul {
 
 			LateFrameUpdate();
 
+			RayPreProcess();
+
 			for (auto const& scene : scenes) {
 				RayEngine::Process(scene, allotedRenderTime);
 			}
+
+			RayPostProcess();
 
 			Raster();
 

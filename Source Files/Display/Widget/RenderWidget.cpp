@@ -106,8 +106,6 @@ void RenderWidget::Draw() {
 	//get job values
 	widgetJob->SetUniform(std::string("screen"), renderSize);
 
-	//TODO update camera id
-	RayEngine::ModifyJob(rayJob, 0);
 }
 
 /* Recreate data. */
@@ -132,13 +130,15 @@ void RenderWidget::RecreateData() {
 		widgetJob->SetUniform(std::string("screen"), renderSize);
 	}
 
-	//update the camera
-	camera->aspectRatio = renderSize.x / (float)renderSize.y;
-	camera->film.resolution = renderSize;
-
 	//add the ray job with new sizes
 	buffer.MapResources();
 
+	//update the camera
+	camera->aspectRatio = renderSize.x / (float)renderSize.y;
+	camera->film.resolution = renderSize;
+	camera->film.results = (glm::vec4*)buffer;
+	camera->film.hits = extraData;
+
 	//TODO update id
-	rayJob = RayEngine::AddJob(RayCOLOUR, renderSize.x*renderSize.y, true, samples, 0, buffer, extraData);
+	rayJob = RayEngine::AddJob(RayCOLOUR, true, samples, *camera);
 }

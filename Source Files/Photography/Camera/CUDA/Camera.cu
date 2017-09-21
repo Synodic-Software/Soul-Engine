@@ -1,14 +1,16 @@
 #include "Photography/Camera/CUDA/Camera.cuh"
 #include <glm/gtx/rotate_vector.hpp>
+#include <cstdio>
 
-Camera::Camera() :
+Camera::Camera(uint _id) :
 	aspectRatio(0),
 	position(0.0f, 0.0f, 0.0f),
 	forward(0.0f, 0.0f, 1.0f),
 	right(1.0f, 0.0f, 0.0f),
 	fieldOfView(90.0f, 65.0f),
 	aperture(2 * MILLIMETER),
-	focalDistance(17 * MILLIMETER)
+	focalDistance(17 * MILLIMETER),
+	id(_id)
 {
 }
 
@@ -20,6 +22,7 @@ Camera::~Camera() {
 __device__ void Camera::GenerateRay(const uint sampleID, glm::vec3& origin, glm::vec3& direction, curandState& randState) {
 
 	glm::vec2 sample = film.GetSample(sampleID, randState);
+
 	//float angle = TWO_PI * curand_uniform(&randState);
 	//float distance = aperture * sqrt(curand_uniform(&randState));
 
@@ -35,7 +38,6 @@ __device__ void Camera::GenerateRay(const uint sampleID, glm::vec3& origin, glm:
 	origin = glm::vec3(aperturePoint.x, aperturePoint.y, aperturePoint.z);
 	glm::vec3 tmp = glm::normalize(position + (pointOnPlaneOneUnitAwayFromEye - position) * focalDistance - aperturePoint);
 	direction = glm::vec3(tmp.x, tmp.y, tmp.z);
-
 }
 
 void Camera::UpdateVariables() {

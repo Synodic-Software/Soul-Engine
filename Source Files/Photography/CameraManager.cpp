@@ -13,8 +13,7 @@ namespace CameraManager {
 
 	namespace detail {
 
-		GPUBuffer<Camera>* cameras;
-		std::list<uint> cameraIDs;
+		GPUBuffer<Camera> cameras;
 
 		uint globalID = 0;
 
@@ -65,7 +64,7 @@ namespace CameraManager {
 	}
 
 	void Initialize() {
-		detail::cameras = new GPUBuffer<Camera>(GPUManager::GetBestGPU());
+		detail::cameras.TransferDevice(GPUManager::GetBestGPU());
 	}
 
 	void Terminate() {
@@ -75,8 +74,8 @@ namespace CameraManager {
 	void Update() {
 
 		//UpdateIndices(detail::maxSize);
-		for (int i = 0; i < detail::cameras->size(); ++i) {
-			Camera& camera = (*detail::cameras)[i];
+		for (int i = 0; i < detail::cameras.size(); ++i) {
+			Camera& camera = detail::cameras[i];
 			camera.UpdateVariables();
 		}
 	}
@@ -86,10 +85,9 @@ namespace CameraManager {
 
 		uint id = detail::globalID++;
 
-		detail::cameras->push_back(Camera());
-		detail::cameraIDs.push_back(id);
+		detail::cameras.push_back(Camera(id));
 
-		Camera* def = detail::cameras->back();
+		Camera* def = detail::cameras.back();
 
 		//add the resolution
 		def->film.resolution = res;
@@ -102,20 +100,20 @@ namespace CameraManager {
 	}
 
 	GPUBuffer<Camera>* GetCameraBuffer() {
-		return detail::cameras;
+		return &detail::cameras;
 	}
 
 	Camera* GetCamera(uint id) {
 
-		int index = std::distance(
-			detail::cameraIDs.begin(), 
-			std::find(
-				detail::cameraIDs.begin(), 
-				detail::cameraIDs.end(),
-				id)
+		const int index = std::distance(
+			detail::cameras.begin(),
+			std::find_if(
+				detail::cameras.begin(),
+				detail::cameras.end(),
+				[&](Camera const& p) { return p.id == id; })
 		);
 
-		return (*detail::cameras).begin()+index;
+		return detail::cameras.begin()+index;
 	}
 
 

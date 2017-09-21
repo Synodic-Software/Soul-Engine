@@ -7,7 +7,7 @@
 
 class Camera {
 public:
-	Camera();
+	Camera(uint);
 	~Camera();
 
 	//Given a positive integer, this function fills in the given ray's values based on the camera's position orientation and lens.
@@ -30,7 +30,8 @@ public:
 			verticalAxis == other.verticalAxis &&
 			yHelper == other.yHelper &&
 			xHelper == other.xHelper&&
-			film == other.film;
+			film == other.film&&
+			id == other.id;
 	}
 
 	Camera& operator=(const Camera& arg)
@@ -46,6 +47,7 @@ public:
 		this->yHelper = arg.yHelper;
 		this->xHelper = arg.xHelper;
 		this->film = arg.film;
+		this->id = arg.id;
 
 		return *this;
 	}
@@ -55,8 +57,9 @@ public:
 	glm::vec3 forward;
 	glm::vec3 right;
 	glm::vec2 fieldOfView;
+	uint id;
 	Film film;
-
+	
 private:
 	float aperture;
 	float focalDistance;
