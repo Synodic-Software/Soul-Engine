@@ -49,7 +49,7 @@ private:
 	/* The camera */
 	Camera* camera;
 	/* The ray job */
-	RayJob* rayJob;
+	uint rayJob;
 
 	/* Zero-based index of the counter */
 	uint iCounter;
