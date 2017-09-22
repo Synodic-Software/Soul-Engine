@@ -21,17 +21,28 @@ public:
 	glm::uvec2 resolution;
 	glm::uvec2 resolutionMax;
 
+	float resolutionRatio;
+
+	void* results;
+	int* hits;
+
 	bool operator==(const Film& other) const {
 		return
 			resolution == other.resolution &&
-			resolutionMax == other.resolutionMax;
-
+			resolutionMax == other.resolutionMax &&
+			resolutionRatio == other.resolutionRatio &&
+			results == other.results &&
+			hits == other.hits;
+			
 	}
 
 	Film& operator=(const Film& arg)
 	{
 		this->resolution = arg.resolution;
 		this->resolutionMax = arg.resolutionMax;
+		this->resolutionRatio = arg.resolutionRatio;
+		this->results = arg.results;
+		this->hits = arg.hits;
 
 		return *this;
 	}

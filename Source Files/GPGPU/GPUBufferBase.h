@@ -36,6 +36,21 @@ public:
 
 	}
 
+	GPUBufferBase(const GPUDevice& deviceIn, GPUBufferBase<T>& other) {
+
+		host_size = other.size();
+		host_capacity = other.capacity();
+
+		flags = other.flags;
+
+		void* raw = operator new[](host_capacity * sizeof(T));
+		hostData = static_cast<T*>(raw);
+		std::copy(other.data(), other.data() + other.size(), hostData);
+
+		//the specific derived class transfers the device array
+
+	}
+
 	/* Destructor. */
 	virtual ~GPUBufferBase() {
 		delete[] hostData;
@@ -63,24 +78,25 @@ public:
 
 	virtual void reserve(uint newCapacity) {
 
-			//allocate the new size
-			T* data = new T[newCapacity];
+		//allocate the new size
+		void* raw = operator new[](newCapacity * sizeof(T));
+		T* data = static_cast<T*>(raw);
 
-			uint lSize = newCapacity < host_size ? newCapacity : host_size;
+		uint lSize = newCapacity < host_size ? newCapacity : host_size;
 
-			//move all previous data
-			for (uint i = 0; i < lSize; i++) {
-				data[i] = std::move(hostData[i]);
-			}
+		//move all previous data
+		for (uint i = 0; i < lSize; i++) {
+			data[i] = std::move(hostData[i]);
+		}
 
-			host_capacity = newCapacity;
+		host_capacity = newCapacity;
 
-			//deallocate formerly used memory
-			if (hostData) {
-				delete[] hostData;
-			}
+		//deallocate formerly used memory
+		if (hostData) {
+			delete[] hostData;
+		}
 
-			hostData = data; //reassign the data pointer
+		hostData = data; //reassign the data pointer
 
 	}
 
@@ -110,6 +126,10 @@ public:
 		return host_size;
 	}
 
+	int capacity() const {
+		return host_capacity;
+	}
+
 	/*
 	 *    Gets the data.
 	 *    @return	Null if it fails, else the data.
@@ -117,6 +137,10 @@ public:
 
 	T* data() {
 		return hostData;
+	}
+
+	T* device_data() {
+		return deviceData;
 	}
 
 	/*
