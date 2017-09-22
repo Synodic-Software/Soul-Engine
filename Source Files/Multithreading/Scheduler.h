@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-//TODO: Implement boost 1.63 Fiber: Work_stealing
+//TODO: Implement boost Fiber: Work_stealing
 
 /*
 IMMEDIATE: Run the fiber immediatly with no context switch

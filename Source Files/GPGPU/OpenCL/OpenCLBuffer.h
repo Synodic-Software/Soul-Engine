@@ -21,6 +21,12 @@ public:
 
 	}
 
+	OpenCLBuffer(const GPUDevice& _device, GPUBufferBase<T>& other)
+		: GPUBufferBase(_device, other) {
+
+
+	}
+
 	/* Destructor. */
 	~OpenCLBuffer() {}
 

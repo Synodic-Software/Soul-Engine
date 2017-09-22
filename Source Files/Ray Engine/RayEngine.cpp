@@ -1,15 +1,18 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
-#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility/CUDA/CUDAHelper.cuh"
 #include "Photography/CameraManager.h"
-#include "Utility\Timer.h"
+#include "Utility/Timer.h"
 #include <deque>
+#include "Algorithms/Filters/Filter.h"
+#include "GPGPU/GPUManager.h"
 
 /* List of jobs */
-static std::list<RayJob*> jobList;
+static GPUBuffer<RayJob> jobList;
 
 /* The render derivatives */
 static std::deque<double> renderDerivatives;
+
 /* The old render time */
 static double oldRenderTime;
 
@@ -26,7 +29,7 @@ static Timer renderTimer;
  *    @param [in,out]	jobs	  	[in,out] If non-null, the jobs.
  */
 
-void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) {
+void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
 
 	//if it the first frame, pass the target as the '0th' frame
 	if (renderDerivatives.size() == 0) {
@@ -36,7 +39,7 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	//count the jobs that can be modified
 	int count = 0;
 	for (auto& job : jobs) {
-		if (job->canChange) {
+		if (job.canChange) {
 			count++;
 		}
 	}
@@ -66,24 +69,56 @@ void UpdateJobs(double renderTime, double targetTime, std::list<RayJob*>& jobs) 
 	double expectedRender = renderTime + averageRenderDV;
 
 	//target time -5% to account for frame instabilities and try to stay above target
-	double change = (targetTime / expectedRender - 1.0)*0.95f *countChange;
+	//double change = (targetTime / expectedRender - 1.0) * 0.95f * countChange + 1.0;
+
+	double change = (targetTime - renderTime) / targetTime;
+
+
 
 	//modify all the sample counts/ resolutions to reflect the change
 	for (auto& job : jobs) {
-		if (job->canChange) {
-			float tempSamples = job->samples * (change + 1.0);
+		if (job.canChange) {
 
-			GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
+			Camera& camera = job.camera;
 
-			Camera& camera = (*cameraBuffer)[job->camera];
+			float delta = change*camera.film.resolutionRatio;
+			float newRatio = camera.film.resolutionRatio + delta;
+
+			if (camera.film.resolutionMax.x * newRatio < 64) {
+
+				newRatio = 64 / (float)camera.film.resolutionMax.x;
+
+			}
+
+			if (newRatio >= 1.0f) {
+
+				camera.film.resolution = camera.film.resolutionMax;
+				job.samples = newRatio;
+
+			}
+			else {
+
+				camera.film.resolution.x = camera.film.resolutionMax.x * newRatio;
+				camera.film.resolution.y = camera.film.resolutionMax.y * newRatio;
+				job.samples = 1.0f;
+
+			}
+
+			//update the camera ratio
+			camera.film.resolutionRatio = newRatio;
+
+			//float tempSamples = job->samples * change;
+
+			//GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
+
+			//Camera& camera = (*cameraBuffer)[job->camera];
 
 			//if (tempSamples < 1.0f) {
-			//	float percentChanged = (job->samples - 1.0f) / (job->samples - tempSamples);
 
 			//	job->samples = 1.0f;
-
-			//	camera.film.resolution *= (1.0f - percentChanged)*change - 1.0;
-			//	camera.film.resolution = glm::uvec2(0);
+			//	float value = (1.0f - (job->samples - 1.0f) / (job->samples - tempSamples)) * change;
+			//	camera.film.resolution.x = camera.film.resolutionMax.x * value;
+			//	camera.film.resolution.y = camera.film.resolutionMax.y * value;
 			//}
 			//else {
 			//	if (camera.film.resolution != camera.film.resolutionMax) {
@@ -124,13 +159,12 @@ void RayEngine::Process(const Scene* scene, double target) {
  *    @return	Null if it fails, else a pointer to a RayJob.
  */
 
-RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
-	float samples, uint camera, void* resultsIn, int* extraData) {
+uint RayEngine::AddJob(rayType whatToGet, bool canChange,
+	float samples, Camera camera) {
 
-	RayJob* job = new RayJob(whatToGet, rayAmount, canChange, samples, camera, resultsIn, extraData);
-	jobList.push_back(job);
+	jobList.push_back(RayJob(whatToGet, canChange, samples, camera));
 
-	return job;
+	return jobList[jobList.size()-1].id;
 }
 
 /*
@@ -139,11 +173,11 @@ RayJob* RayEngine::AddJob(rayType whatToGet, uint rayAmount, bool canChange,
  *    @param [in,out]	camera	The camera.
  */
 
-void RayEngine::ModifyJob(RayJob* jobIn, uint camera) {
+void RayEngine::ModifyJob(uint jobIn, Camera& camera) {
 
 	for (auto& job : jobList) {
-		if (job == jobIn) {
-			job->camera = camera;
+		if (job.id == jobIn) {
+			job.camera = camera;
 			break;
 		}
 	}
@@ -156,17 +190,37 @@ void RayEngine::ModifyJob(RayJob* jobIn, uint camera) {
  *    @return	True if it succeeds, false if it fails.
  */
 
-bool RayEngine::RemoveJob(RayJob* job) {
-
-	jobList.remove(job);
+bool RayEngine::RemoveJob(uint job) {
+	//TODO implement
+	//jobList.remove(job);
 
 	return true;
 }
+
 /* Initializes this object. */
 void RayEngine::Initialize() {
+
 	GPUInitialize();
+
+	jobList.TransferDevice(GPUManager::GetBestGPU());
+
 }
+
 /* Terminates this object. */
 void RayEngine::Terminate() {
 	GPUTerminate();
+}
+
+void RayEngine::PreProcess() {
+	
+}
+void RayEngine::PostProcess() {
+
+	//grab job pointer
+	auto job = *jobList.begin();
+
+	//grab camera
+	Camera camera = job.camera;
+
+	//Filter::HermiteBicubic(job->results, camera.film.resolutionMax, camera.film.resolution);
 }
