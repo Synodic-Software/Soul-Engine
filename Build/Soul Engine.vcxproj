@@ -156,7 +156,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Memory\Allocator.h" />
     <ClInclude Include="..\Source Files\Memory\LinearAllocator.h" />
     <ClInclude Include="..\Source Files\Multithreading\Scheduler.h" />
-    <ClInclude Include="..\Source Files\Photography\CameraManager.h" />
     <ClInclude Include="..\Source Files\Photography\Camera\Camera.h" />
     <ClInclude Include="..\Source Files\Photography\Camera\CUDA\Camera.cuh" />
     <ClInclude Include="..\Source Files\Photography\Camera\OpenCL\CLCamera.h" />
@@ -239,7 +238,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Memory\Allocator.cpp" />
     <ClCompile Include="..\Source Files\Memory\LinearAllocator.cpp" />
     <ClCompile Include="..\Source Files\Multithreading\Scheduler.cpp" />
-    <ClCompile Include="..\Source Files\Photography\CameraManager.cpp" />
     <ClCompile Include="..\Source Files\Physics Engine\PhysicsEngine.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\RasterBase.cpp" />
     <ClCompile Include="..\Source Files\Raster Engine\Buffer.cpp" />
