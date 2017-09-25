@@ -1,7 +1,6 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
 #include "Utility/CUDA/CUDAHelper.cuh"
-#include "Photography/CameraManager.h"
 #include "Utility/Timer.h"
 #include <deque>
 #include "Algorithms/Filters/Filter.h"
@@ -160,9 +159,9 @@ void RayEngine::Process(const Scene* scene, double target) {
  */
 
 uint RayEngine::AddJob(rayType whatToGet, bool canChange,
-	float samples, Camera camera) {
+	float samples) {
 
-	jobList.push_back(RayJob(whatToGet, canChange, samples, camera));
+	jobList.push_back(RayJob(whatToGet, canChange, samples));
 
 	return jobList[jobList.size()-1].id;
 }
@@ -173,12 +172,13 @@ uint RayEngine::AddJob(rayType whatToGet, bool canChange,
  *    @param [in,out]	camera	The camera.
  */
 
-void RayEngine::ModifyJob(uint jobIn, Camera& camera) {
+RayJob& RayEngine::GetJob(uint jobIn) {
 
-	for (auto& job : jobList) {
+	for (int i = 0; i < jobList.size();i++) {
+
+		RayJob& job = jobList[i];
 		if (job.id == jobIn) {
-			job.camera = camera;
-			break;
+			return job;
 		}
 	}
 
@@ -204,6 +204,14 @@ void RayEngine::Initialize() {
 
 	jobList.TransferDevice(GPUManager::GetBestGPU());
 
+}
+
+void RayEngine::Update() {
+	for (int i = 0; i < jobList.size(); i++) {
+
+		RayJob& job = jobList[i];
+		job.camera.UpdateVariables();
+	}
 }
 
 /* Terminates this object. */

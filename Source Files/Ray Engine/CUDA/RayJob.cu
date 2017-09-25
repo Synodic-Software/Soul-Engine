@@ -2,8 +2,7 @@
 
 static uint counter = 0;
 
-__host__ RayJob::RayJob(rayType whatToGet, bool _canChange, float newSamples, Camera _camera) :
-	camera(_camera)
+__host__ RayJob::RayJob(rayType whatToGet, bool _canChange, float newSamples)
 {
 
 	type = whatToGet;

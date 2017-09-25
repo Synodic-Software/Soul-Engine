@@ -11,11 +11,9 @@
  *    @param [in,out]	cameraIn	If non-null, the camera in.
  */
 
-RenderWidget::RenderWidget(Camera* cameraIn)
+RenderWidget::RenderWidget(uint& id)
 	: buffer(GPUManager::GetBestGPU()), accumulator(GPUManager::GetBestGPU()), extraData(GPUManager::GetBestGPU())
 {
-	camera = cameraIn;
-
 	widgetJob = RasterBackend::CreateJob();
 
 	samples = 1.0f;
@@ -69,6 +67,9 @@ RenderWidget::RenderWidget(Camera* cameraIn)
 	integrate = false;
 	currentSize = glm::uvec2(312, 720);
 
+
+	rayJob = RayEngine::AddJob(RayCOLOUR, true, samples);
+	id = rayJob;
 }
 
 /* Destructor. */
@@ -111,9 +112,6 @@ void RenderWidget::Draw() {
 /* Recreate data. */
 void RenderWidget::RecreateData() {
 
-	//remove the rayJob if it exists
-	RayEngine::RemoveJob(rayJob);
-
 	uint jobsize = size.x*size.y;
 
 	//create the new accumulation Buffer
@@ -133,12 +131,10 @@ void RenderWidget::RecreateData() {
 	//add the ray job with new sizes
 	buffer.MapResources();
 
-	//update the camera
-	camera->aspectRatio = renderSize.x / (float)renderSize.y;
-	camera->film.resolution = renderSize;
-	camera->film.results = (glm::vec4*)buffer;
-	camera->film.hits = extraData;
-
-	//TODO update id
-	rayJob = RayEngine::AddJob(RayCOLOUR, true, samples, *camera);
+	//set job values
+	RayJob& job = RayEngine::GetJob(rayJob);
+	job.camera.aspectRatio = renderSize.x / (float)renderSize.y;
+	job.camera.film.resolution = renderSize;
+	job.camera.film.results = (glm::vec4*)buffer;
+	job.camera.film.hits = extraData;
 }
