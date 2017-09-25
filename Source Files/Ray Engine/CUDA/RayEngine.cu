@@ -8,7 +8,6 @@
 
 #include "GPGPU\GPUManager.h"
 #include "Utility\Logger.h"
-#include "Photography/CameraManager.h"
 
 //cant have AABB defined and not define WOOP_TRI
 #define WOOP_TRI

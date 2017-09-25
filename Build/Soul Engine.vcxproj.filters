@@ -549,9 +549,6 @@
     <ClInclude Include="..\Source Files\Input\Key.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Photography\CameraManager.h">
-      <Filter>Engine Backend\Photography</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Photography\Lens\Lens.h">
       <Filter>Engine Backend\Photography\Lens</Filter>
     </ClInclude>
@@ -596,12 +593,6 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Memory\Allocator.h">
       <Filter>Engine Backend\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Algorithms\Filters\Filter.h">
-      <Filter>Engine Backend\Algorithms\Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cuh">
-      <Filter>Engine Backend\Algorithms\Filters\CUDA</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -755,9 +746,6 @@
     <ClCompile Include="..\Source Files\Input\Key.cpp">
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Photography\CameraManager.cpp">
-      <Filter>Engine Backend\Photography</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClCompile>
@@ -775,9 +763,6 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Memory\LinearAllocator.cpp">
       <Filter>Engine Backend\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Algorithms\Filters\Filter.cpp">
-      <Filter>Engine Backend\Algorithms\Filters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -861,9 +846,6 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cu">
-      <Filter>Engine Backend\Algorithms\Filters\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
