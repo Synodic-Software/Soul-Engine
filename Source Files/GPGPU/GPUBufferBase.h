@@ -78,25 +78,28 @@ public:
 
 	virtual void reserve(uint newCapacity) {
 
-		//allocate the new size
-		void* raw = operator new[](newCapacity * sizeof(T));
-		T* data = static_cast<T*>(raw);
+		if (newCapacity > host_capacity) {
 
-		uint lSize = newCapacity < host_size ? newCapacity : host_size;
+			//allocate the new size
+			void* raw = new unsigned char[newCapacity * sizeof(T)];
+			T* data = static_cast<T*>(raw);
 
-		//move all previous data
-		for (uint i = 0; i < lSize; i++) {
-			data[i] = std::move(hostData[i]);
+			uint lSize = newCapacity < host_size ? newCapacity : host_size;
+
+			//move all previous data
+			for (uint i = 0; i < lSize; i++) {
+				data[i] = std::move(hostData[i]);
+			}
+
+			host_capacity = newCapacity;
+
+			//deallocate formerly used memory
+			if (hostData) {
+				delete[] hostData;
+			}
+
+			hostData = data; //reassign the data pointer
 		}
-
-		host_capacity = newCapacity;
-
-		//deallocate formerly used memory
-		if (hostData) {
-			delete[] hostData;
-		}
-
-		hostData = data; //reassign the data pointer
 
 	}
 
@@ -107,7 +110,7 @@ public:
 
 	virtual void resize(uint newSize) {
 
-		reserve(newSize);
+		GPUBufferBase::reserve(newSize);
 		host_size = newSize;  //change host size.
 
 	}

@@ -17,7 +17,7 @@ public:
 	 *    @param [in,out]	parameter1	If non-null, the first parameter.
 	 */
 
-	RenderWidget(Camera*);
+	RenderWidget(uint&);
 	/* Destructor. */
 	~RenderWidget();
 
@@ -46,8 +46,7 @@ private:
 
 	/* The samples */
 	float samples;
-	/* The camera */
-	Camera* camera;
+
 	/* The ray job */
 	uint rayJob;
 

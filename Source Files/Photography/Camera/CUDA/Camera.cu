@@ -2,15 +2,14 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <cstdio>
 
-Camera::Camera(uint _id) :
+Camera::Camera() :
 	aspectRatio(0),
 	position(0.0f, 0.0f, 0.0f),
 	forward(0.0f, 0.0f, 1.0f),
 	right(1.0f, 0.0f, 0.0f),
 	fieldOfView(90.0f, 65.0f),
 	aperture(2 * MILLIMETER),
-	focalDistance(17 * MILLIMETER),
-	id(_id)
+	focalDistance(17 * MILLIMETER)
 {
 }
 
