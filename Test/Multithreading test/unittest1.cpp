@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "CppUnitTest.h"
 #include <boost/fiber/all.hpp>
 #include <Source Files\Multithreading\Scheduler.h>
