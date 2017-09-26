@@ -1,5 +1,7 @@
 #include "Settings.h"
 #include "ArchiveText.h"
+#include "ArchiveBinary.h"
+#include "ArchiveXML.h"
 #include <boost/filesystem.hpp>
 
 //Will try to minimize size of boost variants.  May have a negative impact on performance.
@@ -44,10 +46,20 @@ namespace Settings {
 				detail::curType = type;
 				if (detail::curArchive != nullptr) delete detail::curArchive;
 				switch (type) {
-				case FileType::TEXT: {
-					detail::curArchive = new FileSystem::ArchiveText<Settings::detail::Table>(_filename, &detail::table);
-					break;
-				}
+					case FileType::TEXT: {
+						detail::curArchive = new FileSystem::ArchiveText<Settings::detail::Table>(_filename, &detail::table);
+						break;
+					} case FileType::BINARY: {
+						detail::curArchive = new FileSystem::ArchiveBinary<Settings::detail::Table>(_filename, &detail::table);
+						break;
+					} case FileType::XML: {
+						detail::curArchive = new FileSystem::ArchiveXML<Settings::detail::Table>(_filename, &detail::table);
+						break;
+					}  default: {
+						std::cerr << "Error: unknown FileType " << type << std::endl;
+						detail::curArchive = nullptr;
+						break;
+					}
 				}
 			}
 		}

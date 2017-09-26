@@ -4,7 +4,7 @@
 
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
-#include <boost/serialization/nvp>
+#include <boost/serialization/nvp.hpp>
 
 namespace FileSystem {
 
