@@ -19,7 +19,7 @@ namespace Settings {
 
 		/* Filename of the file */
 		std::string filename;
-		/* The table wrapper */
+		/* The table */
 		Table table;
 		/* The current type of serialization */
 		FileType curType = FileType::null;
@@ -27,11 +27,11 @@ namespace Settings {
 		FileSystem::ArchiveBase<Settings::detail::Table> * curArchive = nullptr;
 
 		/*
-				Checks to see if the archive parameters have changed and creates a new archive if they have.
-
-				@param		_filename		the name of the new archive file
-				@param		type			the type of the new archive file
-		*/
+		 *   	Checks to see if the archive parameters have changed and creates a new archive if they have.
+		 *
+		 *		@param		_filename		the name of the new archive file
+		 *		@param		type			the type of the new archive file
+		 */
 		void CheckArchive(const std::string & _filename, FileType type) {
 			if (type == FileType::null) {
 				std::cerr << "Error: cannot serialize to or from null filetype" << std::endl;
@@ -52,6 +52,18 @@ namespace Settings {
 			}
 		}
 
+	}
+
+	/*
+	*   Deletes the underlying archive and sets the current type to null.
+	*/
+
+	void DeleteArchive() {
+		if (detail::curArchive != nullptr) {
+			delete detail::curArchive;
+			detail::curArchive = nullptr;
+		}
+		detail::curType = FileType::null;
 	}
 
 	/*
