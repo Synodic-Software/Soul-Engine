@@ -56,7 +56,7 @@ public:
 	glm::vec3 right;
 	glm::vec2 fieldOfView;
 	Film film;
-
+	
 private:
 	float aperture;
 	float focalDistance;

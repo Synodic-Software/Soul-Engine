@@ -7,6 +7,7 @@
 
 //defined in winspool.h
 #undef AddJob
+#undef GetJob
 
 //The main engine that processes RayJobs
 namespace RayEngine {
@@ -25,7 +26,7 @@ namespace RayEngine {
 	 *    @return	Null if it fails, else a pointer to a RayJob.
 	 */
 	
-	RayJob* AddJob(rayType, uint, bool,float, uint, void*,int*);
+	uint AddJob(rayType, bool,float);
 
 	//A varient that does not copy the results to the CPU but instead returns a cuda* that can be procesed further.
 	//adds a job with a hint to keep its allocated data for ray storage. Speed gains if large ray bundles are given.
@@ -38,7 +39,7 @@ namespace RayEngine {
 	 *    @return	True if it succeeds, false if it fails.
 	 */
 
-	bool RemoveJob(RayJob*);
+	bool RemoveJob(uint);
 
 	/*
 	 *    Modify job.
@@ -46,7 +47,7 @@ namespace RayEngine {
 	 *    @param [in,out]	parameter2	The second parameter.
 	 */
 
-	void ModifyJob(RayJob*, uint);
+	RayJob& GetJob(uint);
 
 	/*
 	 *    Process this object.
@@ -55,9 +56,14 @@ namespace RayEngine {
 	 */
 
 	void Process(const Scene*, double);
+
+	void Update();
+
 	/* Initializes this object. */
 	void Initialize();
 	/* Terminates this object. */
 	void Terminate();
 
+	void PreProcess();
+	void PostProcess();
 }

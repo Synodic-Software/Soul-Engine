@@ -26,18 +26,49 @@ public:
 
 	GPUBuffer(const GPUDevice& deviceIn, uint _size = 0) {
 
-		if(deviceIn.api==CUDA) {
+		if (deviceIn.api == CUDA) {
 			buffer = new CUDABuffer<T>(deviceIn, _size);
 		}
-		else if(deviceIn.api == OpenCL) {
+		else if (deviceIn.api == OpenCL) {
 			buffer = new OpenCLBuffer<T>(deviceIn, _size);
 		}
+
+	}
+
+	GPUBuffer(uint _size = 0) {
+
+		buffer = nullptr;
 
 	}
 
 	/* Destructor. */
 	~GPUBuffer() {
 		delete buffer;
+	}
+
+	void TransferDevice(const GPUDevice& deviceIn) {
+
+		GPUBufferBase<T>* temp;
+
+		if (deviceIn.api == CUDA) {
+			if (buffer) {
+				temp = new CUDABuffer<T>(deviceIn, *buffer);
+			}
+			else {
+				temp = new CUDABuffer<T>(deviceIn, 0);
+			}
+		}
+		else if (deviceIn.api == OpenCL) {
+			if (buffer) {
+				temp = new OpenCLBuffer<T>(deviceIn, *buffer);
+			}
+			else {
+				temp = new CUDABuffer<T>(deviceIn, 0);
+			}
+		}
+
+		delete buffer;
+		buffer = temp;
 	}
 
 	/*
@@ -84,6 +115,10 @@ public:
 		return buffer->size();
 	}
 
+	int capacity() const {
+		return buffer->capacity();
+	}
+
 	/*
 	 *    Gets the data.
 	 *    @return	Null if it fails, else the data.
@@ -91,6 +126,11 @@ public:
 
 	T* data() {
 		return buffer->data();
+	}
+
+
+	T* device_data() {
+		return buffer->device_data();
 	}
 
 	/*

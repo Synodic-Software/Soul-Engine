@@ -16,6 +16,18 @@ public:
 		CudaCheck(cudaMalloc((void**)&deviceData, device_size * sizeof(T)));
 	}
 
+	CUDABuffer(const GPUDevice& _device, GPUBufferBase<T>& other)
+		: GPUBufferBase(_device, other) {
+
+		device_size = other.size();
+		device_capacity = other.capacity();
+
+		//allocate the new space
+		CudaCheck(cudaMalloc((void**)&deviceData, host_capacity * sizeof(T)));
+		CudaCheck(cudaMemcpy(deviceData, other.device_data(), device_size * sizeof(T), cudaMemcpyDeviceToDevice));
+
+	}
+
 	~CUDABuffer() {
 		if (deviceData) {
 			CudaCheck(cudaFree(deviceData));
@@ -37,7 +49,7 @@ public:
 
 		//perform size checks
 		if (host_size > device_size) {
-			this->resize(host_size);
+			CUDABuffer::resize(host_size);
 		}
 
 		CudaCheck(cudaMemcpy(deviceData, hostData, device_size * sizeof(T), cudaMemcpyHostToDevice));
@@ -47,28 +59,29 @@ public:
 
 		GPUBufferBase<T>::reserve(newCapacity);
 
-		//allocate the new size
-		
-		T* data;
-		CudaCheck(cudaMalloc((void**)&data, newCapacity*sizeof(T)));
+		if (newCapacity > device_capacity) {
+			//allocate the new size
+			T* data;
+			CudaCheck(cudaMalloc((void**)&data, newCapacity * sizeof(T)));
 
-		uint lSize = newCapacity < device_size ? newCapacity : device_size;
+			uint lSize = newCapacity < device_size ? newCapacity : device_size;
 
-		//move all previous data
-		CudaCheck(cudaMemcpy(data, &deviceData, lSize*sizeof(T), cudaMemcpyDeviceToDevice));
+			//move all previous data
+			CudaCheck(cudaMemcpy(data, &deviceData, lSize * sizeof(T), cudaMemcpyDeviceToDevice));
 
-		device_capacity = newCapacity;
+			device_capacity = newCapacity;
 
-		//deallocate formerly used memory
-		if (deviceData) {
-			CudaCheck(cudaFree(deviceData));
+			//deallocate formerly used memory
+			if (deviceData) {
+				CudaCheck(cudaFree(deviceData));
+			}
+
+			deviceData = data; //reassign the data pointer
 		}
-
-		deviceData = data; //reassign the data pointer
-
 	}
 
 	void resize(uint newSize) override {
+
 		//first resize the host
 		GPUBufferBase<T>::resize(newSize);
 

@@ -8,7 +8,6 @@
 
 #include "GPGPU\GPUManager.h"
 #include "Utility\Logger.h"
-#include "Photography/CameraManager.h"
 
 //cant have AABB defined and not define WOOP_TRI
 #define WOOP_TRI
@@ -22,7 +21,7 @@
 
 Ray* deviceRays = nullptr;
 Ray* deviceRaysB = nullptr;
-RayJob* jobs = nullptr;
+
 Scene* scene = nullptr;
 curandState* randomState = nullptr;
 
@@ -174,12 +173,12 @@ __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 	uint startIndex = 0;
 
 	int cur = 0;
-	((glm::vec4*)jobs[cur].results)[index - startIndex] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	jobs[cur].groupData[index - startIndex] = 0;
+	((glm::vec4*)jobs[cur].camera.film.results)[index - startIndex] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	jobs[cur].camera.film.hits[index - startIndex] = 0;
 
 }
 
-__global__ void RaySetup(const uint n, int jobSize, RayJob* job, Ray* rays, Camera* cameras, int* nAtomic, curandState* randomState) {
+__global__ void RaySetup(const uint n, int jobSize, RayJob* job, Ray* rays, int* nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -203,10 +202,11 @@ __global__ void RaySetup(const uint n, int jobSize, RayJob* job, Ray* rays, Came
 		ray.resultOffset = sampleIndex;
 		glm::vec3 orig;
 		glm::vec3 dir;
-		cameras[job[cur].camera].GenerateRay(sampleIndex, orig, dir, randState);
+		job[cur].camera.GenerateRay(sampleIndex, orig, dir, randState);
 		ray.origin = glm::vec4(orig, 0.0f);
 		ray.direction = glm::vec4(dir, 4000000000000.0f);
-		atomicAdd(job[cur].groupData + sampleIndex, 1);
+
+		atomicAdd(job[cur].camera.film.hits + sampleIndex, 1);
 		rays[FastAtomicAdd(nAtomic)] = ray;
 
 	}
@@ -411,11 +411,11 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 		randomState[index] = randState;
 	}
 
-	int samples = job[cur].groupData[localIndex];
+	int samples = job[cur].camera.film.hits[localIndex];
 
 	col /= samples;
 
-	glm::vec4* pt = &((glm::vec4*)job[cur].results)[localIndex];
+	glm::vec4* pt = &((glm::vec4*)job[cur].camera.film.results)[localIndex];
 
 	atomicAdd(&(pt->x), col.x);
 
@@ -786,17 +786,9 @@ __host__ int ReturnSharedBytes(int blockSize) {
 }
 
 
-__host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
+__host__ void ProcessJobs(GPUBuffer<RayJob>& jobList, const Scene* sceneIn) {
 
-	std::vector<RayJob> hjobs(hlist.size());
-
-	int pt = 0;
-	for (auto& ptr : hlist) {
-		hjobs[pt] = *ptr;
-		++pt;
-	}
-
-	uint numberJobs = uint(hjobs.size());
+	uint numberJobs = jobList.size();
 
 	//only upload data if a job exists
 	if (numberJobs > 0) {
@@ -806,33 +798,24 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 
 		for (uint i = 0; i < numberJobs; ++i) {
 
-			hjobs[i].startIndex = numberResults;
-			numberResults += hjobs[i].rayAmount;
+			const Camera camera = jobList[i].camera;
 
-			if (hjobs[i].samples < 0) {
-				hjobs[i].samples = 0.0f;
+			const uint rayAmount = camera.film.resolution.x*camera.film.resolution.y;
+
+			jobList[i].startIndex = numberResults;
+			numberResults += rayAmount;
+
+			if (jobList[i].samples < 0) {
+				jobList[i].samples = 0.0f;
 			}
 
-			numberRays += hjobs[i].rayAmount* uint(glm::ceil(hjobs[i].samples));
+			numberRays += rayAmount* uint(glm::ceil(jobList[i].samples));
 
 		}
 
 		if (numberResults != 0) {
 
-			if (numberJobs > jobsAllocated) {
-
-				if (jobs) {
-					CudaCheck(cudaFree(jobs));
-				}
-
-				CudaCheck(cudaMalloc((void**)&jobs, numberJobs * sizeof(RayJob)));
-
-				jobsAllocated = numberJobs;
-
-			}
-
-			//copy device jobs
-			CudaCheck(cudaMemcpy(jobs, hjobs.data(), numberJobs * sizeof(RayJob), cudaMemcpyHostToDevice));
+			jobList.TransferToDevice();
 
 			uint blockSize = 64;
 			uint blockCount = (numberResults + blockSize - 1) / blockSize;
@@ -841,7 +824,7 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 
 
 			//clear the jobs result memory, required for accumulation of multiple samples
-			EngineSetup << <blockCount, blockSize >> > (numberResults, jobs, numberJobs);
+			EngineSetup << <blockCount, blockSize >> > (numberResults, jobList, numberJobs);
 			CudaCheck(cudaPeekAtLastError());
 			CudaCheck(cudaDeviceSynchronize());
 
@@ -883,10 +866,7 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 				CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 				CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
 
-				GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
-				cameraBuffer->TransferToDevice();
-
-				RaySetup << <blockCount, blockSize >> > (numberRays, numberJobs, jobs, deviceRays, *cameraBuffer, hitAtomic, randomState);
+				RaySetup << <blockCount, blockSize >> > (numberRays, numberJobs, jobList, deviceRays, hitAtomic, randomState);
 				CudaCheck(cudaPeekAtLastError());
 				CudaCheck(cudaDeviceSynchronize());
 
@@ -914,12 +894,12 @@ __host__ void ProcessJobs(std::list<RayJob*>& hlist, const Scene* sceneIn) {
 					blockCount = (numActive + blockSize - 1) / blockSize;
 
 					//main engine, collects hits
-					EngineExecute << <blockCountE, blockSizeE, warpPerBlock * sizeof(int) >> > (numActive, jobs, numberJobs, deviceRays, scene, counter);
+					EngineExecute << <blockCountE, blockSizeE, warpPerBlock * sizeof(int) >> > (numActive, jobList, numberJobs, deviceRays, scene, counter);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
 					//processes hits 
-					ProcessHits << <blockCount, blockSize >> > (numActive, jobs, numberJobs, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
+					ProcessHits << <blockCount, blockSize >> > (numActive, jobList, numberJobs, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
 					CudaCheck(cudaPeekAtLastError());
 					CudaCheck(cudaDeviceSynchronize());
 
@@ -966,7 +946,6 @@ __host__ void GPUTerminate() {
 	CudaCheck(cudaFree(scene));
 	CudaCheck(cudaFree(counter));
 	CudaCheck(cudaFree(hitAtomic));
-	CudaCheck(cudaFree(jobs));
 	CudaCheck(cudaFree(deviceRays));
 	CudaCheck(cudaFree(deviceRaysB));
 	CudaCheck(cudaFree(randomState));
