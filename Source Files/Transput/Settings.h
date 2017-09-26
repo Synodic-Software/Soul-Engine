@@ -414,135 +414,9 @@ namespace Settings {
 
 		};
 
-		/*
-		 *    Simple wrapper around table to allow dynamic creation of tables. This makes reading
-		 *    tables from files easier and more efficient.
-		 */
-
-	//	class TableWrapper {
-	//	private:
-	//		/* The table */
-	//		Table* table;
-	//	public:
-
-	//		/* Constructor and Destructor. */
-	//		TableWrapper() : table(new Table()) {}
-	//		/* Destructor. */
-	//		~TableWrapper() { delete table; }
-
-	//		//Read settings from file
-	//		//T is a boost text, xml, or binary iarchive.  Wide character archives are not supported.
-	//		template <class T>
-
-	//		/*
-	//		 *    Reads the given filename.
-	//		 *    @param	_filename	The filename to read.
-	//		 */
-
-	//		void Read(const std::string & _filename) {
-	//			/* . */
-	//			detail::filename = _filename;
-
-	//			/*
-	//			 *    Ifs the given parameter 1.
-	//			 *    @param	parameter1	The first parameter.
-	//			 *    @return	A std::ifstream.
-	//			 */
-
-	//			std::ifstream ifs(detail::filename);
-
-	//			/*
-	//			 *    Archives the given parameter 1.
-	//			 *    @param	parameter1	The first parameter.
-	//			 *    @return	A T.
-	//			 */
-
-	//			T ar(ifs);
-	//			//boost::archive::text_iarchive ar(ifs);
-	//			/* The pointer */
-	//			Table* ptr = new Table();
-	//			/* The boost serialization make nvp */
-	//			ar & boost::serialization::make_nvp("Table", *ptr);
-	//			if (this->table != nullptr) delete this->table;
-	//			/* . */
-	//			this->table = ptr;
-	//		}
-
-	//		//Write settings to file
-	//		//T is a boost text, xml, or binary oarchive.  Wide character archives are not supported.
-	//		template <class T>
-	//		/* Writes this object. */
-	//		void Write() {
-
-	//			/*
-	//			 *    Ofs the given parameter 1.
-	//			 *    @param	parameter1	The first parameter.
-	//			 *    @return	A std::ofstream.
-	//			 */
-
-	//			std::ofstream ofs(detail::filename);
-
-	//			/*
-	//			 *    Archives the given parameter 1.
-	//			 *    @param	parameter1	The first parameter.
-	//			 *    @return	A T.
-	//			 */
-
-	//			T ar(ofs);
-	//			//boost::archive::text_oarchive ar(ofs);
-	//			/* The boost serialization make nvp */
-	//			ar & boost::serialization::make_nvp("Table", *(this->table));
-	//		}
-
-	//		//See Settings::Table::Get(const std::string&,T) for more info
-	//		template <typename T>
-
-	//		/*
-	//		 *    Gets.
-	//		 *    @param	propertyName	Name of the property.
-	//		 *    @param	defaultValue	The default value.
-	//		 *    @return	A T.
-	//		 */
-
-	//		T Get(const std::string & propertyName, T defaultValue) {
-	//			return this->table->Get(propertyName, defaultValue);
-	//		}
-
-	//		//See Settings::Table::Get(const std::string&,T,T*) for more info
-	//		template <typename T>
-
-	//		/*
-	//		 *    Gets.
-	//		 *    @param 		 	propertyName 	Name of the property.
-	//		 *    @param 		 	defaultValue 	The default value.
-	//		 *    @param [in,out]	propertyValue	If non-null, the property value.
-	//		 *    @return	True if it succeeds, false if it fails.
-	//		 */
-
-	//		bool Get(const std::string & propertyName, T defaultValue, T* propertyValue) {
-	//			return this->table->Get(propertyName, defaultValue, propertyValue);
-	//		}
-
-	//		//See Settings::Table::Set(const std::string&,T) for more info
-	//		template <typename T>
-
-	//		/*
-	//		 *    Sets.
-	//		 *    @param	propertyName 	Name of the property.
-	//		 *    @param	propertyValue	The property value.
-	//		 *    @return	True if it succeeds, false if it fails.
-	//		 */
-
-	//		bool Set(const std::string & propertyName, T propertyValue) {
-	//			return this->table->Set(propertyName, propertyValue);
-	//		}
-
-	//	};
-
-
 		/* Filename of the file */
 		extern std::string filename;
-		/* The table wrapper */
+		/* The table */
 		extern Table table;
 		/* The current type of serialization */
 		extern FileType curType;
@@ -638,4 +512,10 @@ namespace Settings {
 	 */
 
 	void Read(const std::string & _filename, FileType type = TEXT);
+
+	/*
+	 *   Deletes the underlying archive and sets the current type to null.
+	 */
+
+	void DeleteArchive();
 }
