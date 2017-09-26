@@ -229,6 +229,12 @@
     <Filter Include="Engine Backend\Transput">
       <UniqueIdentifier>{2a0ffafe-523d-41b3-8ff2-b8cdbdff1bac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Algorithms\Filters">
+      <UniqueIdentifier>{0da5e1cc-c471-4b46-924f-709e864e0c14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Algorithms\Filters\CUDA">
+      <UniqueIdentifier>{7a70c345-552f-41ff-8e39-c06066c53fc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -543,9 +549,6 @@
     <ClInclude Include="..\Source Files\Input\Key.h">
       <Filter>Engine Backend\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Photography\CameraManager.h">
-      <Filter>Engine Backend\Photography</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Photography\Lens\Lens.h">
       <Filter>Engine Backend\Photography\Lens</Filter>
     </ClInclude>
@@ -742,9 +745,6 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Input\Key.cpp">
       <Filter>Engine Backend\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Photography\CameraManager.cpp">
-      <Filter>Engine Backend\Photography</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp">
       <Filter>Engine Backend\GPGPU</Filter>
