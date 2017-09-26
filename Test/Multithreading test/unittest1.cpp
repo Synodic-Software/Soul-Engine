@@ -78,7 +78,6 @@ namespace Multithreadingtest
 		TEST_METHOD(blocker)
 		{
 			//Tests blocking of execution until all launch immediate tasks are done
-			//Also ensures that blockage doesn't go into effect when their is no launch immediate
 			Scheduler::Initialize();
 
 			//due to block each task runs sequentially so a is in order
@@ -91,27 +90,12 @@ namespace Multithreadingtest
 				Scheduler::Block();
 			}
 
-			//since block has no effect b is out of order
-			std::vector<int> b;
-			for (size_t i = 0; i < 100; i++)
-			{
-				Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_HIGH, false, [&i, &b]() {
-					b.push_back(i);
-				});
-				Scheduler::Block();
-			}
 
 			Scheduler::Terminate();
 			for (size_t i = 0; i < 100; i++)
 			{
 				Assert::AreEqual(int(i), a[i]);
 			}
-			bool out_of_order = true;
-			for (size_t i = 1; i < 100; i++)
-			{
-				out_of_order = out_of_order && b[i - 1] < b[i];
-			}
-			Assert::IsFalse(out_of_order);
 
 
 			Assert::IsTrue(true);
