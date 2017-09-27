@@ -38,7 +38,7 @@ Soul Engine can be compiled in Microsoft Visual Studio 2015.
   
 # Example Usage
 
-```
+``` C++
 
 #include "SoulCore.h"
 
