@@ -2,16 +2,18 @@
 
 //Boost library inclues
 #include <boost/variant.hpp>
+#include <boost/serialization/access.hpp>
 #include <boost/serialization/unordered_map.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/variant.hpp>
-#include <boost/archive/xml_oarchive.hpp>
-#include <boost/archive/xml_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/nvp.hpp>
+//#include <boost/archive/xml_oarchive.hpp>
+//#include <boost/archive/xml_iarchive.hpp>
+//#include <boost/archive/text_oarchive.hpp>
+//#include <boost/archive/text_iarchive.hpp>
+//#include <boost/archive/binary_oarchive.hpp>
+//#include <boost/archive/binary_iarchive.hpp>
+
 
 //Standard Library includes
 #include <string>
@@ -24,8 +26,12 @@
 #include <iostream>
 #include <fstream>
 
+#include "ArchiveBase.h"
+
+//#define BOOST_VARIANT_MINIMIZE_SIZE
+
 /* Values that represent file types. */
-enum FileType { BINARY, XML, TEXT };
+enum FileType { null, BINARY, XML, TEXT };
 
 //Publically Accessible Methods
 namespace Settings {
@@ -408,136 +414,22 @@ namespace Settings {
 
 		};
 
-		/*
-		 *    Simple wrapper around table to allow dynamic creation of tables. This makes reading
-		 *    tables from files easier and more efficient.
-		 */
-
-		class TableWrapper {
-		private:
-			/* The table */
-			Table* table;
-		public:
-
-			/* Constructor and Destructor. */
-			TableWrapper() : table(new Table()) {}
-			/* Destructor. */
-			~TableWrapper() { delete table; }
-
-			//Read settings from file
-			//T is a boost text, xml, or binary iarchive.  Wide character archives are not supported.
-			template <class T>
-
-			/*
-			 *    Reads the given filename.
-			 *    @param	_filename	The filename to read.
-			 */
-
-			void Read(const std::string & _filename) {
-				/* . */
-				detail::filename = _filename;
-
-				/*
-				 *    Ifs the given parameter 1.
-				 *    @param	parameter1	The first parameter.
-				 *    @return	A std::ifstream.
-				 */
-
-				std::ifstream ifs(detail::filename);
-
-				/*
-				 *    Archives the given parameter 1.
-				 *    @param	parameter1	The first parameter.
-				 *    @return	A T.
-				 */
-
-				T ar(ifs);
-				//boost::archive::text_iarchive ar(ifs);
-				/* The pointer */
-				Table* ptr = new Table();
-				/* The boost serialization make nvp */
-				ar & boost::serialization::make_nvp("Table", *ptr);
-				if (this->table != nullptr) delete this->table;
-				/* . */
-				this->table = ptr;
-			}
-
-			//Write settings to file
-			//T is a boost text, xml, or binary oarchive.  Wide character archives are not supported.
-			template <class T>
-			/* Writes this object. */
-			void Write() {
-
-				/*
-				 *    Ofs the given parameter 1.
-				 *    @param	parameter1	The first parameter.
-				 *    @return	A std::ofstream.
-				 */
-
-				std::ofstream ofs(detail::filename);
-
-				/*
-				 *    Archives the given parameter 1.
-				 *    @param	parameter1	The first parameter.
-				 *    @return	A T.
-				 */
-
-				T ar(ofs);
-				//boost::archive::text_oarchive ar(ofs);
-				/* The boost serialization make nvp */
-				ar & boost::serialization::make_nvp("Table", *(this->table));
-			}
-
-			//See Settings::Table::Get(const std::string&,T) for more info
-			template <typename T>
-
-			/*
-			 *    Gets.
-			 *    @param	propertyName	Name of the property.
-			 *    @param	defaultValue	The default value.
-			 *    @return	A T.
-			 */
-
-			T Get(const std::string & propertyName, T defaultValue) {
-				return this->table->Get(propertyName, defaultValue);
-			}
-
-			//See Settings::Table::Get(const std::string&,T,T*) for more info
-			template <typename T>
-
-			/*
-			 *    Gets.
-			 *    @param 		 	propertyName 	Name of the property.
-			 *    @param 		 	defaultValue 	The default value.
-			 *    @param [in,out]	propertyValue	If non-null, the property value.
-			 *    @return	True if it succeeds, false if it fails.
-			 */
-
-			bool Get(const std::string & propertyName, T defaultValue, T* propertyValue) {
-				return this->table->Get(propertyName, defaultValue, propertyValue);
-			}
-
-			//See Settings::Table::Set(const std::string&,T) for more info
-			template <typename T>
-
-			/*
-			 *    Sets.
-			 *    @param	propertyName 	Name of the property.
-			 *    @param	propertyValue	The property value.
-			 *    @return	True if it succeeds, false if it fails.
-			 */
-
-			bool Set(const std::string & propertyName, T propertyValue) {
-				return this->table->Set(propertyName, propertyValue);
-			}
-
-		};
-
-
 		/* Filename of the file */
 		extern std::string filename;
-		/* The table wrapper */
-		extern TableWrapper tableWrapper;
+		/* The table */
+		extern Table table;
+		/* The current type of serialization */
+		extern FileType curType;
+		/* The archive for settings */
+		extern FileSystem::ArchiveBase<Settings::detail::Table> * curArchive;
+
+		/*
+			Checks to see if the archive parameters have changed and creates a new archive if they have.
+
+			@param		_filename		the name of the new archive file
+			@param		type			the type of the new archive file
+			*/
+		void CheckArchive(const std::string & _filename, FileType type);
 
 	}
 
@@ -556,7 +448,7 @@ namespace Settings {
 	 */
 
 	T Get(const std::string & propertyName, T defaultValue) {
-		return detail::tableWrapper.Get<T>(propertyName, defaultValue);
+		return detail::table.Get<T>(propertyName, defaultValue);
 	}
 
 	//Retrieves a value at the specified placeholder. Cannot accept user defined types, only system types
@@ -581,7 +473,7 @@ namespace Settings {
 			return false;
 		}
 
-		bool found = detail::tableWrapper.Get<T>(propertyName, defaultValue, propertyValue);
+		bool found = detail::table.Get<T>(propertyName, defaultValue, propertyValue);
 		if (!found) {
 			Set(propertyName, defaultValue);
 		}
@@ -600,7 +492,7 @@ namespace Settings {
 	 */
 
 	bool Set(const std::string & propertyName, T propertyValue) {
-		return detail::tableWrapper.Set<T>(propertyName, propertyValue);
+		return detail::table.Set<T>(propertyName, propertyValue);
 	}
 
 	/*
@@ -620,4 +512,10 @@ namespace Settings {
 	 */
 
 	void Read(const std::string & _filename, FileType type = TEXT);
+
+	/*
+	 *   Deletes the underlying archive and sets the current type to null.
+	 */
+
+	void DeleteArchive();
 }
