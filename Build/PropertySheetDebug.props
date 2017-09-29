@@ -34,7 +34,7 @@
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\Libraries\glew\lib\Release MX\x64;$(AMDAPPSDKROOT)/lib/x86_64;$(ProjectDir)..\Libraries\boost\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)..\Libraries\glfw\bin;$(ProjectDir)..\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)..\Libraries</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\Libraries\glew\lib\Release MX\x64;$(ProjectDir)..\Libraries\boost\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\lib\x64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)..\Libraries\glfw\bin;$(ProjectDir)..\Libraries\glfw\bin\Debug;$(LibraryPath);$(ProjectDir)..\Libraries</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;opengl32.lib;glew32mxs.lib;glu32.lib;glfw3.lib;OpenCL.lib;cudart_static.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
