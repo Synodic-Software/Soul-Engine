@@ -3,16 +3,14 @@
 
 #include "SoulCore.h"
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "Raster Engine/RasterBackend.h"
 #include "Engine Core/BasicDependencies.h"
 
-#include "Utility/Settings.h"
+#include "Transput/Settings.h"
 #include "Utility/Logger.h"
 
 #include "Engine Core/Frame/Frame.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
-#include "Bounding Volume Heirarchy/BVH.h"
 #include "GPGPU\GPUManager.h"
 #include "Display\Window\WindowManager.h"
 #include "Display\Layout\SingleLayout.h"
@@ -20,7 +18,8 @@
 #include "Multithreading\Scheduler.h"
 #include "Events\EventManager.h"
 #include "Input/InputManager.h"
-#include "Photography/CameraManager.h"
+
+#undef GetJob
 
 namespace Soul {
 
@@ -77,11 +76,6 @@ namespace Soul {
 			WindowManager::Terminate();
 		});
 
-		//destroy all cameras
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			CameraManager::Terminate();
-		});
-
 		Scheduler::Block();
 
 		//destroy glfw, needs to wait on the window manager
@@ -101,6 +95,12 @@ namespace Soul {
 
 	/* Initializes the engine. */
 	void Initialize() {
+
+		//create the listener for threads initializeing
+		EventManager::Listen("Thread","Initialize",[]()
+		{
+			GPUManager::InitThread();
+		});
 
 		//setup the multithreader
 		Scheduler::Initialize();
@@ -149,13 +149,10 @@ namespace Soul {
 			RayEngine::Initialize();
 		});
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			CameraManager::Initialize();
-		});
-
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
+
 
 		Settings::Get("Engine.Delta_Time", 1 / 60.0, &engineRefreshRate);
 		Settings::Get("Engine.Alloted_Render_Time", 0.01, &allotedRenderTime);
@@ -164,11 +161,28 @@ namespace Soul {
 
 	}
 
+	
+
+	/* Ray pre process */
+	void RayPreProcess() {
+
+		RayEngine::PreProcess();
+
+	}
+	
+	/* Ray post process */
+	void RayPostProcess() {
+
+		RayEngine::PostProcess();
+
+	}
+
 	/* Rasters this object. */
 	void Raster() {
 
 		//Backends should handle multithreading
 		WindowManager::Draw();
+
 	}
 
 	/* Warmups this object. */
@@ -212,7 +226,11 @@ namespace Soul {
 
 		EventManager::Emit("Update", "Early");
 
-		CameraManager::Update();
+		//Update the engine cameras
+		RayEngine::Update();
+
+		//pull cameras into jobs
+		EventManager::Emit("Update", "Job Cameras");
 
 		Scheduler::Block();
 
@@ -273,9 +291,13 @@ namespace Soul {
 
 			LateFrameUpdate();
 
+			RayPreProcess();
+
 			for (auto const& scene : scenes) {
 				RayEngine::Process(scene, allotedRenderTime);
 			}
+
+			RayPostProcess();
 
 			Raster();
 
@@ -374,66 +396,58 @@ int main()
 		type = static_cast<WindowType>(typeCast);
 
 		glm::uvec2 size = glm::uvec2(xSize, ySize);
-		uint cameraID = CameraManager::AddCamera(size);
-		Camera* camera = CameraManager::GetCamera(cameraID);
 
-		camera->position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
-		camera->OffsetOrientation(225, 45);
+		
 
 		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 
-		WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(camera)));
+		uint jobID;
+		WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(jobID)));
+
+		RayJob& job = RayEngine::GetJob(jobID);
+		Camera& camera = job.camera;
+		camera.position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
+		camera.OffsetOrientation(225, 45);
 
 		double deltaTime = GetDeltaTime();
 		float moveSpeed = 10 * METER * deltaTime;
 
 		InputManager::AfixMouse(*mainWindow);
 
-		EventManager::Listen("Input", "S", [cameraID, &moveSpeed](keyState state) {
-			Camera* camera = CameraManager::GetCamera(cameraID);
+		EventManager::Listen("Input", "S", [&camera, &moveSpeed](keyState state) {
 
 			if (state == PRESS || state == REPEAT) {
-				camera->position += float(moveSpeed) * -camera->forward;
+				camera.position += float(moveSpeed) * -camera.forward;
 			}
 		});
 
-		EventManager::Listen("Input", "W", [cameraID, &moveSpeed](keyState state) {
-			Camera* camera = CameraManager::GetCamera(cameraID);
-
+		EventManager::Listen("Input", "W", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->position += float(moveSpeed) * camera->forward;
+				camera.position += float(moveSpeed) * camera.forward;
 			}
 		});
 
-		EventManager::Listen("Input", "A", [cameraID, &moveSpeed](keyState state) {
-			Camera* camera = CameraManager::GetCamera(cameraID);
-
+		EventManager::Listen("Input", "A", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->position += float(moveSpeed) * -camera->right;
+				camera.position += float(moveSpeed) * -camera.right;
 			}
 		});
 
-		EventManager::Listen("Input", "D", [cameraID, &moveSpeed](keyState state) {
-			Camera* camera = CameraManager::GetCamera(cameraID);
-
+		EventManager::Listen("Input", "D", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->position += float(moveSpeed) * camera->right;
+				camera.position += float(moveSpeed) * camera.right;
 			}
 		});
 
-		EventManager::Listen("Input", "Z", [cameraID, &moveSpeed](keyState state) {
-			Camera* camera = CameraManager::GetCamera(cameraID);
-
+		EventManager::Listen("Input", "Z", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->position += float(moveSpeed) * -glm::vec3(0, 1, 0);
+				camera.position += float(moveSpeed) * -glm::vec3(0, 1, 0);
 			}
 		});
 
-		EventManager::Listen("Input", "X", [cameraID, &moveSpeed](keyState state) {
-			Camera* camera = CameraManager::GetCamera(cameraID);
-
+		EventManager::Listen("Input", "X", [&camera, &moveSpeed](keyState state) {
 			if (state == PRESS || state == REPEAT) {
-				camera->position += float(moveSpeed) * glm::vec3(0, 1, 0);
+				camera.position += float(moveSpeed) * glm::vec3(0, 1, 0);
 			}
 		});
 
@@ -446,14 +460,12 @@ int main()
 			}
 		});
 
-		EventManager::Listen("Input", "Mouse Position", [cameraID](double x, double y) {
-			Camera* camera = CameraManager::GetCamera(cameraID);
-
+		EventManager::Listen("Input", "Mouse Position", [&camera](double x, double y) {
 			glm::dvec2 mouseChangeDegrees;
-			mouseChangeDegrees.x = x / camera->fieldOfView.x * 2;
-			mouseChangeDegrees.y = y / camera->fieldOfView.y * 2;
+			mouseChangeDegrees.x = x / camera.fieldOfView.x * 4;
+			mouseChangeDegrees.y = y / camera.fieldOfView.y * 4;
 
-			camera->OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
+			camera.OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 		});
 
 		Scene* scene = new Scene();
