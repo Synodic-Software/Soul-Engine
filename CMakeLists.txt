@@ -9,10 +9,9 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 find_package(glm 0.9.8 REQUIRED)
-include_directories(${GLM_INCLUDE_DIRS})
+include_directories(${GLM_INCLUDE_DIRS} "Include Files")
 
-file(GLOB_RECURSE "INCLUDES" "*.h")
-file(GLOB_RECURSE "SOURCES" "*.cpp" "*.h")
+file(GLOB_RECURSE "SOURCES" "Source Files/*.cpp")
 
-add_executable(Soul_Engine ${SOURCES} ${INCLUDES})
+add_executable(Soul_Engine ${SOURCES})
 target_link_libraries(Soul_Engine glfw)
