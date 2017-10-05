@@ -1,4 +1,6 @@
 #include "Logger.h"
+#include <ctime>
+#include <chrono>
 
 namespace Logger {
 
@@ -47,6 +49,17 @@ namespace Logger {
 			detail::logMut.unlock();
 			return std::string();
 		}
+	}
 
+	void WriteFile()
+	{
+		std::ofstream log("Engine.log");
+		char* file = "Engine.log";
+		int line;
+		line = 7;
+		char* str;
+		//log << << std::endl;
+		detail::WriteInfo(log, file, line);
+		log.close();
 	}
 }
