@@ -149,4 +149,6 @@ namespace Logger {
 	 */
 
 	std::string Get();
+
+	void WriteFile();
 }
