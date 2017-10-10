@@ -34,7 +34,7 @@ To compile within the visual studio project dependancies with the following must
   
   - tinyobjloader - https://github.com/syoyo/tinyobjloader
   
-Soul Engine can be compiled in Microsoft Visual Studio 2015.
+Soul Engine can be compiled in Microsoft Visual Studio 2017.
   
 # Example Usage
 
