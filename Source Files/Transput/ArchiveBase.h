@@ -21,6 +21,16 @@ namespace FileSystem{
 		*/
 		ArchiveBase(const std::string & filename_, T * object_) : FileManager(filename_), object(object_) {}
 
+		/*
+				@effects			read from the file specified by filename
+		*/
+		virtual void Read() = 0;
+
+		/*
+				@effects			write to the file specified by filename
+		*/
+		virtual void Write() = 0;
+
 	protected:
 		T * object;
 	};
