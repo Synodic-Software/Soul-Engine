@@ -7,3 +7,6 @@
 [submodule "Libraries/src/glew/glew"]
 	path = Libraries/src/glew/glew
 	url = https://github.com/nigels-com/glew
+[submodule "Libraries/src/glfw/glfw"]
+	path = Libraries/src/glfw/glfw
+	url = https://github.com/glfw/glfw
