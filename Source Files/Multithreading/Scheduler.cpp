@@ -1,7 +1,5 @@
 #include "Scheduler.h"
 
-#include "Metrics.h"
-
 #include <chrono>
 #include <thread>
 #include <algorithm>  
@@ -10,8 +8,7 @@
 #include <list>
 #include <malloc.h>  
 
-#include "Transput\Settings.h"
-#include "GPGPU\GPUManager.h"
+#include "Events/EventManager.h"
 
 /* Scheduler Variables//. */
 static std::thread* threads;
@@ -296,7 +293,7 @@ namespace Scheduler {
 		void ThreadRun() {
 			boost::fibers::use_scheduling_algorithm<SoulScheduler >();
 
-			GPUManager::InitThread();
+			EventManager::Emit("Thread", "Initialize");
 
 			std::unique_lock<std::mutex> lock(Scheduler::detail::fiberMutex);
 			threadCondition.wait(lock, []() { return 0 == Scheduler::detail::fiberCount && !detail::shouldRun; });
@@ -366,7 +363,7 @@ namespace Scheduler {
 		boost::fibers::use_scheduling_algorithm< detail::SoulScheduler >();
 
 		//the main thread takes up one slot, leave one open for system+background.
-		Settings::Get("Engine.Additional_Threads",size_t(std::thread::hardware_concurrency()-1), &threadCount);
+		threadCount = std::thread::hardware_concurrency() - 1;
 		threads = new std::thread[threadCount];
 
 		detail::fiberCount++;
