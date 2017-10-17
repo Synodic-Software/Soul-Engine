@@ -1,0 +1,3 @@
+[submodule "Libraries/src/tinyobjloader/tinyobjloader"]
+	path = Libraries/src/tinyobjloader/tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader
