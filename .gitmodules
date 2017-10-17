@@ -4,3 +4,6 @@
 [submodule "Libraries/src/stb/stb"]
 	path = Libraries/src/stb/stb
 	url = https://github.com/nothings/stb
+[submodule "Libraries/src/glew/glew"]
+	path = Libraries/src/glew/glew
+	url = https://github.com/nigels-com/glew
