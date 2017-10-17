@@ -30,7 +30,7 @@ To compile within the visual studio project dependancies with the following must
   
   - Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
   
-  - OpenCL	  - http://developer.amd.com/tools-and-sdks/opencl-zone/amd-accelerated-parallel-processing-app-sdk/
+  - OpenCL	  - http://developer.amd.com/amd-accelerated-parallel-processing-app-sdk/
   
   - tinyobjloader - https://github.com/syoyo/tinyobjloader
   
@@ -38,7 +38,7 @@ Soul Engine can be compiled in Microsoft Visual Studio 2015.
   
 # Example Usage
 
-```
+``` C++
 
 #include "SoulCore.h"
 

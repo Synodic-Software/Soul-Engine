@@ -209,6 +209,12 @@ Soul Engine/x64/Debug/Soul Engine/Soul Engine.tlog/CL.read.1.tlog
 Soul Engine/x64/Debug/Soul Engine/Soul Engine.tlog/cl.command.1.tlog
 *.command.1.tlog
 
+#CMake
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+
 *.cu.deps
 x64/Release/cudart32_75.dll
 x64/Release/cudart64_75.dll
