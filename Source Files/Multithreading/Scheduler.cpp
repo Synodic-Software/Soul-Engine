@@ -201,15 +201,16 @@ namespace Scheduler {
 				else {
 					ctx->detach();
 
-					std::unique_lock< std::mutex > lk(queueMutex);
 
 					int ctxPriority = props.GetPriority();
 
 					//if it needs to run on the main thread
 					if (props.RunOnMain()) {
+						std::unique_lock< std::mutex > lk(queueMutex);
 						InsertContext(mainOnlyQueue, ctx, ctxPriority);
 					}
 					else {
+						std::unique_lock< std::mutex > lk(mtx_);
 						InsertContext(localQueue, ctx, ctxPriority);
 					}
 				}
@@ -218,12 +219,10 @@ namespace Scheduler {
 			virtual boost::fibers::context * pick_next() noexcept {
 
 				boost::fibers::context * ctx(nullptr);
-				std::thread::id thisID = std::this_thread::get_id();
-
-
-				std::unique_lock< std::mutex > lk(queueMutex);
+				std::thread::id thisID = std::this_thread::get_id();				
 
 				if (!mainOnlyQueue.empty() && thisID == mainID) {
+					std::unique_lock< std::mutex > lk(queueMutex);
 					ctx = mainOnlyQueue.front();
 					mainOnlyQueue.pop_front();
 					lk.unlock();
@@ -231,6 +230,7 @@ namespace Scheduler {
 					boost::fibers::context::active()->attach(ctx);
 				}
 				else if (!localQueue.empty()) {
+					std::unique_lock< std::mutex > lk(mtx_);
 					ctx = localQueue.front();
 					localQueue.pop_front();
 					lk.unlock();
@@ -238,7 +238,6 @@ namespace Scheduler {
 					boost::fibers::context::active()->attach(ctx);
 				}
 				else if(!pinnedQueue.empty()) {
-					lk.unlock();		
 					ctx = &pinnedQueue.front();
 					pinnedQueue.pop_front();
 					
@@ -249,14 +248,12 @@ namespace Scheduler {
 						[](const quetex_t& q1, const quetex_t& q2) {return q1.first->size() < q2.first->size(); });
 					if (i->first->size() > 0)
 					{
+						std::unique_lock< std::mutex > lk(*i->second);
 						ctx = i->first->front();
 						i->first->pop_front();
+						lk.unlock();
 						BOOST_ASSERT(nullptr != ctx);
 						boost::fibers::context::active()->attach(ctx);
-					}
-					else
-					{
-						lk.unlock();
 					}
 				}
 				return ctx;
