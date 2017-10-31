@@ -1,6 +1,4 @@
 #include "Logger.h"
-#include <ctime>
-#include <chrono>
 
 namespace Logger {
 
@@ -53,12 +51,16 @@ namespace Logger {
 
 	void WriteFile()
 	{
+		namespace pt = boost::posix_time;
+		std::ostringstream msg;
+		std::string time;
 		std::ofstream log("Engine.log");
 		char* file = "Engine.log";
 		int line;
 		line = 7;
 		char* str;
-		//log << << std::endl;
+		time = pt::to_iso_string(pt::second_clock::local_time());
+		log << time << std::endl;
 		detail::WriteInfo(log, file, line);
 		log.close();
 	}
