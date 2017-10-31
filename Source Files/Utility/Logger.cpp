@@ -47,6 +47,24 @@ namespace Logger {
 			detail::logMut.unlock();
 			return std::string();
 		}
+	}
 
+	//limited to a set "test default" output, overwrites existing log file
+	void WriteFile()
+	{
+		namespace pt = boost::posix_time;
+		std::ostringstream msg;
+		std::string time;
+		std::ofstream log("Engine.log");
+		//should be changed to pull from a storage system
+		char* file = "Engine.log";
+		//should be changed like above
+		int line;
+		line = 7;
+		char* str;
+		time = pt::to_iso_string(pt::second_clock::local_time());
+		log << time << std::endl;
+		detail::WriteInfo(log, file, line);
+		log.close();
 	}
 }
