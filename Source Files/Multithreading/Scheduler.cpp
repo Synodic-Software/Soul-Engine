@@ -91,16 +91,25 @@ namespace Scheduler {
 			/* Defines an alias representing the lqueue t. */
 			typedef boost::fibers::scheduler::ready_queue_type lqueue_t;
 
-			static rqueue_t     	readyQueue;
-			static std::mutex   	queueMutex;
-			static rqueue_t     	mainOnlyQueue;
+			typedef std::pair<rqueue_t*, std::mutex*> quetex_t;
+
+			static std::vector<quetex_t>	threadQueues;
+			static std::mutex   			queueMutex;
+			static rqueue_t     			mainOnlyQueue;
 
 			/*
-			 *    Gets a queue of locals.
-			 *    @return	A Queue of locals.
-			 */
+			*    Gets a queue of locals.
+			*    @return	A Queue of thread pinned tasks.
+			*/
 
-			lqueue_t            	localQueue{};
+			rqueue_t				localQueue{};
+
+			/*
+			*    Gets a queue of pinned tasks.
+			*    @return	A Queue of thread pinned tasks.
+			*/
+
+			lqueue_t            	pinnedQueue{};
 
 			/*
 			 *    Gets the mtx.
@@ -126,10 +135,17 @@ namespace Scheduler {
 			bool                    suspend_;
 
 		public:
-			SoulScheduler() = default;
+			SoulScheduler() {
+				queueMutex.lock();
+				threadQueues.push_back(std::make_pair(&localQueue, &mtx_));
+				queueMutex.unlock();
+			}
 
 			SoulScheduler(bool suspend) :
 				suspend_{ suspend } {
+				queueMutex.lock();
+				threadQueues.push_back(std::make_pair(&localQueue, &mtx_));
+				queueMutex.unlock();
 			}
 
 			/*
@@ -162,6 +178,12 @@ namespace Scheduler {
 
 			SoulScheduler & operator=(SoulScheduler &&) = delete;
 
+			~SoulScheduler() {
+				queueMutex.lock();
+				threadQueues.erase(std::remove(threadQueues.begin(), threadQueues.end(), std::make_pair(&localQueue, &mtx_)), threadQueues.end());
+				queueMutex.unlock();
+			}
+
 			void InsertContext(rqueue_t& queue, boost::fibers::context*& ctx, int ctxPriority) {
 				rqueue_t::iterator i(std::find_if(queue.begin(), queue.end(),
 					[ctxPriority, this](boost::fibers::context* c)
@@ -174,21 +196,22 @@ namespace Scheduler {
 
 				//dont push fiber when helper or the main fiber is passed in
 				if (ctx->is_context(boost::fibers::type::pinned_context)) {
-					localQueue.push_back(*ctx);
+					pinnedQueue.push_back(*ctx);
 				}
 				else {
 					ctx->detach();
 
-					std::unique_lock< std::mutex > lk(queueMutex);
 
 					int ctxPriority = props.GetPriority();
 
 					//if it needs to run on the main thread
 					if (props.RunOnMain()) {
+						std::unique_lock< std::mutex > lk(queueMutex);
 						InsertContext(mainOnlyQueue, ctx, ctxPriority);
 					}
 					else {
-						InsertContext(readyQueue, ctx, ctxPriority);
+						std::unique_lock< std::mutex > lk(mtx_);
+						InsertContext(localQueue, ctx, ctxPriority);
 					}
 				}
 			}
@@ -196,31 +219,41 @@ namespace Scheduler {
 			virtual boost::fibers::context * pick_next() noexcept {
 
 				boost::fibers::context * ctx(nullptr);
-				std::thread::id thisID = std::this_thread::get_id();
-
-
-				std::unique_lock< std::mutex > lk(queueMutex);
+				std::thread::id thisID = std::this_thread::get_id();				
 
 				if (!mainOnlyQueue.empty() && thisID == mainID) {
+					std::unique_lock< std::mutex > lk(queueMutex);
 					ctx = mainOnlyQueue.front();
 					mainOnlyQueue.pop_front();
 					lk.unlock();
 					BOOST_ASSERT(nullptr != ctx);
 					boost::fibers::context::active()->attach(ctx);
 				}
-				else if (!readyQueue.empty()) {
-					ctx = readyQueue.front();
-					readyQueue.pop_front();
+				else if (!localQueue.empty()) {
+					std::unique_lock< std::mutex > lk(mtx_);
+					ctx = localQueue.front();
+					localQueue.pop_front();
 					lk.unlock();
 					BOOST_ASSERT(nullptr != ctx);
 					boost::fibers::context::active()->attach(ctx);
 				}
+				else if(!pinnedQueue.empty()) {
+					ctx = &pinnedQueue.front();
+					pinnedQueue.pop_front();
+					
+				}
 				else {
-					lk.unlock();
-
-					if (!localQueue.empty()) {
-						ctx = &localQueue.front();
-						localQueue.pop_front();
+					//Queue steal
+					std::vector<quetex_t>::iterator i = std::min_element(std::begin(threadQueues), std::end(threadQueues),
+						[](const quetex_t& q1, const quetex_t& q2) {return q1.first->size() < q2.first->size(); });
+					if (i->first->size() > 0)
+					{
+						std::unique_lock< std::mutex > lk(*i->second);
+						ctx = i->first->front();
+						i->first->pop_front();
+						lk.unlock();
+						BOOST_ASSERT(nullptr != ctx);
+						boost::fibers::context::active()->attach(ctx);
 					}
 				}
 				return ctx;
@@ -228,7 +261,11 @@ namespace Scheduler {
 
 			virtual bool has_ready_fibers() const noexcept {
 				std::unique_lock< std::mutex > lock(queueMutex);
-				return !mainOnlyQueue.empty() || !readyQueue.empty() || !localQueue.empty();
+				bool local_queues_empty = true;
+				for (quetex_t q : threadQueues) {
+					local_queues_empty = local_queues_empty && q.first->empty();
+				}
+				return !(mainOnlyQueue.empty() && local_queues_empty && localQueue.empty());
 			}
 
 			virtual void property_change(boost::fibers::context * ctx, FiberProperties & props) noexcept {
@@ -269,7 +306,7 @@ namespace Scheduler {
 		 *    @return	A Queue of readies.
 		 */
 
-		SoulScheduler::rqueue_t SoulScheduler::readyQueue{};
+		std::vector<SoulScheduler::quetex_t> SoulScheduler::threadQueues{};
 
 		/*
 		 *    Gets a queue of main onlies.

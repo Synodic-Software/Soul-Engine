@@ -27,8 +27,6 @@ namespace Multithreadingtest
 
 			Assert::IsTrue(Scheduler::Running());
 
-			Scheduler::Block();
-
 			Scheduler::Terminate();
 
 			Assert::IsTrue(true);
@@ -97,6 +95,87 @@ namespace Multithreadingtest
 				Assert::AreEqual(int(i), a[i]);
 			}
 
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(fiber_1)
+		{
+			//tests intitializing, adding a simple task and terminating the scheduler
+			Scheduler::Initialize();
+
+
+			for (UINT i = 0; i < 1; i++)
+			{
+				Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+					mult(1, 1);
+				});
+			}
+
+			Assert::IsTrue(Scheduler::Running());
+
+
+			Scheduler::Terminate();
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(fiber_2)
+		{
+			//tests intitializing, adding a simple task and terminating the scheduler
+			Scheduler::Initialize();
+
+
+			for (UINT i = 0; i < 4; i++)
+			{
+				Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+					mult(1, 1);
+				});
+			}
+
+			Assert::IsTrue(Scheduler::Running());
+
+
+			Scheduler::Terminate();
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(fiber_8)
+		{
+			//tests intitializing, adding a simple task and terminating the scheduler
+			Scheduler::Initialize();
+
+
+			for (UINT i = 0; i < 8; i++)
+			{
+				Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+					mult(1, 1);
+				});
+			}
+
+			Assert::IsTrue(Scheduler::Running());
+
+
+			Scheduler::Terminate();
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(fiber_8_blocked)
+		{
+			//tests intitializing, adding a simple task and terminating the scheduler
+			Scheduler::Initialize();
+
+
+			for (UINT i = 0; i < 8; i++)
+			{
+				Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+					mult(1, 1);
+				});
+			}
+
+			Assert::IsTrue(Scheduler::Running());
+
+			Scheduler::Block();
+
+			Scheduler::Terminate();
 
 			Assert::IsTrue(true);
 		}
