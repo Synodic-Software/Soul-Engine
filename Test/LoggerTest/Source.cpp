@@ -7,7 +7,7 @@ int main()
 	namespace pt = boost::posix_time;
 	std::string line;
 	std::string time;
-	time = pt::to_iso_string(pt::second_clock::local_time());
+	time = pt::to_iso_string(pt::second_clock::universal_time());
 	Logger::WriteFile();
 	std::ifstream file("Engine.log");
 	std::getline(file, line);
