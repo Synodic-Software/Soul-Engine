@@ -62,7 +62,7 @@ namespace Logger {
 		int line;
 		line = 7;
 		char* str;
-		time = pt::to_iso_string(pt::second_clock::local_time());
+		time = pt::to_iso_string(pt::second_clock::universal_time());
 		log << time << std::endl;
 		detail::WriteInfo(log, file, line);
 		log.close();
