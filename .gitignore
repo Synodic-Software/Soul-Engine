@@ -223,3 +223,9 @@ x64/Release/cudart64_75.dll
 *.opendb
 *.db
 *.db
+/Libraries/boost
+/Libraries/glew
+/Libraries/glfw
+/Libraries/glm/glm
+/Libraries/stb
+/Libraries/tinyObj

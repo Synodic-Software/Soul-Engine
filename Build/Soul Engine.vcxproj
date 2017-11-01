@@ -59,6 +59,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     </PostBuildEvent>
     <CudaCompile />
     <CudaLink />
+    <CudaCompile>
+      <CodeGeneration>compute_50,sm_50;compute_52,sm_52;compute_61,sm_61;compute_70,sm_70</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -78,6 +81,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     </PostBuildEvent>
     <CudaCompile />
     <CudaLink />
+    <CudaCompile>
+      <CodeGeneration>compute_50,sm_50;compute_52,sm_52;compute_61,sm_61;compute_70,sm_70</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Include Files\Metrics.h" />
@@ -141,6 +147,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDATexture.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUBackendBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUBufferBase.h" />
@@ -148,10 +155,13 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\GPGPU\GPUManager.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPURasterBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPURasterBufferBase.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUTexture.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUTextureBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLTexture.h" />
     <ClInclude Include="..\Source Files\Input\InputSet.h" />
     <ClInclude Include="..\Source Files\Input\InputManager.h" />
     <ClInclude Include="..\Source Files\Input\Key.h" />
@@ -191,6 +201,11 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Ray Engine\Ray.h" />
     <ClInclude Include="..\Source Files\Ray Engine\RayEngine.h" />
     <ClInclude Include="..\Source Files\Ray Engine\RayJob.h" />
+    <ClInclude Include="..\Source Files\Transput\ArchiveBase.h" />
+    <ClInclude Include="..\Source Files\Transput\ArchiveBinary.h" />
+    <ClInclude Include="..\Source Files\Transput\ArchiveText.h" />
+    <ClInclude Include="..\Source Files\Transput\ArchiveXML.h" />
+    <ClInclude Include="..\Source Files\Transput\FileManager.h" />
     <ClInclude Include="..\Source Files\Transput\Settings.h" />
     <ClInclude Include="..\Source Files\Utility\Assert.h" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CudaHelper.cuh" />
@@ -224,6 +239,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDATexture.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUBufferBase.cpp" />
@@ -231,10 +247,13 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\GPGPU\GPUManager.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPURasterBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPURasterBufferBase.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUTexture.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUTextureBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLTexture.cpp" />
     <ClCompile Include="..\Source Files\Input\InputSet.cpp" />
     <ClCompile Include="..\Source Files\Input\InputManager.cpp" />
     <ClCompile Include="..\Source Files\Input\Key.cpp" />
