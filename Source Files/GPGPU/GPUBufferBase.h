@@ -53,8 +53,7 @@ public:
 
 	/* Destructor. */
 	virtual ~GPUBufferBase() {
-		delete[] hostData;
-
+		delete hostData;
 	}
 
 	/*

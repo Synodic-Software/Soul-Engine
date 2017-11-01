@@ -4,6 +4,7 @@
 #include "Metrics.h"
 
 #include <curand_kernel.h>
+#include "GPGPU/GPUTexture.h"
 
 class Film {
 public:
@@ -23,7 +24,8 @@ public:
 
 	float resolutionRatio;
 
-	void* results;
+	//GPUTexture<glm::vec4> results;
+	glm::vec4* results;
 	int* hits;
 
 	bool operator==(const Film& other) const {
