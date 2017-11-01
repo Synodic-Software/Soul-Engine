@@ -75,8 +75,10 @@ void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
 
 
 	//modify all the sample counts/ resolutions to reflect the change
-	for (auto& job : jobs) {
-		if (job.canChange) {
+	for (int i = 0; i < jobList.size(); i++) {
+
+		RayJob& job = jobList[i];
+		if (false) {
 
 			Camera& camera = job.camera;
 
@@ -230,5 +232,5 @@ void RayEngine::PostProcess() {
 	//grab camera
 	Camera camera = job.camera;
 
-	//Filter::HermiteBicubic(job->results, camera.film.resolutionMax, camera.film.resolution);
+	//Filter::IterativeBicubic((glm::vec4*)job.camera.film.results, camera.film.resolution, camera.film.resolutionMax);
 }
