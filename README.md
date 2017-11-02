@@ -70,4 +70,4 @@ int main()
 }
 ```
 
-The documentation Wiki for Soul Engine can be found [here](https://github.com/Behemyth/Soul-Engine/wiki/Documentation).
+The documentation Wiki for Soul Engine can be found [here](https://github.com/Synodic-Software/Soul-Engine/wiki).
