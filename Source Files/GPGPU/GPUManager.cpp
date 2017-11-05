@@ -1,7 +1,7 @@
 #include "GPUManager.h"
 
 #include "GPUDevice.h"
-#include "CUDA\CUDADevice.h"
+#include "CUDA\CUDADevice.cuh"
 #include "OpenCL\OpenCLDevice.h"
 
 namespace GPUManager {
@@ -11,7 +11,7 @@ namespace GPUManager {
 	namespace detail {
 
 		/* The devices */
-		std::vector<std::unique_ptr<GPUDevice>> devices;
+		std::vector<GPUDevice> devices;
 
 		CUDABackend cudaBackend;
 		OpenCLBackend openCLBackend;
@@ -19,22 +19,22 @@ namespace GPUManager {
 	}
 
 	void ExtractDevices() {
-		std::vector<GPUDevice> cudaDevices;
+		std::vector<CUDADevice> cudaDevices;
 		detail::cudaBackend.ExtractDevices(cudaDevices);
 
 		int cudaCounter = 0;
 		int clCounter = 0;
 
-		for (auto &var : cudaDevices) {
-			detail::devices.emplace_back(new CUDADevice(cudaCounter));
+		for (auto &device : cudaDevices) {
+			detail::devices.emplace_back( new CUDADevice(device) );
 			++cudaCounter;
 		}
 
-		std::vector<GPUDevice> openCLDevices;
+		std::vector<OpenCLDevice> openCLDevices;
 		detail::openCLBackend.ExtractDevices(openCLDevices);
 
-		for (auto &var : openCLDevices) {
-			detail::devices.emplace_back(new OpenCLDevice(clCounter));
+		for (auto &device : openCLDevices) {
+			detail::devices.emplace_back(new OpenCLDevice(device));
 
 			++clCounter;
 		}
@@ -56,8 +56,8 @@ namespace GPUManager {
 	 *    @return	The best GPU.
 	 */
 
-	GPUDevice& GetBestGPU() {
-		return *detail::devices[0].get();
+	GPUDevice GetBestGPU() {
+		return detail::devices[0];
 	}
 
 

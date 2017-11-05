@@ -14,7 +14,7 @@ namespace GPUManager {
 	namespace detail {
 
 		/* The devices */
-		extern std::vector<std::unique_ptr<GPUDevice>> devices;
+		extern std::vector<GPUDevice> devices;
 		extern CUDABackend cudaBackend;
 		extern OpenCLBackend openCLBackend;
 	}
@@ -37,10 +37,10 @@ namespace GPUManager {
 	void TransferToDevice(GPUDevice& device, std::vector<GPUBuffer<T>> buffer) {
 		//TODO implement for each backend
 
-		if (device.api == CUDA) {
+		if (device.GetAPI() == CUDA) {
 			detail::cudaBackend.TransferToDevice(device, buffer);
 		}
-		else if (device.api == OpenCL) {
+		else if (device.GetAPI() == OpenCL) {
 			detail::openCLBackend.TransferToDevice(device, buffer);
 		}
 	}
@@ -61,5 +61,5 @@ namespace GPUManager {
 	 *    @return	The best GPU.
 	 */
 
-	GPUDevice& GetBestGPU();
+	GPUDevice GetBestGPU();
 }

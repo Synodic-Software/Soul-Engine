@@ -1,6 +1,5 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
-#include "Utility/CUDA/CUDAHelper.cuh"
 #include "Utility/Timer.h"
 #include <deque>
 #include "Algorithms/Filters/Filter.h"
@@ -20,6 +19,35 @@ static uint frameHold = 5;
 
 /* timer. */
 static Timer renderTimer;
+
+static uint raysAllocated = 0;
+
+static GPUBuffer<Ray> deviceRaysA;
+static GPUBuffer<Ray> deviceRaysB;
+
+//Scene* scene = nullptr;
+static GPUBuffer<curandState> randomState;
+
+static uint raySeedGl = 0;
+
+static const uint rayDepth = 4;
+
+static GPUBuffer<Scene> scene;
+
+//stored counters
+static GPUBuffer<int> counter;
+static GPUBuffer<int> hitAtomic;
+
+static GPUExecutePolicy persistantPolicy;
+
+__host__ __device__ __inline__ uint WangHash(uint a) {
+	a = (a ^ 61) ^ (a >> 16);
+	a = a + (a << 3);
+	a = a ^ (a >> 4);
+	a = a * 0x27d4eb2d;
+	a = a ^ (a >> 15);
+	return a;
+}
 
 /*
  *    Updates the jobs.
@@ -138,12 +166,125 @@ void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
  *    @param	target	Target for the.
  */
 
-void RayEngine::Process(const Scene* scene, double target) {
+void RayEngine::Process(const Scene* sceneIn, double target) {
 
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();
 
-	ProcessJobs(jobList, scene);
+	const auto numberJobs = jobList.size();
+
+	//only upload data if a job exists
+	if (numberJobs > 0) {
+
+		uint numberResults = 0;
+		uint numberRays = 0;
+
+		for (uint i = 0; i < numberJobs; ++i) {
+
+			const Camera camera = jobList[i].camera;
+
+			const uint rayAmount = camera.film.resolution.x*camera.film.resolution.y;
+
+			jobList[i].rayOffset = numberResults;
+			numberResults += rayAmount;
+
+			if (jobList[i].samples < 0) {
+				jobList[i].samples = 0.0f;
+			}
+
+			numberRays += rayAmount* uint(glm::ceil(jobList[i].samples));
+
+		}
+
+		if (numberResults != 0 && numberRays != 0) {
+
+			jobList.TransferToDevice();
+
+			//clear the jobs result memory, required for accumulation of multiple samples
+
+			GPUDevice device = GPUManager::GetBestGPU();
+
+			uint blockSize = 64;
+			GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize,1,1), glm::vec3(blockSize,1,1), 0, 0);
+
+			device.Launch(normalPolicy, EngineSetup, numberResults, jobList, numberJobs);
+
+			if (numberRays > raysAllocated) {
+
+				if (deviceRaysA) {
+					CudaCheck(cudaFree(deviceRaysA));
+				}
+				if (deviceRaysB) {
+					CudaCheck(cudaFree(deviceRaysB));
+				}
+				if (randomState) {
+					CudaCheck(cudaFree(randomState));
+				}
+
+				CudaCheck(cudaMalloc((void**)&randomState, numberRays * sizeof(curandState)));
+				CudaCheck(cudaMalloc((void**)&deviceRaysA, numberRays * sizeof(Ray)));
+				CudaCheck(cudaMalloc((void**)&deviceRaysB, numberRays * sizeof(Ray)));
+
+				device.Launch(normalPolicy, RandomSetup, numberRays, randomState, WangHash(++raySeedGl));
+				CudaCheck(cudaPeekAtLastError());
+				CudaCheck(cudaDeviceSynchronize());
+
+				raysAllocated = numberRays;
+
+			}
+
+			//copy the scene over
+			CudaCheck(cudaMemcpy(scene, sceneIn, sizeof(Scene), cudaMemcpyHostToDevice));
+
+			//setup the counters
+			int zeroHost = 0;
+			CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+			CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+
+			device.Launch(normalPolicy, RaySetup, numberRays, numberJobs, jobList, deviceRaysA, hitAtomic, randomState);
+			CudaCheck(cudaPeekAtLastError());
+			CudaCheck(cudaDeviceSynchronize());
+
+			/*	Ray* hostRays = new Ray[numberRays];
+			CudaCheck(cudaMemcpy(hostRays, deviceRaysA, numberRays *sizeof(Ray), cudaMemcpyDeviceToHost));
+
+			for (int i = 0; i < numberRays; ++i) {
+
+			}
+
+			delete hostRays;*/
+
+			//start the engine loop
+			uint numActive;
+			CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
+
+			for (uint i = 0; i < rayDepth && numActive>0; ++i) {
+
+				//reset counters
+				CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+				CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+
+				//grab the current block sizes for collecting hits based on numActive
+				GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
+
+				//main engine, collects hits
+				device.Launch(persistantPolicy, ExecuteJobs, numActive, deviceRaysA, scene, counter);
+				CudaCheck(cudaPeekAtLastError());
+				CudaCheck(cudaDeviceSynchronize());
+
+				//processes hits 
+				device.Launch(activePolicy, ProcessHits, numActive, jobList, numberJobs, deviceRaysA, deviceRaysB, scene, hitAtomic, randomState);
+				CudaCheck(cudaPeekAtLastError());
+				CudaCheck(cudaDeviceSynchronize());
+
+				std::swap(deviceRaysA, deviceRaysB);
+
+				CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
+
+			}
+		}
+
+	}
 
 	UpdateJobs(renderTimer.Elapsed() / 1000.0, target, jobList);
 }
@@ -165,7 +306,7 @@ uint RayEngine::AddJob(rayType whatToGet, bool canChange,
 
 	jobList.push_back(RayJob(whatToGet, canChange, samples));
 
-	return jobList[jobList.size()-1].id;
+	return jobList[jobList.size() - 1].id;
 }
 
 /*
@@ -176,7 +317,7 @@ uint RayEngine::AddJob(rayType whatToGet, bool canChange,
 
 RayJob& RayEngine::GetJob(uint jobIn) {
 
-	for (int i = 0; i < jobList.size();i++) {
+	for (int i = 0; i < jobList.size(); i++) {
 
 		RayJob& job = jobList[i];
 		if (job.id == jobIn) {
@@ -202,7 +343,28 @@ bool RayEngine::RemoveJob(uint job) {
 /* Initializes this object. */
 void RayEngine::Initialize() {
 
-	GPUInitialize();
+	deviceRaysA.TransferDevice(GPUManager::GetBestGPU());
+	deviceRaysB.TransferDevice(GPUManager::GetBestGPU());
+
+	randomState.TransferDevice(GPUManager::GetBestGPU());
+
+	counter.TransferDevice(GPUManager::GetBestGPU());
+	hitAtomic.TransferDevice(GPUManager::GetBestGPU());
+
+	scene.TransferDevice(GPUManager::GetBestGPU());
+
+	scene.resize(1);
+	counter.resize(1);
+	hitAtomic.resize(1);
+	
+	persistantPolicy = GPUManager::GetBestGPU().BestExecutePolicy(ExecuteJobs);
+
+
+	///////////////Alternative Hardcoded Calculation/////////////////
+	//uint blockPerSM = CUDABackend::GetBlocksPerMP();
+	//warpPerBlock = CUDABackend::GetWarpsPerMP() / blockPerSM;
+	//blockCountE = CUDABackend::GetSMCount()*blockPerSM;
+	//blockSizeE = dim3(CUDABackend::GetWarpSize(), warpPerBlock, 1);
 
 	jobList.TransferDevice(GPUManager::GetBestGPU());
 
@@ -218,11 +380,11 @@ void RayEngine::Update() {
 
 /* Terminates this object. */
 void RayEngine::Terminate() {
-	GPUTerminate();
+
 }
 
 void RayEngine::PreProcess() {
-	
+
 }
 void RayEngine::PostProcess() {
 

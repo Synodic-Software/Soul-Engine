@@ -11,7 +11,7 @@ static int deviceCount;
 	 *    @param [in,out]	devices	The devices.
 	 */
 
-void OpenCLBackend::ExtractDevices(std::vector<GPUDevice>& devices) {
+void OpenCLBackend::ExtractDevices(std::vector<OpenCLDevice>& devices) {
 
 	S_LOG_WARNING("OpenCL is not supported yet");
 }

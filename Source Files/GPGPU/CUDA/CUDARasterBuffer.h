@@ -30,7 +30,7 @@ public:
 
 		CUDARasterBuffer::resize(_count);
 
-		device = _device.order;
+		device = _device.GetOrder();
 	}
 	/* Destructor. */
 	~CUDARasterBuffer() {}

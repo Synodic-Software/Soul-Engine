@@ -1,9 +1,12 @@
 #pragma once
 
 #include "Metrics.h"
+#include "glm/glm.hpp"
+#include "GPUDeviceBase.h"
+#include "CUDA/CUDADevice.cuh"
+#include "OpenCL/OpenCLDevice.h"
 
-/* Values that represent GPU backends. */
-enum GPUBackend { CUDA, OpenCL };
+#include "GPGPU/GPUExecutePolicy.h"
 
 /* A GPU device. */
 class GPUDevice {
@@ -15,9 +18,27 @@ public:
 	 *    @param	parameter1	The first parameter.
 	 */
 
-	GPUDevice(uint);
+	GPUDevice(GPUDeviceBase*);
+
 	/* Destructor. */
 	virtual ~GPUDevice();
+
+	template <typename KernelFunction, typename... Args>
+	void Launch(const GPUExecutePolicy& policy,
+		const KernelFunction& kernel,
+		Args... parameters) {
+
+		if (device->api == CUDA) {
+			auto cudaDevice = static_cast<CUDADevice*>(device);
+			cudaDevice->Launch(policy, kernel, parameters...);
+		}
+		else {
+			//auto openCLDevice = static_cast<OpenCLDevice*>(device);
+			//TODO implement
+			//openCLDevice->Launch(policy, kernel, parameters...);
+		}
+
+	}
 
 	/*
 	*    Gets core count.
@@ -55,12 +76,34 @@ public:
 
 	virtual int GetBlocksPerMP();
 
-	/* The API */
-	GPUBackend api;
+	template<typename KernelFunction>
+	GPUExecutePolicy BestExecutePolicy(const KernelFunction& kernel)
+	{
+		if (device->api == CUDA) {
+			auto cudaDevice = static_cast<CUDADevice*>(device);
+			return cudaDevice->BestExecutePolicy(kernel, [](int blockSize) -> int
+			{
+				return blockSize / 32 * sizeof(int);
+			}
+			);
+		}
+		else {
 
-	/* The order */
-	int order;
+
+		}
+	}
+
+	GPUBackend GetAPI() const {
+		return device->api;
+	}
+
+	int GetOrder() const {
+		return device->order;
+	}
+
 protected:
+
+	GPUDeviceBase* device;
 
 private:
 

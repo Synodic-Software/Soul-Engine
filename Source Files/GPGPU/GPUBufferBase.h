@@ -10,6 +10,7 @@
 *    @tparam	T	Generic type parameter.
 */
 
+
 template <class T>
 class GPUBufferBase {
 

@@ -8,6 +8,7 @@
 
 #include "GPGPU\GPUManager.h"
 #include "Utility\Logger.h"
+#include "Data Structures/DataHelper.h"
 
 //cant have AABB defined and not define WOOP_TRI
 #define WOOP_TRI
@@ -18,22 +19,6 @@
 #define RAY_BIAS_DISTANCE 0.0002f 
 #define p (1.0f + 2e-23f)
 #define m (1.0f - 2e-23f)
-
-Ray* deviceRays = nullptr;
-Ray* deviceRaysB = nullptr;
-
-Scene* scene = nullptr;
-curandState* randomState = nullptr;
-
-uint raySeedGl = 0;
-uint raysAllocated = 0;
-uint jobsAllocated = 0;
-
-const uint rayDepth = 4;
-
-//stored counters
-int* counter;
-int* hitAtomic;
 
 //engine launch config
 uint blockCountE;
@@ -134,16 +119,6 @@ __device__ __inline__ float magic_min7(float a0, float a1, float b0, float b1, f
 
 __device__ __inline__ float spanBeginKepler(float a0, float a1, float b0, float b1, float c0, float c1, float d) { return fmax_fmax(fminf(a0, a1), fminf(b0, b1), fmin_fmax(c0, c1, d)); }
 __device__ __inline__ float spanEndKepler(float a0, float a1, float b0, float b1, float c0, float c1, float d) { return fmin_fmin(fmaxf(a0, a1), fmaxf(b0, b1), fmax_fmin(c0, c1, d)); }
-
-
-__host__ __device__ __inline__ uint WangHash(uint a) {
-	a = (a ^ 61) ^ (a >> 16);
-	a = a + (a << 3);
-	a = a ^ (a >> 4);
-	a = a * 0x27d4eb2d;
-	a = a ^ (a >> 15);
-	return a;
-}
 
 __global__ void RandomSetup(const uint n, curandState* randomState, const uint raySeed) {
 
@@ -434,7 +409,7 @@ __inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
 __inline__ __device__ float Dn(float a) { return a*m; }
 __inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
-__global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays, const Scene* scene, int* counter) {
+__global__ void ExecuteJobs(const uint n, Ray* rays, const Scene* scene, int* counter) {
 
 	Node * traversalStack[STACK_SIZE];
 	traversalStack[0] = nullptr; // Bottom-most entry.
@@ -778,176 +753,4 @@ __global__ void EngineExecute(const uint n, RayJob* job, int jobSize, Ray* rays,
 		rays[rayidx] = ray;
 
 	} while (true);
-}
-
-//grab the shared memory for a dynamic blocksize
-__host__ int ReturnSharedBytes(int blockSize) {
-	return blockSize / GPUManager::GetBestGPU().GetWarpSize() * sizeof(int);
-}
-
-
-__host__ void ProcessJobs(GPUBuffer<RayJob>& jobList, const Scene* sceneIn) {
-
-	uint numberJobs = jobList.size();
-
-	//only upload data if a job exists
-	if (numberJobs > 0) {
-
-		uint numberResults = 0;
-		uint numberRays = 0;
-
-		for (uint i = 0; i < numberJobs; ++i) {
-
-			const Camera camera = jobList[i].camera;
-
-			const uint rayAmount = camera.film.resolution.x*camera.film.resolution.y;
-
-			jobList[i].startIndex = numberResults;
-			numberResults += rayAmount;
-
-			if (jobList[i].samples < 0) {
-				jobList[i].samples = 0.0f;
-			}
-
-			numberRays += rayAmount* uint(glm::ceil(jobList[i].samples));
-
-		}
-
-		if (numberResults != 0) {
-
-			jobList.TransferToDevice();
-
-			uint blockSize = 64;
-			uint blockCount = (numberResults + blockSize - 1) / blockSize;
-
-
-
-
-			//clear the jobs result memory, required for accumulation of multiple samples
-			EngineSetup << <blockCount, blockSize >> > (numberResults, jobList, numberJobs);
-			CudaCheck(cudaPeekAtLastError());
-			CudaCheck(cudaDeviceSynchronize());
-
-			blockSize = 64;
-			blockCount = (numberRays + blockSize - 1) / blockSize;
-
-			if (numberRays != 0) {
-
-
-				if (numberRays > raysAllocated) {
-
-					if (deviceRays) {
-						CudaCheck(cudaFree(deviceRays));
-					}
-					if (deviceRaysB) {
-						CudaCheck(cudaFree(deviceRaysB));
-					}
-					if (randomState) {
-						CudaCheck(cudaFree(randomState));
-					}
-
-					CudaCheck(cudaMalloc((void**)&randomState, numberRays * sizeof(curandState)));
-					CudaCheck(cudaMalloc((void**)&deviceRays, numberRays * sizeof(Ray)));
-					CudaCheck(cudaMalloc((void**)&deviceRaysB, numberRays * sizeof(Ray)));
-
-					RandomSetup << <blockCount, blockSize >> > (numberRays, randomState, WangHash(++raySeedGl));
-					CudaCheck(cudaPeekAtLastError());
-					CudaCheck(cudaDeviceSynchronize());
-
-					raysAllocated = numberRays;
-
-				}
-
-				//copy the scene over
-				CudaCheck(cudaMemcpy(scene, sceneIn, sizeof(Scene), cudaMemcpyHostToDevice));
-
-				//setup the counters
-				int zeroHost = 0;
-				CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
-				CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
-
-				RaySetup << <blockCount, blockSize >> > (numberRays, numberJobs, jobList, deviceRays, hitAtomic, randomState);
-				CudaCheck(cudaPeekAtLastError());
-				CudaCheck(cudaDeviceSynchronize());
-
-				/*	Ray* hostRays = new Ray[numberRays];
-					CudaCheck(cudaMemcpy(hostRays, deviceRays, numberRays *sizeof(Ray), cudaMemcpyDeviceToHost));
-
-					for (int i = 0; i < numberRays; ++i) {
-
-					}
-
-					delete hostRays;*/
-
-					//start the engine loop
-				uint numActive;
-				CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
-
-				for (uint i = 0; i < rayDepth && numActive>0; ++i) {
-
-					//reset counters
-					CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
-					CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
-
-					//grab the current block sizes for collecting hits based on numActive
-					blockSize = 64;
-					blockCount = (numActive + blockSize - 1) / blockSize;
-
-					//main engine, collects hits
-					EngineExecute << <blockCountE, blockSizeE, warpPerBlock * sizeof(int) >> > (numActive, jobList, numberJobs, deviceRays, scene, counter);
-					CudaCheck(cudaPeekAtLastError());
-					CudaCheck(cudaDeviceSynchronize());
-
-					//processes hits 
-					ProcessHits << <blockCount, blockSize >> > (numActive, jobList, numberJobs, deviceRays, deviceRaysB, scene, hitAtomic, randomState);
-					CudaCheck(cudaPeekAtLastError());
-					CudaCheck(cudaDeviceSynchronize());
-
-					swap(deviceRays, deviceRaysB);
-
-					CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
-
-				}
-			}
-		}
-	}
-}
-
-__host__ void GPUInitialize() {
-
-	CudaCheck(cudaMalloc((void**)&scene, sizeof(Scene)));
-	CudaCheck(cudaMalloc((void**)&counter, sizeof(int)));
-	CudaCheck(cudaMalloc((void**)&hitAtomic, sizeof(int)));
-
-	int blockSizeOut;
-	int minGridSize;
-
-	//dynamically ask for the best launch setup
-	CudaCheck(cudaOccupancyMaxPotentialBlockSizeVariableSMem(
-		&minGridSize, &blockSizeOut, EngineExecute, ReturnSharedBytes,
-		GPUManager::GetBestGPU().GetSMCount()*GPUManager::GetBestGPU().GetBlocksPerMP()));
-
-	//get the device stats for persistant threads
-	uint warpSize = GPUManager::GetBestGPU().GetWarpSize();
-	warpPerBlock = blockSizeOut / warpSize;
-	blockCountE = minGridSize;
-	blockSizeE = dim3(warpSize, warpPerBlock, 1);
-
-	///////////////Alternative Hardcoded Calculation/////////////////
-	//uint blockPerSM = CUDABackend::GetBlocksPerMP();
-	//warpPerBlock = CUDABackend::GetWarpsPerMP() / blockPerSM;
-	//blockCountE = CUDABackend::GetSMCount()*blockPerSM;
-	//blockSizeE = dim3(CUDABackend::GetWarpSize(), warpPerBlock, 1);
-
-}
-
-__host__ void GPUTerminate() {
-
-	CudaCheck(cudaFree(scene));
-	CudaCheck(cudaFree(counter));
-	CudaCheck(cudaFree(hitAtomic));
-	CudaCheck(cudaFree(deviceRays));
-	CudaCheck(cudaFree(deviceRaysB));
-	CudaCheck(cudaFree(randomState));
-
 }
