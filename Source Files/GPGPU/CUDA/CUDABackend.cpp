@@ -14,7 +14,7 @@ static int deviceCount;
  *    @param [in,out]	devices	The devices.
  */
 
-void CUDABackend::ExtractDevices(std::vector<GPUDevice>& devices) {
+void CUDABackend::ExtractDevices(std::vector<CUDADevice>& devices) {
 	cudaError_t error = cudaGetDeviceCount(&deviceCount);
 
 	if (deviceCount == 0) {

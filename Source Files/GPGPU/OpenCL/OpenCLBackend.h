@@ -13,7 +13,7 @@ public:
 	 *    @param [in,out]	parameter1	The first parameter.
 	 */
 
-	void ExtractDevices(std::vector<GPUDevice>&);
+	void ExtractDevices(std::vector<OpenCLDevice>&);
 
 	/* Initializes the thread. */
 	void InitThread();

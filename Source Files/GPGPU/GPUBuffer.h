@@ -26,10 +26,10 @@ public:
 
 	GPUBuffer(const GPUDevice& deviceIn, uint _size = 0) {
 
-		if (deviceIn.api == CUDA) {
+		if (deviceIn.GetAPI() == CUDA) {
 			buffer = new CUDABuffer<T>(deviceIn, _size);
 		}
-		else if (deviceIn.api == OpenCL) {
+		else if (deviceIn.GetAPI() == OpenCL) {
 			buffer = new OpenCLBuffer<T>(deviceIn, _size);
 		}
 
@@ -50,7 +50,7 @@ public:
 
 		GPUBufferBase<T>* temp;
 
-		if (deviceIn.api == CUDA) {
+		if (deviceIn.GetAPI() == CUDA) {
 			if (buffer) {
 				temp = new CUDABuffer<T>(deviceIn, *buffer);
 			}
@@ -58,7 +58,7 @@ public:
 				temp = new CUDABuffer<T>(deviceIn, 0);
 			}
 		}
-		else if (deviceIn.api == OpenCL) {
+		else if (deviceIn.GetAPI() == OpenCL) {
 			if (buffer) {
 				temp = new OpenCLBuffer<T>(deviceIn, *buffer);
 			}

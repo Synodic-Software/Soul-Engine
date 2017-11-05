@@ -2,7 +2,7 @@
 #include "GPGPU\GPUDevice.h"
 
 /* An open cl device. */
-class OpenCLDevice :public GPUDevice {
+class OpenCLDevice :public GPUDeviceBase {
 
 public:
 

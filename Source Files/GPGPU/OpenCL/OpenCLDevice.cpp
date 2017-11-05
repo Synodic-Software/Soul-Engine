@@ -6,7 +6,7 @@
  */
 
 OpenCLDevice::OpenCLDevice(uint o) :
-GPUDevice(o)
+	GPUDeviceBase(o)
 {
 
 	api = OpenCL;

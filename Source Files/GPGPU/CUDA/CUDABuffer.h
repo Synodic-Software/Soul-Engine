@@ -2,7 +2,7 @@
 #include "GPGPU\GPUBufferBase.h"
 
 #include "Metrics.h"
-#include "GPGPU\CUDA\CUDADevice.h"
+#include "GPGPU\CUDA\CUDADevice.cuh"
 #include "Utility/CUDA/CudaHelper.cuh"
 
 /* Buffer for cuda. */

@@ -504,9 +504,6 @@
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.h">
       <Filter>Engine Backend\GPGPU\OpenCL</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.h">
-      <Filter>Engine Backend\GPGPU\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h">
       <Filter>Engine Backend\Algorithms\Morton Code</Filter>
     </ClInclude>
@@ -626,6 +623,27 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDATexture.h">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\DataHelper.h">
+      <Filter>Engine Backend\Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUDeviceBase.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUExecutePolicy.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.cuh">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUKernel.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDAKernel.h">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLKernel.h">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -749,9 +767,6 @@
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.cpp">
       <Filter>Engine Backend\GPGPU\OpenCL</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cpp">
-      <Filter>Engine Backend\GPGPU\CUDA</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RadixTree.cpp">
       <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
     </ClCompile>
@@ -811,6 +826,27 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDATexture.cpp">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\DataHelper.cpp">
+      <Filter>Engine Backend\Data Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUDeviceBase.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUExecutePolicy.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cu">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUKernel.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDAKernel.cpp">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLKernel.cpp">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

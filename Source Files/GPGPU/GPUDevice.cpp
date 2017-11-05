@@ -1,14 +1,14 @@
 #include "GPUDevice.h"
 
+
+
 /*
  *    Constructor.
  *    @param	o	An uint to process.
  */
 
-GPUDevice::GPUDevice(uint o) {
-
-	order = o;
-
+GPUDevice::GPUDevice(GPUDeviceBase* _device){
+	device = _device;
 }
 
 /* Destructor. */

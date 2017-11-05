@@ -14,10 +14,10 @@ public:
 	/* Default constructor. */
 	GPURasterBuffer(GPUDevice& _device, uint _objectCount = 0) {
 
-		if (_device.api == CUDA) {
+		if (_device.GetAPI() == CUDA) {
 			buffer = new CUDARasterBuffer<T>(_device, _objectCount);
 		}
-		else if (_device.api == OpenCL) {
+		else if (_device.GetAPI() == OpenCL) {
 			buffer = new OpenCLRasterBuffer<T>(_device, _objectCount);
 		}
 
