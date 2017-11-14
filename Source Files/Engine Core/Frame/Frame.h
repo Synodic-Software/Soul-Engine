@@ -1,10 +1,11 @@
 #pragma once
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <boost/filesystem.hpp>
-
-namespace Frame {
-	frameCount = 0;
+class Frame {
+	Frame():frameCount(0){};
+	
+public:
+	frameCount;
+	
+private:
+	
 }
