@@ -4,8 +4,6 @@
 #include <fstream>
 #include <string>
 #include <boost/filesystem.hpp>
-#include <Frame.h>
+#include <FrameManager.h>
 
-class Frame {
-	
-}
+class FrameManager {}
