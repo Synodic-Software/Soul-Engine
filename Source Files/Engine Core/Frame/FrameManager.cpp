@@ -6,4 +6,6 @@
 #include <boost/filesystem.hpp>
 #include <FrameManager.h>
 
-class FrameManager {}
+namespace FrameManager {
+
+}
