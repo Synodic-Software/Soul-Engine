@@ -166,7 +166,7 @@ void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
  *    @param	target	Target for the.
  */
 
-void RayEngine::Process(const Scene* sceneIn, double target) {
+void RayEngine::Process(const GPUBuffer<Scene> scene, double target) {
 
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();
@@ -204,55 +204,34 @@ void RayEngine::Process(const Scene* sceneIn, double target) {
 
 			GPUDevice device = GPUManager::GetBestGPU();
 
-			uint blockSize = 64;
-			GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize,1,1), glm::vec3(blockSize,1,1), 0, 0);
+			const uint blockSize = 64;
+			const GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize,1,1), glm::vec3(blockSize,1,1), 0, 0);
 
 			device.Launch(normalPolicy, EngineSetup, numberResults, jobList, numberJobs);
 
 			if (numberRays > raysAllocated) {
 
-				if (deviceRaysA) {
-					CudaCheck(cudaFree(deviceRaysA));
-				}
-				if (deviceRaysB) {
-					CudaCheck(cudaFree(deviceRaysB));
-				}
-				if (randomState) {
-					CudaCheck(cudaFree(randomState));
-				}
-
-				CudaCheck(cudaMalloc((void**)&randomState, numberRays * sizeof(curandState)));
-				CudaCheck(cudaMalloc((void**)&deviceRaysA, numberRays * sizeof(Ray)));
-				CudaCheck(cudaMalloc((void**)&deviceRaysB, numberRays * sizeof(Ray)));
+				randomState.resize(numberRays);
+				deviceRaysA.resize(numberRays);
+				deviceRaysB.resize(numberRays);
 
 				device.Launch(normalPolicy, RandomSetup, numberRays, randomState, WangHash(++raySeedGl));
-				CudaCheck(cudaPeekAtLastError());
-				CudaCheck(cudaDeviceSynchronize());
 
 				raysAllocated = numberRays;
 
 			}
 
 			//copy the scene over
-			CudaCheck(cudaMemcpy(scene, sceneIn, sizeof(Scene), cudaMemcpyHostToDevice));
-
+			scene.TransferToDevice();
+			
 			//setup the counters
-			int zeroHost = 0;
-			CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
-			CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+			counter[0] = 0;
+			hitAtomic[0] = 0;
+
+			counter.TransferToDevice();
+			hitAtomic.TransferToDevice();
 
 			device.Launch(normalPolicy, RaySetup, numberRays, numberJobs, jobList, deviceRaysA, hitAtomic, randomState);
-			CudaCheck(cudaPeekAtLastError());
-			CudaCheck(cudaDeviceSynchronize());
-
-			/*	Ray* hostRays = new Ray[numberRays];
-			CudaCheck(cudaMemcpy(hostRays, deviceRaysA, numberRays *sizeof(Ray), cudaMemcpyDeviceToHost));
-
-			for (int i = 0; i < numberRays; ++i) {
-
-			}
-
-			delete hostRays;*/
 
 			//start the engine loop
 			uint numActive;
@@ -261,11 +240,14 @@ void RayEngine::Process(const Scene* sceneIn, double target) {
 			for (uint i = 0; i < rayDepth && numActive>0; ++i) {
 
 				//reset counters
-				CudaCheck(cudaMemcpy(hitAtomic, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
-				CudaCheck(cudaMemcpy(counter, &zeroHost, sizeof(int), cudaMemcpyHostToDevice));
+				counter[0] = 0;
+				hitAtomic[0] = 0;
+
+				counter.TransferToDevice();
+				hitAtomic.TransferToDevice();
 
 				//grab the current block sizes for collecting hits based on numActive
-				GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
+				const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
 				//main engine, collects hits
 				device.Launch(persistantPolicy, ExecuteJobs, numActive, deviceRaysA, scene, counter);

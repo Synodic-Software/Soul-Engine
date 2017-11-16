@@ -36,11 +36,11 @@ double GetDeltaTime();
  *    @param [in,out]	parameter1	If non-null, the first parameter.
  */
 
-void SubmitScene(Scene*);
+void SubmitScene(Scene);
 
 /*
  *    Removes the scene described by parameter1.
  *    @param [in,out]	parameter1	If non-null, the first parameter.
  */
 
-void RemoveScene(Scene*);
+void RemoveScene(Scene);

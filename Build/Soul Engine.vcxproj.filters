@@ -633,9 +633,6 @@
     <ClInclude Include="..\Source Files\GPGPU\GPUExecutePolicy.h">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.cuh">
-      <Filter>Engine Backend\GPGPU\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\GPGPU\GPUKernel.h">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClInclude>
@@ -836,9 +833,6 @@
     <ClCompile Include="..\Source Files\GPGPU\GPUExecutePolicy.cpp">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cu">
-      <Filter>Engine Backend\GPGPU\CUDA</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\GPUKernel.cpp">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClCompile>
@@ -847,6 +841,9 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLKernel.cpp">
       <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cuh">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -933,6 +930,9 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cu">
       <Filter>Engine Backend\Algorithms\Filters\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cu">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

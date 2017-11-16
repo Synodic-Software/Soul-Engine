@@ -4,8 +4,8 @@ class Frame {
 	Frame():frameCount(0){};
 	
 public:
-	frameCount;
+	int frameCount;
 	
 private:
 	
-}
+};
