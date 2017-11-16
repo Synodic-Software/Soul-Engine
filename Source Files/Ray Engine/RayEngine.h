@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Engine Core/BasicDependencies.h"
 #include "Engine Core\Scene\Scene.h"
 #include "RayJob.h"
-#include <thrust/device_vector.h>
+#include "GPGPU/GPUBuffer.h"
 
 //defined in winspool.h
 #undef AddJob
@@ -55,7 +54,7 @@ namespace RayEngine {
 	 *    @param	parameter2	The second parameter.
 	 */
 
-	void Process(const Scene*, double);
+	void Process(const GPUBuffer<Scene>, double);
 
 	void Update();
 

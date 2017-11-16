@@ -25,7 +25,7 @@ namespace Soul {
 
 	/* //////////////////////Variables and Declarations//////////////////. */
 
-	std::list<Scene*> scenes;
+	GPUBuffer<Scene> scenes;
 
 	/* The engine refresh rate */
 	double engineRefreshRate;
@@ -192,8 +192,8 @@ namespace Soul {
 			glfwPollEvents();
 		});
 
-		for (auto const& scene : scenes) {
-			scene->Build(engineRefreshRate);
+		for (auto& scene : scenes) {
+			scene.Build(engineRefreshRate);
 		}
 
 		Scheduler::Block();
@@ -274,8 +274,8 @@ namespace Soul {
 
 				EarlyUpdate();
 
-				for (auto const& scene : scenes) {
-					scene->Build(engineRefreshRate);
+				for (auto& scene : scenes) {
+					scene.Build(engineRefreshRate);
 				}
 				/*
 				for (auto const& scene : scenes){
@@ -293,9 +293,7 @@ namespace Soul {
 
 			RayPreProcess();
 
-			for (auto const& scene : scenes) {
-				RayEngine::Process(scene, engineRefreshRate);
-			}
+			RayEngine::Process(scenes, engineRefreshRate);
 
 			RayPostProcess();
 
@@ -348,7 +346,7 @@ void SoulTerminate() {
  *    @param [in,out]	scene	If non-null, the scene.
  */
 
-void SubmitScene(Scene* scene) {
+void SubmitScene(Scene scene) {
 	Soul::scenes.push_back(scene);
 }
 
@@ -357,8 +355,8 @@ void SubmitScene(Scene* scene) {
  *    @param [in,out]	scene	If non-null, the scene.
  */
 
-void RemoveScene(Scene* scene) {
-	Soul::scenes.remove(scene);
+void RemoveScene(Scene scene) {
+	//Soul::scenes.remove(scene);
 }
 
 /*
@@ -468,7 +466,7 @@ int main()
 			camera.OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 		});
 
-		Scene* scene = new Scene();
+		Scene scene;
 
 		Material* Tree = new Material("Resources\\Textures\\Tree_Color.png");
 		Tree->diffuse = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
@@ -483,24 +481,23 @@ int main()
 		light->emit = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 
 		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
-		scene->AddObject(glm::mat4(), tree);
+		scene.AddObject(glm::mat4(), tree);
 
 		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
-		scene->AddObject(glm::mat4(), plane);
+		scene.AddObject(glm::mat4(), plane);
 
 		glm::mat4 transform;
 		transform = glm::translate(transform, /*100000000000.0f**/glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10));
 		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
 
 		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
-		scene->AddObject(transform, sphere);
+		scene.AddObject(transform, sphere);
 
 		SubmitScene(scene);
 
 		SoulRun();
 
 		delete whiteGray;
-		delete scene;
 
 		SoulTerminate();
 		return EXIT_SUCCESS;
