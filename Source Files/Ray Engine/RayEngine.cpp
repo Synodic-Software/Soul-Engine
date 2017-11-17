@@ -32,6 +32,7 @@ static uint raySeedGl = 0;
 
 static const uint rayDepth = 4;
 
+//static GPUBuffer<Scene> scene;
 static GPUBuffer<Scene> scene;
 
 //stored counters
@@ -166,7 +167,7 @@ void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
  *    @param	target	Target for the.
  */
 
-void RayEngine::Process(const GPUBuffer<Scene> scene, double target) {
+void RayEngine::Process(const Scene* sceneIn, double target) {
 
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();

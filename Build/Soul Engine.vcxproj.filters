@@ -845,6 +845,9 @@
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cuh">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source Files\Engine Core\Scene\Scene.cpp">
+      <Filter>Engine Backend\Engine Core\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
