@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Ray Engine/CUDA/RayJob.cuh"
-#include "Engine Core\Scene\CUDA/Scene.cuh"
+#include "Engine Core\Scene\Scene.h"
 #include "GPGPU/GPUBuffer.h"
 
 __global__ void ExecuteJobs(const uint n, Ray* rays, const Scene* scene, int* counter);

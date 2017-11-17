@@ -148,6 +148,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Events\EventManager.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABackend.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h" />
+    <ClCompile Include="..\Source Files\Engine Core\Scene\Scene.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cuh" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDAKernel.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.h" />

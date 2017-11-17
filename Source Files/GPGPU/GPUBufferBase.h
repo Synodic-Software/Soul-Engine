@@ -115,7 +115,7 @@ public:
 
 	}
 
-	void push_back(const T & v) {
+	void push_back(const T& v) {
 
 		if (host_size >= host_capacity) {
 			reserve(glm::max(host_capacity * 2, 1u));
