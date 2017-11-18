@@ -73,60 +73,42 @@ void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
 	double change = (targetTime - renderTime) / targetTime;
 
 
-
 	//modify all the sample counts/ resolutions to reflect the change
-	for (auto& job : jobs) {
-		if (job.canChange) {
+	for (int i = 0; i < jobList.size(); i++) {
 
-			Camera& camera = job.camera;
+		RayJob& job = jobList[i];
 
-			float delta = change*camera.film.resolutionRatio;
-			float newRatio = camera.film.resolutionRatio + delta;
+		Camera& camera = job.camera;
 
-			if (camera.film.resolutionMax.x * newRatio < 64) {
+		//set the previous resolution
+		camera.film.resolutionPrev = camera.film.resolution;
 
-				newRatio = 64 / (float)camera.film.resolutionMax.x;
+		float delta = change*camera.film.resolutionRatio;
+		float newRatio = camera.film.resolutionRatio + delta;
 
-			}
+		if (camera.film.resolutionMax.x * newRatio < 64) {
 
-			if (newRatio >= 1.0f) {
-
-				camera.film.resolution = camera.film.resolutionMax;
-				job.samples = newRatio;
-
-			}
-			else {
-
-				camera.film.resolution.x = camera.film.resolutionMax.x * newRatio;
-				camera.film.resolution.y = camera.film.resolutionMax.y * newRatio;
-				job.samples = 1.0f;
-
-			}
-
-			//update the camera ratio
-			camera.film.resolutionRatio = newRatio;
-
-			//float tempSamples = job->samples * change;
-
-			//GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
-
-			//Camera& camera = (*cameraBuffer)[job->camera];
-
-			//if (tempSamples < 1.0f) {
-
-			//	job->samples = 1.0f;
-			//	float value = (1.0f - (job->samples - 1.0f) / (job->samples - tempSamples)) * change;
-			//	camera.film.resolution.x = camera.film.resolutionMax.x * value;
-			//	camera.film.resolution.y = camera.film.resolutionMax.y * value;
-			//}
-			//else {
-			//	if (camera.film.resolution != camera.film.resolutionMax) {
-			//		//job->camera.film.resolution *= change*countChange + 1.0;
-			//	}
-			//	job->samples = tempSamples;
-			//}
+			newRatio = 64 / (float)camera.film.resolutionMax.x;
 
 		}
+
+		if (newRatio >= 1.0f) {
+
+			camera.film.resolution = camera.film.resolutionMax;
+			job.samples = newRatio;
+
+		}
+		else {
+
+			camera.film.resolution.x = camera.film.resolutionMax.x * newRatio;
+			camera.film.resolution.y = camera.film.resolutionMax.y * newRatio;
+			job.samples = 1.0f;
+
+		}
+
+		//update the camera ratio
+		camera.film.resolutionRatio = newRatio;
+
 	}
 }
 
@@ -163,7 +145,7 @@ uint RayEngine::AddJob(rayType whatToGet, bool canChange,
 
 	jobList.push_back(RayJob(whatToGet, canChange, samples));
 
-	return jobList[jobList.size()-1].id;
+	return jobList[jobList.size() - 1].id;
 }
 
 /*
@@ -174,7 +156,7 @@ uint RayEngine::AddJob(rayType whatToGet, bool canChange,
 
 RayJob& RayEngine::GetJob(uint jobIn) {
 
-	for (int i = 0; i < jobList.size();i++) {
+	for (int i = 0; i < jobList.size(); i++) {
 
 		RayJob& job = jobList[i];
 		if (job.id == jobIn) {
@@ -220,8 +202,9 @@ void RayEngine::Terminate() {
 }
 
 void RayEngine::PreProcess() {
-	
+
 }
+
 void RayEngine::PostProcess() {
 
 	//grab job pointer
@@ -230,5 +213,6 @@ void RayEngine::PostProcess() {
 	//grab camera
 	Camera camera = job.camera;
 
-	//Filter::HermiteBicubic(job->results, camera.film.resolutionMax, camera.film.resolution);
+	//Filter::IterativeBicubic((glm::vec4*)job.camera.film.results, camera.film.resolution, camera.film.resolutionMax);
+	Filter::Nearest((glm::vec4*)job.camera.film.results, camera.film.resolutionMax, camera.film.resolutionPrev);
 }

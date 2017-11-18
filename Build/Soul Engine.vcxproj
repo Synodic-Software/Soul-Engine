@@ -20,19 +20,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CLRSupport />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CLRSupport />
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath14)\BuildCustomizations\CUDA 8.0.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.0.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -59,6 +59,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     </PostBuildEvent>
     <CudaCompile />
     <CudaLink />
+    <CudaCompile>
+      <CodeGeneration>compute_50,sm_50;compute_52,sm_52;compute_61,sm_61;compute_70,sm_70</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -78,6 +81,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     </PostBuildEvent>
     <CudaCompile />
     <CudaLink />
+    <CudaCompile>
+      <CodeGeneration>compute_50,sm_50;compute_52,sm_52;compute_61,sm_61;compute_70,sm_70</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Include Files\Metrics.h" />
@@ -87,6 +93,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h" />
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\Sort.h" />
+    <ClInclude Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cuh" />
+    <ClInclude Include="..\Source Files\Algorithms\Filters\Filter.h" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h" />
     <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.h" />
@@ -139,6 +147,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDADevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDATexture.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUBackendBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPUBufferBase.h" />
@@ -146,10 +155,13 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\GPGPU\GPUManager.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPURasterBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\GPURasterBufferBase.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUTexture.h" />
+    <ClInclude Include="..\Source Files\GPGPU\GPUTextureBase.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.h" />
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.h" />
+    <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLTexture.h" />
     <ClInclude Include="..\Source Files\Input\InputSet.h" />
     <ClInclude Include="..\Source Files\Input\InputManager.h" />
     <ClInclude Include="..\Source Files\Input\Key.h" />
@@ -189,6 +201,11 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Ray Engine\Ray.h" />
     <ClInclude Include="..\Source Files\Ray Engine\RayEngine.h" />
     <ClInclude Include="..\Source Files\Ray Engine\RayJob.h" />
+    <ClInclude Include="..\Source Files\Transput\ArchiveBase.h" />
+    <ClInclude Include="..\Source Files\Transput\ArchiveBinary.h" />
+    <ClInclude Include="..\Source Files\Transput\ArchiveText.h" />
+    <ClInclude Include="..\Source Files\Transput\ArchiveXML.h" />
+    <ClInclude Include="..\Source Files\Transput\FileManager.h" />
     <ClInclude Include="..\Source Files\Transput\Settings.h" />
     <ClInclude Include="..\Source Files\Utility\Assert.h" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CudaHelper.cuh" />
@@ -201,6 +218,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Utility\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source Files\Algorithms\Filters\Filter.cpp" />
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RadixTree.cpp" />
@@ -221,6 +239,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDARasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDATexture.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPUBufferBase.cpp" />
@@ -228,10 +247,13 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\GPGPU\GPUManager.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPURasterBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\GPURasterBufferBase.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUTexture.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\GPUTextureBase.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBackend.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLDevice.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLRasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLTexture.cpp" />
     <ClCompile Include="..\Source Files\Input\InputSet.cpp" />
     <ClCompile Include="..\Source Files\Input\InputManager.cpp" />
     <ClCompile Include="..\Source Files\Input\Key.cpp" />
@@ -259,6 +281,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Utility\Timer.cpp" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu" />
+    <CudaCompile Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cu" />
     <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
     <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu" />
@@ -302,6 +325,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath14)\BuildCustomizations\CUDA 8.0.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.0.targets" />
   </ImportGroup>
 </Project>
