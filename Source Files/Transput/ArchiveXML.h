@@ -24,7 +24,7 @@ namespace FileSystem {
 		/*
 			Serializes object as XML stored in the file specified by filename
 		*/
-		virtual void Read() {
+		void Read() override {
 			std::ifstream ifs(filename);
 			boost::archive::xml_iarchive ar(ifs);
 			ar & boost::serialization::make_nvp("object", *object); 
@@ -33,7 +33,7 @@ namespace FileSystem {
 		/*
 		 	Loads the object serialized in XML file specified by filename into object
 		 */
-		virtual void Write() {
+		void Write() override {
 			std::ofstream ofs(filename);
 			boost::archive::xml_oarchive ar(ofs);
 			ar & boost::serialization::make_nvp("object", *object);

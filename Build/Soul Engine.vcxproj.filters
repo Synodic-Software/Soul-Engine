@@ -594,6 +594,39 @@
     <ClInclude Include="..\Source Files\Memory\Allocator.h">
       <Filter>Engine Backend\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Filters\Filter.h">
+      <Filter>Engine Backend\Algorithms\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cuh">
+      <Filter>Engine Backend\Algorithms\Filters\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Transput\ArchiveBase.h">
+      <Filter>Engine Backend\Transput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Transput\ArchiveBinary.h">
+      <Filter>Engine Backend\Transput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Transput\ArchiveText.h">
+      <Filter>Engine Backend\Transput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Transput\ArchiveXML.h">
+      <Filter>Engine Backend\Transput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Transput\FileManager.h">
+      <Filter>Engine Backend\Transput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUTexture.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\GPUTextureBase.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLTexture.h">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDATexture.h">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
@@ -764,6 +797,21 @@
     <ClCompile Include="..\Source Files\Memory\LinearAllocator.cpp">
       <Filter>Engine Backend\Memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source Files\Algorithms\Filters\Filter.cpp">
+      <Filter>Engine Backend\Algorithms\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUTexture.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\GPUTextureBase.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLTexture.cpp">
+      <Filter>Engine Backend\GPGPU\OpenCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDATexture.cpp">
+      <Filter>Engine Backend\GPGPU\CUDA</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
@@ -846,6 +894,9 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Sort\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cu">
+      <Filter>Engine Backend\Algorithms\Filters\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

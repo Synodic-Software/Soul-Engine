@@ -33,7 +33,7 @@
       </OmitFramePointers>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\Libraries\glew\lib\Release MX\x64;$(AMDAPPSDKROOT)/lib/x86_64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)..\Libraries\glfw\bin\Release;$(ProjectDir)..\Libraries\glfw\bin;$(LibraryPath);$(ProjectDir)..\Libraries\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\Libraries\glew\lib\Release MX\x64;C:\VulkanSDK\1.0.30.0\Bin;$(ProjectDir)..\Libraries\glfw\bin\Release;$(ProjectDir)..\Libraries\glfw\bin;$(LibraryPath);$(ProjectDir)..\Libraries\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;opengl32.lib;glew32mxs.lib;glu32.lib;glfw3.lib;OpenCL.lib;cudart_static.lib;cudadevrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>

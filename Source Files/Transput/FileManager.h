@@ -11,29 +11,13 @@
 */
 namespace FileSystem {
 
-	/*
-		Abstract base class for all file i / o classes to inherit from.
-	*/
-	class FileManager {
-	public:
-
 		/*
-			@param		filename_		name of file to operate on
+				@effects				read from the file specified by filename
 		*/
-		FileManager(const std::string & filename_) :filename(filename_) {}
-
-		/*
-			@effects		read from the file specified by gilename
-		*/
-		virtual void Read() = 0;
-
-		/*
-			@effects		write to the file specified by filename
-		*/
-		virtual void Write() = 0;
+		void Read(std::string& filename);
 	
-	protected:
-		std::string filename;
-
+		/*
+				@effects				write to the file specified by the filename
+		*/
+		void Write(std::string& filename);
 	};
-};

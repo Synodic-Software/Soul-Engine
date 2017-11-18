@@ -294,7 +294,7 @@ namespace Soul {
 			RayPreProcess();
 
 			for (auto const& scene : scenes) {
-				RayEngine::Process(scene, allotedRenderTime);
+				RayEngine::Process(scene, engineRefreshRate);
 			}
 
 			RayPostProcess();

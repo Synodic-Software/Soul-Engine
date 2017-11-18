@@ -223,3 +223,4 @@ x64/Release/cudart64_75.dll
 *.opendb
 *.db
 *.db
+/Libraries
