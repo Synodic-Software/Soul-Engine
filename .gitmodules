@@ -13,3 +13,6 @@
 [submodule "Libraries/src/glm/glm"]
 	path = Libraries/src/glm/glm
 	url = https://github.com/g-truc/glm
+[submodule "Libraries/src/units"]
+	path = Libraries/src/units
+	url = https://github.com/nholthaus/units
