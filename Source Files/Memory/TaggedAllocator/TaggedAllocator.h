@@ -19,6 +19,7 @@ class TaggedAllocator : public Allocator {
 
 	public:
 		TaggedAllocator(TaggedHeap* heap, const std::string &tag, uint8_t align=4);
+		~TaggedAllocator();
 		void* allocate(size_t size, uint8_t align=4);
 		void* deallocate(void* block);
 		void clear();

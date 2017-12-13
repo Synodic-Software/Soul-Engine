@@ -7,6 +7,9 @@ TaggedAllocator::TaggedAllocator(TaggedHeap* heap, const std::string &tag, uint8
 	_numBlocks = 0;
 }
 
+TaggedAllocator::~TaggedAllocator() {
+	_numBlocks = 0;
+}
 
 void* TaggedAllocator::allocate(size_t size, uint8_t align) {
 	std::lock_guard<std::mutex> l(_mutex);
