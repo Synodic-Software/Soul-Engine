@@ -6,6 +6,7 @@
 #include <mutex>
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include <boost/date_time.hpp>
 
 
 /* Values that represent log severities. */
@@ -136,7 +137,6 @@ namespace Logger {
 			std::ostringstream oss;
 			WriteInfo(oss, file, line);
 			detail::LogHelp(oss, args...);
-
 			detail::logMut.lock();
 			detail::storage.push_back({ oss.str() ,logType ,line,file });
 			detail::logMut.unlock();
@@ -149,4 +149,6 @@ namespace Logger {
 	 */
 
 	std::string Get();
+
+	void WriteFile();
 }
