@@ -123,6 +123,7 @@ namespace Soul {
 		//extract all available GPU devices
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			GPUManager::ExtractDevices();
+			scenes.TransferDevice(GPUManager::GetBestGPU());
 		});
 
 		//set the error callback
@@ -346,7 +347,7 @@ void SoulTerminate() {
  *    @param [in,out]	scene	If non-null, the scene.
  */
 
-void SubmitScene(Scene scene) {
+void SubmitScene(Scene& scene) {
 	Soul::scenes.push_back(scene);
 }
 
