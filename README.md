@@ -1,6 +1,6 @@
 # Soul Engine
-[![Build status](https://travis-ci.org/Behemyth/Soul-Engine.svg?branch=master)](https://travis-ci.org/Behemyth/Soul-Engine)
-[![Build status](https://ci.appveyor.com/api/projects/status/xe6bh7hiiofmkh49?svg=true)](https://ci.appveyor.com/project/AsherNorland/soul-engine)
+[![Build status](https://travis-ci.org/Behemyth/Soul-Engine.svg?branch=master)](https://travis-ci.org/Synodic-Software/Soul-Engine.svg?branch=master)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/Soul-Engine?svg=true)](https://ci.appveyor.com/project/AsherNorland/soul-engine)
 
 # What is Soul Engine?
 Soul Engine is a physically based renderer and engine for real-time applications. It is cross-platform with CUDA (primary) or OpenCL (secondary) support for computation tasks. 
