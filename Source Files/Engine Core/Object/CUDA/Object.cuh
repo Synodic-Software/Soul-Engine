@@ -5,7 +5,7 @@
 #include "Engine Core/Object/CUDA/Vertex.cuh"
 #include "Engine Core/Object/CUDA/Face.cuh"
 #include "Engine Core/Object/CUDA/Tet.cuh"
-#include "Bounding Volume Heirarchy\BoundingBox.h"
+#include "Data Structures\Bounding Volume Heirarchy\BoundingBox.h"
 #include "Metrics.h"
 
 #include <vector>

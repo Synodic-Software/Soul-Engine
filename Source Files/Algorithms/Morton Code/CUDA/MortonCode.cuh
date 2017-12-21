@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Metrics.h"
-#include "Bounding Volume Heirarchy\BVH.h"
+#include "Data Structures\Bounding Volume Heirarchy\BVH.h"
 
 #include "Engine Core\Object\Face.h"
 #include "Engine Core\Object\Vertex.h"
