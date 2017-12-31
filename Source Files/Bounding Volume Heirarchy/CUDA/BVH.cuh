@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CUDA\Node.cuh"
-#include "BoundingBox.h"
+#include "Bounding Volume Heirarchy\CUDA\Node.cuh"
+#include "Bounding Volume Heirarchy\BoundingBox.h"
 #include "Engine Core\Object\Face.h"
 #include "Engine Core\Object\Vertex.h"
 
@@ -11,7 +11,7 @@ typedef struct BVHData {
 	uint currentSize;
 	Node* bvh;
 
-	__device__ BVHData& operator=(BVHData& arg)
+	__device__ BVHData& operator=(BVHData arg)
 	{
 		this->root = arg.root;
 		this->currentSize = arg.currentSize;
@@ -19,11 +19,11 @@ typedef struct BVHData {
 		return *this;
 	}
 
-	__inline__ __device__ bool IsLeaf(Node* test) const {
+	__inline__ __device__ bool IsLeaf(Node* test) {
 		return ((test - bvh) >= (currentSize - 1) && (test - bvh) < currentSize * 2 - 1);
 	}
 
-	__inline__ __device__ Node* GetLeaf(const int test) const {
+	__inline__ __device__ Node* GetLeaf(int test) {
 		return bvh + ((currentSize - 1) + test);
 	}
 
