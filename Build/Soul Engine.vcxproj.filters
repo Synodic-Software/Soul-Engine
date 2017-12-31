@@ -46,11 +46,17 @@
     <Filter Include="Engine Backend\Ray Engine">
       <UniqueIdentifier>{b9e8701d-7297-477f-b4c6-9ae4bf787848}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Bounding Volume Heirarchy">
+      <UniqueIdentifier>{62681ce9-26fc-4808-adb2-3c2f1ac5d741}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine Backend\Multithreading">
       <UniqueIdentifier>{b13949b0-ddff-4dba-8b65-d92e8e9da186}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Networking">
       <UniqueIdentifier>{0820b5bb-03a1-47e2-b6da-f8b262bba77a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Bounding Volume Heirarchy\CUDA">
+      <UniqueIdentifier>{c5294c1b-e4b7-432b-869b-46cf2a8e0bad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Engine Core\Scene">
       <UniqueIdentifier>{ec1089d9-4d17-4dad-ba40-fc00454f755b}</UniqueIdentifier>
@@ -72,6 +78,9 @@
     </Filter>
     <Filter Include="Engine Backend\Engine Core\Object\OpenCL">
       <UniqueIdentifier>{376f53cf-5ebf-4803-8e46-5715d3054051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Bounding Volume Heirarchy\OpenCL">
+      <UniqueIdentifier>{2207715d-2b00-4543-a694-cb352197ef0c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine Backend\Ray Engine\OpenCL">
       <UniqueIdentifier>{33124da9-5927-48f7-b83d-b4dfc8d964c9}</UniqueIdentifier>
@@ -226,12 +235,6 @@
     <Filter Include="Engine Backend\Algorithms\Filters\CUDA">
       <UniqueIdentifier>{7a70c345-552f-41ff-8e39-c06066c53fc1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Data Structures\Bounding Volume Hierarchy">
-      <UniqueIdentifier>{7386053f-504e-4c23-b263-bf0adf4096c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine Backend\Data Structures\Bounding Volume Hierarchy\CUDA">
-      <UniqueIdentifier>{3b55a3a9-4669-4267-8322-dfd082551c1d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -242,6 +245,21 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\PrefixSum.h">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BVH.h">
+      <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.h">
+      <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Display\Layout\Layout.h">
       <Filter>Engine Backend\Display\Layout</Filter>
@@ -624,23 +642,14 @@
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLKernel.h">
       <Filter>Engine Backend\GPGPU\OpenCL</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.h">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.h">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cuh">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cuh">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy\CUDA</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp">
+      <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BVH.cpp">
+      <Filter>Engine Backend\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
     <ClCompile Include="..\Source Files\Display\Layout\Layout.cpp">
       <Filter>Engine Backend\Display\Layout</Filter>
     </ClCompile>
@@ -839,16 +848,19 @@
     <ClCompile Include="..\Source Files\Engine Core\Scene\Scene.cpp">
       <Filter>Engine Backend\Engine Core\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.cpp">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
       <Filter>Engine Backend\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cu">
+      <Filter>Engine Backend\Bounding Volume Heirarchy\CUDA</Filter>
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cu">
       <Filter>Engine Backend\Engine Core\Material\Colour\CUDA</Filter>
@@ -924,15 +936,6 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cu">
       <Filter>Engine Backend\GPGPU\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cu">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cu">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cu">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Hierarchy\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
