@@ -82,9 +82,9 @@ public:
 
 			//allocate the new size
 			void* raw = new unsigned char[newCapacity * sizeof(T)];
-			T* data = static_cast<T*>(raw);
+			auto data = static_cast<T*>(raw);
 
-			uint lSize = newCapacity < host_size ? newCapacity : host_size;
+			const auto lSize = newCapacity < host_size ? newCapacity : host_size;
 
 			//move all previous data
 			for (uint i = 0; i < lSize; i++) {
@@ -94,9 +94,7 @@ public:
 			host_capacity = newCapacity;
 
 			//deallocate formerly used memory
-			if (hostData) {
-				delete[] hostData;
-			}
+			delete[] hostData;
 
 			hostData = data; //reassign the data pointer
 		}
@@ -142,7 +140,11 @@ public:
 		return hostData;
 	}
 
-	T* device_data() {
+	T * device_data() noexcept {
+		return deviceData;
+	}
+
+	const T * device_data() const noexcept {
 		return deviceData;
 	}
 
@@ -161,7 +163,7 @@ public:
 	*/
 
 	T* begin() {
-		return hostData;
+		return &hostData[0];
 	}
 
 	/*
@@ -170,7 +172,7 @@ public:
 	*/
 
 	T* end() {
-		return hostData + host_size - 1;
+		return &hostData[host_size];
 	}
 
 	/*
@@ -196,14 +198,9 @@ protected:
 				//operator overloads
 public:
 
-	/*
-	*    T* casting operator.
-	*    @return	The device data. Facilitates passing in a GPUBuffer object to a kernal
-	*/
+	typedef GPUBufferBase<T> * iterator;
+	typedef const GPUBufferBase<T> * const_iterator;
 
-	operator T*() const {
-		return deviceData;
-	}
 
 	/*
 	*    Array indexer operator.

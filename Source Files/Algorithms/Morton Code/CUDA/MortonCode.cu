@@ -129,9 +129,9 @@ __host__ __device__ glm::uvec2 MortonCode::Decode64U_2D(uint64 m) {
 }
 
 //TODO split into two kernals for Scene.cu
-__global__ void MortonCode::ComputeGPU64(const uint n, uint64* mortonCodes, Face* faces, Vertex* vertices) {
+__global__ void MortonCode::ComputeGPUFace64(uint n, uint64* mortonCodes, Face* faces, Vertex* vertices) {
 
-	uint index = getGlobalIdx_1D_1D();
+	const uint index = getGlobalIdx_1D_1D();
 
 	if (index >= n) {
 		return;
@@ -143,7 +143,7 @@ __global__ void MortonCode::ComputeGPU64(const uint n, uint64* mortonCodes, Face
 	mortonCodes[index] = Calculate64_3D(centroid);
 }
 
-__global__ void MortonCode::ComputeGPU64(const uint n, uint64* mortonCodes, glm::uvec2* data) {
+__global__ void MortonCode::ComputeGPU64(uint n, uint64* mortonCodes, glm::uvec2* data) {
 
 	uint index = getGlobalIdx_1D_1D();
 

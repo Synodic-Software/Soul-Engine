@@ -20,13 +20,12 @@ public:
 	~CUDADevice() override;
 
 	template<typename KernelFunction, typename... Args>
-	inline void Launch(const GPUExecutePolicy& policy, const KernelFunction& kernel, Args... parameters) {
+	void Launch(const GPUExecutePolicy& policy, const KernelFunction& kernel, Args... parameters) {
 
-		dim3 grid = dim3(policy.gridsize.x, policy.gridsize.y, policy.gridsize.z);
-		dim3 block = dim3(policy.blocksize.x, policy.blocksize.y, policy.blocksize.z);
+		const auto grid = dim3(policy.gridsize.x, policy.gridsize.y, policy.gridsize.z);
+		const auto block = dim3(policy.blocksize.x, policy.blocksize.y, policy.blocksize.z);
 
 		void* args[] = { static_cast<void*>(&parameters)... };
-
 
 		CudaCheck(cudaLaunchKernel(
 			static_cast<const void*>(&kernel),
@@ -36,8 +35,6 @@ public:
 			policy.sharedMemory,
 			cudaStream_t(policy.stream)
 		));
-
-		//kernel << < grid, block, policy.sharedMemory, cudaStream_t(policy.stream) >> > (parameters...);
 
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());

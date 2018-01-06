@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine Core/BasicDependencies.h"
 #include "Engine Core\Scene\Scene.h"
 
 
@@ -12,6 +11,6 @@ namespace PhysicsEngine {
 	 *    @param	parameter1	The first parameter.
 	 */
 
-	void Process(const Scene*);
+	void Process(GPUBuffer<BVHData>&);
 
 }

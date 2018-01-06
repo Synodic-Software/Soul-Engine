@@ -98,6 +98,14 @@ public:
 		return buffer->data();
 	}
 
+	T * device_data() noexcept {
+		return buffer->device_data();
+	}
+
+	const T * device_data() const noexcept {
+		return buffer->device_data();
+	}
+
 	/*
 	*    Gets the begin.
 	*    @return	Null if it fails, else a pointer to a T.
@@ -132,15 +140,6 @@ public:
 
 	T* back() {
 		return buffer->back();
-	}
-
-	/*
-	*    T* casting operator.
-	*    @return	The device data. Facilitates passing in a GPUBuffer object to a kernal
-	*/
-
-	operator T*() const {
-		return *buffer;
 	}
 
 	/*

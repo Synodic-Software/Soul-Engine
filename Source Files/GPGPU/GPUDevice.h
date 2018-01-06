@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Metrics.h"
 #include "glm/glm.hpp"
-#include "GPUDeviceBase.h"
+
 #include "CUDA/CUDADevice.cuh"
 #include "OpenCL/OpenCLDevice.h"
 
@@ -26,18 +25,20 @@ public:
 	template <typename KernelFunction, typename... Args>
 	void Launch(const GPUExecutePolicy& policy,
 		const KernelFunction& kernel,
-		Args... parameters) {
+		Args ... parameters) {
 
 		if (device->api == CUDA) {
+
 			auto cudaDevice = static_cast<CUDADevice*>(device);
 			cudaDevice->Launch(policy, kernel, parameters...);
+
 		}
 		else {
 			//auto openCLDevice = static_cast<OpenCLDevice*>(device);
 			//TODO implement
 			//openCLDevice->Launch(policy, kernel, parameters...);
 		}
-
+		 
 	}
 
 	/*

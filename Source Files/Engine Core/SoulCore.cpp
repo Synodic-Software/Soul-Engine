@@ -3,7 +3,6 @@
 
 #include "SoulCore.h"
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "Engine Core/BasicDependencies.h"
 
 #include "Transput/Settings.h"
 #include "Utility/Logger.h"
@@ -55,43 +54,6 @@ namespace Soul {
 
 
 	/////////////////////////Engine Core/////////////////////////////////
-
-
-	/* Call to deconstuct both the engine and its dependencies. */
-	void Terminate() {
-		Soul::SynchSystem();
-
-		//Write the settings into a file
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			Settings::Write("config.ini", TEXT);
-		});
-
-		//Clean the RayEngine from stray data
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			RayEngine::Terminate();
-		});
-
-		//destroy all windows
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			WindowManager::Terminate();
-		});
-
-		Scheduler::Block();
-
-		//destroy glfw, needs to wait on the window manager
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
-			glfwTerminate();
-		});
-
-		//extract all available GPU devices
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			GPUManager::DestroyDevices();
-		});
-
-		Scheduler::Block();
-
-		Scheduler::Terminate();
-	}
 
 	/* Initializes the engine. */
 	void Initialize() {
@@ -153,15 +115,51 @@ namespace Soul {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
+		scenes.TransferDevice(GPUManager::GetBestGPU());
 
-		Settings::Get("Engine.Delta_Time", 1 / 60.0, &engineRefreshRate);
-		Settings::Get("Engine.Alloted_Render_Time", 0.01, &allotedRenderTime);
+		Settings::Get("Engine.Delta_Time", 1 / 60.0, engineRefreshRate);
+		Settings::Get("Engine.Alloted_Render_Time", 0.01, allotedRenderTime);
 
 		Scheduler::Block();
 
 	}
 
-	
+	/* Call to deconstuct both the engine and its dependencies. */
+	void Terminate() {
+		Soul::SynchSystem();
+
+		//Write the settings into a file
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			Settings::Write("config.ini", TEXT);
+		});
+
+		//Clean the RayEngine from stray data
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			RayEngine::Terminate();
+		});
+
+		//destroy all windows
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			WindowManager::Terminate();
+		});
+
+		Scheduler::Block();
+
+		//destroy glfw, needs to wait on the window manager
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+			glfwTerminate();
+		});
+
+		//extract all available GPU devices
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+			GPUManager::DestroyDevices();
+		});
+
+		Scheduler::Block();
+
+		Scheduler::Terminate();
+	}
+
 
 	/* Ray pre process */
 	void RayPreProcess() {
@@ -274,8 +272,8 @@ namespace Soul {
 
 				EarlyUpdate();
 
-				for (auto& scene : scenes) {
-					scene.Build(engineRefreshRate);
+				for (int i = 0; i < scenes.size(); ++i) {
+					scenes[i].Build(engineRefreshRate);
 				}
 				/*
 				for (auto const& scene : scenes){
@@ -346,7 +344,7 @@ void SoulTerminate() {
  *    @param [in,out]	scene	If non-null, the scene.
  */
 
-void SubmitScene(Scene scene) {
+void SubmitScene(Scene& scene) {
 	Soul::scenes.push_back(scene);
 }
 
@@ -378,25 +376,24 @@ int main()
 		});
 
 		uint xSize;
-		Settings::Get("MainWindow.Width", uint(800), &xSize);
+		Settings::Get("MainWindow.Width", uint(800), xSize);
 		uint ySize;
-		Settings::Get("MainWindow.Height", uint(450), &ySize);
+		Settings::Get("MainWindow.Height", uint(450), ySize);
 		uint xPos;
-		Settings::Get("MainWindow.X_Position", uint(0), &xPos);
+		Settings::Get("MainWindow.X_Position", uint(0), xPos);
 		uint yPos;
-		Settings::Get("MainWindow.Y_Position", uint(0), &yPos);
+		Settings::Get("MainWindow.Y_Position", uint(0), yPos);
 		int monitor;
-		Settings::Get("MainWindow.Monitor", 0, &monitor);
+		Settings::Get("MainWindow.Monitor", 0, monitor);
 
 		WindowType type;
 		int typeCast;
-		Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), static_cast<int*>(&typeCast));
+		Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), typeCast);
 		type = static_cast<WindowType>(typeCast);
 
 		glm::uvec2 size = glm::uvec2(xSize, ySize);
 
-		
-
+	
 		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 
 		uint jobID;
@@ -468,36 +465,16 @@ int main()
 
 		Scene scene;
 
-		Material* Tree = new Material("Resources\\Textures\\Tree_Color.png");
-		Tree->diffuse = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
-		Tree->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		Material whiteGray;
+		whiteGray.diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
+		whiteGray.emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-		Material* whiteGray = new Material();
-		whiteGray->diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
-		whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-		Material* light = new Material("Resources\\Textures\\White.png");
-		light->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		light->emit = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
-
-		Object* tree = new Object("Resources\\Objects\\Tree.obj", Tree);
-		scene.AddObject(glm::mat4(), tree);
-
-		Object* plane = new Object("Resources\\Objects\\Plane.obj", whiteGray);
-		scene.AddObject(glm::mat4(), plane);
-
-		glm::mat4 transform;
-		transform = glm::translate(transform, /*100000000000.0f**/glm::vec3(-(DECAMETER) * 10, DECAMETER * 20, (DECAMETER) * 10));
-		transform = glm::scale(transform, /*100000000000.0f**/glm::vec3(1.0f, 1.0f, 1.0f));
-
-		Object* sphere = new Object("Resources\\Objects\\Sphere.obj", light);
-		scene.AddObject(transform, sphere);
+		Object plane("Resources\\Objects\\plane.obj", whiteGray);
+		scene.AddObject(plane);
 
 		SubmitScene(scene);
 
 		SoulRun();
-
-		delete whiteGray;
 
 		SoulTerminate();
 		return EXIT_SUCCESS;

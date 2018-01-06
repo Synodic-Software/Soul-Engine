@@ -90,7 +90,7 @@ void RenderWidget::Draw() {
 	});
 
 	if (integrate) {
-		Integrate(renderSize.x*renderSize.y, buffer, accumulator, extraData, iCounter);
+		Integrate(renderSize.x*renderSize.y, buffer.device_data(), accumulator.device_data(), extraData.device_data(), iCounter);
 		iCounter++;
 	}
 	else {
@@ -136,6 +136,6 @@ void RenderWidget::RecreateData() {
 	job.camera.aspectRatio = renderSize.x / (float)renderSize.y;
 	job.camera.film.resolution = renderSize;
 	job.camera.film.resolutionMax = renderSize;
-	job.camera.film.results = (glm::vec4*)buffer;
-	job.camera.film.hits = extraData;
+	job.camera.film.results = buffer.device_data();
+	job.camera.film.hits = extraData.device_data();
 }

@@ -1,5 +1,6 @@
 #include "PhysicsEngine.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
+#include "GPGPU/GPUManager.h"
 
 typedef struct {
 
@@ -8,9 +9,7 @@ typedef struct {
 
 }Collision;
 
-uint sizeAllocated = 0;
-Collision* collisions = nullptr;
-
+static GPUBuffer<Collision> collisions;
 
 __device__ bool testAABBAABB(const BoundingBox& a, const BoundingBox& b)
 {
@@ -23,7 +22,7 @@ __device__ bool testAABBAABB(const BoundingBox& a, const BoundingBox& b)
 };
 
 
-__global__ void NarrowPhase(uint n, const Scene* scene, Collision* collisions, int* sizeCounter){
+__global__ void NarrowPhase(uint n, BVHData* bvh, Collision* collisions, int* sizeCounter){
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -37,17 +36,13 @@ __global__ void NarrowPhase(uint n, const Scene* scene, Collision* collisions, i
 
 }
 
-__global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, int* sizeCounter){
+__global__ void BroadPhase(uint n, BVHData* bvh, Collision* collisions, int* sizeCounter){
 
 	uint index = getGlobalIdx_1D_1D();
 
 	if (index >= n){
 		return;
 	}
-
-	
-
-	BVHData* bvh = scene->bvhData;
 	
 	Node* test = bvh->GetLeaf(index);
 
@@ -99,56 +94,55 @@ __global__ void BroadPhase(uint n, const Scene* scene, Collision* collisions, in
 
 }
 
-__host__ void ProcessScene(const Scene* scene){
-	CudaCheck(cudaDeviceSynchronize());
+__host__ void ProcessScene(GPUBuffer<BVHData>& bvh){
 
-	uint n = scene->bvhData->currentSize;
+	collisions.TransferDevice(GPUManager::GetBestGPU());
 
-	if (n <= 0){
-		return;
-	}
+	//uint n = bvh->currentSize;
 
-	uint maxEst = n*2.5f;
+	//if (n <= 0){
+	//	return;
+	//}
 
-	if (maxEst > sizeAllocated){
-		//deviceRays.resize(n);
+	//uint maxEst = n*2.5f;
 
-		CudaCheck(cudaFree(collisions));
+	//if (maxEst > sizeAllocated){
+	//	//deviceRays.resize(n);
 
-		CudaCheck(cudaMallocManaged((void**)&collisions, maxEst*sizeof(Collision)));
-		sizeAllocated = maxEst;
-	}
+	//	CudaCheck(cudaFree(collisions));
 
-
-	int* sizeCounter;
-	CudaCheck(cudaMallocManaged((void**)&sizeCounter, sizeof(int)));
-	sizeCounter[0] = 0;
-
-	CudaCheck(cudaDeviceSynchronize());
+	//	CudaCheck(cudaMallocManaged((void**)&collisions, maxEst*sizeof(Collision)));
+	//	sizeAllocated = maxEst;
+	//}
 
 
-	int blockSize = 64;
-	int gridSize = (n + blockSize - 1) / blockSize;
-	BroadPhase << <gridSize, blockSize >> >(n, scene, collisions, sizeCounter);
+	//int* sizeCounter;
+	//CudaCheck(cudaMallocManaged((void**)&sizeCounter, sizeof(int)));
+	//sizeCounter[0] = 0;
 
-	CudaCheck(cudaPeekAtLastError());
-	CudaCheck(cudaDeviceSynchronize());
 
-	n = sizeCounter[0];
-	sizeCounter[0] = 0;
+	//int blockSize = 64;
+	//int gridSize = (n + blockSize - 1) / blockSize;
+	//BroadPhase << <gridSize, blockSize >> >(n, bvh, collisions, sizeCounter);
 
-	CudaCheck(cudaDeviceSynchronize());
+	//CudaCheck(cudaPeekAtLastError());
+	//CudaCheck(cudaDeviceSynchronize());
 
-	blockSize = 64;
-	gridSize = (n + blockSize - 1) / blockSize;
-	NarrowPhase << <gridSize, blockSize >> >(n, scene, collisions, sizeCounter);
+	//n = sizeCounter[0];
+	//sizeCounter[0] = 0;
 
+	//CudaCheck(cudaDeviceSynchronize());
+
+	//blockSize = 64;
+	//gridSize = (n + blockSize - 1) / blockSize;
+	//NarrowPhase << <gridSize, blockSize >> >(n, bvh, collisions, sizeCounter);
 
 
 
-	CudaCheck(cudaPeekAtLastError());
-	CudaCheck(cudaDeviceSynchronize());
 
-	CudaCheck(cudaFree(sizeCounter));
+	//CudaCheck(cudaPeekAtLastError());
+	//CudaCheck(cudaDeviceSynchronize());
+
+	//CudaCheck(cudaFree(sizeCounter));
 
 }

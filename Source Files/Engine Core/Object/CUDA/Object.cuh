@@ -15,7 +15,7 @@ class Object {
 public:
 
 	Object();
-	Object(std::string, Material*);
+	Object(std::string, Material);
 	~Object();
 
 	bool requestRemoval;

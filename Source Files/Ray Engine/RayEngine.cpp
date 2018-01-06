@@ -1,5 +1,6 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
+
 #include "Utility/Timer.h"
 #include <deque>
 #include "Algorithms/Filters/Filter.h"
@@ -25,15 +26,11 @@ static uint raysAllocated = 0;
 static GPUBuffer<Ray> deviceRaysA;
 static GPUBuffer<Ray> deviceRaysB;
 
-//Scene* scene = nullptr;
 static GPUBuffer<curandState> randomState;
 
 static uint raySeedGl = 0;
 
 static const uint rayDepth = 4;
-
-//static GPUBuffer<Scene> scene;
-static GPUBuffer<Scene> scene;
 
 //stored counters
 static GPUBuffer<int> counter;
@@ -167,12 +164,12 @@ void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
  *    @param	target	Target for the.
  */
 
-void RayEngine::Process(const Scene* sceneIn, double target) {
+void RayEngine::Process(GPUBuffer<Scene>& scene, double target) {
 
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();
 
-	const auto numberJobs = jobList.size();
+	auto numberJobs = jobList.size();
 
 	//only upload data if a job exists
 	if (numberJobs > 0) {
@@ -216,15 +213,22 @@ void RayEngine::Process(const Scene* sceneIn, double target) {
 				deviceRaysA.resize(numberRays);
 				deviceRaysB.resize(numberRays);
 
-				device.Launch(normalPolicy, RandomSetup, numberRays, randomState, WangHash(++raySeedGl));
+				auto rand = WangHash(++raySeedGl);
+				device.Launch(normalPolicy, RandomSetup, numberRays, randomState, rand);
 
 				raysAllocated = numberRays;
 
 			}
 
-			//copy the scene over
-			scene.TransferToDevice();
-			
+			//copy the scene data over
+			scene[0].faces.TransferToDevice();
+			scene[0].vertices.TransferToDevice();
+			scene[0].materials.TransferToDevice();
+			scene[0].tets.TransferToDevice();
+			scene[0].objects.TransferToDevice();
+
+			scene[0].sky.TransferToDevice();
+
 			//setup the counters
 			counter[0] = 0;
 			hitAtomic[0] = 0;
@@ -235,8 +239,9 @@ void RayEngine::Process(const Scene* sceneIn, double target) {
 			device.Launch(normalPolicy, RaySetup, numberRays, numberJobs, jobList, deviceRaysA, hitAtomic, randomState);
 
 			//start the engine loop
-			uint numActive;
-			CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
+			hitAtomic.TransferToHost();
+
+			uint numActive = hitAtomic[0];
 
 			for (uint i = 0; i < rayDepth && numActive>0; ++i) {
 
@@ -251,19 +256,17 @@ void RayEngine::Process(const Scene* sceneIn, double target) {
 				const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
 				//main engine, collects hits
-				device.Launch(persistantPolicy, ExecuteJobs, numActive, deviceRaysA, scene, counter);
-				CudaCheck(cudaPeekAtLastError());
-				CudaCheck(cudaDeviceSynchronize());
+				device.Launch(persistantPolicy, ExecuteJobs, numActive, deviceRaysA, scene[0].vertices, scene[0].faces, counter);
 
 				//processes hits 
-				device.Launch(activePolicy, ProcessHits, numActive, jobList, numberJobs, deviceRaysA, deviceRaysB, scene, hitAtomic, randomState);
-				CudaCheck(cudaPeekAtLastError());
-				CudaCheck(cudaDeviceSynchronize());
+				device.Launch(activePolicy, ProcessHits, numActive, jobList, numberJobs, deviceRaysA, deviceRaysB, scene[0].sky, scene[0].faces, scene[0].vertices, scene[0].materials, hitAtomic, randomState);
 
 				std::swap(deviceRaysA, deviceRaysB);
 
-				CudaCheck(cudaMemcpy(&numActive, hitAtomic, sizeof(int), cudaMemcpyDeviceToHost));
 
+				hitAtomic.TransferToHost();
+
+				numActive = hitAtomic[0];
 			}
 		}
 
@@ -334,9 +337,6 @@ void RayEngine::Initialize() {
 	counter.TransferDevice(GPUManager::GetBestGPU());
 	hitAtomic.TransferDevice(GPUManager::GetBestGPU());
 
-	scene.TransferDevice(GPUManager::GetBestGPU());
-
-	scene.resize(1);
 	counter.resize(1);
 	hitAtomic.resize(1);
 	
