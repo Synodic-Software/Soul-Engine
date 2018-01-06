@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine Core\Scene\CUDA/Scene.cuh"
+#include "Engine Core/Scene/Scene.h"
 #include "RayJob.h"
 #include "GPGPU/GPUBuffer.h"
 
@@ -54,7 +54,7 @@ namespace RayEngine {
 	 *    @param	parameter2	The second parameter.
 	 */
 
-	void Process(const Scene*, double);
+	void Process(GPUBuffer<Scene>&, double);
 
 	void Update();
 

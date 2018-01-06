@@ -9,9 +9,9 @@
 namespace MortonCode{
 
 
-	__global__ void ComputeGPU64(const uint n, uint64* mortonCodes, Face* faces, Vertex* vertices);
+	__global__ void ComputeGPUFace64(uint n, uint64* mortonCodes, Face* faces, Vertex* vertices);
 
-	__global__ void ComputeGPU64(const uint n, uint64* mortonCodes, glm::uvec2* data);
+	__global__ void ComputeGPU64(uint n, uint64* mortonCodes, glm::uvec2* data);
 
 
 	//given a point in space with the range [-1,1] for each dimension

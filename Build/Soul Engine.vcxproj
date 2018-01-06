@@ -32,7 +32,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.0.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.1.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -99,11 +99,11 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Algorithms\Filters\Filter.h" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h" />
-    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.h" />
-    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\BVH.h" />
-    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
-    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
-    <ClInclude Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cuh" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cuh" />
     <ClInclude Include="..\Source Files\Data Structures\DataHelper.h" />
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RadixTree.h" />
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RTNode.h" />
@@ -114,7 +114,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Display\Widget\Widget.h" />
     <ClInclude Include="..\Source Files\Display\Window\Window.h" />
     <ClInclude Include="..\Source Files\Display\Window\WindowManager.h" />
-    <ClInclude Include="..\Source Files\Engine Core\BasicDependencies.h" />
     <ClInclude Include="..\Source Files\Engine Core\Frame\Frame.h" />
     <ClInclude Include="..\Source Files\Engine Core\Material\Colour\Colour.h" />
     <ClInclude Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cuh" />
@@ -138,8 +137,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Engine Core\Object\OpenCL\CLVertex.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Tet.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Vertex.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cuh" />
-    <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\Scene.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\Sky.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\OpenCL\CLScene.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\Scene.h" />
@@ -148,6 +145,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Events\EventManager.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABackend.h" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDABuffer.h" />
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Scene\Scene.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cuh" />
     <ClInclude Include="..\Source Files\GPGPU\CUDA\CUDAKernel.h" />
@@ -228,8 +227,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Filters\Filter.cpp" />
-    <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BoundingBox.cpp" />
-    <ClCompile Include="..\Source Files\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\DataHelper.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RadixTree.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RTNode.cpp" />
@@ -247,6 +244,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Events\EventManager.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABackend.cpp" />
     <ClCompile Include="..\Source Files\GPGPU\CUDA\CUDABuffer.cpp" />
+    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
+    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cu" />
+    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cu" />
     <CudaCompile Include="..\Source Files\GPGPU\CUDA\CUDADevice.cu">
       <FileType>Document</FileType>
     </CudaCompile>
@@ -300,9 +300,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Sort\CUDA\Sort.cu" />
     <CudaCompile Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cu" />
     <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu" />
-    <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
-    <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\BVH.cu" />
-    <CudaCompile Include="..\Source Files\Bounding Volume Heirarchy\CUDA\Node.cu" />
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\Colour\CUDA\Colour.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\Material.cu" />
@@ -319,8 +316,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Object.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Tet.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Vertex.cu" />
-    <CudaCompile Include="..\Source Files\Engine Core\Scene\CUDA\ObjectSceneAbstraction.cu" />
-    <CudaCompile Include="..\Source Files\Engine Core\Scene\CUDA\Scene.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Scene\CUDA\Sky.cu" />
     <CudaCompile Include="..\Source Files\Physics Engine\CUDA\PhysicsEngine.cu" />
     <CudaCompile Include="..\Source Files\Ray Engine\CUDA\Ray.cu" />
@@ -342,6 +337,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.0.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.1.targets" />
   </ImportGroup>
 </Project>

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Bounding Volume Heirarchy\CUDA\Node.cuh"
-#include "Bounding Volume Heirarchy\BoundingBox.h"
+#include "Data Structures\Bounding Volume Heirarchy\CUDA\Node.cuh"
+#include "Data Structures\Bounding Volume Heirarchy\BoundingBox.h"
 #include "Engine Core\Object\Face.h"
 #include "Engine Core\Object\Vertex.h"
+#include "GPGPU/GPUBuffer.h"
 
 typedef struct BVHData {
 
@@ -35,11 +36,9 @@ public:
 	__host__ BVH();
 	__host__ ~BVH();
 
-	__host__ void Build(uint, BVHData*&, uint64*, Face *, Vertex*);
+	__host__ void Build(uint, GPUBuffer<BVHData>&, GPUBuffer<uint64>&, GPUBuffer<Face>&, GPUBuffer<Vertex>&);
 
 private:
-	BVHData bvhDataHost;
-	Node* bvh;
-	uint allocatedSize;
+	GPUBuffer<Node> bvh;
 
 };

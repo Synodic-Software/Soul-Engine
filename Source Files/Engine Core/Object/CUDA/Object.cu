@@ -17,7 +17,7 @@ Object::Object() {
 	isStatic = false;
 
 }
-Object::Object(std::string name, Material* mat) {
+Object::Object(std::string name, Material mat) {
 
 	verticeAmount = 0;
 	faceAmount = 0;
@@ -27,7 +27,7 @@ Object::Object(std::string name, Material* mat) {
 	requestRemoval = false;
 	isStatic = false;
 
-	materials.push_back(*mat);
+	materials.push_back(mat);
 	materialAmount++;
 
 	ExtractFromFile(name.c_str());

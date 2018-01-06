@@ -1,20 +1,19 @@
 #include "BVH.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "Utility/Logger.h"
+#include "Utility/Includes/GLMIncludes.h"
+#include "GPGPU/GPUManager.h"
 
 BVH::BVH() {
 
-	allocatedSize = 0;
-	bvhDataHost.currentSize = 0;
-	bvh = nullptr;
+	bvh.TransferDevice(GPUManager::GetBestGPU());
 
+	bvh.push_back({});
+
+	bvh.TransferToDevice();
 }
 
 BVH::~BVH() {
-
-	if (bvh) {
-		CudaCheck(cudaFree(bvh));
-	}
 
 }
 
@@ -24,7 +23,7 @@ __device__ uint HighestBit(uint i, uint64* morton)
 	return morton[i] ^ morton[i + 1];
 }
 
-__global__ void BuildTree(const uint n, BVHData* data, Node* nodes, uint64* mortonCodes, const uint leafOffset)
+__global__ void BuildTree(uint n, BVHData* data, Node* nodes, uint64* mortonCodes, uint leafOffset)
 {
 	uint index = getGlobalIdx_1D_1D();
 	if (index >= n)
@@ -74,7 +73,7 @@ __global__ void BuildTree(const uint n, BVHData* data, Node* nodes, uint64* mort
 }
 
 
-__global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, const uint leafOffset)
+__global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, uint leafOffset)
 {
 	uint index = getGlobalIdx_1D_1D();
 
@@ -132,34 +131,26 @@ __global__ void Reset(const uint n, Node* nodes, Face* faces, Vertex* vertices, 
 	}
 }
 
-void BVH::Build(uint size, BVHData*& data, uint64* mortonCodes, Face * faces, Vertex * vertices) {
+void BVH::Build(uint size, GPUBuffer<BVHData>& data, GPUBuffer<uint64>& mortonCodes, GPUBuffer<Face>& faces, GPUBuffer<Vertex>& vertices) {
 
 	if (size > 0) {
-		if (size > allocatedSize) {
-
-			allocatedSize = glm::max(uint(allocatedSize * 1.5f), (size * 2) - 1);
-
-			if (bvh) {
-				CudaCheck(cudaFree(bvh));
-			}
-
-			CudaCheck(cudaMalloc((void**)&bvh, allocatedSize * sizeof(Node)));
-			bvhDataHost.bvh = bvh;
+		if (size > bvh.size()) {
+			bvh.resize(size);
 		}
 
-		bvhDataHost.currentSize = size;
-		CudaCheck(cudaMemcpy(data, &bvhDataHost, sizeof(BVHData), cudaMemcpyHostToDevice));
+		data[0].currentSize = size;
+		data.TransferToDevice();
 
 		uint blockSize = 64;
 		uint gridSize = (size + blockSize - 1) / blockSize;
 
 		CudaCheck(cudaDeviceSynchronize());
 
-		Reset << <gridSize, blockSize >> > (size, bvh, faces, vertices, mortonCodes, size - 1);
+		Reset << <gridSize, blockSize >> > (size, bvh.device_data(), faces.device_data(), vertices.device_data(), mortonCodes.device_data(), size - 1);
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 
-		BuildTree << <gridSize, blockSize >> > (size, data, bvh, mortonCodes, size - 1);
+		BuildTree << <gridSize, blockSize >> > (size, data.device_data(), bvh.device_data(), mortonCodes.device_data(), size - 1);
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 	}

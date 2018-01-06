@@ -120,7 +120,7 @@ __device__ __inline__ float magic_min7(float a0, float a1, float b0, float b1, f
 __device__ __inline__ float spanBeginKepler(float a0, float a1, float b0, float b1, float c0, float c1, float d) { return fmax_fmax(fminf(a0, a1), fminf(b0, b1), fmin_fmax(c0, c1, d)); }
 __device__ __inline__ float spanEndKepler(float a0, float a1, float b0, float b1, float c0, float c1, float d) { return fmin_fmin(fmaxf(a0, a1), fmaxf(b0, b1), fmax_fmin(c0, c1, d)); }
 
-__global__ void RandomSetup(const uint n, curandState* randomState, const uint raySeed) {
+__global__ void RandomSetup(uint n, curandState* randomState, uint raySeed) {
 
 
 	uint index = getGlobalIdx_1D_1D();
@@ -136,16 +136,16 @@ __global__ void RandomSetup(const uint n, curandState* randomState, const uint r
 
 }
 
-__global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
+__global__ void EngineSetup(uint n, RayJob* jobs, int jobSize) {
 
 
-	uint index = getGlobalIdx_1D_1D();
+	const int index = getGlobalIdx_1D_1D();
 
 	if (index >= n) {
 		return;
 	}
 
-	uint startIndex = 0;
+	const int startIndex = 0;
 
 	int cur = 0;
 	((glm::vec4*)jobs[cur].camera.film.results)[index - startIndex] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -153,7 +153,7 @@ __global__ void EngineSetup(const uint n, RayJob* jobs, int jobSize) {
 
 }
 
-__global__ void RaySetup(const uint n, int jobSize, RayJob* job, Ray* rays, int* nAtomic, curandState* randomState) {
+__global__ void RaySetup(uint n, int jobSize, RayJob* job, Ray* rays, int* nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -291,7 +291,7 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& a, co
 }
 
 
-__global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, const Scene* scene, int * nAtomic, curandState* randomState) {
+__global__ void ProcessHits(uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, Sky* sky, Face* faces, Vertex* vertices, Material* materials, int * nAtomic, curandState* randomState) {
 
 	uint index = getGlobalIdx_1D_1D();
 
@@ -315,34 +315,32 @@ __global__ void ProcessHits(const uint n, RayJob* job, int jobSize, Ray* rays, R
 
 	if (faceHit == uint(-1)) {
 
-		col = glm::vec3(ray.storage.x, ray.storage.y, ray.storage.z)*scene->sky->ExtractColour({ ray.direction.x, ray.direction.y, ray.direction.z });
+		col = glm::vec3(ray.storage.x, ray.storage.y, ray.storage.z)*sky->ExtractColour({ ray.direction.x, ray.direction.y, ray.direction.z });
 
 	}
 	else {
 
-		Face face = scene->faces[faceHit];
+		Face face = faces[faceHit];
 
-		Material mat = scene->materials[face.material];
-
-		Vertex* vP = scene->vertices;
+		Material mat = materials[face.material];
 
 		glm::vec2 bary = ray.bary;
 
-		glm::vec3 n0 = vP[face.indices.x].position;
-		glm::vec3 n1 = vP[face.indices.y].position;
-		glm::vec3 n2 = vP[face.indices.z].position;
+		glm::vec3 n0 = vertices[face.indices.x].position;
+		glm::vec3 n1 = vertices[face.indices.y].position;
+		glm::vec3 n2 = vertices[face.indices.z].position;
 
 		glm::vec3 bestNormal = glm::normalize(glm::cross(n1 - n0, n2 - n0));
 
-		/*glm::vec3 n0 = vP[faceHit->indices.x].normal;
-		glm::vec3 n1 = vP[faceHit->indices.y].normal;
-		glm::vec3 n2 = vP[faceHit->indices.z].normal;
+		/*glm::vec3 n0 = vertices[faceHit->indices.x].normal;
+		glm::vec3 n1 = vertices[faceHit->indices.y].normal;
+		glm::vec3 n2 = vertices[faceHit->indices.z].normal;
 
 		glm::vec3 bestNormal = (1 - bary.x - bary.y) * n0 + bary.x * n1 + bary.y * n2;*/
 
-		glm::vec2 uv0 = vP[face.indices.x].textureCoord;
-		glm::vec2 uv1 = vP[face.indices.y].textureCoord;
-		glm::vec2 uv2 = vP[face.indices.z].textureCoord;
+		glm::vec2 uv0 = vertices[face.indices.x].textureCoord;
+		glm::vec2 uv1 = vertices[face.indices.y].textureCoord;
+		glm::vec2 uv2 = vertices[face.indices.z].textureCoord;
 
 		glm::vec2 bestUV = (1.0f - bary.x - bary.y) * uv0 + bary.x * uv1 + bary.y * uv2;
 
@@ -409,7 +407,7 @@ __inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
 __inline__ __device__ float Dn(float a) { return a*m; }
 __inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
-__global__ void ExecuteJobs(const uint n, Ray* rays, const Scene* scene, int* counter) {
+__global__ void ExecuteJobs(uint n, Ray* rays, BVHData bvh, Vertex* vertices, Face* faces, int* counter) {
 
 	Node * traversalStack[STACK_SIZE];
 	traversalStack[0] = nullptr; // Bottom-most entry.
@@ -455,11 +453,8 @@ __global__ void ExecuteJobs(const uint n, Ray* rays, const Scene* scene, int* co
 	float Sz;
 #endif
 
-	//scene pointers
+	//scene data
 	Ray ray;
-	BVHData bvh = *(scene->bvhData);
-	Vertex* vP = scene->vertices;
-	Face* fP = scene->faces;
 
 	extern __shared__ volatile int nextRayArray[]; // Current ray index in global buffer needs the (max) block height. 
 
@@ -712,17 +707,17 @@ __global__ void ExecuteJobs(const uint n, Ray* rays, const Scene* scene, int* co
 			{
 				uint faceID = currentLeaf->faceID;
 
-				glm::uvec3 face = fP[faceID].indices;
+				glm::uvec3 face = faces[faceID].indices;
 
 				float bary1;
 				float bary2;
 				float tTemp;
 
 #if defined	WOOP_TRI
-				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
+				if (FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
 					ray.origin, kx, ky, kz, Sx, Sy, Sz,
 #else
-				if (FindTriangleIntersect(vP[face.x].position, vP[face.y].position, vP[face.z].position,
+				if (FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
 					ray.origin, ray.direction, { idirx, idiry, idirz },
 #endif
 					tTemp, ray.direction.w, bary1, bary2)) {
