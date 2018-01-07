@@ -12,6 +12,11 @@ __host__ RayJob::RayJob(rayType whatToGet, bool _canChange, float newSamples)
 	id = counter++;
 }
 
+__host__ RayJob::RayJob()
+{
+
+}
+
 __host__ RayJob::~RayJob() {
 
 }

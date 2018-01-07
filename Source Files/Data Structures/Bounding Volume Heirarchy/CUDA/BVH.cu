@@ -1,21 +1,7 @@
 #include "BVH.cuh"
+
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "Utility/Logger.h"
 #include "Utility/Includes/GLMIncludes.h"
-#include "GPGPU/GPUManager.h"
-
-BVH::BVH() {
-
-	bvh.TransferDevice(GPUManager::GetBestGPU());
-
-	bvh.push_back({});
-
-	bvh.TransferToDevice();
-}
-
-BVH::~BVH() {
-
-}
 
 // Returns the highest differing bit of i and i+1
 __device__ uint HighestBit(uint i, uint64* morton)
@@ -129,30 +115,4 @@ __global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64
 		nodes[0].box = nodes[leafOffset + 0].box;
 		nodes[0].childLeft = nodes + leafOffset + 0;
 	}
-}
-
-void BVH::Build(uint size, GPUBuffer<BVHData>& data, GPUBuffer<uint64>& mortonCodes, GPUBuffer<Face>& faces, GPUBuffer<Vertex>& vertices) {
-
-	if (size > 0) {
-		if (size > bvh.size()) {
-			bvh.resize(size);
-		}
-
-		data[0].currentSize = size;
-		data.TransferToDevice();
-
-		uint blockSize = 64;
-		uint gridSize = (size + blockSize - 1) / blockSize;
-
-		CudaCheck(cudaDeviceSynchronize());
-
-		Reset << <gridSize, blockSize >> > (size, bvh.device_data(), faces.device_data(), vertices.device_data(), mortonCodes.device_data(), size - 1);
-		CudaCheck(cudaPeekAtLastError());
-		CudaCheck(cudaDeviceSynchronize());
-
-		BuildTree << <gridSize, blockSize >> > (size, data.device_data(), bvh.device_data(), mortonCodes.device_data(), size - 1);
-		CudaCheck(cudaPeekAtLastError());
-		CudaCheck(cudaDeviceSynchronize());
-	}
-
 }

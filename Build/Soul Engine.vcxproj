@@ -104,6 +104,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cuh" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.h" />
     <ClInclude Include="..\Source Files\Data Structures\DataHelper.h" />
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RadixTree.h" />
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RTNode.h" />

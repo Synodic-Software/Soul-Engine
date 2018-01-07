@@ -9,6 +9,10 @@ Sky::Sky(std::string texName) {
 	//CudaCheck(cudaDeviceSynchronize());
 }
 
+Sky::Sky() {
+
+}
+
 __device__ glm::vec3 Sky::ExtractColour(const glm::vec3& direction){
 
 	/*float theta = 0.5f + atan2f(direction.z, direction.x)/(2 * PI);

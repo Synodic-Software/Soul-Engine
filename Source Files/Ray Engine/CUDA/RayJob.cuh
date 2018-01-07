@@ -22,6 +22,7 @@ public:
 	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
 	//@param The amount of buffers used for result storage.
+	__host__ RayJob();
 	__host__ RayJob(rayType, bool, float);
 	__host__ ~RayJob();
 

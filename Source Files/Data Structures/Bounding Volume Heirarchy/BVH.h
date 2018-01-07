@@ -1,14 +1,20 @@
 #pragma once
 
-
-#pragma once
-
-//#   if defined(__CUDACC__)
-
+#include "GPGPU/GPUBuffer.h"
+#include "Node.h"
+#include "Engine Core/Object/Face.h"
+#include "Engine Core/Object/Vertex.h"
 #include "CUDA/BVH.cuh"
 
-//#	else
-//
-//#include "OpenCL\CLRayJob.h"
-//
-//#endif
+class BVH {
+public:
+
+	BVH();
+	~BVH();
+
+	void Build(int, GPUBuffer<BVHData>&, GPUBuffer<uint64>&, GPUBuffer<Face>&, GPUBuffer<Vertex>&);
+
+private:
+	GPUBuffer<Node> bvh;
+
+};

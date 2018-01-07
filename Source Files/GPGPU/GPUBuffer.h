@@ -185,12 +185,20 @@ public:
 		buffer->push_back(v);
 	}
 
-	int size() const {
-		return buffer->size();
+	int HostSize() const {
+		return buffer->HostSize();
 	}
 
-	int capacity() const {
-		return buffer->capacity();
+	int HostCapacity() const {
+		return buffer->HostCapacity();
+	}
+
+	int DeviceSize() const {
+		return buffer->DeviceSize();
+	}
+
+	int DeviceCapacity() const {
+		return buffer->DeviceCapacity();
 	}
 
 	/*
