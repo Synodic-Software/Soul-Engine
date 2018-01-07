@@ -32,11 +32,6 @@ Scene::Scene()
 	sky.TransferToDevice();
 }
 
-Scene::~Scene()
-{
-
-}
-
 __host__ void Scene::Build(float deltaTime) {
 
 	Compile();
