@@ -35,6 +35,8 @@ public:
 
 	}
 
+	GPUBuffer(GPUBuffer&& other) noexcept;
+
 	GPUBuffer(uint _size = 0) {
 
 		buffer = nullptr;
@@ -156,12 +158,8 @@ public:
 		return (*buffer)[i];
 	}
 
-	GPUBuffer<T>& operator=(const GPUBuffer<T>& rhs) {
-
-		this->buffer = rhs.buffer;
-		return *this;
-
-	}
+	GPUBuffer<T>& operator= (GPUBuffer<T>&&) noexcept;
+	GPUBuffer<T>& operator= (const GPUBuffer<T>&) = default;
 
 	/*
 	*    Reserves the given new size.
@@ -215,3 +213,20 @@ private:
 	GPUBufferBase<T>* buffer;
 	
 };
+
+template <class T>
+GPUBuffer<T>::GPUBuffer(GPUBuffer<T>&& other) noexcept
+{
+	*this = std::move(other);
+}
+
+template <class T>
+GPUBuffer<T>& GPUBuffer<T>::operator= (GPUBuffer<T>&& other) noexcept
+{
+
+	buffer = other.buffer;
+
+	other.buffer = nullptr;
+
+	return *this;
+}
