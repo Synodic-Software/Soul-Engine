@@ -6,7 +6,6 @@
 #include "Engine Core\Scene\Sky.h"
 #include "Engine Core\Material\Material.h"
 #include "Data Structures\Bounding Volume Heirarchy\BVH.h"
-#include <vector>
 
 #include "GPGPU/GPUBuffer.h"
 
@@ -15,7 +14,7 @@ class Scene
 public:
 	Scene();
 
-	~Scene();
+	~Scene() = default;
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
 	void Build(float deltaTime);
