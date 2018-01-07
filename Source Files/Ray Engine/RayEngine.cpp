@@ -21,8 +21,6 @@ static uint frameHold = 5;
 /* timer. */
 static Timer renderTimer;
 
-static uint raysAllocated = 0;
-
 static GPUBuffer<Ray> deviceRaysA;
 static GPUBuffer<Ray> deviceRaysB;
 
@@ -208,7 +206,7 @@ void RayEngine::Process(GPUBuffer<Scene>& scene, double target) {
 			auto jobP = jobList.device_data();
 			device.Launch(normalPolicy, EngineSetup, numberResults, jobP, numberJobs);
 
-			if (numberRays > raysAllocated) {
+			if (numberRays > deviceRaysA.DeviceSize()) {
 
 				randomState.resize(numberRays);
 				deviceRaysA.resize(numberRays);
@@ -217,8 +215,6 @@ void RayEngine::Process(GPUBuffer<Scene>& scene, double target) {
 				auto rand = WangHash(++raySeedGl);
 				auto randP = randomState.device_data();
 				device.Launch(normalPolicy, RandomSetup, numberRays, randP, rand);
-
-				raysAllocated = numberRays;
 
 			}
 
