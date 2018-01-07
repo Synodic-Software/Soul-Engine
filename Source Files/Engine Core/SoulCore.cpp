@@ -272,8 +272,8 @@ namespace Soul {
 
 				EarlyUpdate();
 
-				for (int i = 0; i < scenes.size(); ++i) {
-					scenes[i].Build(engineRefreshRate);
+				for (auto& scene : scenes) {
+					scene.Build(engineRefreshRate);
 				}
 				/*
 				for (auto const& scene : scenes){

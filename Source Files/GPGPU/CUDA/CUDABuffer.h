@@ -11,19 +11,22 @@ class CUDABuffer :public GPUBufferBase<T> {
 
 public:
 
-	CUDABuffer(const GPUDevice& _device, uint _byteCount)
-		: GPUBufferBase(_device, _byteCount) {
+	CUDABuffer(const GPUDevice& _device, uint _size)
+		: GPUBufferBase(_device, _size) {
+
+		device_size = _size;
+		device_capacity = _size;
 		CudaCheck(cudaMalloc((void**)&deviceData, device_size * sizeof(T)));
 	}
 
 	CUDABuffer(const GPUDevice& _device, GPUBufferBase<T>& other)
 		: GPUBufferBase(_device, other) {
 
-		device_size = other.size();
-		device_capacity = other.capacity();
+		device_size = other.DeviceSize();
+		device_capacity = other.DeviceCapacity();
 
 		//allocate the new space
-		CudaCheck(cudaMalloc((void**)&deviceData, host_capacity * sizeof(T)));
+		CudaCheck(cudaMalloc((void**)&deviceData, device_capacity * sizeof(T)));
 		CudaCheck(cudaMemcpy(deviceData, other.device_data(), device_size * sizeof(T), cudaMemcpyDeviceToDevice));
 
 	}

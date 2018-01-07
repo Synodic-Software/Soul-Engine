@@ -4,6 +4,7 @@
 
 #include "GPGPU/GPUDevice.h"
 #include "glm/glm.hpp"
+#include <cstring>
 
 /*
 *    Buffer for gpu/cpu communication and storage.
@@ -22,39 +23,31 @@ public:
 	*    @param 		 	_objectCount	(Optional) Number of objects.
 	*/
 
-	GPUBufferBase(const GPUDevice& deviceIn, uint _size = 0) {
+	GPUBufferBase(const GPUDevice& deviceIn, uint _size = 0){
 
-		host_size = _size;
 		host_capacity = _size;
-
-		device_size = _size;
-		device_capacity = _size;
-
+		hostData = new T[host_capacity];
+		for (auto i = 0; i < _size; ++i)
+			hostData[i] = T();
+		host_size = _size;
 		flags = 0;
-
-		hostData = nullptr;
-		deviceData = nullptr;
 
 	}
 
 	GPUBufferBase(const GPUDevice& deviceIn, GPUBufferBase<T>& other) {
 
-		host_size = other.size();
-		host_capacity = other.capacity();
+		host_capacity = other.host_capacity;
+		hostData = new T[host_capacity];
+		for (auto i = 0; i < other.host_size; ++i)
+			hostData[i] = other.hostData[i];
+		host_size = other.host_size;
 
 		flags = other.flags;
-
-		void* raw = operator new[](host_capacity * sizeof(T));
-		hostData = static_cast<T*>(raw);
-		std::copy(other.data(), other.data() + other.size(), hostData);
-
-		//the specific derived class transfers the device array
-
 	}
 
 	/* Destructor. */
 	virtual ~GPUBufferBase() {
-		delete hostData;
+		delete[] hostData;
 	}
 
 	/*
@@ -79,24 +72,8 @@ public:
 	virtual void reserve(uint newCapacity) {
 
 		if (newCapacity > host_capacity) {
-
-			//allocate the new size
-			void* raw = new unsigned char[newCapacity * sizeof(T)];
-			auto data = static_cast<T*>(raw);
-
-			const auto lSize = newCapacity < host_size ? newCapacity : host_size;
-
-			//move all previous data
-			for (uint i = 0; i < lSize; i++) {
-				data[i] = std::move(hostData[i]);
-			}
-
 			host_capacity = newCapacity;
-
-			//deallocate formerly used memory
-			delete[] hostData;
-
-			hostData = data; //reassign the data pointer
+			reallocate();
 		}
 
 	}
@@ -108,27 +85,44 @@ public:
 
 	virtual void resize(uint newSize) {
 
-		GPUBufferBase::reserve(newSize);
-		host_size = newSize;  //change host size.
+		if (newSize > host_size) {
+			if (newSize > host_capacity) {
+				host_capacity = newSize;
+				reallocate();
+			}
+		}
+		else {
+			for (auto i = newSize; i < host_size; ++i)
+				hostData[i].~T();
+		}
+		host_size = newSize;
 
 	}
 
 	void push_back(const T& v) {
 
-		if (host_size >= host_capacity) {
-			reserve(glm::max(host_capacity * 2, 1u));
+		if (host_size == host_capacity) {
+			host_capacity = glm::max(host_capacity * 2, 1u);
+			reallocate();
 		}
-
-		hostData[host_size++] = v;
-
+		hostData[host_size] = v;
+		++host_size;
 	}
 
-	int size() const {
+	int HostSize() const {
 		return host_size;
 	}
 
-	int capacity() const {
+	int DeviceSize() const {
+		return device_size;
+	}
+
+	int HostCapacity() const {
 		return host_capacity;
+	}
+
+	int DeviceCapacity() const {
+		return device_capacity;
 	}
 
 	/*
@@ -189,13 +183,23 @@ protected:
 	T* hostData;	// Information describing the host
 	T* deviceData;  // Information describing the device
 
-	uint host_size;   // Number of objects
-	uint host_capacity;	// The capacity
-	uint device_size;   // Number of objects
-	uint device_capacity;	// The capacity
+	uint host_size = 0;   // Number of objects
+	uint host_capacity = 1;	// The capacity
+	uint device_size = 0;   // Number of objects
+	uint device_capacity = 0;	// The capacity
 	uint flags; // The flags
 
 				//operator overloads
+
+private: 
+
+	void reallocate() {
+		T* temp = new T[host_capacity];
+		std::memcpy(temp, hostData, host_size * sizeof(T));
+		delete[] hostData;
+		hostData = temp;
+	}
+
 public:
 
 	typedef GPUBufferBase<T> * iterator;

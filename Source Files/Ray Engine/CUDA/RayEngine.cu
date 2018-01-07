@@ -407,7 +407,7 @@ __inline__ __device__ glm::vec3 Up(glm::vec3 a) { return a*p; }
 __inline__ __device__ float Dn(float a) { return a*m; }
 __inline__ __device__ glm::vec3 Dn(glm::vec3 a) { return a*m; }
 
-__global__ void ExecuteJobs(uint n, Ray* rays, BVHData bvh, Vertex* vertices, Face* faces, int* counter) {
+__global__ void ExecuteJobs(uint n, Ray* rays, BVHData* bvhP, Vertex* vertices, Face* faces, int* counter) {
 
 	Node * traversalStack[STACK_SIZE];
 	traversalStack[0] = nullptr; // Bottom-most entry.
@@ -455,6 +455,7 @@ __global__ void ExecuteJobs(uint n, Ray* rays, BVHData bvh, Vertex* vertices, Fa
 
 	//scene data
 	Ray ray;
+	BVHData bvh = *bvhP;
 
 	extern __shared__ volatile int nextRayArray[]; // Current ray index in global buffer needs the (max) block height. 
 
@@ -699,6 +700,7 @@ __global__ void ExecuteJobs(uint n, Ray* rays, BVHData bvh, Vertex* vertices, Fa
 				if (!__any(!bvh.IsLeaf(currentLeaf))) {
 					break;
 				}
+
 			}
 
 			// Process postponed leaf nodes.
@@ -725,6 +727,7 @@ __global__ void ExecuteJobs(uint n, Ray* rays, BVHData bvh, Vertex* vertices, Fa
 					ray.direction.w = tTemp;
 					ray.bary = glm::vec2(bary1, bary2);
 					ray.currentHit = faceID;
+
 				}
 
 				//go through the second postponed leaf

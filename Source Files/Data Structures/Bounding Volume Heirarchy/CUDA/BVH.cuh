@@ -12,7 +12,7 @@ typedef struct BVHData {
 	uint currentSize;
 	Node* bvh;
 
-	__device__ BVHData& operator=(BVHData arg)
+	__device__ BVHData& operator=(const BVHData& arg)
 	{
 		this->root = arg.root;
 		this->currentSize = arg.currentSize;
@@ -30,15 +30,5 @@ typedef struct BVHData {
 
 }BVHData;
 
-class BVH {
-public:
-
-	__host__ BVH();
-	__host__ ~BVH();
-
-	__host__ void Build(uint, GPUBuffer<BVHData>&, GPUBuffer<uint64>&, GPUBuffer<Face>&, GPUBuffer<Vertex>&);
-
-private:
-	GPUBuffer<Node> bvh;
-
-};
+__global__ void BuildTree(uint n, BVHData* data, Node* nodes, uint64* mortonCodes, uint leafOffset);
+__global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, uint leafOffset);

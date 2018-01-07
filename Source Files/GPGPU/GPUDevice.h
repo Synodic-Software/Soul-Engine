@@ -25,7 +25,7 @@ public:
 	template <typename KernelFunction, typename... Args>
 	void Launch(const GPUExecutePolicy& policy,
 		const KernelFunction& kernel,
-		Args ... parameters) {
+		Args& ... parameters) {
 
 		if (device->api == CUDA) {
 

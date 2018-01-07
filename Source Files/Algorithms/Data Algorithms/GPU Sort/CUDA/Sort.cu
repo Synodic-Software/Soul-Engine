@@ -10,7 +10,7 @@ namespace Sort {
 		thrust::device_ptr<uint64_t> keysP(keys.device_data());
 		thrust::device_ptr<Face> valuesP(values.device_data());
 
-		sort_by_key(keysP, keysP + keys.size(), valuesP);
+		sort_by_key(keysP, keysP + keys.DeviceSize(), valuesP);
 
 	}
 

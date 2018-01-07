@@ -23,8 +23,8 @@ Scene::Scene()
 	bvh.TransferDevice(GPUManager::GetBestGPU());
 	mortonCodes.TransferDevice(GPUManager::GetBestGPU());
 
-	bvh.push_back({});
-	bvhData.push_back({});
+	bvh.resize(1);
+	bvhData.resize(1);
 	sky.push_back({ "Starmap.png" });
 
 	bvh.TransferToDevice();
@@ -41,7 +41,7 @@ __host__ void Scene::Build(float deltaTime) {
 
 	Compile();
 
-	auto size = faces.size();
+	auto size = faces.HostSize();
 	if (size > 0) {
 
 		GPUDevice device = GPUManager::GetBestGPU();
@@ -49,7 +49,11 @@ __host__ void Scene::Build(float deltaTime) {
 		const auto blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-		device.Launch(normalPolicy, MortonCode::ComputeGPUFace64, size, mortonCodes.device_data(), faces.device_data(), vertices.device_data());
+		auto mortP = mortonCodes.device_data();
+		auto faceP = faces.device_data();
+		auto vertP = vertices.device_data();
+
+		device.Launch(normalPolicy, MortonCode::ComputeGPUFace64, size, mortP, faceP, vertP);
 
 
 		Sort::Sort(mortonCodes, faces);
@@ -74,11 +78,11 @@ void Scene::Compile() {
 //object pointer is host
 void Scene::AddObject(Object& obj) {
 
-	auto faceAmount = faces.size();
-	auto vertexAmount = vertices.size();
-	auto tetAmount = tets.size();
-	auto materialAmount = materials.size();
-	auto objectAmount = objects.size();
+	auto faceAmount = faces.HostSize();
+	auto vertexAmount = vertices.HostSize();
+	auto tetAmount = tets.HostSize();
+	auto materialAmount = materials.HostSize();
+	auto objectAmount = objects.HostSize();
 
 	const auto faceOffset = faceAmount;
 	const auto vertexOffset = vertexAmount;
