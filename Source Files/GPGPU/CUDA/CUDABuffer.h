@@ -27,14 +27,13 @@ public:
 
 		//allocate the new space
 		CudaCheck(cudaMalloc((void**)&deviceData, device_capacity * sizeof(T)));
-		CudaCheck(cudaMemcpy(deviceData, other.device_data(), device_size * sizeof(T), cudaMemcpyDeviceToDevice));
+		CudaCheck(cudaMemcpy(deviceData, other.DeviceData(), device_size * sizeof(T), cudaMemcpyDeviceToDevice));
 
 	}
 
 	~CUDABuffer() {
-		if (deviceData) {
-			CudaCheck(cudaFree(deviceData));
-		}
+		CudaCheck(cudaFree(deviceData));
+		deviceData = nullptr;
 	}
 
 

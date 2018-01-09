@@ -13,15 +13,15 @@
 
 Scene::Scene()
 {
-	bvhData.TransferDevice(GPUManager::GetBestGPU());
-	sky.TransferDevice(GPUManager::GetBestGPU());
-	faces.TransferDevice(GPUManager::GetBestGPU());
-	vertices.TransferDevice(GPUManager::GetBestGPU());
-	tets.TransferDevice(GPUManager::GetBestGPU());
-	materials.TransferDevice(GPUManager::GetBestGPU());
-	objects.TransferDevice(GPUManager::GetBestGPU());
-	bvh.TransferDevice(GPUManager::GetBestGPU());
-	mortonCodes.TransferDevice(GPUManager::GetBestGPU());
+	bvhData.Move(GPUManager::GetBestGPU());
+	sky.Move(GPUManager::GetBestGPU());
+	faces.Move(GPUManager::GetBestGPU());
+	vertices.Move(GPUManager::GetBestGPU());
+	tets.Move(GPUManager::GetBestGPU());
+	materials.Move(GPUManager::GetBestGPU());
+	objects.Move(GPUManager::GetBestGPU());
+	bvh.Move(GPUManager::GetBestGPU());
+	mortonCodes.Move(GPUManager::GetBestGPU());
 
 	bvh.resize(1);
 	bvhData.resize(1);
@@ -44,9 +44,9 @@ __host__ void Scene::Build(float deltaTime) {
 		const auto blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-		auto mortP = mortonCodes.device_data();
-		auto faceP = faces.device_data();
-		auto vertP = vertices.device_data();
+		auto mortP = mortonCodes.DeviceData();
+		auto faceP = faces.DeviceData();
+		auto vertP = vertices.DeviceData();
 
 		device.Launch(normalPolicy, MortonCode::ComputeGPUFace64, size, mortP, faceP, vertP);
 

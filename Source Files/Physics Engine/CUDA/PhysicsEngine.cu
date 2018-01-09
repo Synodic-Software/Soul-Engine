@@ -96,7 +96,7 @@ __global__ void BroadPhase(uint n, BVHData* bvh, Collision* collisions, int* siz
 
 __host__ void ProcessScene(GPUBuffer<BVHData>& bvh){
 
-	collisions.TransferDevice(GPUManager::GetBestGPU());
+	collisions.Move(GPUManager::GetBestGPU());
 
 	//uint n = bvh->currentSize;
 

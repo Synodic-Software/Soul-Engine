@@ -1,4 +1,3 @@
-
 /////////////////////////Includes/////////////////////////////////
 
 #include "SoulCore.h"
@@ -24,7 +23,7 @@ namespace Soul {
 
 	/* //////////////////////Variables and Declarations//////////////////. */
 
-	GPUBuffer<Scene> scenes;
+	std::vector<Scene> scenes;
 
 	/* The engine refresh rate */
 	double engineRefreshRate;
@@ -59,7 +58,7 @@ namespace Soul {
 	void Initialize() {
 
 		//create the listener for threads initializeing
-		EventManager::Listen("Thread","Initialize",[]()
+		EventManager::Listen("Thread", "Initialize", []()
 		{
 			GPUManager::InitThread();
 		});
@@ -115,8 +114,6 @@ namespace Soul {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
 
-		scenes.TransferDevice(GPUManager::GetBestGPU());
-
 		Settings::Get("Engine.Delta_Time", 1 / 60.0, engineRefreshRate);
 		Settings::Get("Engine.Alloted_Render_Time", 0.01, allotedRenderTime);
 
@@ -167,7 +164,7 @@ namespace Soul {
 		RayEngine::PreProcess();
 
 	}
-	
+
 	/* Ray post process */
 	void RayPostProcess() {
 
@@ -354,7 +351,7 @@ void SubmitScene(Scene& scene) {
  */
 
 void RemoveScene(Scene scene) {
-	//Soul::scenes.remove(scene);
+
 }
 
 /*
@@ -364,128 +361,117 @@ void RemoveScene(Scene scene) {
 
 int main()
 {
+	SoulInit();
 
-	try
-	{
-		SoulInit();
+	EventManager::Listen("Input", "ESCAPE", [](keyState state) {
+		if (state == RELEASE) {
+			SoulSignalClose();
+		}
+	});
 
-		EventManager::Listen("Input", "ESCAPE", [](keyState state) {
-			if (state == RELEASE) {
-				SoulSignalClose();
-			}
-		});
+	uint xSize;
+	Settings::Get("MainWindow.Width", uint(800), xSize);
+	uint ySize;
+	Settings::Get("MainWindow.Height", uint(450), ySize);
+	uint xPos;
+	Settings::Get("MainWindow.X_Position", uint(0), xPos);
+	uint yPos;
+	Settings::Get("MainWindow.Y_Position", uint(0), yPos);
+	int monitor;
+	Settings::Get("MainWindow.Monitor", 0, monitor);
 
-		uint xSize;
-		Settings::Get("MainWindow.Width", uint(800), xSize);
-		uint ySize;
-		Settings::Get("MainWindow.Height", uint(450), ySize);
-		uint xPos;
-		Settings::Get("MainWindow.X_Position", uint(0), xPos);
-		uint yPos;
-		Settings::Get("MainWindow.Y_Position", uint(0), yPos);
-		int monitor;
-		Settings::Get("MainWindow.Monitor", 0, monitor);
+	WindowType type;
+	int typeCast;
+	Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), typeCast);
+	type = static_cast<WindowType>(typeCast);
 
-		WindowType type;
-		int typeCast;
-		Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), typeCast);
-		type = static_cast<WindowType>(typeCast);
+	glm::uvec2 size = glm::uvec2(xSize, ySize);
 
-		glm::uvec2 size = glm::uvec2(xSize, ySize);
 
-	
-		Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
+	Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 
-		uint jobID;
-		WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(jobID)));
+	uint jobID;
+	WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(jobID)));
 
-		RayJob& job = RayEngine::GetJob(jobID);
-		Camera& camera = job.camera;
-		camera.position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
-		camera.OffsetOrientation(225, 45);
+	RayJob& job = RayEngine::GetJob(jobID);
+	Camera& camera = job.camera;
+	camera.position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
+	camera.OffsetOrientation(225, 45);
 
-		double deltaTime = GetDeltaTime();
-		float moveSpeed = 10 * METER * deltaTime;
+	double deltaTime = GetDeltaTime();
+	float moveSpeed = 10 * METER * deltaTime;
 
-		InputManager::AfixMouse(*mainWindow);
+	InputManager::AfixMouse(*mainWindow);
 
-		EventManager::Listen("Input", "S", [&camera, &moveSpeed](keyState state) {
+	EventManager::Listen("Input", "S", [&camera, &moveSpeed](keyState state) {
 
-			if (state == PRESS || state == REPEAT) {
-				camera.position += float(moveSpeed) * -camera.forward;
-			}
-		});
+		if (state == PRESS || state == REPEAT) {
+			camera.position += float(moveSpeed) * -camera.forward;
+		}
+	});
 
-		EventManager::Listen("Input", "W", [&camera, &moveSpeed](keyState state) {
-			if (state == PRESS || state == REPEAT) {
-				camera.position += float(moveSpeed) * camera.forward;
-			}
-		});
+	EventManager::Listen("Input", "W", [&camera, &moveSpeed](keyState state) {
+		if (state == PRESS || state == REPEAT) {
+			camera.position += float(moveSpeed) * camera.forward;
+		}
+	});
 
-		EventManager::Listen("Input", "A", [&camera, &moveSpeed](keyState state) {
-			if (state == PRESS || state == REPEAT) {
-				camera.position += float(moveSpeed) * -camera.right;
-			}
-		});
+	EventManager::Listen("Input", "A", [&camera, &moveSpeed](keyState state) {
+		if (state == PRESS || state == REPEAT) {
+			camera.position += float(moveSpeed) * -camera.right;
+		}
+	});
 
-		EventManager::Listen("Input", "D", [&camera, &moveSpeed](keyState state) {
-			if (state == PRESS || state == REPEAT) {
-				camera.position += float(moveSpeed) * camera.right;
-			}
-		});
+	EventManager::Listen("Input", "D", [&camera, &moveSpeed](keyState state) {
+		if (state == PRESS || state == REPEAT) {
+			camera.position += float(moveSpeed) * camera.right;
+		}
+	});
 
-		EventManager::Listen("Input", "Z", [&camera, &moveSpeed](keyState state) {
-			if (state == PRESS || state == REPEAT) {
-				camera.position += float(moveSpeed) * -glm::vec3(0, 1, 0);
-			}
-		});
+	EventManager::Listen("Input", "Z", [&camera, &moveSpeed](keyState state) {
+		if (state == PRESS || state == REPEAT) {
+			camera.position += float(moveSpeed) * -glm::vec3(0, 1, 0);
+		}
+	});
 
-		EventManager::Listen("Input", "X", [&camera, &moveSpeed](keyState state) {
-			if (state == PRESS || state == REPEAT) {
-				camera.position += float(moveSpeed) * glm::vec3(0, 1, 0);
-			}
-		});
+	EventManager::Listen("Input", "X", [&camera, &moveSpeed](keyState state) {
+		if (state == PRESS || state == REPEAT) {
+			camera.position += float(moveSpeed) * glm::vec3(0, 1, 0);
+		}
+	});
 
-		EventManager::Listen("Input", "LEFT SHIFT", [deltaTime, &moveSpeed](keyState state) {
-			if (state == PRESS || state == REPEAT) {
-				moveSpeed = 90 * METER * deltaTime;
-			}
-			else if (state == RELEASE) {
-				moveSpeed = 10 * METER * deltaTime;
-			}
-		});
+	EventManager::Listen("Input", "LEFT SHIFT", [deltaTime, &moveSpeed](keyState state) {
+		if (state == PRESS || state == REPEAT) {
+			moveSpeed = 90 * METER * deltaTime;
+		}
+		else if (state == RELEASE) {
+			moveSpeed = 10 * METER * deltaTime;
+		}
+	});
 
-		EventManager::Listen("Input", "Mouse Position", [&camera](double x, double y) {
-			glm::dvec2 mouseChangeDegrees;
-			mouseChangeDegrees.x = x / camera.fieldOfView.x * 4;
-			mouseChangeDegrees.y = y / camera.fieldOfView.y * 4;
+	EventManager::Listen("Input", "Mouse Position", [&camera](double x, double y) {
+		glm::dvec2 mouseChangeDegrees;
+		mouseChangeDegrees.x = x / camera.fieldOfView.x * 4;
+		mouseChangeDegrees.y = y / camera.fieldOfView.y * 4;
 
-			camera.OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-		});
+		camera.OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
+	});
 
-		Scene scene;
+	Scene scene;
 
-		Material whiteGray;
-		whiteGray.diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
-		whiteGray.emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	Material whiteGray;
+	whiteGray.diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
+	whiteGray.emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-		Object plane("Resources\\Objects\\plane.obj", whiteGray);
-		scene.AddObject(plane);
+	Object plane("Resources\\Objects\\plane.obj", whiteGray);
+	scene.AddObject(plane);
 
-		SubmitScene(scene);
+	SubmitScene(scene);
 
-		SoulRun();
+	SoulRun();
 
-		SoulTerminate();
-		return EXIT_SUCCESS;
-	}
-	catch (std::exception const& e)
-	{
-		std::cerr << "exception: " << e.what() << std::endl;
-	}
-	catch (...)
-	{
-		std::cerr << "unhandled exception" << std::endl;
-	}
-	return EXIT_FAILURE;
+	SoulTerminate();
+
+	return EXIT_SUCCESS;
+
 }

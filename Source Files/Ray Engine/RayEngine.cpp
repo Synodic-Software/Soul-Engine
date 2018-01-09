@@ -162,7 +162,7 @@ void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
  *    @param	target	Target for the.
  */
 
-void RayEngine::Process(GPUBuffer<Scene>& scene, double target) {
+void RayEngine::Process(std::vector<Scene>& scene, double target) {
 
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();
@@ -203,7 +203,7 @@ void RayEngine::Process(GPUBuffer<Scene>& scene, double target) {
 			const uint blockSize = 64;
 			const GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize,1,1), glm::vec3(blockSize,1,1), 0, 0);
 
-			auto jobP = jobList.device_data();
+			auto jobP = jobList.DeviceData();
 			device.Launch(normalPolicy, EngineSetup, numberResults, jobP, numberJobs);
 
 			if (numberRays > deviceRaysA.DeviceSize()) {
@@ -213,11 +213,12 @@ void RayEngine::Process(GPUBuffer<Scene>& scene, double target) {
 				deviceRaysB.resize(numberRays);
 
 				auto rand = WangHash(++raySeedGl);
-				auto randP = randomState.device_data();
+				auto randP = randomState.DeviceData();
 				device.Launch(normalPolicy, RandomSetup, numberRays, randP, rand);
 
 			}
 
+			//TODO handle multiple scenes
 			//copy the scene data over
 			scene[0].faces.TransferToDevice();
 			scene[0].vertices.TransferToDevice();
@@ -234,9 +235,9 @@ void RayEngine::Process(GPUBuffer<Scene>& scene, double target) {
 			counter.TransferToDevice();
 			hitAtomic.TransferToDevice();
 
-			auto raysAP = deviceRaysA.device_data();
-			auto hitP = hitAtomic.device_data();
-			auto randP = randomState.device_data();
+			auto raysAP = deviceRaysA.DeviceData();
+			auto hitP = hitAtomic.DeviceData();
+			auto randP = randomState.DeviceData();
 
 			device.Launch(normalPolicy, RaySetup, numberRays, numberJobs, jobP, raysAP, hitP, randP);
 
@@ -257,18 +258,18 @@ void RayEngine::Process(GPUBuffer<Scene>& scene, double target) {
 				//grab the current block sizes for collecting hits based on numActive
 				const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-				raysAP = deviceRaysA.device_data();
-				auto dataP = scene[0].bvhData.device_data();
-				auto vertP = scene[0].vertices.device_data();
-				auto faceP = scene[0].faces.device_data();
-				auto counterP = counter.device_data();
+				raysAP = deviceRaysA.DeviceData();
+				auto dataP = scene[0].bvhData.DeviceData();
+				auto vertP = scene[0].vertices.DeviceData();
+				auto faceP = scene[0].faces.DeviceData();
+				auto counterP = counter.DeviceData();
 
 				//main engine, collects hits
 				device.Launch(persistantPolicy, ExecuteJobs, numActive, raysAP, dataP, vertP, faceP, counterP);
 
-				auto raysBP = deviceRaysB.device_data();
-				auto skyP = scene[0].sky.device_data();
-				auto matP = scene[0].materials.device_data();
+				auto raysBP = deviceRaysB.DeviceData();
+				auto skyP = scene[0].sky.DeviceData();
+				auto matP = scene[0].materials.DeviceData();
 
 				//processes hits 
 				device.Launch(activePolicy, ProcessHits, numActive, jobP, numberJobs, raysAP, raysBP, skyP, faceP, vertP, matP, hitP, randP);
@@ -341,15 +342,15 @@ bool RayEngine::RemoveJob(uint job) {
 /* Initializes this object. */
 void RayEngine::Initialize() {
 
-	deviceRaysA.TransferDevice(GPUManager::GetBestGPU());
-	deviceRaysB.TransferDevice(GPUManager::GetBestGPU());
+	deviceRaysA.Move(GPUManager::GetBestGPU());
+	deviceRaysB.Move(GPUManager::GetBestGPU());
 
-	randomState.TransferDevice(GPUManager::GetBestGPU());
+	randomState.Move(GPUManager::GetBestGPU());
 
-	counter.TransferDevice(GPUManager::GetBestGPU());
-	hitAtomic.TransferDevice(GPUManager::GetBestGPU());
+	counter.Move(GPUManager::GetBestGPU());
+	hitAtomic.Move(GPUManager::GetBestGPU());
 
-	jobList.TransferDevice(GPUManager::GetBestGPU());
+	jobList.Move(GPUManager::GetBestGPU());
 
 	counter.resize(1);
 	hitAtomic.resize(1);

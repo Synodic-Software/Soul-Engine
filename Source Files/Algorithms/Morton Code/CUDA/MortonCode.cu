@@ -23,7 +23,7 @@ __inline__ __host__ __device__ uint Unsplit64_3D(const uint64 m) {
 	x = (x ^ (x >> 8)) & 0x1f0000ff0000ff;
 	x = (x ^ (x >> 16)) & 0x1f00000000ffff;
 	x = (x ^ (x >> 32)) & 0x1fffff;
-	return x;
+	return static_cast<uint>(x);
 }
 
 __inline__ __host__ __device__ uint64 Split64_2D(unsigned int a) {
@@ -44,7 +44,7 @@ __inline__ __host__ __device__ uint Unsplit64_2D(const uint64 m) {
 	x = (x ^ (x >> 4)) & 0x00FF00FF00FF00FF;
 	x = (x ^ (x >> 8)) & 0x0000FFFF0000FFFF;
 	x = (x ^ (x >> 16)) & 0x00000000FFFFFFFF;
-	return x;
+	return static_cast<uint>(x);
 }
 
 __host__ __device__ uint64 MortonCode::Calculate64_3D(const glm::vec3& data) {

@@ -7,11 +7,11 @@ class GPUExecutePolicy {
 public:
 
 	GPUExecutePolicy();
-	GPUExecutePolicy(glm::vec3, glm::vec3, int, int);
+	GPUExecutePolicy(glm::uvec3, glm::uvec3, int, int);
 	~GPUExecutePolicy();
 
-	glm::vec3 gridsize;
-	glm::vec3 blocksize;
+	glm::uvec3 gridsize;
+	glm::uvec3 blocksize;
 	int sharedMemory;
 	int stream;
 

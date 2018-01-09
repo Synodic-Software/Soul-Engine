@@ -54,7 +54,7 @@ namespace RayEngine {
 	 *    @param	parameter2	The second parameter.
 	 */
 
-	void Process(GPUBuffer<Scene>&, double);
+	void Process(std::vector<Scene>&, double);
 
 	void Update();
 

@@ -48,6 +48,13 @@ public:
 	/* Destructor. */
 	virtual ~GPUBufferBase() {
 		delete[] hostData;
+		hostData = nullptr;
+	}
+
+	void clear() noexcept {
+		for (auto i = 0; i < host_size; ++i)
+			hostData[i].~T();
+		host_size = 0;
 	}
 
 	/*
@@ -134,11 +141,11 @@ public:
 		return hostData;
 	}
 
-	T * device_data() noexcept {
+	T * DeviceData() noexcept {
 		return deviceData;
 	}
 
-	const T * device_data() const noexcept {
+	const T * DeviceData() const noexcept {
 		return deviceData;
 	}
 

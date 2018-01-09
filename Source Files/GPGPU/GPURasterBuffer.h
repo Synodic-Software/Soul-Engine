@@ -98,12 +98,12 @@ public:
 		return buffer->data();
 	}
 
-	T * device_data() noexcept {
-		return buffer->device_data();
+	T * DeviceData() noexcept {
+		return buffer->DeviceData();
 	}
 
-	const T * device_data() const noexcept {
-		return buffer->device_data();
+	const T * DeviceData() const noexcept {
+		return buffer->DeviceData();
 	}
 
 	/*

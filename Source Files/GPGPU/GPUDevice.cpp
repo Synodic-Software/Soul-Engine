@@ -11,12 +11,6 @@ GPUDevice::GPUDevice(GPUDeviceBase* _device){
 	device = _device;
 }
 
-/* Destructor. */
-GPUDevice::~GPUDevice() {
-
-
-}
-
 int GPUDevice::GetCoreCount() {
 	return 0;
 }
