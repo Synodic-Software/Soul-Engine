@@ -4,7 +4,7 @@ GPUExecutePolicy::GPUExecutePolicy() {
 	
 }
 
-GPUExecutePolicy::GPUExecutePolicy(glm::vec3 grid, glm::vec3 block, int shared, int str) :
+GPUExecutePolicy::GPUExecutePolicy(glm::uvec3 grid, glm::uvec3 block, int shared, int str) :
 	gridsize(grid), blocksize(block), sharedMemory(shared), stream(str) {
 
 }

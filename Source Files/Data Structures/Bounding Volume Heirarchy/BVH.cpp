@@ -4,7 +4,7 @@
 
 BVH::BVH() {
 
-	bvh.TransferDevice(GPUManager::GetBestGPU());
+	bvh.Move(GPUManager::GetBestGPU());
 
 }
 
@@ -23,7 +23,7 @@ void BVH::Build(int size, GPUBuffer<BVHData>& data, GPUBuffer<uint64>& mortonCod
 		}
 
 		data[0].currentSize = size;
-		data[0].bvh = bvh.device_data();
+		data[0].bvh = bvh.DeviceData();
 		data.TransferToDevice();
 
 		GPUDevice device = GPUManager::GetBestGPU();
@@ -31,12 +31,12 @@ void BVH::Build(int size, GPUBuffer<BVHData>& data, GPUBuffer<uint64>& mortonCod
 		const uint blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-		auto bvhP = bvh.device_data();
-		auto faceP = faces.device_data();
-		auto vertP = vertices.device_data();
-		auto mortP = mortonCodes.device_data();
+		auto bvhP = bvh.DeviceData();
+		auto faceP = faces.DeviceData();
+		auto vertP = vertices.DeviceData();
+		auto mortP = mortonCodes.DeviceData();
 		auto leafSize = size - 1;
-		auto dataP = data.device_data();
+		auto dataP = data.DeviceData();
 
 		device.Launch(normalPolicy, Reset, size, bvhP, faceP, vertP, mortP, leafSize);
 		device.Launch(normalPolicy, BuildTree, size, dataP, bvhP, mortP, leafSize);

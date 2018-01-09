@@ -20,7 +20,7 @@ public:
 	GPUDevice(GPUDeviceBase*);
 
 	/* Destructor. */
-	virtual ~GPUDevice();
+	virtual ~GPUDevice() = default;
 
 	template <typename KernelFunction, typename... Args>
 	void Launch(const GPUExecutePolicy& policy,

@@ -1,5 +1,4 @@
 #pragma once
-#include <cuda.h>  
 
 #include "Engine Core\Object\Object.h"
 #include "Engine Core\Object\MiniObject.h"
@@ -12,8 +11,8 @@
 class Scene
 {
 public:
-	Scene();
 
+	Scene();
 	~Scene() = default;
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
