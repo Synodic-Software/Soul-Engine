@@ -6,7 +6,7 @@
 #include "Engine Core\Material\Material.h"
 #include "Data Structures\Bounding Volume Heirarchy\BVH.h"
 
-#include "GPGPU/GPUBuffer.h"
+#include "GPGPU/ComputeBuffer.h"
 
 class Scene
 {
@@ -27,16 +27,16 @@ public:
 	void RemoveObject(Object&);
 
 	//the bvh data for the scene
-	GPUBuffer<BVHData> bvhData;
+	ComputeBuffer<BVHData> bvhData;
 
 	//the sky data for the scene
-	GPUBuffer<Sky> sky;
+	ComputeBuffer<Sky> sky;
 
-	GPUBuffer<Face> faces;
-	GPUBuffer<Vertex> vertices;
-	GPUBuffer<Tet> tets;
-	GPUBuffer<Material> materials;
-	GPUBuffer<MiniObject> objects;
+	ComputeBuffer<Face> faces;
+	ComputeBuffer<Vertex> vertices;
+	ComputeBuffer<Tet> tets;
+	ComputeBuffer<Material> materials;
+	ComputeBuffer<MiniObject> objects;
 
 private:
 
@@ -46,8 +46,8 @@ private:
 	//scene bounding box
 	BoundingBox sceneBox;
 
-	GPUBuffer<BVH> bvh;
-	GPUBuffer<uint64> mortonCodes; //codes for all the faces
+	ComputeBuffer<BVH> bvh;
+	ComputeBuffer<uint64> mortonCodes; //codes for all the faces
 
 };
 

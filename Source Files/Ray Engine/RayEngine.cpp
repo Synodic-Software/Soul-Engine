@@ -7,7 +7,7 @@
 #include "GPGPU/GPUManager.h"
 
 /* List of jobs */
-static GPUBuffer<RayJob> jobList;
+static ComputeBuffer<RayJob> jobList;
 
 /* The render derivatives */
 static std::deque<double> renderDerivatives;
@@ -21,18 +21,18 @@ static uint frameHold = 5;
 /* timer. */
 static Timer renderTimer;
 
-static GPUBuffer<Ray> deviceRaysA;
-static GPUBuffer<Ray> deviceRaysB;
+static ComputeBuffer<Ray> deviceRaysA;
+static ComputeBuffer<Ray> deviceRaysB;
 
-static GPUBuffer<curandState> randomState;
+static ComputeBuffer<curandState> randomState;
 
 static uint raySeedGl = 0;
 
 static const uint rayDepth = 4;
 
 //stored counters
-static GPUBuffer<int> counter;
-static GPUBuffer<int> hitAtomic;
+static ComputeBuffer<int> counter;
+static ComputeBuffer<int> hitAtomic;
 
 static GPUExecutePolicy persistantPolicy;
 
@@ -52,7 +52,7 @@ __host__ __device__ __inline__ uint WangHash(uint a) {
  *    @param [in,out]	jobs	  	[in,out] If non-null, the jobs.
  */
 
-void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
+void UpdateJobs(double renderTime, double targetTime, ComputeBuffer<RayJob>& jobs) {
 
 	//if it the first frame, pass the target as the '0th' frame
 	if (renderDerivatives.size() == 0) {
@@ -134,7 +134,7 @@ void UpdateJobs(double renderTime, double targetTime, GPUBuffer<RayJob>& jobs) {
 
 			//float tempSamples = job->samples * change;
 
-			//GPUBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
+			//ComputeBuffer<Camera>* cameraBuffer = CameraManager::GetCameraBuffer();
 
 			//Camera& camera = (*cameraBuffer)[job->camera];
 

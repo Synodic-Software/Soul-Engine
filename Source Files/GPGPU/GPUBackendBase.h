@@ -1,17 +1,17 @@
 #pragma once
 
 #include "GPUDevice.h"
-#include "GPUBuffer.h"
+#include "ComputeBuffer.h"
 
 class GPUBackendBase {
 public:
 	template<typename T>
-	void TransferToDevice(GPUDevice& device, GPUBuffer<T> buffer) {
+	void TransferToDevice(GPUDevice& device, ComputeBuffer<T> buffer) {
 
 	}
 
 	template<typename T>
-	void TransferToHost(GPUDevice& device, GPUBuffer<T> buffer) {
+	void TransferToHost(GPUDevice& device, ComputeBuffer<T> buffer) {
 
 	}
 protected:

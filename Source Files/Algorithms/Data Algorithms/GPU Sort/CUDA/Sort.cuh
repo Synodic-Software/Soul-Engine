@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPGPU/GPUBuffer.h"
+#include "GPGPU/ComputeBuffer.h"
 #include "Engine Core/Object/Face.h"
 
 namespace Sort {
@@ -13,5 +13,5 @@ namespace Sort {
 	 *    @return	Null if it fails, else a pointer to a P.
 	 */
 
-	void Sort(GPUBuffer<uint64_t>& keys, GPUBuffer<Face>& values);
+	void Sort(ComputeBuffer<uint64_t>& keys, ComputeBuffer<Face>& values);
 }

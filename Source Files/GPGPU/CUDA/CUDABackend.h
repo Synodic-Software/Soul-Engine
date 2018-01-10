@@ -22,12 +22,12 @@ public:
 	void Terminate();
 
 	template<typename T>
-	void TransferToDevice(GPUDevice& device, GPUBuffer<T> buffer) {
+	void TransferToDevice(GPUDevice& device, ComputeBuffer<T> buffer) {
 
 	}
 
 	template<typename T>
-	void TransferToHost(GPUDevice& device, GPUBuffer<T> buffer) {
+	void TransferToHost(GPUDevice& device, ComputeBuffer<T> buffer) {
 
 	}
 

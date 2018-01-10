@@ -4,7 +4,7 @@
 #include "Events\EventManager.h"
 #include "Raster Engine/RasterBackend.h"
 #include "Input/InputManager.h"
-#include "GPGPU/GPUBuffer.h"
+#include "GPGPU/ComputeBuffer.h"
 
 /*
  *    Constructor.

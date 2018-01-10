@@ -3,7 +3,7 @@
 #include "Display\Widget\Widget.h"
 #include "Metrics.h"
 #include "GPGPU\GPURasterBuffer.h"
-#include "GPGPU\GPUBuffer.h"
+#include "GPGPU\ComputeBuffer.h"
 #include "Ray Engine/RayEngine.h"
 #include "Photography/Camera/Camera.h"
 
@@ -40,9 +40,9 @@ private:
 	/* The buffer */
 	GPURasterBuffer<glm::vec4> buffer;
 	/* The accumulator */
-	GPUBuffer<glm::vec4> accumulator;
+	ComputeBuffer<glm::vec4> accumulator;
 	/* Information describing the extra */
-	GPUBuffer<int> extraData;
+	ComputeBuffer<int> extraData;
 
 	/* The samples */
 	float samples;

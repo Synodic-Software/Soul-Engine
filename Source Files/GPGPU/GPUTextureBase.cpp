@@ -1,2 +1,2 @@
-#include "GPUBufferBase.h"
+#include "GPUTextureBase.h"
 //templated class. Unused

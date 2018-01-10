@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPGPU/GPUBuffer.h"
+#include "GPGPU/ComputeBuffer.h"
 #include "Node.h"
 #include "Engine Core/Object/Face.h"
 #include "Engine Core/Object/Vertex.h"
@@ -12,9 +12,9 @@ public:
 	BVH();
 	~BVH();
 
-	void Build(int, GPUBuffer<BVHData>&, GPUBuffer<uint64>&, GPUBuffer<Face>&, GPUBuffer<Vertex>&);
+	void Build(int, ComputeBuffer<BVHData>&, ComputeBuffer<uint64>&, ComputeBuffer<Face>&, ComputeBuffer<Vertex>&);
 
 private:
-	GPUBuffer<Node> bvh;
+	ComputeBuffer<Node> bvh;
 
 };

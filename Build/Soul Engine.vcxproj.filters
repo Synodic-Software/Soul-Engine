@@ -453,9 +453,6 @@
     <ClInclude Include="..\Source Files\Raster Engine\Vulkan\VulkanBuffer.h">
       <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\GPGPU\GPUBuffer.h">
-      <Filter>Engine Backend\GPGPU</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.h">
       <Filter>Engine Backend\GPGPU\OpenCL</Filter>
     </ClInclude>
@@ -552,9 +549,6 @@
     <ClInclude Include="..\Source Files\GPGPU\GPUBackendBase.h">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\GPGPU\GPUBufferBase.h">
-      <Filter>Engine Backend\GPGPU</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\GPGPU\GPURasterBufferBase.h">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClInclude>
@@ -635,6 +629,12 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.h">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\DeviceBuffer.h">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\GPGPU\ComputeBuffer.h">
+      <Filter>Engine Backend\GPGPU</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -725,9 +725,6 @@
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanBuffer.cpp">
       <Filter>Engine Backend\Raster Engine\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\GPGPU\GPUBuffer.cpp">
-      <Filter>Engine Backend\GPGPU</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\OpenCL\OpenCLBuffer.cpp">
       <Filter>Engine Backend\GPGPU\OpenCL</Filter>
     </ClCompile>
@@ -780,9 +777,6 @@
       <Filter>Engine Backend\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\GPUBackendBase.cpp">
-      <Filter>Engine Backend\GPGPU</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\GPGPU\GPUBufferBase.cpp">
       <Filter>Engine Backend\GPGPU</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\GPGPU\GPURasterBufferBase.cpp">
@@ -841,6 +835,12 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\DeviceBuffer.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\GPGPU\ComputeBuffer.cpp">
+      <Filter>Engine Backend\GPGPU</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

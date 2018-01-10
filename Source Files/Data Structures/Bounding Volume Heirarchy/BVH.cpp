@@ -12,7 +12,7 @@ BVH::~BVH() {
 
 }
 
-void BVH::Build(int size, GPUBuffer<BVHData>& data, GPUBuffer<uint64>& mortonCodes, GPUBuffer<Face>& faces, GPUBuffer<Vertex>& vertices) {
+void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& mortonCodes, ComputeBuffer<Face>& faces, ComputeBuffer<Vertex>& vertices) {
 
 	if (size > 0) {
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "GPGPU\GPUBufferBase.h"
+#include "GPGPU\DeviceBuffer.h"
 
 #include "Metrics.h"
 #include "GPGPU\CUDA\CUDADevice.cuh"
@@ -7,20 +7,20 @@
 
 /* Buffer for cuda. */
 template<class T>
-class CUDABuffer :public GPUBufferBase<T> {
+class CUDABuffer :public DeviceBuffer<T> {
 
 public:
 
 	CUDABuffer(const GPUDevice& _device, uint _size)
-		: GPUBufferBase(_device, _size) {
+		: DeviceBuffer(_device, _size) {
 
 		device_size = _size;
 		device_capacity = _size;
 		CudaCheck(cudaMalloc((void**)&deviceData, device_size * sizeof(T)));
 	}
 
-	CUDABuffer(const GPUDevice& _device, GPUBufferBase<T>& other)
-		: GPUBufferBase(_device, other) {
+	CUDABuffer(const GPUDevice& _device, DeviceBuffer<T>& other)
+		: DeviceBuffer(_device, other) {
 
 		device_size = other.DeviceSize();
 		device_capacity = other.DeviceCapacity();
@@ -41,7 +41,7 @@ public:
 
 		//perform size checks
 		if (device_size > host_size) {
-			GPUBufferBase<T>::resize(device_size);
+			DeviceBuffer<T>::resize(device_size);
 		}
 
 		CudaCheck(cudaMemcpy(hostData, deviceData, device_size * sizeof(T), cudaMemcpyDeviceToHost));
@@ -59,7 +59,7 @@ public:
 
 	void reserve(uint newCapacity) override {
 
-		GPUBufferBase<T>::reserve(newCapacity);
+		DeviceBuffer<T>::reserve(newCapacity);
 
 		if (newCapacity > device_capacity) {
 			//allocate the new size
@@ -85,7 +85,7 @@ public:
 	void resize(uint newSize) override {
 
 		//first resize the host
-		GPUBufferBase<T>::resize(newSize);
+		DeviceBuffer<T>::resize(newSize);
 
 		reserve(newSize);
 		device_size = newSize;  //change host size.
@@ -93,8 +93,8 @@ public:
 	}
 
 
-	GPUBufferBase<T>& operator=(GPUBufferBase<T>& rhs) override {
-		return GPUBufferBase<T>::operator=(rhs);
+	DeviceBuffer<T>& operator=(DeviceBuffer<T>& rhs) override {
+		return DeviceBuffer<T>::operator=(rhs);
 	}
 
 protected:
