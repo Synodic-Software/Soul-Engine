@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "GPGPU/GPUDevice.h"
-#include "GPGPU/GPUTextureBase.h"
+#include "Compute/GPUDevice.h"
+#include "Compute/GPUTextureBase.h"
 
-#include "GPGPU/CUDA/CUDATexture.h"
-#include "GPGPU/OpenCL/OpenCLTexture.h"
+#include "Compute/CUDA/CUDATexture.h"
+#include "Compute/OpenCL/OpenCLTexture.h"
 
 /*
  *    Buffer for gpu/cpu communication and storage.

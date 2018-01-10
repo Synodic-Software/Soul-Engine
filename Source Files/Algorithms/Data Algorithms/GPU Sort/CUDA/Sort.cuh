@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPGPU/ComputeBuffer.h"
+#include "Compute/ComputeBuffer.h"
 #include "Engine Core/Object/Face.h"
 
 namespace Sort {

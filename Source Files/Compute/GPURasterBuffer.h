@@ -1,10 +1,10 @@
 #pragma once
 
 #include "ComputeBuffer.h"
-#include "GPGPU\GPUDevice.h"
+#include "Compute\GPUDevice.h"
 
-#include "GPGPU\CUDA\CUDARasterBuffer.h"
-#include "GPGPU\OpenCL\OpenCLRasterBuffer.h"
+#include "Compute\CUDA\CUDARasterBuffer.h"
+#include "Compute\OpenCL\OpenCLRasterBuffer.h"
 
 /* Buffer for GPU raster. */
 template <class T>
@@ -98,12 +98,12 @@ public:
 		return buffer->data();
 	}
 
-	T * DeviceData() noexcept {
-		return buffer->DeviceData();
+	T * DataDevice() noexcept {
+		return buffer->DataDevice();
 	}
 
-	const T * DeviceData() const noexcept {
-		return buffer->DeviceData();
+	const T * DataDevice() const noexcept {
+		return buffer->DataDevice();
 	}
 
 	/*

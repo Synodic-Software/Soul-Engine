@@ -4,7 +4,7 @@
 #include "Metrics.h"
 
 #include <curand_kernel.h>
-#include "GPGPU/GPUTexture.h"
+#include "Compute/GPUTexture.h"
 
 class Film {
 public:

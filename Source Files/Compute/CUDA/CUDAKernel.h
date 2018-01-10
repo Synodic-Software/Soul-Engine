@@ -1,8 +1,8 @@
 #pragma once
-#include "GPGPU\GPUKernel.h"
+#include "Compute\GPUKernel.h"
 
 #include "Metrics.h"
-#include "GPGPU\CUDA\CUDADevice.cuh"
+#include "Compute\CUDA\CUDADevice.cuh"
 #include "Utility/CUDA/CudaHelper.cuh"
 
 /* Buffer for cuda. */

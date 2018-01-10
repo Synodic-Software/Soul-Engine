@@ -6,7 +6,7 @@
 #include "Engine Core\Material\Material.h"
 #include "Data Structures\Bounding Volume Heirarchy\BVH.h"
 
-#include "GPGPU/ComputeBuffer.h"
+#include "Compute/ComputeBuffer.h"
 
 class Scene
 {

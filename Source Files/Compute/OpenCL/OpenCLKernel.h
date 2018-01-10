@@ -1,6 +1,6 @@
 #pragma once
 #include "Metrics.h"
-#include "GPGPU\GPUKernel.h"
+#include "Compute\GPUKernel.h"
 
 template<class T>
 class OpenCLKernel :public GPUKernel<T> {

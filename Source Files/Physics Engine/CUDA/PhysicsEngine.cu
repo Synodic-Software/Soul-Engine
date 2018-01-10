@@ -1,6 +1,6 @@
 #include "PhysicsEngine.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "GPGPU/GPUManager.h"
+#include "Compute/GPUManager.h"
 
 typedef struct {
 

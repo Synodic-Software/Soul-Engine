@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "GPGPU/GPUDevice.h"
+#include "Compute/GPUDevice.h"
 
 #include "DeviceBuffer.h"
 /*

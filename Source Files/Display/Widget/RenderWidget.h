@@ -2,8 +2,8 @@
 
 #include "Display\Widget\Widget.h"
 #include "Metrics.h"
-#include "GPGPU\GPURasterBuffer.h"
-#include "GPGPU\ComputeBuffer.h"
+#include "Compute\GPURasterBuffer.h"
+#include "Compute\ComputeBuffer.h"
 #include "Ray Engine/RayEngine.h"
 #include "Photography/Camera/Camera.h"
 

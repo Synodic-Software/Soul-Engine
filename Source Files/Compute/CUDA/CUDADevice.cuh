@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GPGPU/GPUExecutePolicy.h"
-#include "GPGPU/GPUDeviceBase.h"
+#include "Compute/GPUExecutePolicy.h"
+#include "Compute/GPUDeviceBase.h"
 #include <cuda_runtime.h>
 #include "Utility/CUDA/CUDAHelper.cuh"
 

@@ -8,7 +8,7 @@
 
 #include "Algorithms\Morton Code\MortonCode.h"
 
-#include "GPGPU/GPUManager.h"
+#include "Compute/GPUManager.h"
 #include "Algorithms/Data Algorithms/GPU Sort/Sort.h"
 
 Scene::Scene()
@@ -23,9 +23,9 @@ Scene::Scene()
 	bvh.Move(GPUManager::GetBestGPU());
 	mortonCodes.Move(GPUManager::GetBestGPU());
 
-	bvh.resize(1);
-	bvhData.resize(1);
-	sky.push_back({ "Starmap.png" });
+	bvh.Resize(1);
+	bvhData.Resize(1);
+	sky.PushBack({ "Starmap.png" });
 
 	bvh.TransferToDevice();
 	bvhData.TransferToDevice();
@@ -36,7 +36,7 @@ __host__ void Scene::Build(float deltaTime) {
 
 	Compile();
 
-	auto size = faces.HostSize();
+	auto size = faces.SizeHost();
 	if (size > 0) {
 
 		GPUDevice device = GPUManager::GetBestGPU();
@@ -44,9 +44,9 @@ __host__ void Scene::Build(float deltaTime) {
 		const auto blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-		auto mortP = mortonCodes.DeviceData();
-		auto faceP = faces.DeviceData();
-		auto vertP = vertices.DeviceData();
+		auto mortP = mortonCodes.DataDevice();
+		auto faceP = faces.DataDevice();
+		auto vertP = vertices.DataDevice();
 
 		device.Launch(normalPolicy, MortonCode::ComputeGPUFace64, size, mortP, faceP, vertP);
 
@@ -73,11 +73,11 @@ void Scene::Compile() {
 //object pointer is host
 void Scene::AddObject(Object& obj) {
 
-	auto faceAmount = faces.HostSize();
-	auto vertexAmount = vertices.HostSize();
-	auto tetAmount = tets.HostSize();
-	auto materialAmount = materials.HostSize();
-	auto objectAmount = objects.HostSize();
+	auto faceAmount = faces.SizeHost();
+	auto vertexAmount = vertices.SizeHost();
+	auto tetAmount = tets.SizeHost();
+	auto materialAmount = materials.SizeHost();
+	auto objectAmount = objects.SizeHost();
 
 	const auto faceOffset = faceAmount;
 	const auto vertexOffset = vertexAmount;
@@ -92,12 +92,12 @@ void Scene::AddObject(Object& obj) {
 	++objectAmount;
 
 	//resizing	
-	vertices.resize(vertexAmount);
-	faces.resize(faceAmount);
-	mortonCodes.resize(faceAmount);
-	tets.resize(tetAmount);
-	materials.resize(materialAmount);
-	objects.resize(objectAmount);
+	vertices.Resize(vertexAmount);
+	faces.Resize(faceAmount);
+	mortonCodes.Resize(faceAmount);
+	tets.Resize(tetAmount);
+	materials.Resize(materialAmount);
+	objects.Resize(objectAmount);
 
 
 	//update the scene's bounding volume
