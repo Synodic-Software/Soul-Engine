@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPUBuffer.h"
+#include "ComputeBuffer.h"
 #include "GPGPU\GPUDevice.h"
 
 #include "GPGPU\CUDA\CUDARasterBuffer.h"

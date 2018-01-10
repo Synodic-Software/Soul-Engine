@@ -9,7 +9,7 @@ typedef struct {
 
 }Collision;
 
-static GPUBuffer<Collision> collisions;
+static ComputeBuffer<Collision> collisions;
 
 __device__ bool testAABBAABB(const BoundingBox& a, const BoundingBox& b)
 {
@@ -94,7 +94,7 @@ __global__ void BroadPhase(uint n, BVHData* bvh, Collision* collisions, int* siz
 
 }
 
-__host__ void ProcessScene(GPUBuffer<BVHData>& bvh){
+__host__ void ProcessScene(ComputeBuffer<BVHData>& bvh){
 
 	collisions.Move(GPUManager::GetBestGPU());
 

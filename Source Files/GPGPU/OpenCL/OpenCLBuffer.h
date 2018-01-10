@@ -1,12 +1,12 @@
 #pragma once
-#include "GPGPU\GPUBufferBase.h"
+#include "GPGPU\DeviceBuffer.h"
 
 #include "Metrics.h"
 #include "GPGPU\GPUDevice.h"
 
 /* Buffer for open cl. */
 template<class T>
-class OpenCLBuffer :public GPUBufferBase<T> {
+class OpenCLBuffer :public DeviceBuffer<T> {
 
 public:
 
@@ -17,12 +17,12 @@ public:
 	 */
 
 	OpenCLBuffer(const GPUDevice& _device, uint _byteCount)
-		: GPUBufferBase(_device, _byteCount) {
+		: DeviceBuffer(_device, _byteCount) {
 
 	}
 
-	OpenCLBuffer(const GPUDevice& _device, GPUBufferBase<T>& other)
-		: GPUBufferBase(_device, other) {
+	OpenCLBuffer(const GPUDevice& _device, DeviceBuffer<T>& other)
+		: DeviceBuffer(_device, other) {
 
 
 	}

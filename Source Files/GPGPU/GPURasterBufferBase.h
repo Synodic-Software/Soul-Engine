@@ -4,14 +4,14 @@
 
 #include "GPGPU/GPUDevice.h"
 
-#include "GPUBufferBase.h"
+#include "DeviceBuffer.h"
 /*
 *    Buffer for gpu/cpu communication and storage.
 *    @tparam	T	Generic type parameter.
 */
 
 template <class T>
-class GPURasterBufferBase : public GPUBufferBase<T> {
+class GPURasterBufferBase : public DeviceBuffer<T> {
 
 public:
 
@@ -22,7 +22,7 @@ public:
 	*/
 
 	GPURasterBufferBase(const GPUDevice& deviceIn, uint _size = 0)
-		:GPUBufferBase(deviceIn, _size) {
+		:DeviceBuffer(deviceIn, _size) {
 		
 	}
 

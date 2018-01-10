@@ -11,6 +11,6 @@ namespace PhysicsEngine {
 	 *    @param	parameter1	The first parameter.
 	 */
 
-	void Process(GPUBuffer<BVHData>&);
+	void Process(ComputeBuffer<BVHData>&);
 
 }

@@ -13,17 +13,17 @@
 
 
 template <class T>
-class GPUBufferBase {
+class DeviceBuffer {
 
 public:
 
-	/*
-	*    Constructor.
-	*    @param [in,out]	deviceIn		The device in.
-	*    @param 		 	_objectCount	(Optional) Number of objects.
-	*/
+	//Types
 
-	GPUBufferBase(const GPUDevice& deviceIn, uint _size = 0){
+	typedef std::unique_ptr<DeviceBuffer<T>>      device_pointer;
+	typedef T                                     value_type;
+	typedef uint		                          size_type;
+
+	DeviceBuffer(const GPUDevice& deviceIn, uint _size = 0){
 
 		host_capacity = _size;
 		hostData = new T[host_capacity];
@@ -34,7 +34,7 @@ public:
 
 	}
 
-	GPUBufferBase(const GPUDevice& deviceIn, GPUBufferBase<T>& other) {
+	DeviceBuffer(const GPUDevice& deviceIn, DeviceBuffer<T>& other) {
 
 		host_capacity = other.host_capacity;
 		hostData = new T[host_capacity];
@@ -46,7 +46,7 @@ public:
 	}
 
 	/* Destructor. */
-	virtual ~GPUBufferBase() {
+	virtual ~DeviceBuffer() {
 		delete[] hostData;
 		hostData = nullptr;
 	}
@@ -187,16 +187,8 @@ public:
 
 protected:
 
-	T* hostData;	// Information describing the host
-	T* deviceData;  // Information describing the device
-
-	uint host_size = 0;   // Number of objects
-	uint host_capacity = 1;	// The capacity
 	uint device_size = 0;   // Number of objects
 	uint device_capacity = 0;	// The capacity
-	uint flags; // The flags
-
-				//operator overloads
 
 private: 
 
@@ -209,8 +201,8 @@ private:
 
 public:
 
-	typedef GPUBufferBase<T> * iterator;
-	typedef const GPUBufferBase<T> * const_iterator;
+	typedef DeviceBuffer<T> * iterator;
+	typedef const DeviceBuffer<T> * const_iterator;
 
 
 	/*
@@ -233,14 +225,14 @@ public:
 		return hostData[i];
 	}
 
-	virtual GPUBufferBase& operator=(GPUBufferBase& rhs) {
+	virtual DeviceBuffer& operator=(DeviceBuffer& rhs) {
 
 		swap(rhs);
 		return *this;
 
 	}
 
-	void swap(GPUBufferBase& s) throw() // Also see non-throwing swap idiom
+	void swap(DeviceBuffer& s) noexcept // Also see non-throwing swap idiom
 	{
 
 		this->host_size = host_size;

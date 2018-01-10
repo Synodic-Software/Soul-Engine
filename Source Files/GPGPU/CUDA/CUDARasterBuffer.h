@@ -117,7 +117,7 @@ public:
 
 	void resize(uint newSize) override {
 
-		GPUBufferBase<T>::resize(newSize);
+		DeviceBuffer<T>::resize(newSize);
 
 		if (newSize > 0) {
 

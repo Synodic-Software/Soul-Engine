@@ -34,7 +34,7 @@ namespace GPUManager {
 	 */
 
 	template <typename T>
-	void TransferToDevice(GPUDevice& device, std::vector<GPUBuffer<T>> buffer) {
+	void TransferToDevice(GPUDevice& device, std::vector<ComputeBuffer<T>> buffer) {
 		//TODO implement for each backend
 
 		if (device.GetAPI() == CUDA) {
@@ -52,7 +52,7 @@ namespace GPUManager {
 	 */
 
 	template <typename T>
-	void TransferToHost(GPUDevice& device, std::vector<GPUBuffer<T>>) {
+	void TransferToHost(GPUDevice& device, std::vector<ComputeBuffer<T>>) {
 		//TODO implement
 	}
 
