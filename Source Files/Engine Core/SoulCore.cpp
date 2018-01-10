@@ -9,7 +9,7 @@
 #include "Engine Core/Frame/Frame.h"
 #include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
-#include "GPGPU\GPUManager.h"
+#include "Compute\GPUManager.h"
 #include "Display\Window\WindowManager.h"
 #include "Display\Layout\SingleLayout.h"
 #include "Display\Widget\RenderWidget.h"

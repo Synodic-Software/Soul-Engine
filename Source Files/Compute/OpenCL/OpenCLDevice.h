@@ -1,5 +1,5 @@
 #pragma once
-#include "GPGPU\GPUDevice.h"
+#include "Compute\GPUDevice.h"
 
 /* An open cl device. */
 class OpenCLDevice :public GPUDeviceBase {

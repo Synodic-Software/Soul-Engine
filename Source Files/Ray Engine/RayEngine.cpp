@@ -4,7 +4,7 @@
 #include "Utility/Timer.h"
 #include <deque>
 #include "Algorithms/Filters/Filter.h"
-#include "GPGPU/GPUManager.h"
+#include "Compute/GPUManager.h"
 
 /* List of jobs */
 static ComputeBuffer<RayJob> jobList;
@@ -99,7 +99,7 @@ void UpdateJobs(double renderTime, double targetTime, ComputeBuffer<RayJob>& job
 
 
 	//modify all the sample counts/ resolutions to reflect the change
-	for (int i = 0; i < jobList.HostSize(); i++) {
+	for (int i = 0; i < jobList.SizeHost(); i++) {
 
 		RayJob& job = jobList[i];
 		if (false) {
@@ -167,7 +167,7 @@ void RayEngine::Process(std::vector<Scene>& scene, double target) {
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();
 
-	auto numberJobs = jobList.HostSize();
+	auto numberJobs = jobList.SizeHost();
 
 	//only upload data if a job exists
 	if (numberJobs > 0) {
@@ -203,17 +203,17 @@ void RayEngine::Process(std::vector<Scene>& scene, double target) {
 			const uint blockSize = 64;
 			const GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize,1,1), glm::vec3(blockSize,1,1), 0, 0);
 
-			auto jobP = jobList.DeviceData();
+			auto jobP = jobList.DataDevice();
 			device.Launch(normalPolicy, EngineSetup, numberResults, jobP, numberJobs);
 
-			if (numberRays > deviceRaysA.DeviceSize()) {
+			if (numberRays > deviceRaysA.SizeDevice()) {
 
-				randomState.resize(numberRays);
-				deviceRaysA.resize(numberRays);
-				deviceRaysB.resize(numberRays);
+				randomState.Resize(numberRays);
+				deviceRaysA.Resize(numberRays);
+				deviceRaysB.Resize(numberRays);
 
 				auto rand = WangHash(++raySeedGl);
-				auto randP = randomState.DeviceData();
+				auto randP = randomState.DataDevice();
 				device.Launch(normalPolicy, RandomSetup, numberRays, randP, rand);
 
 			}
@@ -235,9 +235,9 @@ void RayEngine::Process(std::vector<Scene>& scene, double target) {
 			counter.TransferToDevice();
 			hitAtomic.TransferToDevice();
 
-			auto raysAP = deviceRaysA.DeviceData();
-			auto hitP = hitAtomic.DeviceData();
-			auto randP = randomState.DeviceData();
+			auto raysAP = deviceRaysA.DataDevice();
+			auto hitP = hitAtomic.DataDevice();
+			auto randP = randomState.DataDevice();
 
 			device.Launch(normalPolicy, RaySetup, numberRays, numberJobs, jobP, raysAP, hitP, randP);
 
@@ -258,18 +258,18 @@ void RayEngine::Process(std::vector<Scene>& scene, double target) {
 				//grab the current block sizes for collecting hits based on numActive
 				const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-				raysAP = deviceRaysA.DeviceData();
-				auto dataP = scene[0].bvhData.DeviceData();
-				auto vertP = scene[0].vertices.DeviceData();
-				auto faceP = scene[0].faces.DeviceData();
-				auto counterP = counter.DeviceData();
+				raysAP = deviceRaysA.DataDevice();
+				auto dataP = scene[0].bvhData.DataDevice();
+				auto vertP = scene[0].vertices.DataDevice();
+				auto faceP = scene[0].faces.DataDevice();
+				auto counterP = counter.DataDevice();
 
 				//main engine, collects hits
 				device.Launch(persistantPolicy, ExecuteJobs, numActive, raysAP, dataP, vertP, faceP, counterP);
 
-				auto raysBP = deviceRaysB.DeviceData();
-				auto skyP = scene[0].sky.DeviceData();
-				auto matP = scene[0].materials.DeviceData();
+				auto raysBP = deviceRaysB.DataDevice();
+				auto skyP = scene[0].sky.DataDevice();
+				auto matP = scene[0].materials.DataDevice();
 
 				//processes hits 
 				device.Launch(activePolicy, ProcessHits, numActive, jobP, numberJobs, raysAP, raysBP, skyP, faceP, vertP, matP, hitP, randP);
@@ -303,9 +303,9 @@ void RayEngine::Process(std::vector<Scene>& scene, double target) {
 uint RayEngine::AddJob(rayType whatToGet, bool canChange,
 	float samples) {
 
-	jobList.push_back(RayJob(whatToGet, canChange, samples));
+	jobList.PushBack(RayJob(whatToGet, canChange, samples));
 
-	return jobList[jobList.HostSize() - 1].id;
+	return jobList[jobList.SizeHost() - 1].id;
 }
 
 /*
@@ -316,7 +316,7 @@ uint RayEngine::AddJob(rayType whatToGet, bool canChange,
 
 RayJob& RayEngine::GetJob(uint jobIn) {
 
-	for (int i = 0; i < jobList.HostSize(); i++) {
+	for (int i = 0; i < jobList.SizeHost(); i++) {
 
 		RayJob& job = jobList[i];
 		if (job.id == jobIn) {
@@ -352,8 +352,8 @@ void RayEngine::Initialize() {
 
 	jobList.Move(GPUManager::GetBestGPU());
 
-	counter.resize(1);
-	hitAtomic.resize(1);
+	counter.Resize(1);
+	hitAtomic.Resize(1);
 	
 	persistantPolicy = GPUManager::GetBestGPU().BestExecutePolicy(ExecuteJobs);
 
@@ -367,7 +367,7 @@ void RayEngine::Initialize() {
 }
 
 void RayEngine::Update() {
-	for (int i = 0; i < jobList.HostSize(); i++) {
+	for (int i = 0; i < jobList.SizeHost(); i++) {
 
 		RayJob& job = jobList[i];
 		job.camera.UpdateVariables();

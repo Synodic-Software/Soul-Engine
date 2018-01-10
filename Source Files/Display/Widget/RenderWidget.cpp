@@ -1,10 +1,10 @@
 #include "RenderWidget.h"
-#include "GPGPU\GPUManager.h"
+#include "Compute\GPUManager.h"
 #include "CUDA\RenderWidget.cuh"
 #include "Events\EventManager.h"
 #include "Raster Engine/RasterBackend.h"
 #include "Input/InputManager.h"
-#include "GPGPU/ComputeBuffer.h"
+#include "Compute/ComputeBuffer.h"
 
 /*
  *    Constructor.
@@ -90,7 +90,7 @@ void RenderWidget::Draw() {
 	});
 
 	if (integrate) {
-		Integrate(renderSize.x*renderSize.y, buffer.DeviceData(), accumulator.DeviceData(), extraData.DeviceData(), iCounter);
+		Integrate(renderSize.x*renderSize.y, buffer.DataDevice(), accumulator.DataDevice(), extraData.DataDevice(), iCounter);
 		iCounter++;
 	}
 	else {
@@ -115,11 +115,11 @@ void RenderWidget::RecreateData() {
 	uint jobsize = size.x*size.y;
 
 	//create the new accumulation Buffer
-	accumulator.resize(jobsize);
+	accumulator.Resize(jobsize);
 
 	buffer.resize(jobsize);
 
-	extraData.resize(jobsize);
+	extraData.Resize(jobsize);
 
 
 	if (currentSize != size) {
@@ -136,6 +136,6 @@ void RenderWidget::RecreateData() {
 	job.camera.aspectRatio = renderSize.x / (float)renderSize.y;
 	job.camera.film.resolution = renderSize;
 	job.camera.film.resolutionMax = renderSize;
-	job.camera.film.results = buffer.DeviceData();
-	job.camera.film.hits = extraData.DeviceData();
+	job.camera.film.results = buffer.DataDevice();
+	job.camera.film.hits = extraData.DataDevice();
 }

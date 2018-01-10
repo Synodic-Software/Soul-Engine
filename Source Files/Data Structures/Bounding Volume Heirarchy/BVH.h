@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPGPU/ComputeBuffer.h"
+#include "Compute/ComputeBuffer.h"
 #include "Node.h"
 #include "Engine Core/Object/Face.h"
 #include "Engine Core/Object/Vertex.h"

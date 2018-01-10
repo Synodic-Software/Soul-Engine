@@ -1,6 +1,6 @@
 #pragma once
-#include "GPGPU\GPURasterBufferBase.h"
-#include "GPGPU\GPUDevice.h"
+#include "Compute\GPURasterBufferBase.h"
+#include "Compute\GPUDevice.h"
 
 #include "Metrics.h"
 

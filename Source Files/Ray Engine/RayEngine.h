@@ -2,7 +2,7 @@
 
 #include "Engine Core/Scene/Scene.h"
 #include "RayJob.h"
-#include "GPGPU/ComputeBuffer.h"
+#include "Compute/ComputeBuffer.h"
 
 //defined in winspool.h
 #undef AddJob

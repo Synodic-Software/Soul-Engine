@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPGPU/GPUDevice.h"
+#include "Compute/GPUDevice.h"
 #include "glm/glm.hpp"
 
 

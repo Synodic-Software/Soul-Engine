@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "GPGPU/GPUBackendBase.h"
+#include "Compute/GPUBackendBase.h"
 
 /* . */
 class CUDABackend : public GPUBackendBase {

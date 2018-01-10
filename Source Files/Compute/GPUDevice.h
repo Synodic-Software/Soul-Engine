@@ -5,7 +5,7 @@
 #include "CUDA/CUDADevice.cuh"
 #include "OpenCL/OpenCLDevice.h"
 
-#include "GPGPU/GPUExecutePolicy.h"
+#include "Compute/GPUExecutePolicy.h"
 
 /* A GPU device. */
 class GPUDevice {

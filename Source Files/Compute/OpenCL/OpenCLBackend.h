@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPGPU/GPUBackendBase.h"
+#include "Compute/GPUBackendBase.h"
 
 #include <vector>
 

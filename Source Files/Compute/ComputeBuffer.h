@@ -6,11 +6,11 @@
 */
 
 
-#include "GPGPU/GPUDevice.h"
-#include "GPGPU/DeviceBuffer.h"
+#include "Compute/GPUDevice.h"
+#include "Compute/DeviceBuffer.h"
 
-#include "GPGPU/CUDA/CUDABuffer.h"
-#include "GPGPU/OpenCL/OpenCLBuffer.h"
+#include "Compute/CUDA/CUDABuffer.h"
+#include "Compute/OpenCL/OpenCLBuffer.h"
 
 #include "Utility/Logger.h"
 
@@ -28,23 +28,24 @@ public:
 
 	//Types
 
-	typedef std::unique_ptr<DeviceBuffer<T>>      device_pointer;
-	typedef T                                     value_type;
-	typedef T&                                    reference;
-	typedef const T&                              const_reference;
-	typedef T*                                    pointer;
-	typedef const T*                              const_pointer;
-	typedef T*                                    iterator;
-	typedef const T*                              const_iterator;
-	typedef std::reverse_iterator<iterator>       reverse_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-	typedef ptrdiff_t                             difference_type;
-	typedef uint		                          size_type;
+	typedef std::unique_ptr<DeviceBuffer<T>>                device_pointer;
+	typedef typename std::vector<T>::value_type             value_type;
+	typedef typename std::vector<T>::reference              reference;
+	typedef typename std::vector<T>::const_reference        const_reference;
+	typedef typename std::vector<T>::pointer                pointer;
+	typedef typename std::vector<T>::const_pointer          const_pointer;
+	typedef typename std::vector<T>::iterator               iterator;
+	typedef typename std::vector<T>::const_iterator         const_iterator;
+	typedef typename std::vector<T>::reverse_iterator       reverse_iterator;
+	typedef typename std::vector<T>::const_reverse_iterator const_reverse_iterator;
+	typedef typename std::vector<T>::difference_type        difference_type;
+	typedef typename std::vector<T>::size_type		        size_type;
 
 	//Construction and Destruction 
 
 	ComputeBuffer();
-	explicit ComputeBuffer(const GPUDevice&, size_type);
+	ComputeBuffer(const GPUDevice&);
+	ComputeBuffer(const GPUDevice&, size_type);
 	ComputeBuffer(const GPUDevice&, size_type, const T&);
 	ComputeBuffer(const ComputeBuffer&);
 	ComputeBuffer(ComputeBuffer&&) noexcept;
@@ -91,8 +92,8 @@ public:
 	T* HostData() noexcept;
 	const T* HostData() const noexcept;
 
-	T* DeviceData();
-	const T* DeviceData() const;
+	T* DataDevice();
+	const T* DataDevice() const;
 
 
 	//Capacity
@@ -166,6 +167,20 @@ ComputeBuffer<T>::ComputeBuffer() :
 }
 
 template <class T>
+ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device) :
+	flags(0)
+{
+
+	if (device.GetAPI() == CUDA) {
+		deviceBuffer.reset(new CUDABuffer<T>(device));
+	}
+	else if (device.GetAPI() == OpenCL) {
+		deviceBuffer.reset(new OpenCLBuffer<T>(device));
+	}
+
+}
+
+template <class T>
 ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device, size_type n) :
 	hostBuffer(n),
 	flags(0)
@@ -179,6 +194,7 @@ ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device, size_type n) :
 	}
 
 }
+
 template <class T>
 ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device, size_type n, const T &val) :
 	hostBuffer(n, val),
@@ -218,10 +234,22 @@ ComputeBuffer<T>& ComputeBuffer<T>::operator= (ComputeBuffer<T>&& other) noexcep
 template <class T>
 ComputeBuffer<T>& ComputeBuffer<T>::operator= (const ComputeBuffer<T>& other)
 {
+
 	hostBuffer = other.hostBuffer;
-	deviceBuffer = other.deviceBuffer;
+	
+	if (other.deviceBuffer->GetAPI() == CUDA) {
+		CUDABuffer<T> temp = *static_cast<CUDABuffer<T>*>(other.deviceBuffer.get());
+		deviceBuffer.reset(new CUDABuffer<T>(temp));
+	}
+	else if (other.deviceBuffer->GetAPI() == OpenCL)
+	{
+		OpenCLBuffer<T> temp = *static_cast<OpenCLBuffer<T>*>(other.deviceBuffer.get());
+		deviceBuffer.reset(new OpenCLBuffer<T>(temp));
+	}
+
 	flags = other.flags;
 	return *this;
+
 }
 
 template <class T>
@@ -283,11 +311,11 @@ void ComputeBuffer<T>::Move(const GPUDevice& device) {
 	else
 	{
 		if (device.GetAPI() == CUDA) {
-			deviceBuffer.reset(device_pointer(new CUDABuffer<T>(device, hostBuffer)));
+			deviceBuffer.reset(new CUDABuffer<T>(device));
 		}
 		else if (device.GetAPI() == OpenCL)
 		{
-			deviceBuffer.reset(device_pointer(new OpenCLBuffer<T>(device, hostBuffer)));
+			deviceBuffer.reset(new OpenCLBuffer<T>(device));
 		}
 	}
 
@@ -364,12 +392,12 @@ const T* ComputeBuffer<T>::HostData() const noexcept {
 }
 
 template <class T>
-T* ComputeBuffer<T>::DeviceData() {
+T* ComputeBuffer<T>::DataDevice() {
 	return deviceBuffer->Data();
 }
 
 template <class T>
-const T* ComputeBuffer<T>::DeviceData() const {
+const T* ComputeBuffer<T>::DataDevice() const {
 	return deviceBuffer->Data();
 }
 

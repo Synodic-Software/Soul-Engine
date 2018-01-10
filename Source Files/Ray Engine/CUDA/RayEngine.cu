@@ -6,7 +6,7 @@
 #include <curand_kernel.h>
 #include "Utility\CUDA\CUDAHelper.cuh"
 
-#include "GPGPU\GPUManager.h"
+#include "Compute\GPUManager.h"
 #include "Utility\Logger.h"
 #include "Data Structures/DataHelper.h"
 

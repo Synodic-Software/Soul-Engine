@@ -4,7 +4,7 @@
 #include "Data Structures\Bounding Volume Heirarchy\BoundingBox.h"
 #include "Engine Core\Object\Face.h"
 #include "Engine Core\Object\Vertex.h"
-#include "GPGPU/ComputeBuffer.h"
+#include "Compute/ComputeBuffer.h"
 
 typedef struct BVHData {
 

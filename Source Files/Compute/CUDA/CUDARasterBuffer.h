@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Multithreading\Scheduler.h"
-#include "GPGPU\GPURasterBufferBase.h"
+#include "Compute\GPURasterBufferBase.h"
 #include "Raster Engine\RasterBackend.h"
 #include "Raster Engine\OpenGL\OpenGLBuffer.h"
 
 #include "Metrics.h"
 
-#include "GPGPU\GPUDevice.h"
+#include "Compute\GPUDevice.h"
 #include "Utility/CUDA/CudaHelper.cuh"
 
 #include <cuda_runtime_api.h>
@@ -47,7 +47,7 @@ public:
 				CudaCheck(cudaGraphicsMapResources(1, &buff->cudaBuffer, 0));
 
 				size_t num_bytes;
-				CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&buff->deviceData, &num_bytes,
+				CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&buff->DataDevice, &num_bytes,
 					buff->cudaBuffer));
 
 			});

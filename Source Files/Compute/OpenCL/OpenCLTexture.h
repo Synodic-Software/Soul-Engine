@@ -1,8 +1,8 @@
 #pragma once
-#include "GPGPU\GPUTextureBase.h"
+#include "Compute\GPUTextureBase.h"
 
 #include "Metrics.h"
-#include "GPGPU\GPUDevice.h"
+#include "Compute\GPUDevice.h"
 
 /* Buffer for open cl. */
 template<class T>
