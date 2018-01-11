@@ -594,12 +594,6 @@
     <ClInclude Include="..\Source Files\Compute\GPUManager.h">
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Compute\GPURasterBuffer.h">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Compute\GPURasterBufferBase.h">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Compute\GPUTexture.h">
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
@@ -638,6 +632,15 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Compute\CUDA\CUDARasterBuffer.h">
       <Filter>Engine Backend\Compute\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Compute\DeviceRasterBuffer.h">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Compute\ComputeRasterBuffer.h">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Compute\AbstractComputeBuffer.h">
+      <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -797,12 +800,6 @@
     <ClCompile Include="..\Source Files\Compute\GPUManager.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Compute\GPURasterBuffer.cpp">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Compute\GPURasterBufferBase.cpp">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Compute\GPUTexture.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
@@ -841,6 +838,15 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Compute\CUDA\CUDATexture.cpp">
       <Filter>Engine Backend\Compute\CUDA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Compute\DeviceRasterBuffer.cpp">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Compute\ComputeRasterBuffer.cpp">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Compute\AbstractComputeBuffer.cpp">
+      <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
