@@ -99,6 +99,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Algorithms\Filters\Filter.h" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h" />
+    <ClInclude Include="..\Source Files\Compute\AbstractComputeBuffer.h" />
     <ClInclude Include="..\Source Files\Compute\ComputeBuffer.h" />
     <ClInclude Include="..\Source Files\Compute\CUDA\CUDABackend.h" />
     <ClInclude Include="..\Source Files\Compute\CUDA\CUDABuffer.h" />
@@ -113,8 +114,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Compute\GPUExecutePolicy.h" />
     <ClInclude Include="..\Source Files\Compute\GPUKernel.h" />
     <ClInclude Include="..\Source Files\Compute\GPUManager.h" />
-    <ClInclude Include="..\Source Files\Compute\GPURasterBuffer.h" />
-    <ClInclude Include="..\Source Files\Compute\GPURasterBufferBase.h" />
+    <ClInclude Include="..\Source Files\Compute\ComputeRasterBuffer.h" />
+    <ClInclude Include="..\Source Files\Compute\DeviceRasterBuffer.h" />
     <ClInclude Include="..\Source Files\Compute\GPUTexture.h" />
     <ClInclude Include="..\Source Files\Compute\GPUTextureBase.h" />
     <ClInclude Include="..\Source Files\Compute\OpenCL\OpenCLBackend.h" />
@@ -168,6 +169,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Engine Core\Scene\Sky.h" />
     <ClInclude Include="..\Source Files\Events\Event.h" />
     <ClInclude Include="..\Source Files\Events\EventManager.h" />
+    <ClCompile Include="..\Source Files\Compute\AbstractComputeBuffer.cpp" />
     <ClCompile Include="..\Source Files\Compute\ComputeBuffer.cpp" />
     <ClCompile Include="..\Source Files\Compute\CUDA\CUDABackend.cpp" />
     <ClCompile Include="..\Source Files\Compute\CUDA\CUDABuffer.cpp" />
@@ -181,8 +183,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Compute\GPUExecutePolicy.cpp" />
     <ClCompile Include="..\Source Files\Compute\GPUKernel.cpp" />
     <ClCompile Include="..\Source Files\Compute\GPUManager.cpp" />
-    <ClCompile Include="..\Source Files\Compute\GPURasterBuffer.cpp" />
-    <ClCompile Include="..\Source Files\Compute\GPURasterBufferBase.cpp" />
+    <ClCompile Include="..\Source Files\Compute\ComputeRasterBuffer.cpp" />
+    <ClCompile Include="..\Source Files\Compute\DeviceRasterBuffer.cpp" />
     <ClCompile Include="..\Source Files\Compute\GPUTexture.cpp" />
     <ClCompile Include="..\Source Files\Compute\GPUTextureBase.cpp" />
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLBackend.cpp" />

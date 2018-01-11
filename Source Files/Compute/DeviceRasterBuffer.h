@@ -11,7 +11,7 @@
 */
 
 template <class T>
-class GPURasterBufferBase : public DeviceBuffer<T> {
+class DeviceRasterBuffer : public DeviceBuffer<T> {
 
 public:
 
@@ -21,13 +21,13 @@ public:
 	*    @param 		 	_objectCount	(Optional) Number of objects.
 	*/
 
-	GPURasterBufferBase(const GPUDevice& deviceIn, uint _size = 0)
+	DeviceRasterBuffer(const GPUDevice& deviceIn, uint _size = 0)
 		:DeviceBuffer(deviceIn, _size) {
 		
 	}
 
 	/* Destructor. */
-	virtual ~GPURasterBufferBase() {
+	virtual ~DeviceRasterBuffer() {
 
 	}
 

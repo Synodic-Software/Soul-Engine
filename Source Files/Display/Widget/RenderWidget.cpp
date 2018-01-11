@@ -117,7 +117,7 @@ void RenderWidget::RecreateData() {
 	//create the new accumulation Buffer
 	accumulator.Resize(jobsize);
 
-	buffer.resize(jobsize);
+	buffer.Resize(jobsize);
 
 	extraData.Resize(jobsize);
 

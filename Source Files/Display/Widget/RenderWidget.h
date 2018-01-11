@@ -2,7 +2,7 @@
 
 #include "Display\Widget\Widget.h"
 #include "Metrics.h"
-#include "Compute\GPURasterBuffer.h"
+#include "Compute\ComputeRasterBuffer.h"
 #include "Compute\ComputeBuffer.h"
 #include "Ray Engine/RayEngine.h"
 #include "Photography/Camera/Camera.h"
@@ -38,7 +38,7 @@ private:
 	glm::uvec2 renderSize;
 
 	/* The buffer */
-	GPURasterBuffer<glm::vec4> buffer;
+	ComputeRasterBuffer<glm::vec4> buffer;
 	/* The accumulator */
 	ComputeBuffer<glm::vec4> accumulator;
 	/* Information describing the extra */

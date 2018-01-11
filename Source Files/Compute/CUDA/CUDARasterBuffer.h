@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Multithreading\Scheduler.h"
-#include "Compute\GPURasterBufferBase.h"
+#include "Compute\DeviceRasterBuffer.h"
 #include "Raster Engine\RasterBackend.h"
 #include "Raster Engine\OpenGL\OpenGLBuffer.h"
 
@@ -13,9 +13,9 @@
 #include <cuda_runtime_api.h>
 #include <cuda_gl_interop.h>
 
-/* Buffer for cuda raster. */
+
 template <class T>
-class CUDARasterBuffer :public GPURasterBufferBase<T> {
+class CUDARasterBuffer :public DeviceRasterBuffer<T> {
 
 public:
 
@@ -26,7 +26,7 @@ public:
 	 */
 
 	CUDARasterBuffer(GPUDevice& _device, uint _count)
-		: GPURasterBufferBase(_device, _count) {
+		: DeviceRasterBuffer(_device, _count) {
 
 		CUDARasterBuffer::resize(_count);
 
@@ -115,7 +115,7 @@ public:
 
 	}
 
-	void resize(uint newSize) override {
+	void Resize(uint newSize) override {
 
 		DeviceBuffer<T>::resize(newSize);
 
@@ -148,12 +148,10 @@ public:
 		}
 	}
 
-protected:
-
 private:
-	/* Buffer for raster data */
+
 	Buffer* rasterBuffer = nullptr;
-	/* A cuda graphics resource*. */
+
 	struct cudaGraphicsResource* cudaBuffer;
 
 	int device;

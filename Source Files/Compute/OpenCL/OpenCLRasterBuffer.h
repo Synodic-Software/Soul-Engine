@@ -1,12 +1,12 @@
 #pragma once
-#include "Compute\GPURasterBufferBase.h"
+#include "Compute\DeviceRasterBuffer.h"
 #include "Compute\GPUDevice.h"
 
 #include "Metrics.h"
 
 /* Buffer for open cl raster. */
 template<class T>
-class OpenCLRasterBuffer :public GPURasterBufferBase<T> {
+class OpenCLRasterBuffer :public DeviceRasterBuffer<T> {
 
 public:
 
@@ -17,7 +17,7 @@ public:
 	 */
 
 	OpenCLRasterBuffer(GPUDevice& _device, uint _byteCount)
-		: GPURasterBufferBase(_device, _byteCount) {
+		: DeviceRasterBuffer(_device, _byteCount) {
 		
 	}
 	/* Destructor. */
