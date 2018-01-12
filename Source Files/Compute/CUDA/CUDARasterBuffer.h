@@ -2,10 +2,9 @@
 
 #include "Multithreading\Scheduler.h"
 #include "Compute\DeviceRasterBuffer.h"
+#include "Compute\CUDA\CUDABuffer.h"
 #include "Raster Engine\RasterBackend.h"
 #include "Raster Engine\OpenGL\OpenGLBuffer.h"
-
-#include "Metrics.h"
 
 #include "Compute\GPUDevice.h"
 #include "Utility/CUDA/CudaHelper.cuh"
@@ -15,138 +14,32 @@
 
 
 template <class T>
-class CUDARasterBuffer :public DeviceRasterBuffer<T> {
+class CUDARasterBuffer : public CUDABuffer<T>, public DeviceRasterBuffer<T> {
 
 public:
 
-	/*
-	 *    Constructor.
-	 *    @param [in,out]	parameter1	If non-null, the first parameter.
-	 *    @param 		 	parameter2	The second parameter.
-	 */
+	//Types
 
-	CUDARasterBuffer(GPUDevice& _device, uint _count)
-		: DeviceRasterBuffer(_device, _count) {
-
-		CUDARasterBuffer::resize(_count);
-
-		device = _device.GetOrder();
-	}
-	/* Destructor. */
-	~CUDARasterBuffer() {}
-
-	/* Map resources. */
-	void MapResources() override {
-
-		if (RasterBackend::backend == OpenGL) {
-
-			CUDARasterBuffer* buff = this;
-			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&buff]() {
-				RasterBackend::MakeContextCurrent();
-
-				CudaCheck(cudaGraphicsMapResources(1, &buff->cudaBuffer, 0));
-
-				size_t num_bytes;
-				CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&buff->DataDevice, &num_bytes,
-					buff->cudaBuffer));
-
-			});
+	typedef T                                     value_type;
+	typedef uint		                          size_type;
 
 
-			Scheduler::Block();
+	//Construction and Destruction 
+	
+	CUDARasterBuffer(const GPUDevice&);
 
-		}
-		else {
-			//TODO
-			//Vulkan Stuff
-
-
-		}
-	}
-	/* Unmap resources. */
-	void UnmapResources() override {
-
-		if (RasterBackend::backend == OpenGL) {
-
-			CUDARasterBuffer* buff = this;
-
-			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&buff]() {
-				RasterBackend::MakeContextCurrent();
-				CudaCheck(cudaGraphicsUnmapResources(1, &buff->cudaBuffer, 0));
-			});
-			Scheduler::Block();
-		}
-		else {
-			//TODO
-			//Vulkan Stuff
+	~CUDARasterBuffer();
 
 
-		}
-	}
+	//Data Migration
+	
+	void MapResources() override;
 
-	/*
-	 *    Bind data.
-	 *    @param	parameter1	The first parameter.
-	 */
+	void UnmapResources() override;
 
-	void BindData(uint pos) override {
+	void BindData(uint) override;
 
-
-		if (RasterBackend::backend == OpenGL) {
-
-			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &pos]() {
-				RasterBackend::MakeContextCurrent();
-				OpenGLBuffer* oglBuffer = static_cast<OpenGLBuffer*>(rasterBuffer);
-
-				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, pos, oglBuffer->GetBufferID());
-
-
-			});
-			Scheduler::Block();
-
-		}
-		else {
-			//TODO
-			//Vulkan Stuff
-
-
-		}
-
-
-	}
-
-	void Resize(uint newSize) override {
-
-		DeviceBuffer<T>::resize(newSize);
-
-		if (newSize > 0) {
-
-			CudaCheck(cudaSetDevice(device));
-			rasterBuffer = RasterBackend::CreateBuffer(newSize*sizeof(T));
-
-			if (RasterBackend::backend == OpenGL) {
-
-				Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
-					RasterBackend::MakeContextCurrent();
-
-					OpenGLBuffer* oglBuffer = static_cast<OpenGLBuffer*>(rasterBuffer);
-
-					CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
-						, oglBuffer->GetBufferID()
-						, cudaGraphicsRegisterFlagsWriteDiscard));
-
-				});
-				Scheduler::Block();
-
-			}
-			else {
-				//TODO
-				//Vulkan Stuff
-
-
-			}
-		}
-	}
+	void Resize(uint) override;
 
 private:
 
@@ -154,6 +47,133 @@ private:
 
 	struct cudaGraphicsResource* cudaBuffer;
 
-	int device;
+};
+
+template <class T>
+CUDARasterBuffer<T>::CUDARasterBuffer(const GPUDevice& device):
+	DeviceRasterBuffer(device),
+	CUDABuffer(device),
+	DeviceBuffer(device),
+	cudaBuffer(nullptr)
+{
+
+}
+
+template <class T>
+CUDARasterBuffer<T>::~CUDARasterBuffer()
+{
 
 };
+
+template <class T>
+void CUDARasterBuffer<T>::MapResources() 
+{
+
+	if (RasterBackend::backend == OpenGL) {
+
+		CUDARasterBuffer* buff = this;
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&buff]() {
+			RasterBackend::MakeContextCurrent();
+
+			CudaCheck(cudaGraphicsMapResources(1, &buff->cudaBuffer, nullptr));
+
+			size_t num_bytes;
+			auto ptr = buff->CUDABuffer::Data();
+			CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)ptr, &num_bytes,
+				buff->cudaBuffer));
+
+		});
+
+
+		Scheduler::Block();
+
+	}
+	else {
+		//TODO
+		//Vulkan Stuff
+
+
+	}
+}
+
+template <class T>
+void CUDARasterBuffer<T>::UnmapResources() {
+
+	if (RasterBackend::backend == OpenGL) {
+
+		CUDARasterBuffer* buff = this;
+
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&buff]() {
+			RasterBackend::MakeContextCurrent();
+			CudaCheck(cudaGraphicsUnmapResources(1, &buff->cudaBuffer, nullptr));
+		});
+		Scheduler::Block();
+	}
+	else {
+		//TODO
+		//Vulkan Stuff
+
+
+	}
+}
+
+template <class T>
+void CUDARasterBuffer<T>::BindData(uint pos)
+{
+
+
+	if (RasterBackend::backend == OpenGL) {
+
+		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, &pos]() {
+			RasterBackend::MakeContextCurrent();
+			OpenGLBuffer* oglBuffer = static_cast<OpenGLBuffer*>(rasterBuffer);
+
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, pos, oglBuffer->GetBufferID());
+
+
+		});
+		Scheduler::Block();
+
+	}
+	else {
+		//TODO
+		//Vulkan Stuff
+
+
+	}
+
+
+}
+
+template <class T>
+void CUDARasterBuffer<T>::Resize(uint newSize) 
+{
+
+	if (newSize > 0) {
+
+		CudaCheck(cudaSetDevice(DeviceBuffer<T>::residentDevice.GetOrder()));
+		rasterBuffer = RasterBackend::CreateBuffer(newSize * sizeof(T));
+
+		if (RasterBackend::backend == OpenGL) {
+
+			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
+				RasterBackend::MakeContextCurrent();
+
+				OpenGLBuffer* oglBuffer = static_cast<OpenGLBuffer*>(rasterBuffer);
+
+				CudaCheck(cudaGraphicsGLRegisterBuffer(&cudaBuffer
+					, oglBuffer->GetBufferID()
+					, cudaGraphicsRegisterFlagsWriteDiscard));
+
+			});
+			Scheduler::Block();
+
+		}
+		else {
+			//TODO
+			//Vulkan Stuff
+
+
+		}
+	}
+}

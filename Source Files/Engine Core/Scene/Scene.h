@@ -16,7 +16,7 @@ public:
 	~Scene() = default;
 
 	//adds all inthe queue and cleans all in the queue then builds the bvh
-	void Build(float deltaTime);
+	void Build(double deltaTime);
 
 	//signels the scene that an object should be added when the next 'Build()' is called
 	//modifies the global scene bounding box, making the 3D spatial calculation less accurate

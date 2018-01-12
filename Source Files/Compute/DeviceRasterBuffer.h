@@ -11,60 +11,34 @@
 */
 
 template <class T>
-class DeviceRasterBuffer : public DeviceBuffer<T> {
+class DeviceRasterBuffer : public virtual  DeviceBuffer<T> {
 
 public:
 
-	/*
-	*    Constructor.
-	*    @param [in,out]	deviceIn		The device in.
-	*    @param 		 	_objectCount	(Optional) Number of objects.
-	*/
 
-	DeviceRasterBuffer(const GPUDevice& deviceIn, uint _size = 0)
-		:DeviceBuffer(deviceIn, _size) {
-		
-	}
+	DeviceRasterBuffer(const GPUDevice& deviceIn);
 
-	/* Destructor. */
-	virtual ~DeviceRasterBuffer() {
-
-	}
-
-	/* Map resources. */
-	virtual void MapResources() {
-
-	}
-	/* Unmap resources. */
-	virtual void UnmapResources() {
-
-	}
+	virtual ~DeviceRasterBuffer();
 
 
-	/*
-	*    Transfer to host.
-	*    @param [in,out]	device	The device.
-	*/
+	virtual void MapResources() = 0;
 
-	virtual void TransferToHost() {
+	virtual void UnmapResources() = 0;
 
-	}
-
-	/*
-	*    Transfer to device.
-	*    @param [in,out]	device	The device.
-	*/
-
-	virtual void TransferToDevice() {
-
-	}
-	/*
-	*    Bind data.
-	*    @param	parameter1	The first parameter.
-	*/
-
-	virtual void BindData(uint) {
-
-	}
+	virtual void BindData(uint) = 0;
+	
 
 };
+
+template <class T>
+DeviceRasterBuffer<T>::DeviceRasterBuffer(const GPUDevice& deviceIn):
+	DeviceBuffer(deviceIn) 
+{
+
+}
+
+template <class T>
+DeviceRasterBuffer<T>::~DeviceRasterBuffer()
+{
+	
+}

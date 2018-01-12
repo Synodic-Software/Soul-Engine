@@ -26,7 +26,7 @@ public:
 	
 	DeviceBuffer(const GPUDevice& _device);
 
-	virtual ~DeviceBuffer() = 0;
+	virtual ~DeviceBuffer();
 
 	//Data Migration
 
@@ -79,6 +79,12 @@ template <class T>
 DeviceBuffer<T>::DeviceBuffer(const GPUDevice& device):
 	residentDevice(device){
 
+}
+
+template <class T>
+DeviceBuffer<T>::~DeviceBuffer()
+{
+	
 }
 
 template <class T>
