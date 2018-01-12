@@ -6,7 +6,7 @@
 
 /* Buffer for open cl. */
 template<class T>
-class OpenCLBuffer :public DeviceBuffer<T> {
+class OpenCLBuffer :public virtual DeviceBuffer<T> {
 
 public:
 
@@ -69,66 +69,58 @@ OpenCLBuffer<T>::OpenCLBuffer(const GPUDevice& device) :
 template <class T>
 OpenCLBuffer<T>::~OpenCLBuffer() {
 	//TODO implement
-	throw std::exception("Not yet implemented");
 }
 
 template <class T>
 void OpenCLBuffer<T>::Move(const GPUDevice&)
 {
 	//TODO implement
-	throw std::exception("Not yet implemented");
 }
 
 template <class T>
 void OpenCLBuffer<T>::TransferToHost(std::vector<T>& hostBuffer) {
-
 	//TODO implement
-	throw std::exception("Not yet implemented");
-
 }
 
 template <class T>
 void OpenCLBuffer<T>::TransferToDevice(std::vector<T>& hostBuffer) {
-
 	//TODO implement
-	throw std::exception("Not yet implemented");
-
 }
 
 template <class T>
 T* OpenCLBuffer<T>::Data() {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return nullptr;
 }
 
 template <class T>
 const T* OpenCLBuffer<T>::Data() const {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return nullptr;
 }
 
 template <class T>
 bool OpenCLBuffer<T>::Empty() const noexcept {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return true;
 }
 
 template <class T>
 typename OpenCLBuffer<T>::size_type OpenCLBuffer<T>::Size() const noexcept {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return 0;
 }
 
 template <class T>
 typename OpenCLBuffer<T>::size_type OpenCLBuffer<T>::MaxSize() const noexcept {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return 0;
 }
 
 template <class T>
 typename OpenCLBuffer<T>::size_type OpenCLBuffer<T>::Capacity() const noexcept {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return 0;
 }
 
 template <class T>
@@ -145,7 +137,6 @@ void OpenCLBuffer<T>::Resize(size_type n) {
 template <class T>
 void OpenCLBuffer<T>::Resize(size_type, const T&) {
 	//TODO implement
-	throw std::exception("Not yet implemented");
 }
 
 template <class T>
@@ -162,13 +153,9 @@ template <class T>
 void OpenCLBuffer<T>::Fit()
 {
 	//TODO implement
-	throw std::exception("Not yet implemented");
 }
 
 template <typename T>
 void OpenCLBuffer<T>::Reallocate() {
-
 	//TODO implement
-	throw std::exception("Not yet implemented");
-
 }

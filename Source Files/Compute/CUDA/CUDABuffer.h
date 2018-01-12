@@ -6,7 +6,7 @@
 
 /* Buffer for cuda. */
 template<class T>
-class CUDABuffer :public DeviceBuffer<T> {
+class CUDABuffer :public virtual DeviceBuffer<T> {
 
 public:
 
@@ -100,7 +100,6 @@ template <class T>
 void CUDABuffer<T>::Move(const GPUDevice&)
 {
 	//TODO implement
-	throw std::exception("Not yet implemented");
 }
 
 template <class T>
@@ -120,7 +119,7 @@ void CUDABuffer<T>::TransferToDevice(std::vector<T>& hostBuffer) {
 
 	//perform size checks
 	if (hostBuffer.size() > DeviceBuffer<T>::size) {
-		Resize(hostBuffer.size());
+		Resize(static_cast<unsigned int>(hostBuffer.size()));
 	}
 
 	CudaCheck(cudaMemcpy(buffer, hostBuffer.data(), DeviceBuffer<T>::size * sizeof(T), cudaMemcpyHostToDevice));
@@ -130,37 +129,37 @@ void CUDABuffer<T>::TransferToDevice(std::vector<T>& hostBuffer) {
 template <class T>
 T* CUDABuffer<T>::Data() {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return nullptr;
 }
 
 template <class T>
 const T* CUDABuffer<T>::Data() const {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return nullptr;
 }
 
 template <class T>
 bool CUDABuffer<T>::Empty() const noexcept {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return true;
 }
 
 template <class T>
 typename CUDABuffer<T>::size_type CUDABuffer<T>::Size() const noexcept {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return 0;
 }
 
 template <class T>
 typename CUDABuffer<T>::size_type CUDABuffer<T>::MaxSize() const noexcept {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return 0;
 }
 
 template <class T>
 typename CUDABuffer<T>::size_type CUDABuffer<T>::Capacity() const noexcept {
 	//TODO implement
-	throw std::exception("Not yet implemented");
+	return 0;
 }
 
 template <class T>
@@ -177,7 +176,6 @@ void CUDABuffer<T>::Resize(size_type n) {
 template <class T>
 void CUDABuffer<T>::Resize(size_type, const T&) {
 	//TODO implement
-	throw std::exception("Not yet implemented");
 }
 
 template <class T>
@@ -194,7 +192,6 @@ template <class T>
 void CUDABuffer<T>::Fit()
 {
 	//TODO implement
-	throw std::exception("Not yet implemented");
 }
 
 template <typename T>

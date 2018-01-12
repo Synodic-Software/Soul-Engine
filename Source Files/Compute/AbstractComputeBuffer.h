@@ -34,7 +34,7 @@ public:
 	typedef typename std::vector<T>::reverse_iterator       reverse_iterator;
 	typedef typename std::vector<T>::const_reverse_iterator const_reverse_iterator;
 	typedef typename std::vector<T>::difference_type        difference_type;
-	typedef typename std::vector<T>::size_type		        size_type;
+	typedef uint	                                        size_type;
 
 	//Construction and Destruction 
 
@@ -333,7 +333,7 @@ bool AbstractComputeBuffer<T>::EmptyHost() const noexcept
 template <class T>
 typename AbstractComputeBuffer<T>::size_type AbstractComputeBuffer<T>::SizeHost() const noexcept
 {
-	return hostBuffer.size();
+	return static_cast<unsigned int>(hostBuffer.size());
 }
 
 template <class T>

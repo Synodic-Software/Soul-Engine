@@ -168,12 +168,12 @@ ComputeBuffer<T>& ComputeBuffer<T>::operator= (const ComputeBuffer<T>& other)
 	AbstractComputeBuffer<T>::operator=(other);
 
 	if (other.deviceBuffer->GetAPI() == CUDA) {
-		CUDABuffer<T> temp = *static_cast<CUDABuffer<T>*>(other.deviceBuffer.get());
+		CUDABuffer<T> temp = *dynamic_cast<CUDABuffer<T>*>(other.deviceBuffer.get());
 		deviceBuffer.reset(new CUDABuffer<T>(temp));
 	}
 	else if (other.deviceBuffer->GetAPI() == OpenCL)
 	{
-		OpenCLBuffer<T> temp = *static_cast<OpenCLBuffer<T>*>(other.deviceBuffer.get());
+		OpenCLBuffer<T> temp = *dynamic_cast<OpenCLBuffer<T>*>(other.deviceBuffer.get());
 		deviceBuffer.reset(new OpenCLBuffer<T>(temp));
 	}
 
