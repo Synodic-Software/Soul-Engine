@@ -54,29 +54,9 @@ public:
 	void Fit() override;
 
 
-	//CUDABuffer(const GPUDevice& _device, uint _size)
-	//	: DeviceBuffer(_device, _size) {
-
-	//	device_size = _size;
-	//	device_capacity = _size;
-	//	CudaCheck(cudaMalloc((void**)&DataDevice, device_size * sizeof(T)));
-	//}
-
-	//CUDABuffer(const GPUDevice& _device, DeviceBuffer<T>& other)
-	//	: DeviceBuffer(_device, other) {
-
-	//	device_size = other.SizeDevice();
-	//	device_capacity = other.DeviceCapacity();
-
-	//	//allocate the new space
-	//	CudaCheck(cudaMalloc((void**)&DataDevice, device_capacity * sizeof(T)));
-	//	CudaCheck(cudaMemcpy(DataDevice, other.DataDevice(), device_size * sizeof(T), cudaMemcpyDeviceToDevice));
-
-	//}
-
 private:
 
-	T * buffer;
+	T* buffer;
 
 	void Reallocate() override;
 
@@ -121,7 +101,7 @@ void CUDABuffer<T>::TransferToDevice(std::vector<T>& hostBuffer) {
 	if (hostBuffer.size() > DeviceBuffer<T>::size) {
 		Resize(static_cast<unsigned int>(hostBuffer.size()));
 	}
-
+	
 	CudaCheck(cudaMemcpy(buffer, hostBuffer.data(), DeviceBuffer<T>::size * sizeof(T), cudaMemcpyHostToDevice));
 
 }

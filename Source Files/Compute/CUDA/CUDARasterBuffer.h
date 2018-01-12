@@ -41,6 +41,8 @@ public:
 
 	void Resize(uint) override;
 
+	void Move(const GPUDevice&) override;
+
 private:
 
 	Buffer* rasterBuffer = nullptr;
@@ -176,4 +178,10 @@ void CUDARasterBuffer<T>::Resize(uint newSize)
 
 		}
 	}
+}
+
+template <class T>
+void CUDARasterBuffer<T>::Move(const GPUDevice&)
+{
+	
 }
