@@ -36,7 +36,7 @@ double GetDeltaTime();
  *    @param [in,out]	parameter1	If non-null, the first parameter.
  */
 
-void SubmitScene(Scene&);
+void SubmitScene(Scene*);
 
 
 /*

@@ -139,8 +139,6 @@ void Scene::AddObject(Object& obj) {
 		}
 	}
 
-
-
 }
 
 void Scene::RemoveObject(Object& obj) {

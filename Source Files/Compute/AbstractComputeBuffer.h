@@ -141,8 +141,6 @@ public:
 	iterator Erase(const_iterator);
 	iterator Erase(const_iterator, const_iterator);
 
-	
-
 	void Clear() noexcept;
 
 protected:

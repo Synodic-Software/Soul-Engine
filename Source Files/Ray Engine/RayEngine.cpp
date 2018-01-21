@@ -162,7 +162,7 @@ void UpdateJobs(double renderTime, double targetTime, ComputeBuffer<RayJob>& job
  *    @param	target	Target for the.
  */
 
-void RayEngine::Process(std::vector<Scene>& scene, double target) {
+void RayEngine::Process(Scene& scene, double target) {
 
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();
@@ -220,13 +220,13 @@ void RayEngine::Process(std::vector<Scene>& scene, double target) {
 
 			//TODO handle multiple scenes
 			//copy the scene data over
-			scene[0].faces.TransferToDevice();
-			scene[0].vertices.TransferToDevice();
-			scene[0].materials.TransferToDevice();
-			scene[0].tets.TransferToDevice();
-			scene[0].objects.TransferToDevice();
+			scene.faces.TransferToDevice();
+			scene.vertices.TransferToDevice();
+			scene.materials.TransferToDevice();
+			scene.tets.TransferToDevice();
+			scene.objects.TransferToDevice();
 
-			scene[0].sky.TransferToDevice();
+			scene.sky.TransferToDevice();
 
 			//setup the counters
 			counter[0] = 0;
@@ -259,17 +259,17 @@ void RayEngine::Process(std::vector<Scene>& scene, double target) {
 				const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
 				raysAP = deviceRaysA.DataDevice();
-				auto dataP = scene[0].bvhData.DataDevice();
-				auto vertP = scene[0].vertices.DataDevice();
-				auto faceP = scene[0].faces.DataDevice();
+				auto dataP = scene.bvhData.DataDevice();
+				auto vertP = scene.vertices.DataDevice();
+				auto faceP = scene.faces.DataDevice();
 				auto counterP = counter.DataDevice();
 
 				//main engine, collects hits
 				device.Launch(persistantPolicy, ExecuteJobs, numActive, raysAP, dataP, vertP, faceP, counterP);
 
 				auto raysBP = deviceRaysB.DataDevice();
-				auto skyP = scene[0].sky.DataDevice();
-				auto matP = scene[0].materials.DataDevice();
+				auto skyP = scene.sky.DataDevice();
+				auto matP = scene.materials.DataDevice();
 
 				//processes hits 
 				device.Launch(activePolicy, ProcessHits, numActive, jobP, numberJobs, raysAP, raysBP, skyP, faceP, vertP, matP, hitP, randP);

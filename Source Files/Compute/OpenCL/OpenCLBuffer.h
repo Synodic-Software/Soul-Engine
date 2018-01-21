@@ -40,11 +40,7 @@ public:
 
 	bool Empty() const noexcept override;
 
-	size_type Size() const noexcept override;
-
 	size_type MaxSize() const noexcept override;
-
-	size_type Capacity() const noexcept override;
 
 	void Resize(size_type) override;
 	void Resize(size_type, const T&) override;
@@ -106,19 +102,7 @@ bool OpenCLBuffer<T>::Empty() const noexcept {
 }
 
 template <class T>
-typename OpenCLBuffer<T>::size_type OpenCLBuffer<T>::Size() const noexcept {
-	//TODO implement
-	return 0;
-}
-
-template <class T>
 typename OpenCLBuffer<T>::size_type OpenCLBuffer<T>::MaxSize() const noexcept {
-	//TODO implement
-	return 0;
-}
-
-template <class T>
-typename OpenCLBuffer<T>::size_type OpenCLBuffer<T>::Capacity() const noexcept {
 	//TODO implement
 	return 0;
 }
