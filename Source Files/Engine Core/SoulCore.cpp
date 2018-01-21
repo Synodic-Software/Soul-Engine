@@ -23,7 +23,7 @@ namespace Soul {
 
 	/* //////////////////////Variables and Declarations//////////////////. */
 
-	std::vector<Scene> scenes;
+	std::vector<std::unique_ptr<Scene>> scenes;
 
 	/* The engine refresh rate */
 	double engineRefreshRate;
@@ -188,7 +188,7 @@ namespace Soul {
 		});
 
 		for (auto& scene : scenes) {
-			scene.Build(engineRefreshRate);
+			scene->Build(engineRefreshRate);
 		}
 
 		Scheduler::Block();
@@ -270,7 +270,7 @@ namespace Soul {
 				EarlyUpdate();
 
 				for (auto& scene : scenes) {
-					scene.Build(engineRefreshRate);
+					scene->Build(engineRefreshRate);
 				}
 				/*
 				for (auto const& scene : scenes){
@@ -288,7 +288,7 @@ namespace Soul {
 
 			RayPreProcess();
 
-			RayEngine::Process(scenes, engineRefreshRate);
+			RayEngine::Process(*scenes[0].get(), engineRefreshRate);
 
 			RayPostProcess();
 
@@ -341,8 +341,8 @@ void SoulTerminate() {
  *    @param [in,out]	scene	If non-null, the scene.
  */
 
-void SubmitScene(Scene& scene) {
-	Soul::scenes.push_back(scene);
+void SubmitScene(Scene* scene) {
+	Soul::scenes.push_back(std::unique_ptr<Scene>(scene));
 }
 
 /*
@@ -457,14 +457,14 @@ int main()
 		camera.OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
 	});
 
-	Scene scene;
+	Scene* scene = new Scene();
 
 	Material whiteGray;
 	whiteGray.diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
 	whiteGray.emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	Object plane("Resources\\Objects\\plane.obj", whiteGray);
-	scene.AddObject(plane);
+	scene->AddObject(plane);
 
 	SubmitScene(scene);
 

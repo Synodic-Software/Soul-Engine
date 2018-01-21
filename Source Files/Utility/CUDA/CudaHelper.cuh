@@ -26,11 +26,12 @@
 #define WARP_SIZE 32
 
 #define CudaCheck(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool = true)
+inline void gpuAssert(cudaError_t code, const char *file, int line)
 {
 	if (code != cudaSuccess)
 	{
-		std::cout << cudaGetErrorString(code) << file << line << std::endl;
+
+		std::cout << cudaGetErrorString(code) << " "<< file << line << std::endl;
 		//if (abort) exit(code);
 	}
 }

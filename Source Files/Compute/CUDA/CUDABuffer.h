@@ -40,11 +40,7 @@ public:
 
 	bool Empty() const noexcept override;
 
-	size_type Size() const noexcept override;
-
 	size_type MaxSize() const noexcept override;
-
-	size_type Capacity() const noexcept override;
 
 	void Resize(size_type) override;
 	void Resize(size_type, const T&) override;
@@ -54,9 +50,11 @@ public:
 	void Fit() override;
 
 
-private:
+protected:
 
 	T* buffer;
+
+private:	
 
 	void Reallocate() override;
 
@@ -77,9 +75,10 @@ CUDABuffer<T>::~CUDABuffer() {
 }
 
 template <class T>
-void CUDABuffer<T>::Move(const GPUDevice&)
+void CUDABuffer<T>::Move(const GPUDevice& device)
 {
-	//TODO implement
+	//TODO implement memory transfer
+	S_LOG_FATAL("Not implemented");
 }
 
 template <class T>
@@ -101,44 +100,32 @@ void CUDABuffer<T>::TransferToDevice(std::vector<T>& hostBuffer) {
 	if (hostBuffer.size() > DeviceBuffer<T>::size) {
 		Resize(static_cast<unsigned int>(hostBuffer.size()));
 	}
-	
+
 	CudaCheck(cudaMemcpy(buffer, hostBuffer.data(), DeviceBuffer<T>::size * sizeof(T), cudaMemcpyHostToDevice));
 
-}
+ }
 
 template <class T>
 T* CUDABuffer<T>::Data() {
-	//TODO implement
-	return nullptr;
+	return buffer;
 }
 
 template <class T>
 const T* CUDABuffer<T>::Data() const {
-	//TODO implement
-	return nullptr;
+	return buffer;
 }
 
 template <class T>
 bool CUDABuffer<T>::Empty() const noexcept {
 	//TODO implement
+	S_LOG_FATAL("Not implemented");
 	return true;
-}
-
-template <class T>
-typename CUDABuffer<T>::size_type CUDABuffer<T>::Size() const noexcept {
-	//TODO implement
-	return 0;
 }
 
 template <class T>
 typename CUDABuffer<T>::size_type CUDABuffer<T>::MaxSize() const noexcept {
 	//TODO implement
-	return 0;
-}
-
-template <class T>
-typename CUDABuffer<T>::size_type CUDABuffer<T>::Capacity() const noexcept {
-	//TODO implement
+	S_LOG_FATAL("Not implemented");
 	return 0;
 }
 
@@ -156,6 +143,7 @@ void CUDABuffer<T>::Resize(size_type n) {
 template <class T>
 void CUDABuffer<T>::Resize(size_type, const T&) {
 	//TODO implement
+	S_LOG_FATAL("Not implemented");
 }
 
 template <class T>
@@ -172,6 +160,7 @@ template <class T>
 void CUDABuffer<T>::Fit()
 {
 	//TODO implement
+	S_LOG_FATAL("Not implemented");
 }
 
 template <typename T>

@@ -46,11 +46,11 @@ public:
 
 	virtual bool Empty() const noexcept = 0;
 
-	virtual size_type Size() const noexcept = 0;
+	size_type Size() const noexcept;
 
 	virtual size_type MaxSize() const noexcept = 0;
 
-	virtual size_type Capacity() const noexcept = 0;
+	size_type Capacity() const noexcept;
 
 	virtual void Resize(size_type) = 0;
 	virtual void Resize(size_type, const T&) = 0;
@@ -91,4 +91,14 @@ template <class T>
 GPUBackend DeviceBuffer<T>::GetAPI() const
 {
 	return residentDevice.GetAPI();
+}
+
+template <class T>
+typename DeviceBuffer<T>::size_type DeviceBuffer<T>::Size() const noexcept {
+	return size;
+}
+
+template <class T>
+typename DeviceBuffer<T>::size_type DeviceBuffer<T>::Capacity() const noexcept {
+	return capacity;
 }

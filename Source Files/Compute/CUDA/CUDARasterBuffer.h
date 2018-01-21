@@ -80,10 +80,11 @@ void CUDARasterBuffer<T>::MapResources()
 			CudaCheck(cudaGraphicsMapResources(1, &buff->cudaBuffer, nullptr));
 
 			size_t num_bytes;
-			auto ptr = buff->CUDABuffer::Data();
-			CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)ptr, &num_bytes,
+			T* ptr = nullptr;
+			CudaCheck(cudaGraphicsResourceGetMappedPointer((void **)&ptr, &num_bytes,
 				buff->cudaBuffer));
 
+			buff->CUDABuffer::buffer = ptr;
 		});
 
 
