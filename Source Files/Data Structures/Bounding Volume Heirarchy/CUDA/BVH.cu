@@ -11,9 +11,10 @@ __device__ uint HighestBit(uint i, uint64* morton)
 
 __global__ void BuildTree(uint n, BVHData* data, Node* nodes, uint64* mortonCodes, uint leafOffset)
 {
-	uint index = getGlobalIdx_1D_1D();
-	if (index >= n)
+	const uint index = getGlobalIdx_1D_1D();
+	if (index >= n) {
 		return;
+	}
 
 	Node* currentNode = nodes + (leafOffset + index);
 
@@ -61,7 +62,7 @@ __global__ void BuildTree(uint n, BVHData* data, Node* nodes, uint64* mortonCode
 
 __global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, uint leafOffset)
 {
-	uint index = getGlobalIdx_1D_1D();
+	const uint index = getGlobalIdx_1D_1D();
 
 	if (index >= n) {
 		return;

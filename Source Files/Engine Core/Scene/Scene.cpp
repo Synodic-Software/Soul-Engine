@@ -47,9 +47,8 @@ __host__ void Scene::Build(double deltaTime) {
 		auto mortP = mortonCodes.DataDevice();
 		auto faceP = faces.DataDevice();
 		auto vertP = vertices.DataDevice();
-
+		
 		device.Launch(normalPolicy, MortonCode::ComputeGPUFace64, size, mortP, faceP, vertP);
-
 
 		Sort::Sort(mortonCodes, faces);
 

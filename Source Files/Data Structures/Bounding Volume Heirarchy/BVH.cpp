@@ -18,9 +18,7 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 
 		const int nodeSize = size * 2 - 1;
 
-		if (nodeSize > bvh.DeviceCapacity()) {
-			bvh.Resize(nodeSize);
-		}
+		bvh.Resize(nodeSize);
 
 		data[0].currentSize = size;
 		data[0].bvh = bvh.DataDevice();

@@ -11,7 +11,7 @@
 #include "Data Structures/DataHelper.h"
 
 //cant have AABB defined and not define WOOP_TRI
-#define WOOP_TRI
+//#define WOOP_TRI
 //#define WOOP_AABB
 
 #define STACK_SIZE 64
@@ -707,22 +707,24 @@ __global__ void ExecuteJobs(uint n, Ray* rays, BVHData* bvhP, Vertex* vertices, 
 
 			while (bvh.IsLeaf(currentLeaf))
 			{
-				uint faceID = currentLeaf->faceID;
-
-				glm::uvec3 face = faces[faceID].indices;
+				const uint faceID = currentLeaf->faceID;
+				const glm::uvec3 face = faces[faceID].indices;
 
 				float bary1;
 				float bary2;
 				float tTemp;
 
 #if defined	WOOP_TRI
-				if (FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
+
+				const bool test = FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
 					ray.origin, kx, ky, kz, Sx, Sy, Sz,
 #else
-				if (FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
+				const bool test = FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
 					ray.origin, ray.direction, { idirx, idiry, idirz },
 #endif
-					tTemp, ray.direction.w, bary1, bary2)) {
+					tTemp, ray.direction.w, bary1, bary2);
+				
+				if(test){
 
 					ray.direction.w = tTemp;
 					ray.bary = glm::vec2(bary1, bary2);
