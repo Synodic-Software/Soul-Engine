@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Compute/GPUDevice.h"
-#include "glm/glm.hpp"
 
 /*
 *    Buffer for gpu/cpu communication and storage.
@@ -18,15 +17,15 @@ public:
 
 	//Types
 
-	typedef T                                     value_type;
-	typedef uint		                          size_type;
+	typedef T       value_type;
+	typedef uint	size_type;
 
 
 	//Construction and Destruction 
 	
 	DeviceBuffer(const GPUDevice& _device);
 
-	virtual ~DeviceBuffer();
+	virtual ~DeviceBuffer() = default;
 
 	//Data Migration
 
@@ -79,12 +78,6 @@ template <class T>
 DeviceBuffer<T>::DeviceBuffer(const GPUDevice& device):
 	residentDevice(device){
 
-}
-
-template <class T>
-DeviceBuffer<T>::~DeviceBuffer()
-{
-	
 }
 
 template <class T>

@@ -20,7 +20,7 @@ public:
 	~CUDADevice() override;
 
 	template<typename KernelFunction, typename... Args>
-	void Launch(const GPUExecutePolicy& policy, const KernelFunction& kernel, Args&... parameters) {
+	void Launch(const GPUExecutePolicy& policy, const KernelFunction& kernel, Args&&... parameters) {
 
 		const auto grid = dim3(policy.gridsize.x, policy.gridsize.y, policy.gridsize.z);
 		const auto block = dim3(policy.blocksize.x, policy.blocksize.y, policy.blocksize.z);
@@ -32,8 +32,7 @@ public:
 			grid,
 			block,
 			args, 
-			policy.sharedMemory,
-			cudaStream_t(policy.stream)
+			policy.sharedMemory //TODO update with policy stream
 		));
 
 		CudaCheck(cudaPeekAtLastError());

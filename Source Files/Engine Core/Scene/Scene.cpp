@@ -27,8 +27,6 @@ Scene::Scene()
 	bvhData.Resize(1);
 	sky.PushBack({ "Starmap.png" });
 
-	bvh.TransferToDevice();
-	bvhData.TransferToDevice();
 	sky.TransferToDevice();
 }
 
@@ -43,12 +41,8 @@ __host__ void Scene::Build(double deltaTime) {
 
 		const auto blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
-
-		auto mortP = mortonCodes.DataDevice();
-		auto faceP = faces.DataDevice();
-		auto vertP = vertices.DataDevice();
 		
-		device.Launch(normalPolicy, MortonCode::ComputeGPUFace64, size, mortP, faceP, vertP);
+		device.Launch(normalPolicy, MortonCode::ComputeGPUFace64, size, mortonCodes.DataDevice(), faces.DataDevice(), vertices.DataDevice());
 
 		Sort::Sort(mortonCodes, faces);
 
@@ -93,7 +87,7 @@ void Scene::AddObject(Object& obj) {
 	//resizing	
 	vertices.Resize(vertexAmount);
 	faces.Resize(faceAmount);
-	mortonCodes.Resize(faceAmount);
+	mortonCodes.ResizeDevice(faceAmount);
 	tets.Resize(tetAmount);
 	materials.Resize(materialAmount);
 	objects.Resize(objectAmount);
