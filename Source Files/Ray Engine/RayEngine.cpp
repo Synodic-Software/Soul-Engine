@@ -236,14 +236,13 @@ namespace RayEngine {
 				counter.TransferToDevice();
 				hitAtomic.TransferToDevice();
 
-				//ComputeBuffer<int> hitAtomic2;
-				//hitAtomic2.Move(GPUManager::GetBestGPU());
+				ComputeBuffer<int> hitAtomic2;
+				hitAtomic2.Move(GPUManager::GetBestGPU());
 
-				//hitAtomic2.Resize(1);
-				//hitAtomic2[0] = 0;
-				//hitAtomic2.TransferToDevice();
+				hitAtomic2.Resize(1);
+				hitAtomic2[0] = 0;
+				hitAtomic2.TransferToDevice();
 
-				//auto hitP2 = hitAtomic2.DataDevice();
 				device.Launch(normalPolicy, RaySetup, 
 					numberRays, 
 					numberJobs, 

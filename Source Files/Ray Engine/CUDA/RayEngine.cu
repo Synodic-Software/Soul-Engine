@@ -1,14 +1,8 @@
 #include "RayEngine.cuh"
 
-#include <thrust/host_vector.h>
-
 #include <cuda_runtime.h>
 #include <curand_kernel.h>
 #include "Utility\CUDA\CUDAHelper.cuh"
-
-#include "Compute\GPUManager.h"
-#include "Utility\Logger.h"
-#include "Data Structures/DataHelper.h"
 
 //cant have AABB defined and not define WOOP_TRI
 //#define WOOP_TRI
@@ -161,12 +155,12 @@ __global__ void RaySetup(uint n, uint jobSize, RayJob* job, Ray* rays, int* nAto
 		return;
 	}
 
-	uint startIndex = 0;
-	int cur = 0;
+	const auto startIndex = 0;
+	const auto cur = 0;
 
-	float samples = job[cur].samples;
-	uint sampleIndex = (index - startIndex) / glm::ceil(samples); //the index of the pixel / sample
-	uint localIndex = (index - startIndex) % (int)glm::ceil(samples);
+	auto samples = job[cur].samples;
+	const uint sampleIndex = (index - startIndex) / glm::ceil(samples); //the index of the pixel / sample
+	const auto localIndex = (index - startIndex) % static_cast<int>(glm::ceil(samples));
 
 	curandState randState = randomState[index];
 
