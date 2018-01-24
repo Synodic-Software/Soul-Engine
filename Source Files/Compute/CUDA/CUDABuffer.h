@@ -18,9 +18,10 @@ public:
 
 	//Construction and Destruction 
 
-	CUDABuffer(const GPUDevice& _device);
-
+	CUDABuffer(const GPUDevice&);
+	
 	~CUDABuffer();
+
 
 	//Data Migration
 
@@ -48,7 +49,6 @@ public:
 	void Reserve(size_type) override;
 
 	void Fit() override;
-
 
 protected:
 
@@ -166,12 +166,14 @@ void CUDABuffer<T>::Fit()
 template <typename T>
 void CUDABuffer<T>::Reallocate() {
 
-	T* temp;
-	CudaCheck(cudaMalloc((void**)&temp, DeviceBuffer<T>::capacity * sizeof(T)));
+	void* temp;
+	CudaCheck(cudaMalloc(&temp, DeviceBuffer<T>::capacity * sizeof(T)));
 
-	CudaCheck(cudaMemcpy(temp, buffer, DeviceBuffer<T>::size * sizeof(T), cudaMemcpyDeviceToDevice));
-	
-	CudaCheck(cudaFree(buffer));
-	buffer = temp;
+	if (buffer) {
+		CudaCheck(cudaMemcpy(temp, buffer, DeviceBuffer<T>::size * sizeof(T), cudaMemcpyDeviceToDevice));
+		CudaCheck(cudaFree(buffer));
+	}
+
+	buffer = static_cast<T*>(temp);
 
 }

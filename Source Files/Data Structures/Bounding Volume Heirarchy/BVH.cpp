@@ -18,7 +18,7 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 
 		const int nodeSize = size * 2 - 1;
 
-		bvh.Resize(nodeSize);
+		bvh.ResizeDevice(nodeSize);
 
 		data[0].currentSize = size;
 		data[0].bvh = bvh.DataDevice();
@@ -29,15 +29,21 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 		const uint blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-		auto bvhP = bvh.DataDevice();
-		auto faceP = faces.DataDevice();
-		auto vertP = vertices.DataDevice();
-		auto mortP = mortonCodes.DataDevice();
-		auto leafSize = size - 1;
-		auto dataP = data.DataDevice();
 
-		device.Launch(normalPolicy, Reset, size, bvhP, faceP, vertP, mortP, leafSize);
-		device.Launch(normalPolicy, BuildTree, size, dataP, bvhP, mortP, leafSize);
+		device.Launch(normalPolicy, Reset, 
+			size, 
+			bvh.DataDevice(), 
+			faces.DataDevice(), 
+			vertices.DataDevice(), 
+			mortonCodes.DataDevice(), 
+			size - 1);
+
+		device.Launch(normalPolicy, BuildTree, 
+			size, 
+			data.DataDevice(), 
+			bvh.DataDevice(), 
+			mortonCodes.DataDevice(), 
+			size - 1);
 
 	}
 

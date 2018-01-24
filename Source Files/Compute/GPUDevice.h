@@ -25,18 +25,18 @@ public:
 	template <typename KernelFunction, typename... Args>
 	void Launch(const GPUExecutePolicy& policy,
 		const KernelFunction& kernel,
-		Args& ... parameters) {
+		Args&& ... parameters) {
 
 		if (device->api == CUDA) {
 
 			auto cudaDevice = static_cast<CUDADevice*>(device);
-			cudaDevice->Launch(policy, kernel, parameters...);
+			cudaDevice->Launch(policy, kernel, std::forward<Args>(parameters)...);
 
 		}
 		else {
 			//auto openCLDevice = static_cast<OpenCLDevice*>(device);
 			//TODO implement
-			//openCLDevice->Launch(policy, kernel, parameters...);
+			//openCLDevice->Launch(policy, kernel, std::forward<Args>(parameters)...);
 		}
 		 
 	}

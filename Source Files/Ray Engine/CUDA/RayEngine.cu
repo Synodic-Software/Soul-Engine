@@ -153,9 +153,9 @@ __global__ void EngineSetup(uint n, RayJob* jobs, int jobSize) {
 
 }
 
-__global__ void RaySetup(uint n, int jobSize, RayJob* job, Ray* rays, int* nAtomic, curandState* randomState) {
+__global__ void RaySetup(uint n, uint jobSize, RayJob* job, Ray* rays, int* nAtomic, curandState* randomState) {
 
-	uint index = getGlobalIdx_1D_1D();
+	const uint index = getGlobalIdx_1D_1D();
 
 	if (index >= n) {
 		return;
@@ -182,7 +182,9 @@ __global__ void RaySetup(uint n, int jobSize, RayJob* job, Ray* rays, int* nAtom
 		ray.direction = glm::vec4(dir, 4000000000000.0f);
 
 		atomicAdd(job[cur].camera.film.hits + sampleIndex, 1);
-		rays[FastAtomicAdd(nAtomic)] = ray;
+		
+		const auto val = FastAtomicAdd(nAtomic);
+		rays[val] = ray;
 
 	}
 
