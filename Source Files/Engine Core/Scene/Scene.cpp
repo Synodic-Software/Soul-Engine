@@ -11,17 +11,17 @@
 #include "Compute/GPUManager.h"
 #include "Algorithms/Data Algorithms/GPU Sort/Sort.h"
 
-Scene::Scene()
+Scene::Scene():
+	bvhData(GPUManager::GetBestGPU()),
+	sky(GPUManager::GetBestGPU()),
+	faces(GPUManager::GetBestGPU()),
+	vertices(GPUManager::GetBestGPU()),
+	tets(GPUManager::GetBestGPU()),
+	materials(GPUManager::GetBestGPU()),
+	objects(GPUManager::GetBestGPU()),
+	bvh(GPUManager::GetBestGPU()),
+	mortonCodes(GPUManager::GetBestGPU())
 {
-	bvhData.Move(GPUManager::GetBestGPU());
-	sky.Move(GPUManager::GetBestGPU());
-	faces.Move(GPUManager::GetBestGPU());
-	vertices.Move(GPUManager::GetBestGPU());
-	tets.Move(GPUManager::GetBestGPU());
-	materials.Move(GPUManager::GetBestGPU());
-	objects.Move(GPUManager::GetBestGPU());
-	bvh.Move(GPUManager::GetBestGPU());
-	mortonCodes.Move(GPUManager::GetBestGPU());
 
 	bvh.Resize(1);
 	bvhData.Resize(1);

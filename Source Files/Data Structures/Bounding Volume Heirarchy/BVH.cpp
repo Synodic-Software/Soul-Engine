@@ -2,9 +2,9 @@
 #include "CUDA/BVH.cuh"
 #include "Compute/GPUManager.h"
 
-BVH::BVH() {
-
-	bvh.Move(GPUManager::GetBestGPU());
+BVH::BVH():
+bvh(GPUManager::GetBestGPU())
+{
 
 }
 

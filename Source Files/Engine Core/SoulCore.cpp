@@ -31,6 +31,8 @@ namespace Soul {
 	double allotedRenderTime;
 	/* True to running */
 	bool running = true;
+
+
 	/* //////////////////////Synchronization///////////////////////////. */
 
 	void SynchCPU() {
@@ -47,6 +49,7 @@ namespace Soul {
 		SynchCPU();
 		SynchGPU();
 	}
+
 
 	/////////////////////////Hints and Toggles///////////////////////////
 
@@ -106,10 +109,6 @@ namespace Soul {
 			WindowManager::Initialize(&running);
 		});
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			RayEngine::Initialize();
-		});
-
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
@@ -128,11 +127,6 @@ namespace Soul {
 		//Write the settings into a file
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
 			Settings::Write("config.ini", TEXT);
-		});
-
-		//Clean the RayEngine from stray data
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			RayEngine::Terminate();
 		});
 
 		//destroy all windows
@@ -161,14 +155,14 @@ namespace Soul {
 	/* Ray pre process */
 	void RayPreProcess() {
 
-		RayEngine::PreProcess();
+		RayEngine::Instance().PreProcess();
 
 	}
 
 	/* Ray post process */
 	void RayPostProcess() {
 
-		RayEngine::PostProcess();
+		RayEngine::Instance().PostProcess();
 
 	}
 
@@ -222,7 +216,7 @@ namespace Soul {
 		EventManager::Emit("Update", "Early");
 
 		//Update the engine cameras
-		RayEngine::Update();
+		RayEngine::Instance().Update();
 
 		//pull cameras into jobs
 		EventManager::Emit("Update", "Job Cameras");
@@ -288,7 +282,7 @@ namespace Soul {
 
 			RayPreProcess();
 
-			RayEngine::Process(*scenes[0].get(), engineRefreshRate);
+			RayEngine::Instance().Process(*scenes[0].get(), engineRefreshRate);
 
 			RayPostProcess();
 
@@ -393,7 +387,7 @@ int main()
 	uint jobID;
 	WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(jobID)));
 
-	RayJob& job = RayEngine::GetJob(jobID);
+	RayJob& job = RayEngine::Instance().GetJob(jobID);
 	Camera& camera = job.camera;
 	camera.position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
 	camera.OffsetOrientation(225, 45);
