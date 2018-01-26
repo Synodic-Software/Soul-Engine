@@ -9,7 +9,7 @@ CUDADevice::CUDADevice(uint deviceNumber) :
 	GPUDeviceBase(deviceNumber)
 {
 
-	api = CUDA;
+	api = CUDA_API;
 
 	CudaCheck(cudaSetDevice(deviceNumber));
 	CudaCheck(cudaGetDeviceProperties(&deviceProperties, deviceNumber));

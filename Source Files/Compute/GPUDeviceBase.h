@@ -3,7 +3,7 @@
 #include "Metrics.h"
 
 /* Values that represent GPU backends. */
-enum GPUBackend { CUDA, OpenCL };
+enum GPUBackend { CUDA_API, OPENCL_API };
 
 
 /* A GPU device. */

@@ -21,15 +21,6 @@ public:
 	/* Terminates this object. */
 	void Terminate();
 
-	template<typename T>
-	void TransferToDevice(GPUDevice& device, ComputeBuffer<T> buffer) {
-
-	}
-
-	template<typename T>
-	void TransferToHost(GPUDevice& device, ComputeBuffer<T> buffer) {
-
-	}
 
 private:
 

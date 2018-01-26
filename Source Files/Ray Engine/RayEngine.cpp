@@ -207,7 +207,7 @@ namespace RayEngine {
 				const uint blockSize = 64;
 				const GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-				device.Launch(normalPolicy, EngineSetup, numberResults, jobList.DataDevice(), numberJobs);
+				device.Launch(normalPolicy, CUDA::EngineSetup, numberResults, jobList.DataDevice(), numberJobs);
 
 				if (numberRays > deviceRaysA.SizeDevice()) {
 
@@ -215,7 +215,7 @@ namespace RayEngine {
 					deviceRaysA.ResizeDevice(numberRays);
 					deviceRaysB.ResizeDevice(numberRays);
 
-					device.Launch(normalPolicy, RandomSetup, numberRays, randomState.DataDevice(), detail::WangHash(++raySeedGl));
+					device.Launch(normalPolicy, CUDA::RandomSetup, numberRays, randomState.DataDevice(), detail::WangHash(++raySeedGl));
 
 				}
 
@@ -243,12 +243,14 @@ namespace RayEngine {
 				hitAtomic2[0] = 0;
 				hitAtomic2.TransferToDevice();
 
-				device.Launch(normalPolicy, RaySetup, 
+				LaunchTest(hitAtomic.DataDevice());
+
+				device.Launch(normalPolicy, CUDA::RaySetup,
 					numberRays, 
 					numberJobs, 
 					jobList.DataDevice(), 
 					deviceRaysA.DataDevice(), 
-					hitAtomic.DataDevice(), 
+					hitAtomic.DataDevice(),
 					randomState.DataDevice());
 
 				//start the engine loop
@@ -269,7 +271,7 @@ namespace RayEngine {
 					const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
 					//main engine, collects hits
-					device.Launch(persistantPolicy, ExecuteJobs, numActive, 
+					device.Launch(persistantPolicy, CUDA::ExecuteJobs, numActive,
 						deviceRaysA.DataDevice(), 
 						scene.bvhData.DataDevice(), 
 						scene.vertices.DataDevice(), 
@@ -277,7 +279,7 @@ namespace RayEngine {
 						counter.DataDevice());
 
 					//processes hits 
-					device.Launch(activePolicy, ProcessHits, numActive, jobList.DataDevice(), numberJobs, 
+					device.Launch(activePolicy, CUDA::ProcessHits, numActive, jobList.DataDevice(), numberJobs,
 						deviceRaysA.DataDevice(), 
 						deviceRaysB.DataDevice(), 
 						scene.sky.DataDevice(), 
@@ -368,7 +370,7 @@ namespace RayEngine {
 		counter.Resize(1);
 		hitAtomic.Resize(1);
 
-		persistantPolicy = GPUManager::GetBestGPU().BestExecutePolicy(ExecuteJobs);
+		persistantPolicy = GPUManager::GetBestGPU().BestExecutePolicy(CUDA::ExecuteJobs);
 
 
 		///////////////Alternative Hardcoded Calculation/////////////////
