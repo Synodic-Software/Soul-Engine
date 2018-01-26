@@ -6,7 +6,7 @@
  *    @param	scene	The scene.
  */
 
-void PhysicsEngine::Process(ComputeBuffer<BVHData>& scene){
-
-	ProcessScene(scene);
-}
+//void PhysicsEngine::Process(ComputeBuffer<BVHData>& scene){
+//
+//	ProcessScene(scene);
+//}

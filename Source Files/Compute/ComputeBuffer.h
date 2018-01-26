@@ -45,7 +45,6 @@ public:
 
 	//Construction and Destruction 
 
-	ComputeBuffer();
 	ComputeBuffer(const GPUDevice&);
 	ComputeBuffer(const GPUDevice&, size_type);
 	ComputeBuffer(const GPUDevice&, size_type, const T&);
@@ -94,12 +93,6 @@ private:
 };
 
 template <class T>
-ComputeBuffer<T>::ComputeBuffer() :
-	AbstractComputeBuffer()
-{
-}
-
-template <class T>
 ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device) :
 	AbstractComputeBuffer(device)
 {
@@ -131,23 +124,25 @@ template <class T>
 ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device, size_type n, const T &val) :
 	AbstractComputeBuffer(device, n, val)
 {
-	if (device.GetAPI() == CUDA) {
+	if (device.GetAPI() == CUDA_API) {
 		deviceBuffer.reset(new CUDABuffer<T>(device, n, val));
 	}
-	else if (device.GetAPI() == OpenCL) {
+	else if (device.GetAPI() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device, n, val));
 	}
 }
 
 
 template <class T>
-ComputeBuffer<T>::ComputeBuffer(const ComputeBuffer& other)
+ComputeBuffer<T>::ComputeBuffer(const ComputeBuffer& other):
+	AbstractComputeBuffer(other)
 {
 	*this = other;
 }
 
 template <class T>
-ComputeBuffer<T>::ComputeBuffer(ComputeBuffer<T>&& other) noexcept
+ComputeBuffer<T>::ComputeBuffer(ComputeBuffer<T>&& other) noexcept:
+	AbstractComputeBuffer(other)
 {
 	*this = std::move(other);
 }

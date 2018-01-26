@@ -38,7 +38,6 @@ public:
 
 	//Construction and Destruction 
 
-	AbstractComputeBuffer();
 	AbstractComputeBuffer(const GPUDevice&);
 	AbstractComputeBuffer(const GPUDevice&, size_type);
 	AbstractComputeBuffer(const GPUDevice&, size_type, const T&);
@@ -155,12 +154,6 @@ protected:
 	uint8 flags;
 	
 };
-
-template <class T>
-AbstractComputeBuffer<T>::AbstractComputeBuffer() :
-	flags(0)
-{
-}
 
 template <class T>
 AbstractComputeBuffer<T>::AbstractComputeBuffer(const GPUDevice& device) :

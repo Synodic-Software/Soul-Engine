@@ -68,7 +68,7 @@ RenderWidget::RenderWidget(uint& id)
 	currentSize = glm::uvec2(312, 720);
 
 
-	rayJob = RayEngine::AddJob(RayCOLOUR, true, samples);
+	rayJob = RayEngine::Instance().AddJob(RayCOLOUR, true, samples);
 	id = rayJob;
 }
 
@@ -132,7 +132,7 @@ void RenderWidget::RecreateData() {
 	buffer.MapResources();
 
 	//set job values
-	RayJob& job = RayEngine::GetJob(rayJob);
+	RayJob& job = RayEngine::Instance().GetJob(rayJob);
 	job.camera.aspectRatio = renderSize.x / (float)renderSize.y;
 	job.camera.film.resolution = renderSize;
 	job.camera.film.resolutionMax = renderSize;

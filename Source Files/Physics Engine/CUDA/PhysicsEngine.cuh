@@ -4,4 +4,4 @@
 #include "Engine Core/Scene/Scene.h"
 
 
-__host__ void ProcessScene(ComputeBuffer<BVHData>&);
+//__host__ void ProcessScene(ComputeBuffer<BVHData>&);
