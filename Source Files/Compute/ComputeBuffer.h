@@ -104,10 +104,10 @@ ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device) :
 	AbstractComputeBuffer(device)
 {
 
-	if (device.GetAPI() == CUDA) {
+	if (device.GetAPI() == CUDA_API) {
 		deviceBuffer.reset(new CUDABuffer<T>(device));
 	}
-	else if (device.GetAPI() == OpenCL) {
+	else if (device.GetAPI() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device));
 	}
 
@@ -118,10 +118,10 @@ ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device, size_type n) :
 	AbstractComputeBuffer(device, n)
 {
 
-	if (device.GetAPI() == CUDA) {
+	if (device.GetAPI() == CUDA_API) {
 		deviceBuffer.reset(new CUDABuffer<T>(device, n));
 	}
-	else if (device.GetAPI() == OpenCL) {
+	else if (device.GetAPI() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device, n));
 	}
 
@@ -167,11 +167,11 @@ ComputeBuffer<T>& ComputeBuffer<T>::operator= (const ComputeBuffer<T>& other)
 
 	AbstractComputeBuffer<T>::operator=(other);
 
-	if (other.deviceBuffer->GetAPI() == CUDA) {
+	if (other.deviceBuffer->GetAPI() == CUDA_API) {
 		CUDABuffer<T> temp = *dynamic_cast<CUDABuffer<T>*>(other.deviceBuffer.get());
 		deviceBuffer.reset(new CUDABuffer<T>(temp));
 	}
-	else if (other.deviceBuffer->GetAPI() == OpenCL)
+	else if (other.deviceBuffer->GetAPI() == OPENCL_API)
 	{
 		OpenCLBuffer<T> temp = *dynamic_cast<OpenCLBuffer<T>*>(other.deviceBuffer.get());
 		deviceBuffer.reset(new OpenCLBuffer<T>(temp));
@@ -195,10 +195,10 @@ void ComputeBuffer<T>::Move(const GPUDevice& device) {
 	}
 	else
 	{
-		if (device.GetAPI() == CUDA) {
+		if (device.GetAPI() == CUDA_API) {
 			deviceBuffer.reset(new CUDABuffer<T>(device));
 		}
-		else if (device.GetAPI() == OpenCL)
+		else if (device.GetAPI() == OPENCL_API)
 		{
 			deviceBuffer.reset(new OpenCLBuffer<T>(device));
 		}

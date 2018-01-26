@@ -9,7 +9,7 @@ OpenCLDevice::OpenCLDevice(uint o) :
 	GPUDeviceBase(o)
 {
 
-	api = OpenCL;
+	api = OPENCL_API;
 
 }
 

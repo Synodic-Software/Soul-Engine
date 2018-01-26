@@ -1,7 +1,5 @@
 #pragma once
 
-#include "glm/glm.hpp"
-
 #include "CUDA/CUDADevice.cuh"
 #include "OpenCL/OpenCLDevice.h"
 
@@ -27,7 +25,7 @@ public:
 		const KernelFunction& kernel,
 		Args&& ... parameters) {
 
-		if (device->api == CUDA) {
+		if (device->api == CUDA_API) {
 
 			auto cudaDevice = static_cast<CUDADevice*>(device);
 			cudaDevice->Launch(policy, kernel, std::forward<Args>(parameters)...);
@@ -80,7 +78,7 @@ public:
 	template<typename KernelFunction>
 	GPUExecutePolicy BestExecutePolicy(const KernelFunction& kernel)
 	{
-		if (device->api == CUDA) {
+		if (device->api == CUDA_API) {
 			auto cudaDevice = static_cast<CUDADevice*>(device);
 			return cudaDevice->BestExecutePolicy(kernel, [](int blockSize) -> int
 			{

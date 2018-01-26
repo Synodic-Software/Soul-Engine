@@ -98,10 +98,10 @@ ComputeRasterBuffer<T>::ComputeRasterBuffer(const GPUDevice& device) :
 	AbstractComputeBuffer(device)
 {
 
-	if (device.GetAPI() == CUDA) {
+	if (device.GetAPI() == CUDA_API) {
 		buffer.reset(new CUDARasterBuffer<T>(device));
 	}
-	else if (device.GetAPI() == OpenCL) {
+	else if (device.GetAPI() == OPENCL_API) {
 		buffer.reset(new OpenCLRasterBuffer<T>(device));
 	}
 
@@ -112,10 +112,10 @@ ComputeRasterBuffer<T>::ComputeRasterBuffer(const GPUDevice& device, size_type n
 	AbstractComputeBuffer(device, n)
 {
 
-	if (device.GetAPI() == CUDA) {
+	if (device.GetAPI() == CUDA_API) {
 		buffer.reset(new CUDARasterBuffer<T>(device, n));
 	}
-	else if (device.GetAPI() == OpenCL) {
+	else if (device.GetAPI() == OPENCL_API) {
 		buffer.reset(new OpenCLRasterBuffer<T>(device, n));
 	}
 
@@ -125,10 +125,10 @@ template <class T>
 ComputeRasterBuffer<T>::ComputeRasterBuffer(const GPUDevice& device, size_type n, const T &val) :
 	AbstractComputeBuffer(device, n, val)
 {
-	if (device.GetAPI() == CUDA) {
+	if (device.GetAPI() == CUDA_API) {
 		buffer.reset(new CUDARasterBuffer<T>(device, n, val));
 	}
-	else if (device.GetAPI() == OpenCL) {
+	else if (device.GetAPI() == OPENCL_API) {
 		buffer.reset(new OpenCLRasterBuffer<T>(device, n, val));
 	}
 }
@@ -161,11 +161,11 @@ ComputeRasterBuffer<T>& ComputeRasterBuffer<T>::operator= (const ComputeRasterBu
 
 	AbstractComputeBuffer<T>::operator=(other);
 
-	if (other.buffer->GetAPI() == CUDA) {
+	if (other.buffer->GetAPI() == CUDA_API) {
 		CUDARasterBuffer<T> temp = *static_cast<CUDARasterBuffer<T>*>(other.buffer.get());
 		buffer.reset(new CUDARasterBuffer<T>(temp));
 	}
-	else if (other.buffer->GetAPI() == OpenCL)
+	else if (other.buffer->GetAPI() == OPENCL_API)
 	{
 		OpenCLRasterBuffer<T> temp = *static_cast<OpenCLRasterBuffer<T>*>(other.buffer.get());
 		buffer.reset(new OpenCLRasterBuffer<T>(temp));
@@ -189,10 +189,10 @@ void ComputeRasterBuffer<T>::Move(const GPUDevice& device) {
 	}
 	else
 	{
-		if (device.GetAPI() == CUDA) {
+		if (device.GetAPI() == CUDA_API) {
 			buffer.reset(new CUDARasterBuffer<T>(device));
 		}
-		else if (device.GetAPI() == OpenCL)
+		else if (device.GetAPI() == OPENCL_API)
 		{
 			buffer.reset(new OpenCLRasterBuffer<T>(device));
 		}
