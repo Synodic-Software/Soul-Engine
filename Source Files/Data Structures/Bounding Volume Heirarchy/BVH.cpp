@@ -8,10 +8,6 @@ bvh(GPUManager::GetBestGPU())
 
 }
 
-BVH::~BVH() {
-
-}
-
 void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& mortonCodes, ComputeBuffer<Face>& faces, ComputeBuffer<Vertex>& vertices) {
 
 	if (size > 0) {
