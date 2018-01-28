@@ -30,7 +30,6 @@ public:
 
 	//counting variables
 	uint rayOffset;
-	uint activeRays;
 
 	uint id;
 	//common variables
@@ -48,7 +47,6 @@ public:
 	bool operator==(const RayJob& other) const {
 		return
 			rayOffset == other.rayOffset &&
-			activeRays == other.activeRays &&
 			id == other.id &&
 			camera == other.camera &&
 			type == other.type &&
@@ -60,7 +58,6 @@ public:
 	RayJob& operator=(RayJob arg)
 	{
 		this->rayOffset = arg.rayOffset;
-		this->activeRays = arg.activeRays;
 		this->id = arg.id;
 		this->camera = arg.camera;
 		this->type = arg.type;

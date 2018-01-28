@@ -111,6 +111,8 @@ void CUDARasterBuffer<T>::UnmapResources() {
 			CudaCheck(cudaGraphicsUnmapResources(1, &buff->cudaBuffer, nullptr));
 		});
 		Scheduler::Block();
+
+		CUDABuffer<T>::buffer = nullptr;
 	}
 	else {
 		//TODO
@@ -154,7 +156,8 @@ void CUDARasterBuffer<T>::Resize(uint newSize)
 
 	if (newSize > 0) {
 
-		CudaCheck(cudaSetDevice(DeviceBuffer<T>::residentDevice.GetOrder()));
+		/*const auto device = DeviceBuffer<T>::residentDevice.GetOrder();
+		CudaCheck(cudaSetDevice(device));*/
 		rasterBuffer = RasterBackend::CreateBuffer(newSize * sizeof(T));
 
 		if (RasterBackend::backend == OpenGL) {

@@ -12,6 +12,4 @@ namespace RayEngineCUDA {
 	__global__ void RaySetup(uint n, uint jobSize, RayJob* job, Ray* rays, int* nAtomic, curandState* randomState);
 	__global__ void RandomSetup(uint n, curandState* randomState, uint raySeed);
 
-
-	void LaunchTest(int*);
 }

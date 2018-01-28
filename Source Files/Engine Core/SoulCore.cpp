@@ -1,13 +1,11 @@
 /////////////////////////Includes/////////////////////////////////
 
 #include "SoulCore.h"
-#include "Utility\CUDA\CUDAHelper.cuh"
+
 
 #include "Transput/Settings.h"
 #include "Utility/Logger.h"
-
 #include "Engine Core/Frame/Frame.h"
-#include "Ray Engine/RayEngine.h"
 #include "Physics Engine\PhysicsEngine.h"
 #include "Compute\GPUManager.h"
 #include "Display\Window\WindowManager.h"
@@ -16,6 +14,7 @@
 #include "Multithreading\Scheduler.h"
 #include "Events\EventManager.h"
 #include "Input/InputManager.h"
+#include "Ray Engine/RayEngine.h"
 
 #undef GetJob
 
@@ -282,7 +281,7 @@ namespace Soul {
 
 			RayPreProcess();
 
-			RayEngine::Instance().Process(*scenes[0].get(), engineRefreshRate);
+			RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
 
 			RayPostProcess();
 
