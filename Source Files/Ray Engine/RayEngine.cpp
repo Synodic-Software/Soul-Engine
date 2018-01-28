@@ -159,7 +159,7 @@ void RayEngine::UpdateJobs(double renderTime, double targetTime, ComputeBuffer<R
  */
 
 void RayEngine::Process(Scene& scene, double target) {
-
+	
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();
 
@@ -224,7 +224,6 @@ void RayEngine::Process(Scene& scene, double target) {
 			scene.materials.TransferToDevice();
 			scene.tets.TransferToDevice();
 			scene.objects.TransferToDevice();
-
 			scene.sky.TransferToDevice();
 
 			//setup the counters
@@ -233,14 +232,6 @@ void RayEngine::Process(Scene& scene, double target) {
 
 			counter.TransferToDevice();
 			hitAtomic.TransferToDevice();
-
-			ComputeBuffer<int> hitAtomic2(GPUManager::GetBestGPU());
-
-			hitAtomic2.Resize(1);
-			hitAtomic2[0] = 0;
-			hitAtomic2.TransferToDevice();
-
-			RayEngineCUDA::LaunchTest(hitAtomic.DataDevice());
 
 			device.Launch(normalPolicy, RayEngineCUDA::RaySetup,
 				numberRays,
@@ -368,11 +359,11 @@ void RayEngine::PreProcess() {
 }
 void RayEngine::PostProcess() {
 
-	//grab job pointer
-	auto job = *jobList.begin();
+	////grab job pointer
+	//auto job = *jobList.begin();
 
-	//grab camera
-	Camera camera = job.camera;
+	////grab camera
+	//Camera camera = job.camera;
 
 	//Filter::IterativeBicubic((glm::vec4*)job.camera.film.results, camera.film.resolution, camera.film.resolutionMax);
 }

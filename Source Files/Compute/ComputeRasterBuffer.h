@@ -135,13 +135,15 @@ ComputeRasterBuffer<T>::ComputeRasterBuffer(const GPUDevice& device, size_type n
 
 
 template <class T>
-ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeRasterBuffer& other)
+ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeRasterBuffer& other) :
+	AbstractComputeBuffer(other)
 {
 	*this = other;
 }
 
 template <class T>
-ComputeRasterBuffer<T>::ComputeRasterBuffer(ComputeRasterBuffer<T>&& other) noexcept
+ComputeRasterBuffer<T>::ComputeRasterBuffer(ComputeRasterBuffer<T>&& other) noexcept :
+	AbstractComputeBuffer(other)
 {
 	*this = std::move(other);
 }

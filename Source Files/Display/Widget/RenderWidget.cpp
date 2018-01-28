@@ -5,14 +5,19 @@
 #include "Raster Engine/RasterBackend.h"
 #include "Input/InputManager.h"
 #include "Compute/ComputeBuffer.h"
+#include "Photography/Camera/Camera.h"
+#include "Ray Engine/RayEngine.h"
 
 /*
  *    Constructor.
  *    @param [in,out]	cameraIn	If non-null, the camera in.
  */
 
-RenderWidget::RenderWidget(uint& id)
-	: buffer(GPUManager::GetBestGPU()), accumulator(GPUManager::GetBestGPU()), extraData(GPUManager::GetBestGPU())
+RenderWidget::RenderWidget(uint& id): 
+	buffer(GPUManager::GetBestGPU()), 
+	accumulator(GPUManager::GetBestGPU()), 
+	extraData(GPUManager::GetBestGPU()),
+	time(0)
 {
 	widgetJob = RasterBackend::CreateJob();
 
@@ -67,15 +72,9 @@ RenderWidget::RenderWidget(uint& id)
 	integrate = false;
 	currentSize = glm::uvec2(312, 720);
 
-
 	rayJob = RayEngine::Instance().AddJob(RayCOLOUR, true, samples);
+
 	id = rayJob;
-}
-
-/* Destructor. */
-RenderWidget::~RenderWidget()
-{
-
 }
 
 /* Draws this object. */
@@ -112,15 +111,12 @@ void RenderWidget::Draw() {
 /* Recreate data. */
 void RenderWidget::RecreateData() {
 
-	uint jobsize = size.x*size.y;
+	const auto jobsize = size.x*size.y;
 
 	//create the new accumulation Buffer
 	accumulator.Resize(jobsize);
-
 	buffer.Resize(jobsize);
-
 	extraData.Resize(jobsize);
-
 
 	if (currentSize != size) {
 		currentSize = size;
@@ -133,9 +129,11 @@ void RenderWidget::RecreateData() {
 
 	//set job values
 	RayJob& job = RayEngine::Instance().GetJob(rayJob);
-	job.camera.aspectRatio = renderSize.x / (float)renderSize.y;
+
+	job.camera.aspectRatio = static_cast<float>(renderSize.x) / static_cast<float>(renderSize.y);
 	job.camera.film.resolution = renderSize;
 	job.camera.film.resolutionMax = renderSize;
 	job.camera.film.results = buffer.DataDevice();
 	job.camera.film.hits = extraData.DataDevice();
+
 }
