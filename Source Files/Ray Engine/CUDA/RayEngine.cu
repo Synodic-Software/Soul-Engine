@@ -747,27 +747,4 @@ namespace RayEngineCUDA {
 
 		} while (true);
 	}
-
-
-
-	__global__ void Test(int* nAtomic) {
-
-		uint index = getGlobalIdx_1D_1D();
-
-		if (index >= 500) {
-			return;
-		}
-
-		const auto val = FastAtomicAdd(nAtomic);
-	}
-
-	void LaunchTest(int* nAtomic) {
-
-		const auto blockSize = 64;
-		Test << <(500 + blockSize - 1) / blockSize, blockSize >> > (nAtomic);
-		CudaCheck(cudaPeekAtLastError());
-		CudaCheck(cudaDeviceSynchronize());
-
-	}
-
 }
