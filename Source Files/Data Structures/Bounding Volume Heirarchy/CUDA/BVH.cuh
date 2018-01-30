@@ -30,5 +30,5 @@ typedef struct BVHData {
 
 }BVHData;
 
-__global__ void BuildTree(uint n, BVHData* data, Node* nodes, uint64* mortonCodes, uint leafOffset);
-__global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, uint leafOffset);
+__global__ void BuildTree(uint, uint,BVHData*, Node*, uint64*);
+__global__ void Reset(uint, uint, Node*, Face*, Vertex*);
