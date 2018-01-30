@@ -9,58 +9,72 @@ __device__ uint HighestBit(uint i, uint64* morton)
 	return morton[i] ^ morton[i + 1];
 }
 
-__global__ void BuildTree(uint n, BVHData* data, Node* nodes, uint64* mortonCodes, uint leafOffset)
+__global__ void BuildTree(uint n, uint innerSize, BVHData* data, Node* nodes, uint64* mortonCodes)
 {
 	const uint index = getGlobalIdx_1D_1D();
 	if (index >= n) {
 		return;
 	}
 
-	Node* currentNode = nodes + (leafOffset + index);
-
+	uint nodeOffset = innerSize + index;
+	Node* nodePointer = nodes + nodeOffset;
+	Node currentNode = nodes[nodeOffset];
+	
 	while (true) {
 		// Allow only one thread to process a node
-		if (atomicAdd(&(currentNode->atomic), 1) != 1)
+		if (atomicAdd(&nodePointer->atomic, 1) != 1)
 			return;
 
-		// Set bounding box if the node is no leaf
-		if (currentNode - nodes < leafOffset)
+		// Set bounding box if the node is not a leaf
+		if (nodeOffset < innerSize)
 		{
-			currentNode->box.max = glm::max(currentNode->childLeft->box.max, currentNode->childRight->box.max);
-			currentNode->box.min = glm::min(currentNode->childLeft->box.min, currentNode->childRight->box.min);
+			const BoundingBox boxLeft = currentNode.childLeft->box;
+			const BoundingBox boxRight = currentNode.childRight->box;
+
+			currentNode.box.max = glm::max(boxLeft.max, boxRight.max);
+			currentNode.box.min = glm::min(boxLeft.min, boxRight.min);
+
+			nodes[nodeOffset] = currentNode;
 		}
 
-		uint left = currentNode->rangeLeft;
-		uint right = currentNode->rangeRight;
-
-		if (left == 0 && right == leafOffset) {
-			data->root = currentNode - nodes;
+		if (currentNode.rangeLeft == 0 && currentNode.rangeRight == innerSize) {
+			data->root = nodePointer - nodes;
 			return;
 		}
 
-		Node* parent;
-		if (left == 0 || (right < leafOffset && HighestBit(left - 1, mortonCodes) > HighestBit(right, mortonCodes)))
+		Node* parentPointer;
+
+		if (currentNode.rangeLeft == 0 || (currentNode.rangeRight < innerSize && HighestBit(currentNode.rangeLeft - 1, mortonCodes) > HighestBit(currentNode.rangeRight, mortonCodes)))
 		{
-			// parent = right, set parent left child and range to node
-			parent = nodes + right;
-			parent->childLeft = currentNode;
-			parent->rangeLeft = left;
+
+			// parent = right, set parent left child and range to node		
+			parentPointer = nodes + currentNode.rangeRight;
+			Node parent = *parentPointer;
+			parent.childLeft = nodePointer;
+			parent.rangeLeft = currentNode.rangeLeft;
+			*parentPointer = parent;
 
 		}
 		else
 		{
+
 			// parent = left -1, set parent right child and range to node
-			parent = nodes + (left - 1);
-			parent->childRight = currentNode;
-			parent->rangeRight = right;
+			parentPointer = nodes + (currentNode.rangeLeft - 1);
+			Node parent = *parentPointer;
+			parent.childRight = nodePointer;
+			parent.rangeRight = currentNode.rangeRight;
+			*parentPointer = parent;
+			
 		}
 
-		currentNode = parent;
+		nodePointer = parentPointer;
+		nodeOffset =  nodePointer - nodes;
+		currentNode = *nodePointer;
 	}
 }
 
 
-__global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64* mortonCodes, uint leafOffset)
+__global__ void Reset(uint n, uint innerSize, Node* nodes, Face* faces, Vertex* vertices)
 {
 	const uint index = getGlobalIdx_1D_1D();
 
@@ -68,32 +82,25 @@ __global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64
 		return;
 	}
 
-	Node temp;
 
-	// Set ranges
-	temp.rangeLeft = index;
-	temp.rangeRight = index;
-	temp.atomic = 1; // To allow the next thread to process
+	const uint leafOffset = innerSize + index;
 
-	if (index < leafOffset) {
-		Node tempF;
-
-		tempF.atomic = 0;
-		tempF.childLeft = nodes + leafOffset + index;
-		tempF.childRight = nodes + leafOffset + index + 1;
-
-		nodes[index] = tempF;
+	//set the inner node
+	if (index < innerSize) {
+		Node temp;
+		temp.atomic = 0; //inner nodes are not visited
+		temp.childLeft = nodes + leafOffset;
+		temp.childRight = temp.childRight + 1;
+		nodes[index] = temp;
 	}
 
-	// Set triangles in leaf
-	temp.faceID = index;
 
-	glm::uvec3 ind = faces[index].indices;
+	const glm::uvec3 ind = faces[index].indices;
 
 	// Expand bounds using min/max functions
-	glm::vec3 pos0 = vertices[ind.x].position;
-	glm::vec3 pos1 = vertices[ind.y].position;
-	glm::vec3 pos2 = vertices[ind.z].position;
+	const glm::vec3 pos0 = vertices[ind.x].position;
+	const glm::vec3 pos1 = vertices[ind.y].position;
+	const glm::vec3 pos2 = vertices[ind.z].position;
 
 	glm::vec3 max = pos0;
 	glm::vec3 min = pos0;
@@ -104,15 +111,16 @@ __global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64
 	max = glm::max(pos2, max);
 	min = glm::min(pos2, min);
 
+	//set the leaf node
+	Node temp;
+	temp.rangeLeft = index;
+	temp.rangeRight = index;
+	temp.atomic = 1; // To allow the next thread to process
+	temp.faceID = index; //set triangle
 	temp.box.max = max;
 	temp.box.min = min;
+	temp.childLeft = nullptr; //set termination
+	temp.childRight = nullptr; //set termination
 
-	nodes[leafOffset + index] = temp;
-
-	// Special case
-	if (n == 1)
-	{
-		nodes[0].box = nodes[leafOffset + 0].box;
-		nodes[0].childLeft = nodes + leafOffset + 0;
-	}
+	nodes[leafOffset] = temp;
 }
