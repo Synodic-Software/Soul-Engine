@@ -34,7 +34,7 @@ __global__ void BuildTree(uint n, BVHData* data, Node* nodes, uint64* mortonCode
 		uint right = currentNode->rangeRight;
 
 		if (left == 0 && right == leafOffset) {
-			data->root = currentNode;
+			data->root = currentNode - nodes;
 			return;
 		}
 
@@ -74,8 +74,6 @@ __global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64
 	temp.rangeLeft = index;
 	temp.rangeRight = index;
 	temp.atomic = 1; // To allow the next thread to process
-	temp.childLeft = nullptr;
-	temp.childRight = nullptr;
 
 	if (index < leafOffset) {
 		Node tempF;
@@ -94,14 +92,15 @@ __global__ void Reset(uint n, Node* nodes, Face* faces, Vertex* vertices, uint64
 
 	// Expand bounds using min/max functions
 	glm::vec3 pos0 = vertices[ind.x].position;
+	glm::vec3 pos1 = vertices[ind.y].position;
+	glm::vec3 pos2 = vertices[ind.z].position;
+
 	glm::vec3 max = pos0;
 	glm::vec3 min = pos0;
 
-	glm::vec3 pos1 = vertices[ind.y].position;
 	max = glm::max(pos1, max);
 	min = glm::min(pos1, min);
 
-	glm::vec3 pos2 = vertices[ind.z].position;
 	max = glm::max(pos2, max);
 	min = glm::min(pos2, min);
 

@@ -8,7 +8,7 @@
 
 typedef struct BVHData {
 
-	Node* root;
+	uint root;
 	uint currentSize;
 	Node* bvh;
 

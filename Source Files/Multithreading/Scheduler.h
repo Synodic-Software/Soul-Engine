@@ -6,8 +6,6 @@
 
 #include <boost/fiber/all.hpp>
 
-#include <iostream>
-
 //TODO: Implement boost Fiber: Work_stealing
 
 /*

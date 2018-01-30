@@ -402,7 +402,7 @@ namespace RayEngineCUDA {
 
 	__global__ void ExecuteJobs(uint n, Ray* rays, BVHData* bvhP, Vertex* vertices, Face* faces, int* counter) {
 
-		Node * traversalStack[STACK_SIZE];
+		Node* traversalStack[STACK_SIZE];
 		traversalStack[0] = nullptr; // Bottom-most entry.
 
 		float eps = exp2f(-80.0f);
@@ -533,7 +533,7 @@ namespace RayEngineCUDA {
 				// Setup traversal.
 				stackPtr = 0;
 				currentLeaf = nullptr;   // No postponed leaf.
-				currentNode = bvh.root;   // Start from the root.
+				currentNode = bvh.bvh + bvh.root;   // Start from the root.
 				ray.currentHit = uint(-1);  // No triangle intersected so far.
 			}
 
@@ -613,49 +613,49 @@ namespace RayEngineCUDA {
 
 
 					// Intersect the ray against the child nodes.
-					const float c0lox = (nearX0 - oodxNear0) * idirxNear;
-					const float c0hix = (farX0 - oodxFar0) * idirxFar;
-					const float c0loy = (nearY0 - oodyNear0) * idiryNear;
-					const float c0hiy = (farY0 - oodyFar0) * idiryFar;
-					const float c0loz = (nearZ0 - oodzNear0)   * idirzNear;
-					const float c0hiz = (farZ0 - oodzFar0)   * idirzFar;
-					const float c1loz = (nearZ1 - oodzNear1)   * idirzNear;
-					const float c1hiz = (farZ1 - oodzFar1)   * idirzFar;
-					const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
-					const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
+					const auto c0lox = (nearX0 - oodxNear0) * idirxNear;
+					const auto c0hix = (farX0 - oodxFar0) * idirxFar;
+					const auto c0loy = (nearY0 - oodyNear0) * idiryNear;
+					const auto c0hiy = (farY0 - oodyFar0) * idiryFar;
+					const auto c0loz = (nearZ0 - oodzNear0)   * idirzNear;
+					const auto c0hiz = (farZ0 - oodzFar0)   * idirzFar;
+					const auto c1loz = (nearZ1 - oodzNear1)   * idirzNear;
+					const auto c1hiz = (farZ1 - oodzFar1)   * idirzFar;
+					const auto c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
+					const auto c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
 
-					const float c1lox = (nearX1 - oodxNear1) * idirxNear;
-					const float c1hix = (farX1 - oodxFar1) * idirxFar;
-					const float c1loy = (nearY1 - oodyNear1) * idiryNear;
-					const float c1hiy = (farY1 - oodyFar1) * idiryFar;
-					const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
-					const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
+					const auto c1lox = (nearX1 - oodxNear1) * idirxNear;
+					const auto c1hix = (farX1 - oodxFar1) * idirxFar;
+					const auto c1loy = (nearY1 - oodyNear1) * idiryNear;
+					const auto c1hiy = (farY1 - oodyFar1) * idiryFar;
+					const auto c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
+					const auto c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
 
 #else
 
-					const float c0lox = b0Min.x * idirx - oodx;
-					const float c0hix = b0Max.x * idirx - oodx;
-					const float c0loy = b0Min.y * idiry - oody;
-					const float c0hiy = b0Max.y * idiry - oody;
-					const float c0loz = b0Min.z   * idirz - oodz;
-					const float c0hiz = b0Max.z   * idirz - oodz;
-					const float c1loz = b1Min.z   * idirz - oodz;
-					const float c1hiz = b1Max.z   * idirz - oodz;
-					const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
-					const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
-					const float c1lox = b1Min.x * idirx - oodx;
-					const float c1hix = b1Max.x * idirx - oodx;
-					const float c1loy = b1Min.y * idiry - oody;
-					const float c1hiy = b1Max.y * idiry - oody;
-					const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
-					const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
+					const auto c0lox = b0Min.x * idirx - oodx;
+					const auto c0hix = b0Max.x * idirx - oodx;
+					const auto c0loy = b0Min.y * idiry - oody;
+					const auto c0hiy = b0Max.y * idiry - oody;
+					const auto c0loz = b0Min.z   * idirz - oodz;
+					const auto c0hiz = b0Max.z   * idirz - oodz;
+					const auto c1loz = b1Min.z   * idirz - oodz;
+					const auto c1hiz = b1Max.z   * idirz - oodz;
+					const auto c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
+					const auto c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
+					const auto c1lox = b1Min.x * idirx - oodx;
+					const auto c1hix = b1Max.x * idirx - oodx;
+					const auto c1loy = b1Min.y * idiry - oody;
+					const auto c1hiy = b1Max.y * idiry - oody;
+					const auto c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
+					const auto c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
 
 #endif
 
-					bool swp = (c1min < c0min);
+					const auto swp = c1min < c0min;
 
-					bool traverseChild0 = (c0max >= c0min);
-					bool traverseChild1 = (c1max >= c1min);
+					const auto traverseChild0 = c0max >= c0min;
+					const auto traverseChild1 = c1max >= c1min;
 
 
 					if (!traverseChild0 && !traverseChild1)
@@ -700,8 +700,8 @@ namespace RayEngineCUDA {
 
 				while (bvh.IsLeaf(currentLeaf))
 				{
-					const uint faceID = currentLeaf->faceID;
-					const glm::uvec3 face = faces[faceID].indices;
+					const auto faceID = currentLeaf->faceID;
+					const auto face = faces[faceID].indices;
 
 					float bary1;
 					float bary2;
@@ -709,10 +709,10 @@ namespace RayEngineCUDA {
 
 #if defined	WOOP_TRI
 
-					const bool test = FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
+					const auto test = FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
 						ray.origin, kx, ky, kz, Sx, Sy, Sz,
 #else
-					const bool test = FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
+					const auto test = FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
 						ray.origin, ray.direction, { idirx, idiry, idirz },
 #endif
 						tTemp, ray.direction.w, bary1, bary2);

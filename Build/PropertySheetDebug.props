@@ -63,7 +63,7 @@
       <GPUDebugInfo>true</GPUDebugInfo>
       <PtxAsOptionV>false</PtxAsOptionV>
       <Runtime>InheritFromHost</Runtime>
-      <AdditionalOptions>-Wno-deprecated-gpu-targets --default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wno-deprecated-gpu-targets --default-stream per-thread --expt-extended-lambda %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <CudaLink>
       <Optimization>Od</Optimization>
