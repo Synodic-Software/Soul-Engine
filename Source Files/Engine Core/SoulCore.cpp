@@ -7,7 +7,7 @@
 #include "Utility/Logger.h"
 #include "Engine Core/Frame/Frame.h"
 #include "Physics Engine\PhysicsEngine.h"
-#include "Compute\GPUManager.h"
+#include "Compute\ComputeManager.h"
 #include "Display\Window\WindowManager.h"
 #include "Display\Layout\SingleLayout.h"
 #include "Display\Widget\RenderWidget.h"
@@ -62,7 +62,7 @@ namespace Soul {
 		//create the listener for threads initializeing
 		EventManager::Listen("Thread", "Initialize", []()
 		{
-			GPUManager::InitThread();
+			ComputeManager::Instance().InitThread();
 		});
 
 		//setup the multithreader
@@ -85,7 +85,7 @@ namespace Soul {
 
 		//extract all available GPU devices
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			GPUManager::ExtractDevices();
+			ComputeManager::Instance().ExtractDevices();
 		});
 
 		//set the error callback
@@ -142,7 +142,7 @@ namespace Soul {
 
 		//extract all available GPU devices
 		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			GPUManager::DestroyDevices();
+			ComputeManager::Instance().DestroyDevices();
 		});
 
 		Scheduler::Block();

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Compute/GPUDevice.h"
+#include "Compute/ComputeDevice.h"
 #include "Compute/GPUTextureBase.h"
 
 #include "Compute/CUDA/CUDATexture.h"
@@ -24,7 +24,7 @@ public:
 	 *    @param 		 	_objectCount	(Optional) Number of objects.
 	 */
 
-	GPUTexture(const GPUDevice& deviceIn, uint _size = 0) {
+	GPUTexture(const ComputeDevice& deviceIn, uint _size = 0) {
 
 	}
 

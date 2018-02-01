@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Compute/GPUDevice.h"
+#include "Compute/ComputeDevice.h"
 
 #include "DeviceBuffer.h"
 /*
@@ -16,7 +16,7 @@ class DeviceRasterBuffer : public virtual  DeviceBuffer<T> {
 public:
 
 
-	DeviceRasterBuffer(const GPUDevice& deviceIn);
+	DeviceRasterBuffer(const ComputeDevice& deviceIn);
 
 	virtual ~DeviceRasterBuffer();
 
@@ -31,7 +31,7 @@ public:
 };
 
 template <class T>
-DeviceRasterBuffer<T>::DeviceRasterBuffer(const GPUDevice& deviceIn):
+DeviceRasterBuffer<T>::DeviceRasterBuffer(const ComputeDevice& deviceIn):
 	DeviceBuffer(deviceIn) 
 {
 

@@ -5,25 +5,15 @@
 #include "Utility/CUDA/CudaHelper.cuh"
 
 
-/* Number of devices */
-static int deviceCount;
+void CUDABackend::ExtractDevices(std::vector<ComputeDevice>& devices) {
 
-
-/*
- *    Extracts the devices described by devices.
- *    @param [in,out]	devices	The devices.
- */
-
-void CUDABackend::ExtractDevices(std::vector<CUDADevice>& devices) {
+	int deviceCount;
 	cudaError_t error = cudaGetDeviceCount(&deviceCount);
-
-	if (deviceCount == 0) {
-		return;
-	}
 
 	for (int dev = 0; dev < deviceCount; ++dev) {
 
-		devices.push_back(dev);
+		//TODO update order and id arguments
+		devices.emplace_back(CUDA_API,dev, dev);
 
 	}
 }
@@ -31,9 +21,4 @@ void CUDABackend::ExtractDevices(std::vector<CUDADevice>& devices) {
 /* Initializes the thread. */
 void CUDABackend::InitThread() {
 	cudaSetDevice(0);
-}
-
-/* Terminates this object. */
-void CUDABackend::Terminate() {
-	CudaCheck(cudaDeviceReset());
 }

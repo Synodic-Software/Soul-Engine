@@ -28,8 +28,8 @@ __global__ void BuildTree(uint n, uint innerSize, BVHData* data, Node* nodes, ui
 		// Set bounding box if the node is not a leaf
 		if (nodeOffset < innerSize)
 		{
-			const BoundingBox boxLeft = currentNode.childLeft->box;
-			const BoundingBox boxRight = currentNode.childRight->box;
+			const BoundingBox boxLeft = nodes[currentNode.childLeft].box;
+			const BoundingBox boxRight = nodes[currentNode.childRight].box;
 
 			currentNode.box.max = glm::max(boxLeft.max, boxRight.max);
 			currentNode.box.min = glm::min(boxLeft.min, boxRight.min);
@@ -38,19 +38,20 @@ __global__ void BuildTree(uint n, uint innerSize, BVHData* data, Node* nodes, ui
 		}
 
 		if (currentNode.rangeLeft == 0 && currentNode.rangeRight == innerSize) {
-			data->root = nodePointer - nodes;
+			data->root = nodeOffset;
 			return;
 		}
 
 		Node* parentPointer;
 
-		if (currentNode.rangeLeft == 0 || (currentNode.rangeRight < innerSize && HighestBit(currentNode.rangeLeft - 1, mortonCodes) > HighestBit(currentNode.rangeRight, mortonCodes)))
+		if (currentNode.rangeLeft == 0 || currentNode.rangeRight < innerSize && 
+			HighestBit(currentNode.rangeLeft - 1, mortonCodes) > HighestBit(currentNode.rangeRight, mortonCodes))
 		{
 
 			// parent = right, set parent left child and range to node		
 			parentPointer = nodes + currentNode.rangeRight;
 			Node parent = *parentPointer;
-			parent.childLeft = nodePointer;
+			parent.childLeft = nodeOffset;
 			parent.rangeLeft = currentNode.rangeLeft;
 			*parentPointer = parent;
 
@@ -61,7 +62,7 @@ __global__ void BuildTree(uint n, uint innerSize, BVHData* data, Node* nodes, ui
 			// parent = left -1, set parent right child and range to node
 			parentPointer = nodes + (currentNode.rangeLeft - 1);
 			Node parent = *parentPointer;
-			parent.childRight = nodePointer;
+			parent.childRight = nodeOffset;
 			parent.rangeRight = currentNode.rangeRight;
 			*parentPointer = parent;
 			
@@ -89,8 +90,8 @@ __global__ void Reset(uint n, uint innerSize, Node* nodes, Face* faces, Vertex* 
 	if (index < innerSize) {
 		Node temp;
 		temp.atomic = 0; //inner nodes are not visited
-		temp.childLeft = nodes + leafOffset;
-		temp.childRight = temp.childRight + 1;
+		temp.childLeft = leafOffset;
+		temp.childRight = leafOffset + 1;
 		nodes[index] = temp;
 	}
 
@@ -119,8 +120,8 @@ __global__ void Reset(uint n, uint innerSize, Node* nodes, Face* faces, Vertex* 
 	temp.faceID = index; //set triangle
 	temp.box.max = max;
 	temp.box.min = min;
-	temp.childLeft = nullptr; //set termination
-	temp.childRight = nullptr; //set termination
+	temp.childLeft = static_cast<uint>(-1); //set termination
+	temp.childRight = static_cast<uint>(-1); //set termination
 
 	nodes[leafOffset] = temp;
 }

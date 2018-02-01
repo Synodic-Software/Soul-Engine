@@ -1,7 +1,7 @@
 #include "Node.cuh"
 
 Node::Node():
-	childLeft(nullptr),
-	childRight(nullptr)
+	childLeft(-1),
+	childRight(-1)
 {
 }

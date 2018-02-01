@@ -8,7 +8,7 @@
 
 #include "Compute/AbstractComputeBuffer.h"
 
-#include "Compute/GPUDevice.h"
+#include "Compute/ComputeDevice.h"
 #include "Compute/DeviceBuffer.h"
 
 #include "Compute/CUDA/CUDABuffer.h"
@@ -45,9 +45,9 @@ public:
 
 	//Construction and Destruction 
 
-	ComputeBuffer(const GPUDevice&);
-	ComputeBuffer(const GPUDevice&, size_type);
-	ComputeBuffer(const GPUDevice&, size_type, const T&);
+	ComputeBuffer(const ComputeDevice&);
+	ComputeBuffer(const ComputeDevice&, size_type);
+	ComputeBuffer(const ComputeDevice&, size_type, const T&);
 	ComputeBuffer(const ComputeBuffer&);
 	ComputeBuffer(ComputeBuffer&&) noexcept;
 
@@ -62,7 +62,7 @@ public:
 
 	//Data Migration
 
-	void Move(const GPUDevice&) override;
+	void Move(const ComputeDevice&) override;
 
 	void TransferToHost() override;
 	void TransferToDevice() override;
@@ -93,41 +93,41 @@ private:
 };
 
 template <class T>
-ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device) :
+ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device) :
 	AbstractComputeBuffer(device)
 {
 
-	if (device.GetAPI() == CUDA_API) {
+	if (device.GetBackend() == CUDA_API) {
 		deviceBuffer.reset(new CUDABuffer<T>(device));
 	}
-	else if (device.GetAPI() == OPENCL_API) {
+	else if (device.GetBackend() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device));
 	}
 
 }
 
 template <class T>
-ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device, size_type n) :
+ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device, size_type n) :
 	AbstractComputeBuffer(device, n)
 {
 
-	if (device.GetAPI() == CUDA_API) {
+	if (device.GetBackend() == CUDA_API) {
 		deviceBuffer.reset(new CUDABuffer<T>(device, n));
 	}
-	else if (device.GetAPI() == OPENCL_API) {
+	else if (device.GetBackend() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device, n));
 	}
 
 }
 
 template <class T>
-ComputeBuffer<T>::ComputeBuffer(const GPUDevice& device, size_type n, const T &val) :
+ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device, size_type n, const T &val) :
 	AbstractComputeBuffer(device, n, val)
 {
-	if (device.GetAPI() == CUDA_API) {
+	if (device.GetBackend() == CUDA_API) {
 		deviceBuffer.reset(new CUDABuffer<T>(device, n, val));
 	}
-	else if (device.GetAPI() == OPENCL_API) {
+	else if (device.GetBackend() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device, n, val));
 	}
 }
@@ -162,11 +162,11 @@ ComputeBuffer<T>& ComputeBuffer<T>::operator= (const ComputeBuffer<T>& other)
 
 	AbstractComputeBuffer<T>::operator=(other);
 
-	if (other.deviceBuffer->GetAPI() == CUDA_API) {
+	if (other.deviceBuffer->GetBackend() == CUDA_API) {
 		CUDABuffer<T> temp = *dynamic_cast<CUDABuffer<T>*>(other.deviceBuffer.get());
 		deviceBuffer.reset(new CUDABuffer<T>(temp));
 	}
-	else if (other.deviceBuffer->GetAPI() == OPENCL_API)
+	else if (other.deviceBuffer->GetBackend() == OPENCL_API)
 	{
 		OpenCLBuffer<T> temp = *dynamic_cast<OpenCLBuffer<T>*>(other.deviceBuffer.get());
 		deviceBuffer.reset(new OpenCLBuffer<T>(temp));
@@ -183,17 +183,17 @@ ComputeBuffer<T>& ComputeBuffer<T>::operator= (const ComputeBuffer<T>& other)
  * @param	devices	The devices to transfer to.
  */
 template <class T>
-void ComputeBuffer<T>::Move(const GPUDevice& device) {
+void ComputeBuffer<T>::Move(const ComputeDevice& device) {
 
 	if (deviceBuffer) {
 		deviceBuffer->Move(device);
 	}
 	else
 	{
-		if (device.GetAPI() == CUDA_API) {
+		if (device.GetBackend() == CUDA_API) {
 			deviceBuffer.reset(new CUDABuffer<T>(device));
 		}
-		else if (device.GetAPI() == OPENCL_API)
+		else if (device.GetBackend() == OPENCL_API)
 		{
 			deviceBuffer.reset(new OpenCLBuffer<T>(device));
 		}

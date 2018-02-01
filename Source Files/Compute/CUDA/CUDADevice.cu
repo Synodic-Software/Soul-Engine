@@ -5,22 +5,20 @@
  *    @param	o	An uint to process.
  */
 
-CUDADevice::CUDADevice(uint deviceNumber) :
-	GPUDeviceBase(deviceNumber)
+CUDADevice::CUDADevice(int id_) :
+	AbstractComputeDevice()
 {
+	deviceID = id_;
 
-	api = CUDA_API;
-
-	CudaCheck(cudaSetDevice(deviceNumber));
-	CudaCheck(cudaGetDeviceProperties(&deviceProperties, deviceNumber));
-	CudaCheck(cudaSetDevice(0));
+	CudaCheck(cudaSetDevice(deviceID));
+	CudaCheck(cudaGetDeviceProperties(&deviceProperties, deviceID));
 
 }
 
 /* Destructor. */
 CUDADevice::~CUDADevice() {
 
-	cudaSetDevice(order);
+	cudaSetDevice(deviceID);
 	cudaDeviceReset();
 
 }

@@ -11,7 +11,7 @@ class CUDATexture :public GPUTextureBase<T> {
 
 public:
 
-	CUDATexture(const GPUDevice& _device, uint _byteCount)
+	CUDATexture(const ComputeDevice& _device, uint _byteCount)
 		: GPUTextureBase(_device, _byteCount) {
 
 	}

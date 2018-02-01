@@ -6,7 +6,7 @@
 #include "Raster Engine\RasterBackend.h"
 #include "Raster Engine\OpenGL\OpenGLBuffer.h"
 
-#include "Compute\GPUDevice.h"
+#include "Compute\ComputeDevice.h"
 #include "Utility/CUDA/CudaHelper.cuh"
 
 #include <cuda_runtime_api.h>
@@ -26,7 +26,7 @@ public:
 
 	//Construction and Destruction 
 	
-	CUDARasterBuffer(const GPUDevice&);
+	CUDARasterBuffer(const ComputeDevice&);
 
 	~CUDARasterBuffer();
 
@@ -41,7 +41,7 @@ public:
 
 	void Resize(uint) override;
 
-	void Move(const GPUDevice&) override;
+	void Move(const ComputeDevice&) override;
 
 private:
 
@@ -52,7 +52,7 @@ private:
 };
 
 template <class T>
-CUDARasterBuffer<T>::CUDARasterBuffer(const GPUDevice& device):
+CUDARasterBuffer<T>::CUDARasterBuffer(const ComputeDevice& device):
 	DeviceRasterBuffer(device),
 	CUDABuffer(device),
 	DeviceBuffer(device),
@@ -185,7 +185,7 @@ void CUDARasterBuffer<T>::Resize(uint newSize)
 }
 
 template <class T>
-void CUDARasterBuffer<T>::Move(const GPUDevice&)
+void CUDARasterBuffer<T>::Move(const ComputeDevice&)
 {
 	
 }

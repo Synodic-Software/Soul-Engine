@@ -1,6 +1,6 @@
 #include "PhysicsEngine.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "Compute/GPUManager.h"
+#include "Compute/ComputeManager.h"
 
 //typedef struct {
 //
@@ -96,7 +96,7 @@
 //
 //__host__ void ProcessScene(ComputeBuffer<BVHData>& bvh){
 //
-//	collisions.Move(GPUManager::GetBestGPU());
+//	collisions.Move(S_BEST_GPU);
 //
 //	//uint n = bvh->currentSize;
 //

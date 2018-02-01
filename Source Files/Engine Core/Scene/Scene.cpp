@@ -8,19 +8,19 @@
 
 #include "Algorithms\Morton Code\MortonCode.h"
 
-#include "Compute/GPUManager.h"
+#include "Compute/ComputeManager.h"
 #include "Algorithms/Data Algorithms/GPU Sort/Sort.h"
 
 Scene::Scene():
-	bvhData(GPUManager::GetBestGPU()),
-	sky(GPUManager::GetBestGPU()),
-	faces(GPUManager::GetBestGPU()),
-	vertices(GPUManager::GetBestGPU()),
-	tets(GPUManager::GetBestGPU()),
-	materials(GPUManager::GetBestGPU()),
-	objects(GPUManager::GetBestGPU()),
-	bvh(GPUManager::GetBestGPU()),
-	mortonCodes(GPUManager::GetBestGPU())
+	bvhData(S_BEST_GPU),
+	sky(S_BEST_GPU),
+	faces(S_BEST_GPU),
+	vertices(S_BEST_GPU),
+	tets(S_BEST_GPU),
+	materials(S_BEST_GPU),
+	objects(S_BEST_GPU),
+	bvh(S_BEST_GPU),
+	mortonCodes(S_BEST_GPU)
 {
 
 	bvh.Resize(1);
@@ -37,7 +37,7 @@ __host__ void Scene::Build(double deltaTime) {
 	auto size = faces.SizeHost();
 	if (size > 0) {
 
-		GPUDevice device = GPUManager::GetBestGPU();
+		ComputeDevice device = S_BEST_GPU;
 
 		const auto blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);

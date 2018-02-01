@@ -1,7 +1,7 @@
 #include "Photography/Film/CUDA/Film.cuh"
 #include "stdio.h"
 
-//results(GPUManager::GetBestGPU())
+//results(S_BEST_GPU)
 Film::Film(){
 	resolutionRatio = 1.0f;
 }

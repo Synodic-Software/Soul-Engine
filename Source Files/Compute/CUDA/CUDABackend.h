@@ -1,27 +1,16 @@
 #pragma once
 
 #include <vector>
-#include "Compute/GPUBackendBase.h"
+#include "Compute/AbstractComputeBackend.h"
 
-/* . */
-class CUDABackend : public GPUBackendBase {
+class CUDABackend : public AbstractComputeBackend {
 
 public:
 
-	/*
-	 *    Extracts the devices described by parameter1.
-	 *    @param [in,out]	parameter1	The first parameter.
-	 */
+	~CUDABackend() = default;
 
-	void ExtractDevices(std::vector<CUDADevice>&);
+	void ExtractDevices(std::vector<ComputeDevice>&) override;
 
-	/* Initializes the thread. */
-	void InitThread();
-
-	/* Terminates this object. */
-	void Terminate();
-
-
-private:
+	void InitThread() override;
 
 };
