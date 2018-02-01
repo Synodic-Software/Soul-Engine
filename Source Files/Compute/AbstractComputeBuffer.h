@@ -6,7 +6,7 @@
 */
 
 
-#include "Compute/GPUDevice.h"
+#include "Compute/ComputeDevice.h"
 
 #include "Utility/Logger.h"
 
@@ -38,9 +38,9 @@ public:
 
 	//Construction and Destruction 
 
-	AbstractComputeBuffer(const GPUDevice&);
-	AbstractComputeBuffer(const GPUDevice&, size_type);
-	AbstractComputeBuffer(const GPUDevice&, size_type, const T&);
+	AbstractComputeBuffer(const ComputeDevice&);
+	AbstractComputeBuffer(const ComputeDevice&, size_type);
+	AbstractComputeBuffer(const ComputeDevice&, size_type, const T&);
 	AbstractComputeBuffer(const AbstractComputeBuffer&);
 	AbstractComputeBuffer(AbstractComputeBuffer&&) noexcept;
 
@@ -63,7 +63,7 @@ public:
 
 	//Data Migration
 
-	virtual void Move(const GPUDevice&) = 0;
+	virtual void Move(const ComputeDevice&) = 0;
 
 	virtual void TransferToHost() = 0;
 	virtual void TransferToDevice() = 0;
@@ -156,20 +156,20 @@ protected:
 };
 
 template <class T>
-AbstractComputeBuffer<T>::AbstractComputeBuffer(const GPUDevice& device) :
+AbstractComputeBuffer<T>::AbstractComputeBuffer(const ComputeDevice& device) :
 	flags(0)
 {
 }
 
 template <class T>
-AbstractComputeBuffer<T>::AbstractComputeBuffer(const GPUDevice& device, size_type n) :
+AbstractComputeBuffer<T>::AbstractComputeBuffer(const ComputeDevice& device, size_type n) :
 	hostBuffer(n),
 	flags(0)
 {
 }
 
 template <class T>
-AbstractComputeBuffer<T>::AbstractComputeBuffer(const GPUDevice& device, size_type n, const T &val) :
+AbstractComputeBuffer<T>::AbstractComputeBuffer(const ComputeDevice& device, size_type n, const T &val) :
 	hostBuffer(n, val),
 	flags(0)
 {

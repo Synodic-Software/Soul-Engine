@@ -2,18 +2,18 @@
 #include "CUDA/RayEngine.cuh"
 
 #include "Algorithms/Filters/Filter.h"
-#include "Compute/GPUManager.h"
+#include "Compute/ComputeManager.h"
 
 #include "CUDA/RayEngine.cuh"
 
 RayEngine::RayEngine():
-jobList(GPUManager::GetBestGPU()),
-deviceRaysA(GPUManager::GetBestGPU()),
-deviceRaysB(GPUManager::GetBestGPU()),
-randomState(GPUManager::GetBestGPU()),
-counter(GPUManager::GetBestGPU()),
+jobList(S_BEST_GPU),
+deviceRaysA(S_BEST_GPU),
+deviceRaysB(S_BEST_GPU),
+randomState(S_BEST_GPU),
+counter(S_BEST_GPU),
 rayDepth(3),
-hitAtomic(GPUManager::GetBestGPU()),
+hitAtomic(S_BEST_GPU),
 frameHold(5),
 raySeedGl(0),
 oldRenderTime(0)
@@ -22,7 +22,7 @@ oldRenderTime(0)
 	counter.Resize(1);
 	hitAtomic.Resize(1);
 
-	persistantPolicy = GPUManager::GetBestGPU().BestExecutePolicy(RayEngineCUDA::ExecuteJobs);
+	persistantPolicy = S_BEST_GPU.BestExecutePolicy(RayEngineCUDA::ExecuteJobs);
 
 	///////////////Alternative Hardcoded Calculation/////////////////
 	//uint blockPerSM = CUDABackend::GetBlocksPerMP();
@@ -194,7 +194,7 @@ void RayEngine::Process(Scene& scene, double target) {
 
 			//clear the jobs result memory, required for accumulation of multiple samples
 
-			GPUDevice device = GPUManager::GetBestGPU();
+			ComputeDevice device = S_BEST_GPU;
 
 			const uint blockSize = 64;
 			const GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);

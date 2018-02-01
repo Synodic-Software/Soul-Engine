@@ -547,8 +547,8 @@ namespace RayEngineCUDA {
 				{
 					// Fetch AABBs of the two child nodes.
 
-					Node* childL = currentNode->childLeft;
-					Node* childR = currentNode->childRight;
+					Node* childL = bvh.bvh + currentNode->childLeft;
+					Node* childR = bvh.bvh + currentNode->childRight;
 
 					glm::vec3  b0Min = childL->box.min;
 					glm::vec3  b0Max = childL->box.max;

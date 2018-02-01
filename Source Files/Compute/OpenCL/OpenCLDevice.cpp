@@ -1,19 +1,10 @@
 #include "OpenCLDevice.h"
 
-/*
- *    Constructor.
- *    @param	o	An uint to process.
- */
-
-OpenCLDevice::OpenCLDevice(uint o) :
-	GPUDeviceBase(o)
+OpenCLDevice::OpenCLDevice(uint id_) :
+	AbstractComputeDevice()
 {
-
-	api = OPENCL_API;
-
 }
 
-/* Destructor. */
 OpenCLDevice::~OpenCLDevice() {
 
 

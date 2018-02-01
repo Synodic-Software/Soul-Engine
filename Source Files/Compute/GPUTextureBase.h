@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Compute/GPUDevice.h"
+#include "Compute/ComputeDevice.h"
 #include "glm/glm.hpp"
 
 
@@ -10,7 +10,7 @@ class GPUTextureBase {
 public:
 
 
-	GPUTextureBase(const GPUDevice& deviceIn, uint _size = 0) {
+	GPUTextureBase(const ComputeDevice& deviceIn, uint _size = 0) {
 
 
 

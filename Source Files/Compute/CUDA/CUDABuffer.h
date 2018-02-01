@@ -18,14 +18,14 @@ public:
 
 	//Construction and Destruction 
 
-	CUDABuffer(const GPUDevice&);
+	CUDABuffer(const ComputeDevice&);
 	
 	~CUDABuffer();
 
 
 	//Data Migration
 
-	void Move(const GPUDevice&) override;
+	void Move(const ComputeDevice&) override;
 
 	void TransferToHost(std::vector<T>&) override;
 	void TransferToDevice(std::vector<T>&) override;
@@ -61,7 +61,7 @@ private:
 };
 
 template <class T>
-CUDABuffer<T>::CUDABuffer(const GPUDevice& device):
+CUDABuffer<T>::CUDABuffer(const ComputeDevice& device):
 	DeviceBuffer(device),
 	buffer(nullptr)
 {
@@ -75,7 +75,7 @@ CUDABuffer<T>::~CUDABuffer() {
 }
 
 template <class T>
-void CUDABuffer<T>::Move(const GPUDevice& device)
+void CUDABuffer<T>::Move(const ComputeDevice& device)
 {
 	//TODO implement memory transfer
 	S_LOG_FATAL("Not implemented");

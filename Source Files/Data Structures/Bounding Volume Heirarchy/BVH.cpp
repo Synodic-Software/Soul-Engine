@@ -1,9 +1,9 @@
 #include "BVH.h"
 #include "CUDA/BVH.cuh"
-#include "Compute/GPUManager.h"
+#include "Compute/ComputeManager.h"
 
 BVH::BVH() :
-	bvh(GPUManager::GetBestGPU())
+	bvh(S_BEST_GPU)
 {
 
 }
@@ -20,7 +20,7 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 		data[0].bvh = bvh.DataDevice();
 		data.TransferToDevice();
 
-		GPUDevice device = GPUManager::GetBestGPU();
+		ComputeDevice device = S_BEST_GPU;
 
 		const uint blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);

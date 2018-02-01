@@ -11,8 +11,8 @@ public:
 
 	__device__ __host__ Node();
 
-	Node* childLeft;
-	Node* childRight;
+	uint childLeft;
+	uint childRight;
 
 	BoundingBox box;
 

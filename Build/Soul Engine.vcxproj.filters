@@ -576,22 +576,10 @@
     <ClInclude Include="..\Source Files\Compute\DeviceBuffer.h">
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Compute\GPUBackendBase.h">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Compute\GPUDevice.h">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Compute\GPUDeviceBase.h">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Compute\GPUExecutePolicy.h">
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Compute\GPUKernel.h">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Compute\GPUManager.h">
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Compute\GPUTexture.h">
@@ -640,6 +628,18 @@
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Compute\AbstractComputeBuffer.h">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Compute\ComputeDevice.h">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Compute\AbstractComputeDevice.h">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Compute\AbstractComputeBackend.h">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Compute\ComputeManager.h">
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
   </ItemGroup>
@@ -782,22 +782,10 @@
     <ClCompile Include="..\Source Files\Compute\DeviceBuffer.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Compute\GPUBackendBase.cpp">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Compute\GPUDevice.cpp">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Compute\GPUDeviceBase.cpp">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Compute\GPUExecutePolicy.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Compute\GPUKernel.cpp">
-      <Filter>Engine Backend\Compute</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Compute\GPUManager.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Compute\GPUTexture.cpp">
@@ -846,6 +834,18 @@
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Compute\AbstractComputeBuffer.cpp">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Compute\ComputeDevice.cpp">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Compute\AbstractComputeDevice.cpp">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Compute\AbstractComputeBackend.cpp">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Compute\ComputeManager.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
   </ItemGroup>

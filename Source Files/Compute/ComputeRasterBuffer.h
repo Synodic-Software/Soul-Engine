@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AbstractComputeBuffer.h"
-#include "Compute\GPUDevice.h"
+#include "Compute\ComputeDevice.h"
 
 #include "Compute\CUDA\CUDARasterBuffer.h"
 #include "Compute\OpenCL\OpenCLRasterBuffer.h"
@@ -31,9 +31,9 @@ public:
 	//Construction and Destruction 
 
 	ComputeRasterBuffer();
-	ComputeRasterBuffer(const GPUDevice&);
-	ComputeRasterBuffer(const GPUDevice&, size_type);
-	ComputeRasterBuffer(const GPUDevice&, size_type, const T&);
+	ComputeRasterBuffer(const ComputeDevice&);
+	ComputeRasterBuffer(const ComputeDevice&, size_type);
+	ComputeRasterBuffer(const ComputeDevice&, size_type, const T&);
 	ComputeRasterBuffer(const ComputeRasterBuffer&);
 	ComputeRasterBuffer(ComputeRasterBuffer&&) noexcept;
 
@@ -48,7 +48,7 @@ public:
 
 	//Data Migration
 
-	void Move(const GPUDevice&) override;
+	void Move(const ComputeDevice&) override;
 
 	void TransferToHost() override;
 	void TransferToDevice() override;
@@ -94,41 +94,41 @@ ComputeRasterBuffer<T>::ComputeRasterBuffer() :
 }
 
 template <class T>
-ComputeRasterBuffer<T>::ComputeRasterBuffer(const GPUDevice& device) :
+ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device) :
 	AbstractComputeBuffer(device)
 {
 
-	if (device.GetAPI() == CUDA_API) {
+	if (device.GetBackend() == CUDA_API) {
 		buffer.reset(new CUDARasterBuffer<T>(device));
 	}
-	else if (device.GetAPI() == OPENCL_API) {
+	else if (device.GetBackend() == OPENCL_API) {
 		buffer.reset(new OpenCLRasterBuffer<T>(device));
 	}
 
 }
 
 template <class T>
-ComputeRasterBuffer<T>::ComputeRasterBuffer(const GPUDevice& device, size_type n) :
+ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device, size_type n) :
 	AbstractComputeBuffer(device, n)
 {
 
-	if (device.GetAPI() == CUDA_API) {
+	if (device.GetBackend() == CUDA_API) {
 		buffer.reset(new CUDARasterBuffer<T>(device, n));
 	}
-	else if (device.GetAPI() == OPENCL_API) {
+	else if (device.GetBackend() == OPENCL_API) {
 		buffer.reset(new OpenCLRasterBuffer<T>(device, n));
 	}
 
 }
 
 template <class T>
-ComputeRasterBuffer<T>::ComputeRasterBuffer(const GPUDevice& device, size_type n, const T &val) :
+ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device, size_type n, const T &val) :
 	AbstractComputeBuffer(device, n, val)
 {
-	if (device.GetAPI() == CUDA_API) {
+	if (device.GetBackend() == CUDA_API) {
 		buffer.reset(new CUDARasterBuffer<T>(device, n, val));
 	}
-	else if (device.GetAPI() == OPENCL_API) {
+	else if (device.GetBackend() == OPENCL_API) {
 		buffer.reset(new OpenCLRasterBuffer<T>(device, n, val));
 	}
 }
@@ -163,11 +163,11 @@ ComputeRasterBuffer<T>& ComputeRasterBuffer<T>::operator= (const ComputeRasterBu
 
 	AbstractComputeBuffer<T>::operator=(other);
 
-	if (other.buffer->GetAPI() == CUDA_API) {
+	if (other.buffer->GetBackend() == CUDA_API) {
 		CUDARasterBuffer<T> temp = *static_cast<CUDARasterBuffer<T>*>(other.buffer.get());
 		buffer.reset(new CUDARasterBuffer<T>(temp));
 	}
-	else if (other.buffer->GetAPI() == OPENCL_API)
+	else if (other.buffer->GetBackend() == OPENCL_API)
 	{
 		OpenCLRasterBuffer<T> temp = *static_cast<OpenCLRasterBuffer<T>*>(other.buffer.get());
 		buffer.reset(new OpenCLRasterBuffer<T>(temp));
@@ -184,17 +184,17 @@ ComputeRasterBuffer<T>& ComputeRasterBuffer<T>::operator= (const ComputeRasterBu
 * @param	devices	The devices to transfer to.
 */
 template <class T>
-void ComputeRasterBuffer<T>::Move(const GPUDevice& device) {
+void ComputeRasterBuffer<T>::Move(const ComputeDevice& device) {
 
 	if (buffer) {
 		buffer->Move(device);
 	}
 	else
 	{
-		if (device.GetAPI() == CUDA_API) {
+		if (device.GetBackend() == CUDA_API) {
 			buffer.reset(new CUDARasterBuffer<T>(device));
 		}
-		else if (device.GetAPI() == OPENCL_API)
+		else if (device.GetBackend() == OPENCL_API)
 		{
 			buffer.reset(new OpenCLRasterBuffer<T>(device));
 		}

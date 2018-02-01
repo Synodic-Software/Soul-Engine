@@ -1,5 +1,5 @@
 #include "RenderWidget.h"
-#include "Compute\GPUManager.h"
+#include "Compute\ComputeManager.h"
 #include "CUDA\RenderWidget.cuh"
 #include "Events\EventManager.h"
 #include "Raster Engine/RasterBackend.h"
@@ -14,9 +14,9 @@
  */
 
 RenderWidget::RenderWidget(uint& id): 
-	buffer(GPUManager::GetBestGPU()), 
-	accumulator(GPUManager::GetBestGPU()), 
-	extraData(GPUManager::GetBestGPU()),
+	buffer(S_BEST_GPU), 
+	accumulator(S_BEST_GPU), 
+	extraData(S_BEST_GPU),
 	time(0)
 {
 	widgetJob = RasterBackend::CreateJob();

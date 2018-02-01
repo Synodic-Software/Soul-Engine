@@ -2,7 +2,7 @@
 #include "Compute\DeviceBuffer.h"
 
 #include "Metrics.h"
-#include "Compute\GPUDevice.h"
+#include "Compute\ComputeDevice.h"
 
 /* Buffer for open cl. */
 template<class T>
@@ -18,13 +18,13 @@ public:
 
 	//Construction and Destruction 
 
-	OpenCLBuffer(const GPUDevice& _device);
+	OpenCLBuffer(const ComputeDevice& _device);
 
 	~OpenCLBuffer();
 
 	//Data Migration
 
-	void Move(const GPUDevice&) override;
+	void Move(const ComputeDevice&) override;
 
 	void TransferToHost(std::vector<T>&) override;
 	void TransferToDevice(std::vector<T>&) override;
@@ -56,7 +56,7 @@ private:
 };
 
 template <class T>
-OpenCLBuffer<T>::OpenCLBuffer(const GPUDevice& device) :
+OpenCLBuffer<T>::OpenCLBuffer(const ComputeDevice& device) :
 	DeviceBuffer(device)
 {
 
@@ -68,7 +68,7 @@ OpenCLBuffer<T>::~OpenCLBuffer() {
 }
 
 template <class T>
-void OpenCLBuffer<T>::Move(const GPUDevice&)
+void OpenCLBuffer<T>::Move(const ComputeDevice&)
 {
 	//TODO implement
 }

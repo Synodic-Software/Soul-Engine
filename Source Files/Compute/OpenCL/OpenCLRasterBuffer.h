@@ -1,7 +1,7 @@
 #pragma once
 #include "Compute\DeviceRasterBuffer.h"
 #include "OpenCLBuffer.h"
-#include "Compute\GPUDevice.h"
+#include "Compute\ComputeDevice.h"
 
 #include "Metrics.h"
 
@@ -11,7 +11,7 @@ class OpenCLRasterBuffer :public OpenCLBuffer<T>, public DeviceRasterBuffer<T> {
 
 public:
 
-	OpenCLRasterBuffer(const GPUDevice& _device);
+	OpenCLRasterBuffer(const ComputeDevice& _device);
 
 	~OpenCLRasterBuffer() override;
 
@@ -29,7 +29,7 @@ private:
 };
 
 template<class T>
-OpenCLRasterBuffer<T>::OpenCLRasterBuffer(const GPUDevice& device) :
+OpenCLRasterBuffer<T>::OpenCLRasterBuffer(const ComputeDevice& device) :
 	OpenCLBuffer(device),
 	DeviceRasterBuffer(device),
 	DeviceBuffer(device)

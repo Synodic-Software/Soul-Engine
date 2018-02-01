@@ -2,7 +2,7 @@
 #include "Compute\GPUTextureBase.h"
 
 #include "Metrics.h"
-#include "Compute\GPUDevice.h"
+#include "Compute\ComputeDevice.h"
 
 /* Buffer for open cl. */
 template<class T>
@@ -16,7 +16,7 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	OpenCLTexture(const GPUDevice& _device, uint _byteCount)
+	OpenCLTexture(const ComputeDevice& _device, uint _byteCount)
 		: GPUTextureBase(_device, _byteCount) {
 
 	}

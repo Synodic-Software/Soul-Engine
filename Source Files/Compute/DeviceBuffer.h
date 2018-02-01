@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Compute/GPUDevice.h"
+#include "Compute/ComputeDevice.h"
 
 /*
 *    Buffer for gpu/cpu communication and storage.
@@ -23,13 +23,13 @@ public:
 
 	//Construction and Destruction 
 	
-	DeviceBuffer(const GPUDevice& _device);
+	DeviceBuffer(const ComputeDevice& _device);
 
 	virtual ~DeviceBuffer() = default;
 
 	//Data Migration
 
-	virtual void Move(const GPUDevice&) = 0;
+	virtual void Move(const ComputeDevice&) = 0;
 
 	virtual void TransferToHost(std::vector<T>&) = 0;
 	virtual void TransferToDevice(std::vector<T>&) = 0;
@@ -60,7 +60,7 @@ public:
 
 	//Misc
 	
-	GPUBackend GetAPI() const;
+	ComputeBackend GetBackend() const;
 	
 	
 protected:
@@ -68,22 +68,22 @@ protected:
 	uint size = 0;   // Number of objects
 	uint capacity = 0;	// The capacity
 
-	GPUDevice residentDevice;
+	ComputeDevice residentDevice;
 
 	virtual void Reallocate() = 0;
 
 };
 
 template <class T>
-DeviceBuffer<T>::DeviceBuffer(const GPUDevice& device):
+DeviceBuffer<T>::DeviceBuffer(const ComputeDevice& device):
 	residentDevice(device){
 
 }
 
 template <class T>
-GPUBackend DeviceBuffer<T>::GetAPI() const
+ComputeBackend DeviceBuffer<T>::GetBackend() const
 {
-	return residentDevice.GetAPI();
+	return residentDevice.GetBackend();
 }
 
 template <class T>
