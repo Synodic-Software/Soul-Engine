@@ -1,6 +1,7 @@
 #include "MortonCode.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
 #include "Utility\Includes\GLMIncludes.h"
+#include "Compute\DeviceAPI.h"
 
 
 #define TwoE20 1048575 //2^20-1
@@ -131,7 +132,7 @@ __host__ __device__ glm::uvec2 MortonCode::Decode64U_2D(uint64 m) {
 //TODO split into two kernals for Scene.cu
 __global__ void MortonCode::ComputeGPUFace64(uint n, uint64* mortonCodes, Face* faces, Vertex* vertices) {
 
-	const uint index = getGlobalIdx_1D_1D();
+	const uint index = ThreadIndex1D();
 
 	if (index >= n) {
 		return;
@@ -145,7 +146,7 @@ __global__ void MortonCode::ComputeGPUFace64(uint n, uint64* mortonCodes, Face* 
 
 __global__ void MortonCode::ComputeGPU64(uint n, uint64* mortonCodes, glm::uvec2* data) {
 
-	uint index = getGlobalIdx_1D_1D();
+	uint index = ThreadIndex1D();
 
 	if (index >= n) {
 		return;

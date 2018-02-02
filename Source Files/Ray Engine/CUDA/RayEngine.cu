@@ -3,6 +3,7 @@
 #include <cuda_runtime.h>
 #include <curand_kernel.h>
 #include "Utility\CUDA\CUDAHelper.cuh"
+#include "Compute\DeviceAPI.h"
 
 //cant have AABB defined and not define WOOP_TRI
 //#define WOOP_TRI
@@ -114,7 +115,7 @@ namespace RayEngineCUDA {
 	__global__ void RandomSetup(uint n, curandState* randomState, uint raySeed) {
 
 
-		uint index = getGlobalIdx_1D_1D();
+		uint index = ThreadIndex1D();
 
 		if (index >= n) {
 			return;
@@ -130,7 +131,7 @@ namespace RayEngineCUDA {
 	__global__ void EngineSetup(uint n, RayJob* jobs, int jobSize) {
 
 
-		const int index = getGlobalIdx_1D_1D();
+		const int index = ThreadIndex1D();
 
 		if (index >= n) {
 			return;
@@ -146,7 +147,7 @@ namespace RayEngineCUDA {
 
 	__global__ void RaySetup(uint n, uint jobSize, RayJob* job, Ray* rays, int* nAtomic, curandState* randomState) {
 
-		const uint index = getGlobalIdx_1D_1D();
+		const uint index = ThreadIndex1D();
 
 		if (index >= n) {
 			return;
@@ -286,7 +287,7 @@ namespace RayEngineCUDA {
 
 	__global__ void ProcessHits(uint n, RayJob* job, int jobSize, Ray* rays, Ray* raysNew, Sky* sky, Face* faces, Vertex* vertices, Material* materials, int * nAtomic, curandState* randomState) {
 
-		uint index = getGlobalIdx_1D_1D();
+		uint index = ThreadIndex1D();
 
 		if (index >= n) {
 			return;

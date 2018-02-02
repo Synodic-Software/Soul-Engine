@@ -24,7 +24,7 @@
 //
 //__global__ void NarrowPhase(uint n, BVHData* bvh, Collision* collisions, int* sizeCounter){
 //
-//	uint index = getGlobalIdx_1D_1D();
+//	uint index = ThreadIndex1D();
 //
 //	if (index >= n){
 //		return;
@@ -38,7 +38,7 @@
 //
 //__global__ void BroadPhase(uint n, BVHData* bvh, Collision* collisions, int* sizeCounter){
 //
-//	uint index = getGlobalIdx_1D_1D();
+//	uint index = ThreadIndex1D();
 //
 //	if (index >= n){
 //		return;

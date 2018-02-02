@@ -1,9 +1,5 @@
 #include "CUDADevice.cuh"
 
-/*
- *    Constructor.
- *    @param	o	An uint to process.
- */
 
 CUDADevice::CUDADevice(int id_) :
 	AbstractComputeDevice()
@@ -15,18 +11,12 @@ CUDADevice::CUDADevice(int id_) :
 
 }
 
-/* Destructor. */
 CUDADevice::~CUDADevice() {
 
 	cudaSetDevice(deviceID);
 	cudaDeviceReset();
 
 }
-
-/*
-*    Gets core count.
-*    @return	The core count.
-*/
 
 int CUDADevice::GetCoreCount() {
 	int device;
@@ -35,22 +25,12 @@ int CUDADevice::GetCoreCount() {
 	return _GetCoresPerMP(deviceProperties.major, deviceProperties.minor) * deviceProperties.multiProcessorCount;
 }
 
-/*
-*    Gets sm count.
-*    @return	The sm count.
-*/
-
 int CUDADevice::GetSMCount() {
 	int device;
 	CudaCheck(cudaGetDevice(&device));
 
 	return deviceProperties.multiProcessorCount;
 }
-
-/*
-*    Gets warp size.
-*    @return	The warp size.
-*/
 
 int CUDADevice::GetWarpSize() {
 	int device;
@@ -59,22 +39,12 @@ int CUDADevice::GetWarpSize() {
 	return deviceProperties.warpSize;
 }
 
-/*
-*    Gets warps per mp.
-*    @return	The warps per mp.
-*/
-
 int CUDADevice::GetWarpsPerMP() {
 	int device;
 	CudaCheck(cudaGetDevice(&device));
 
 	return _GetWarpsPerMP(deviceProperties.major, deviceProperties.minor);
 }
-
-/*
-*    Gets blocks per mp.
-*    @return	The blocks per mp.
-*/
 
 int CUDADevice::GetBlocksPerMP() {
 	int device;
@@ -83,7 +53,7 @@ int CUDADevice::GetBlocksPerMP() {
 	return _GetBlocksPerMP(deviceProperties.major, deviceProperties.minor);
 }
 
-GPUExecutePolicy CUDADevice::BestExecutePolicy(const void* kernel, int(* func)(int))
+GPUExecutePolicy CUDADevice::BestExecutePolicy(const void* kernel, int(*func)(int))
 {
 
 	int blockSizeOut;
@@ -91,8 +61,8 @@ GPUExecutePolicy CUDADevice::BestExecutePolicy(const void* kernel, int(* func)(i
 
 	CudaCheck(
 		cudaOccupancyMaxPotentialBlockSizeVariableSMem(
-		&minGridSize, &blockSizeOut, kernel, func,
-		GetSMCount()*GetBlocksPerMP())
+			&minGridSize, &blockSizeOut, kernel, func,
+			GetSMCount()*GetBlocksPerMP())
 	);
 
 	//get the device stats for persistant threads

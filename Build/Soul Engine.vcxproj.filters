@@ -642,6 +642,9 @@
     <ClInclude Include="..\Source Files\Compute\ComputeManager.h">
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Compute\DeviceAPI.h">
+      <Filter>Engine Backend\Compute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Display\Layout\Layout.cpp">

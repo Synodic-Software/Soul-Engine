@@ -23,6 +23,12 @@ public:
 
 	template <typename KernelFunction, typename... Args>
 	void Launch(const GPUExecutePolicy& policy,
+		uint,
+		const KernelFunction& kernel,
+		Args&& ... parameters);
+
+	template <typename KernelFunction, typename... Args>
+	void LaunchOld(const GPUExecutePolicy& policy,
 		const KernelFunction& kernel,
 		Args&& ... parameters);
 
@@ -41,13 +47,14 @@ protected:
 
 template <typename KernelFunction, typename... Args>
 void ComputeDevice::Launch(const GPUExecutePolicy& policy,
+	uint n,
 	const KernelFunction& kernel,
 	Args&& ... parameters) {
 
 	if (backend == CUDA_API) {
 
 		auto cudaDevice = static_cast<CUDADevice*>(device.get());
-		cudaDevice->Launch(policy, kernel, std::forward<Args>(parameters)...);
+		cudaDevice->Launch(policy,n, kernel, std::forward<Args>(parameters)...);
 
 	}
 	else {
@@ -57,6 +64,26 @@ void ComputeDevice::Launch(const GPUExecutePolicy& policy,
 	}
 
 }
+
+template <typename KernelFunction, typename... Args>
+void ComputeDevice::LaunchOld(const GPUExecutePolicy& policy,
+	const KernelFunction& kernel,
+	Args&& ... parameters) {
+
+	if (backend == CUDA_API) {
+
+		auto cudaDevice = static_cast<CUDADevice*>(device.get());
+		cudaDevice->LaunchOld(policy, kernel, std::forward<Args>(parameters)...);
+
+	}
+	else {
+		//auto openCLDevice = static_cast<OpenCLDevice*>(device);
+		//TODO implement
+		//openCLDevice->Launch(policy, kernel, std::forward<Args>(parameters)...);
+	}
+
+}
+
 template<typename KernelFunction>
 GPUExecutePolicy ComputeDevice::BestExecutePolicy(const KernelFunction& kernel)
 {

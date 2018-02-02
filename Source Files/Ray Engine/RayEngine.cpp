@@ -4,19 +4,17 @@
 #include "Algorithms/Filters/Filter.h"
 #include "Compute/ComputeManager.h"
 
-#include "CUDA/RayEngine.cuh"
-
-RayEngine::RayEngine():
-jobList(S_BEST_GPU),
-deviceRaysA(S_BEST_GPU),
-deviceRaysB(S_BEST_GPU),
-randomState(S_BEST_GPU),
-counter(S_BEST_GPU),
-rayDepth(3),
-hitAtomic(S_BEST_GPU),
-frameHold(5),
-raySeedGl(0),
-oldRenderTime(0)
+RayEngine::RayEngine() :
+	jobList(S_BEST_GPU),
+	deviceRaysA(S_BEST_GPU),
+	deviceRaysB(S_BEST_GPU),
+	randomState(S_BEST_GPU),
+	counter(S_BEST_GPU),
+	rayDepth(3),
+	hitAtomic(S_BEST_GPU),
+	frameHold(5),
+	raySeedGl(0),
+	oldRenderTime(0)
 {
 
 	counter.Resize(1);
@@ -159,7 +157,7 @@ void RayEngine::UpdateJobs(double renderTime, double targetTime, ComputeBuffer<R
  */
 
 void RayEngine::Process(Scene& scene, double target) {
-	
+
 	//start the timer once actual data movement and calculation starts
 	renderTimer.Reset();
 
@@ -199,9 +197,9 @@ void RayEngine::Process(Scene& scene, double target) {
 			const uint blockSize = 64;
 			const GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-			device.Launch(normalPolicy, RayEngineCUDA::EngineSetup,
-				numberResults, 
-				jobList.DataDevice(), 
+			device.LaunchOld(normalPolicy, RayEngineCUDA::EngineSetup,
+				numberResults,
+				jobList.DataDevice(),
 				numberJobs);
 
 			if (numberRays > deviceRaysA.SizeDevice()) {
@@ -210,9 +208,9 @@ void RayEngine::Process(Scene& scene, double target) {
 				deviceRaysA.ResizeDevice(numberRays);
 				deviceRaysB.ResizeDevice(numberRays);
 
-				device.Launch(normalPolicy, RayEngineCUDA::RandomSetup, 
-					numberRays, 
-					randomState.DataDevice(), 
+				device.LaunchOld(normalPolicy, RayEngineCUDA::RandomSetup,
+					numberRays,
+					randomState.DataDevice(),
 					WangHash());
 
 			}
@@ -233,7 +231,7 @@ void RayEngine::Process(Scene& scene, double target) {
 			counter.TransferToDevice();
 			hitAtomic.TransferToDevice();
 
-			device.Launch(normalPolicy, RayEngineCUDA::RaySetup,
+			device.LaunchOld(normalPolicy, RayEngineCUDA::RaySetup,
 				numberRays,
 				numberJobs,
 				jobList.DataDevice(),
@@ -259,7 +257,7 @@ void RayEngine::Process(Scene& scene, double target) {
 				const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
 				//main engine, collects hits
-				device.Launch(persistantPolicy, RayEngineCUDA::ExecuteJobs, 
+				device.LaunchOld(persistantPolicy, RayEngineCUDA::ExecuteJobs,
 					numActive,
 					deviceRaysA.DataDevice(),
 					scene.bvhData.DataDevice(),
@@ -268,9 +266,9 @@ void RayEngine::Process(Scene& scene, double target) {
 					counter.DataDevice());
 
 				//processes hits 
-				device.Launch(activePolicy, RayEngineCUDA::ProcessHits, 
-					numActive, 
-					jobList.DataDevice(), 
+				device.LaunchOld(activePolicy, RayEngineCUDA::ProcessHits,
+					numActive,
+					jobList.DataDevice(),
 					numberJobs,
 					deviceRaysA.DataDevice(),
 					deviceRaysB.DataDevice(),
