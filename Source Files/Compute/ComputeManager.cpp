@@ -17,10 +17,12 @@ void ComputeManager::InitThread() {
 }
 
 ComputeDevice ComputeManager::GetBestGPU() {
+	//TODO implement
 	return devices[0];
 }
 
 ComputeDevice ComputeManager::GetBestCPU() {
-	return devices[0];
+	//TODO implement
+	return devices.back();
 }
 

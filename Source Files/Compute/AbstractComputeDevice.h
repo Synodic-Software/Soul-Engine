@@ -1,7 +1,7 @@
 #pragma once
 
 /* Values that represent Compute backends. */
-enum ComputeBackend { CUDA_API, OPENCL_API };
+enum ComputeBackend { CUDA_API, OPENCL_API};
 
 
 class AbstractComputeDevice {

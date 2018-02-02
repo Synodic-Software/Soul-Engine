@@ -42,7 +42,7 @@ __host__ void Scene::Build(double deltaTime) {
 		const auto blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 		
-		device.LaunchOld(normalPolicy, MortonCode::ComputeGPUFace64, size, mortonCodes.DataDevice(), faces.DataDevice(), vertices.DataDevice());
+		device.Launch(normalPolicy, MortonCode::ComputeGPUFace64, size, mortonCodes.DataDevice(), faces.DataDevice(), vertices.DataDevice());
 
 		Sort::Sort(mortonCodes, faces);
 

@@ -456,7 +456,7 @@ int main()
 	whiteGray.diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
 	whiteGray.emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	Object plane("Resources\\Objects\\plane.obj", whiteGray);
+	Object plane("Resources\\Objects\\SmallPlane.obj", whiteGray);
 	scene->AddObject(plane);
 
 	SubmitScene(scene);
