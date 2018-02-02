@@ -776,9 +776,6 @@
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.cpp">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Compute\ComputeBuffer.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
@@ -850,6 +847,9 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Compute\ComputeManager.cpp">
       <Filter>Engine Backend\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

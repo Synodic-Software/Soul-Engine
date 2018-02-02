@@ -196,7 +196,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLRasterBuffer.cpp" />
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLTexture.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.cpp" />
-    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Scene\Scene.cpp" />
     <ClInclude Include="..\Source Files\Input\InputSet.h" />
     <ClInclude Include="..\Source Files\Input\InputManager.h" />
