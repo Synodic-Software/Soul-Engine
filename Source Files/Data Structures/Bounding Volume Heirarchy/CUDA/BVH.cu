@@ -1,6 +1,6 @@
 #include "BVH.cuh"
 
-#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Compute\DeviceAPI.h"
 #include "Utility/Includes/GLMIncludes.h"
 
 // Returns the highest differing bit of i and i+1
@@ -11,7 +11,7 @@ __device__ uint HighestBit(uint i, uint64* morton)
 
 __global__ void BuildTree(uint n, uint innerSize, BVHData* data, Node* nodes, uint64* mortonCodes)
 {
-	const uint index = getGlobalIdx_1D_1D();
+	const uint index = ThreadIndex1D();
 	if (index >= n) {
 		return;
 	}
@@ -72,56 +72,4 @@ __global__ void BuildTree(uint n, uint innerSize, BVHData* data, Node* nodes, ui
 		nodeOffset =  nodePointer - nodes;
 		currentNode = *nodePointer;
 	}
-}
-
-
-__global__ void Reset(uint n, uint innerSize, Node* nodes, Face* faces, Vertex* vertices)
-{
-	const uint index = getGlobalIdx_1D_1D();
-
-	if (index >= n) {
-		return;
-	}
-
-
-	const uint leafOffset = innerSize + index;
-
-	//set the inner node
-	if (index < innerSize) {
-		Node temp;
-		temp.atomic = 0; //inner nodes are not visited
-		temp.childLeft = leafOffset;
-		temp.childRight = leafOffset + 1;
-		nodes[index] = temp;
-	}
-
-
-	const glm::uvec3 ind = faces[index].indices;
-
-	// Expand bounds using min/max functions
-	const glm::vec3 pos0 = vertices[ind.x].position;
-	const glm::vec3 pos1 = vertices[ind.y].position;
-	const glm::vec3 pos2 = vertices[ind.z].position;
-
-	glm::vec3 max = pos0;
-	glm::vec3 min = pos0;
-
-	max = glm::max(pos1, max);
-	min = glm::min(pos1, min);
-
-	max = glm::max(pos2, max);
-	min = glm::min(pos2, min);
-
-	//set the leaf node
-	Node temp;
-	temp.rangeLeft = index;
-	temp.rangeRight = index;
-	temp.atomic = 1; // To allow the next thread to process
-	temp.faceID = index; //set triangle
-	temp.box.max = max;
-	temp.box.min = min;
-	temp.childLeft = static_cast<uint>(-1); //set termination
-	temp.childRight = static_cast<uint>(-1); //set termination
-
-	nodes[leafOffset] = temp;
 }
