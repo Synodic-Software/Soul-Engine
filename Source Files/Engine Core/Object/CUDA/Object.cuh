@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Photography/Camera/CUDA/Camera.cuh"
 #include "Engine Core/Material/Material.h"
-#include "Engine Core/Object/CUDA/Vertex.cuh"
-#include "Engine Core/Object/CUDA/Face.cuh"
-#include "Engine Core/Object/CUDA/Tet.cuh"
-#include "Data Structures\Bounding Volume Heirarchy\BoundingBox.h"
+#include "Data Structures/Geometric Primatives/Vertex.h"
+#include "Data Structures/Geometric Primatives/Face.h"
+#include "Data Structures/Geometric Primatives/Tet.h"
+#include "Data Structures/Geometric Primatives\BoundingBox.h"
 #include "Metrics.h"
 
 #include <vector>

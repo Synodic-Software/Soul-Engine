@@ -13,8 +13,8 @@ CUDADevice::CUDADevice(int id_) :
 
 CUDADevice::~CUDADevice() {
 
-	cudaSetDevice(deviceID);
-	cudaDeviceReset();
+	/*cudaSetDevice(deviceID);
+	cudaDeviceReset();*/
 
 }
 

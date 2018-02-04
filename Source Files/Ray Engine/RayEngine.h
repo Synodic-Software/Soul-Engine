@@ -4,6 +4,7 @@
 #include "RayJob.h"
 #include "Compute/ComputeBuffer.h"
 #include "Utility/Timer.h"
+#include "Ray.h"
 
 #undef AddJob
 #undef GetJob

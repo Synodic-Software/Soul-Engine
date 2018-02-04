@@ -2,7 +2,7 @@
 
 #include "Ray Engine/CUDA/RayJob.cuh"
 #include "Engine Core\Scene\Scene.h"
-
+#include "Ray Engine\Ray.h"
 
 namespace RayEngineCUDA {
 

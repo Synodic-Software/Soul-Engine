@@ -22,10 +22,12 @@ public:
 
 
 	//Construction and Destruction 
-	
-	DeviceBuffer(const ComputeDevice& _device);
 
+	DeviceBuffer(const ComputeDevice& _device);
+	DeviceBuffer(DeviceBuffer const&);
 	virtual ~DeviceBuffer() = default;
+
+	DeviceBuffer<T>& operator= (const DeviceBuffer<T>&);
 
 	//Data Migration
 
@@ -59,10 +61,10 @@ public:
 	virtual void Fit() = 0;
 
 	//Misc
-	
+
 	ComputeBackend GetBackend() const;
-	
-	
+
+
 protected:
 
 	uint size = 0;   // Number of objects
@@ -75,9 +77,26 @@ protected:
 };
 
 template <class T>
-DeviceBuffer<T>::DeviceBuffer(const ComputeDevice& device):
-	residentDevice(device){
+DeviceBuffer<T>::DeviceBuffer(const ComputeDevice& device) :
+	residentDevice(device) {
 
+}
+
+template <class T>
+DeviceBuffer<T>::DeviceBuffer(DeviceBuffer const& other) :
+	residentDevice(other.residentDevice)
+{
+	*this = other;
+}
+
+template <class T>
+DeviceBuffer<T>& DeviceBuffer<T>::operator= (const DeviceBuffer<T>& other)
+{
+	size = other.size;
+	capacity = other.capacity;
+	residentDevice = other.residentDevice;
+
+	return *this;
 }
 
 template <class T>
