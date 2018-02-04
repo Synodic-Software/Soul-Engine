@@ -3,8 +3,8 @@
 #include "Metrics.h"
 #include "Data Structures\Bounding Volume Heirarchy\BVH.h"
 
-#include "Engine Core\Object\Face.h"
-#include "Engine Core\Object\Vertex.h"
+#include "Data Structures\Geometric Primatives\Face.h"
+#include "Data Structures\Geometric Primatives\Vertex.h"
 
 namespace MortonCode{
 

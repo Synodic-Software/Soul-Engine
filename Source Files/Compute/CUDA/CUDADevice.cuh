@@ -28,8 +28,6 @@ public:
 	
 private:
 
-	
-
 	cudaDeviceProp deviceProperties;
 	int deviceID;
 

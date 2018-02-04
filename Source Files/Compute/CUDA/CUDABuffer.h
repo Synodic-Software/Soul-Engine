@@ -19,8 +19,10 @@ public:
 	//Construction and Destruction 
 
 	CUDABuffer(const ComputeDevice&);
-	
+	CUDABuffer(CUDABuffer const&);
 	~CUDABuffer();
+
+	CUDABuffer<T>& operator=(CUDABuffer<T> const&);
 
 
 	//Data Migration
@@ -69,9 +71,27 @@ CUDABuffer<T>::CUDABuffer(const ComputeDevice& device):
 }
 
 template <class T>
+CUDABuffer<T>::CUDABuffer(CUDABuffer const& other) :
+	DeviceBuffer(other)
+{
+	*this = other;
+}
+
+template <class T>
 CUDABuffer<T>::~CUDABuffer() {
 	CudaCheck(cudaFree(buffer));
 	buffer = nullptr;
+}
+
+template <class T>
+CUDABuffer<T>& CUDABuffer<T>::operator=(CUDABuffer<T> const& other) {
+	DeviceBuffer<T>::operator=(other);
+
+	Reallocate();
+
+	CudaCheck(cudaMemcpy(buffer, other.buffer, DeviceBuffer<T>::size * sizeof(T), cudaMemcpyDeviceToDevice));
+
+	return *this;
 }
 
 template <class T>

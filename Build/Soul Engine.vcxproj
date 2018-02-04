@@ -126,13 +126,15 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Compute\OpenCL\OpenCLKernel.h" />
     <ClInclude Include="..\Source Files\Compute\OpenCL\OpenCLRasterBuffer.h" />
     <ClInclude Include="..\Source Files\Compute\OpenCL\OpenCLTexture.h" />
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.h" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.h" />
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cuh" />
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.h" />
     <ClInclude Include="..\Source Files\Data Structures\DataHelper.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Face.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Tet.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Vertex.h" />
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RadixTree.h" />
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RTNode.h" />
     <ClInclude Include="..\Source Files\Display\Layout\Layout.h" />
@@ -151,20 +153,14 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Engine Core\Material\ShaderNode.h" />
     <ClInclude Include="..\Source Files\Engine Core\Material\Texture\Image.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Character\Character.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Face.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Object.cuh" />
-    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Tet.cuh" />
-    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Vertex.cuh" />
-    <ClInclude Include="..\Source Files\Engine Core\Object\Face.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Loader.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\MiniObject.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\Object.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\OpenCL\CLFace.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\OpenCL\CLObject.h" />
     <ClInclude Include="..\Source Files\Engine Core\Object\OpenCL\CLVertex.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Object\Tet.h" />
-    <ClInclude Include="..\Source Files\Engine Core\Object\Vertex.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\Sky.cuh" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\OpenCL\CLScene.h" />
     <ClInclude Include="..\Source Files\Engine Core\Scene\Scene.h" />
@@ -195,8 +191,13 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLKernel.cpp" />
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLRasterBuffer.cpp" />
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLTexture.cpp" />
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Face.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Tet.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Vertex.cpp" />
     <ClCompile Include="..\Source Files\Engine Core\Scene\Scene.cpp" />
     <ClInclude Include="..\Source Files\Input\InputSet.h" />
     <ClInclude Include="..\Source Files\Input\InputManager.h" />
@@ -271,9 +272,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Events\Event.cpp" />
     <ClCompile Include="..\Source Files\Events\EventManager.cpp" />
     <CudaCompile Include="..\Source Files\Compute\CUDA\CUDADevice.cu" />
-    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cu" />
     <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cu" />
-    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cu" />
     <ClCompile Include="..\Source Files\Input\InputSet.cpp" />
     <ClCompile Include="..\Source Files\Input\InputManager.cpp" />
     <ClCompile Include="..\Source Files\Input\Key.cpp" />
@@ -308,6 +307,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\Material.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Material\CUDA\ShaderNode.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cu" />
+    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Object.cu" />
     <CudaCompile Include="..\Source Files\Photography\Camera\CUDA\Camera.cu" />
     <CudaCompile Include="..\Source Files\Photography\Film\CUDA\Film.cu" />
     <CudaCompile Include="..\Source Files\Photography\Lens\CUDA\Lens.cu" />
@@ -315,10 +315,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Engine Core\Material\Texture\Image.cu" />
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Face.cu" />
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Object.cu" />
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Tet.cu" />
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Vertex.cu" />
     <CudaCompile Include="..\Source Files\Engine Core\Scene\CUDA\Sky.cu" />
     <CudaCompile Include="..\Source Files\Physics Engine\CUDA\PhysicsEngine.cu" />
     <CudaCompile Include="..\Source Files\Ray Engine\CUDA\Ray.cu" />

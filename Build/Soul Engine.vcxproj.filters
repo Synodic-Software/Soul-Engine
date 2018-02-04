@@ -235,6 +235,9 @@
     <Filter Include="Engine Backend\Compute\OpenCL">
       <UniqueIdentifier>{6ba26b62-9cfd-40d8-a421-315943f2a944}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Data Structures\Geometric Primatives">
+      <UniqueIdentifier>{831f3f20-650f-49c2-ba64-679d0fa809f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -288,18 +291,6 @@
     <ClInclude Include="..\Source Files\Engine Core\Object\Character\Character.h">
       <Filter>Engine Backend\Engine Core\Object\Character</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Vertex.cuh">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Face.cuh">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Object.cuh">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Tet.cuh">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Object\OpenCL\CLVertex.h">
       <Filter>Engine Backend\Engine Core\Object\OpenCL</Filter>
     </ClInclude>
@@ -309,19 +300,10 @@
     <ClInclude Include="..\Source Files\Engine Core\Object\OpenCL\CLObject.h">
       <Filter>Engine Backend\Engine Core\Object\OpenCL</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Object\Vertex.h">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Object\Face.h">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Object\Loader.h">
       <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Object\Object.h">
-      <Filter>Engine Backend\Engine Core\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Object\Tet.h">
       <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Scene\CUDA\Sky.cuh">
@@ -453,9 +435,6 @@
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh">
       <Filter>Engine Backend\Algorithms\Morton Code\CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cuh">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Object\MiniObject.h">
       <Filter>Engine Backend\Engine Core\Object</Filter>
     </ClInclude>
@@ -552,20 +531,8 @@
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.h">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.h">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cuh">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cuh">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy\CUDA</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cuh">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy\CUDA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.h">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Compute\GPUTextureBase.h">
       <Filter>Engine Backend\Compute</Filter>
@@ -644,6 +611,30 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Compute\DeviceAPI.h">
       <Filter>Engine Backend\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.h">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.h">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Object.cuh">
+      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cuh">
+      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Vertex.h">
+      <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Face.h">
+      <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Tet.h">
+      <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.h">
+      <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -773,9 +764,6 @@
     <ClCompile Include="..\Source Files\Engine Core\Scene\Scene.cpp">
       <Filter>Engine Backend\Engine Core\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BoundingBox.cpp">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Compute\ComputeBuffer.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
@@ -851,6 +839,24 @@
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.cpp">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.cpp">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Face.cpp">
+      <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Tet.cpp">
+      <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Vertex.cpp">
+      <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.cpp">
+      <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu">
@@ -867,18 +873,6 @@
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Engine Core\Material\Texture\Image.cu">
       <Filter>Engine Backend\Engine Core\Material\Texture</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Face.cu">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Object.cu">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Tet.cu">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Vertex.cu">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Engine Core\Scene\CUDA\Sky.cu">
       <Filter>Engine Backend\Engine Core\Scene\CUDA</Filter>
@@ -901,9 +895,6 @@
     <CudaCompile Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cu">
       <Filter>Engine Backend\Algorithms\Morton Code\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cu">
-      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\Source Files\Display\Widget\CUDA\RenderWidget.cu">
       <Filter>Engine Backend\Display\Widget\CUDA</Filter>
     </CudaCompile>
@@ -922,17 +913,17 @@
     <CudaCompile Include="..\Source Files\Algorithms\Filters\CUDA\Filter.cu">
       <Filter>Engine Backend\Algorithms\Filters\CUDA</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BoundingBox.cu">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy\CUDA</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cu">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\Node.cu">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy\CUDA</Filter>
     </CudaCompile>
     <CudaCompile Include="..\Source Files\Compute\CUDA\CUDADevice.cu">
       <Filter>Engine Backend\Compute\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\MiniObject.cu">
+      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\Source Files\Engine Core\Object\CUDA\Object.cu">
+      <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
