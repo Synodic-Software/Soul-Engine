@@ -1,17 +1,18 @@
 #pragma once
 
-#include "Data Structures\Bounding Volume Heirarchy\InnerNode.h"
-#include "Data Structures\Bounding Volume Heirarchy\LeafNode.h"
-
+#include "Data Structures\Bounding Volume Heirarchy\Node.h"
 
 typedef struct BVHData {
 
 	uint root;
 	uint leafSize;
-	InnerNode* innerNodes;
-	LeafNode* leafNodes;
+	Node* nodes;
+
+	__device__ bool IsLeaf(uint test) const{
+		return test >= leafSize;
+	}
 
 }BVHData;
 
-__global__ void BuildTree(uint, BVHData*, InnerNode*, LeafNode*, uint64*, BoundingBox*);
-__global__ void Reset(uint, InnerNode*, LeafNode*);
+__global__ void BuildTree(uint, BVHData*, Node*, uint64*, BoundingBox*);
+__global__ void Reset(uint, Node*);

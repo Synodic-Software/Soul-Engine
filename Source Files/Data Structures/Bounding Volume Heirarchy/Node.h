@@ -3,7 +3,7 @@
 #include "Data Structures/Geometric Primatives/BoundingBox.h"
 #include "Metrics.h"
 
-class InnerNode
+class Node
 {
 
 public:
@@ -17,6 +17,5 @@ public:
 	uint rangeRight;
 
 	uint atomic;
-	bool leftLeaf;
-	bool rightLeaf;
+
 };

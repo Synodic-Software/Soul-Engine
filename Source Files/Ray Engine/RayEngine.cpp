@@ -263,6 +263,7 @@ void RayEngine::Process(Scene& scene, double target) {
 					scene.bvhData.DataDevice(),
 					scene.vertices.DataDevice(),
 					scene.faces.DataDevice(),
+					scene.boxes.DataDevice(),
 					counter.DataDevice());
 
 				//processes hits 
