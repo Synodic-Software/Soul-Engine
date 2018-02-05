@@ -19,11 +19,10 @@ Scene::Scene():
 	tets(S_BEST_GPU),
 	materials(S_BEST_GPU),
 	objects(S_BEST_GPU),
-	bvh(S_BEST_GPU),
-	mortonCodes(S_BEST_GPU)
+	mortonCodes(S_BEST_GPU),
+	boxes(S_BEST_GPU)
 {
 
-	bvh.Resize(1);
 	bvhData.Resize(1);
 	sky.PushBack({ "Starmap.png" });
 
@@ -48,7 +47,7 @@ __host__ void Scene::Build(double deltaTime) {
 
 	}
 
-	bvh[0].Build(size, bvhData, mortonCodes, faces, vertices);
+	bvh.Build(size, bvhData, mortonCodes, boxes);
 
 }
 
@@ -60,7 +59,7 @@ void Scene::Compile() {
 	tets.TransferToDevice();
 	materials.TransferToDevice();
 	objects.TransferToDevice();
-
+	boxes.TransferToDevice();
 }
 
 //object pointer is host
@@ -88,10 +87,11 @@ void Scene::AddObject(Object& obj) {
 	vertices.Resize(vertexAmount);
 	faces.Resize(faceAmount);
 	mortonCodes.ResizeDevice(faceAmount);
+	boxes.Resize(faceAmount);
 	tets.Resize(tetAmount);
 	materials.Resize(materialAmount);
 	objects.Resize(objectAmount);
-
+	
 
 	//update the scene's bounding volume
 	sceneBox.max = glm::max(sceneBox.max, obj.box.max);
@@ -116,11 +116,30 @@ void Scene::AddObject(Object& obj) {
 		if (t < obj.faceAmount) {
 			faces[t + faceOffset] = obj.faces[t];
 
-			faces[t + faceOffset].indices.x += vertexOffset;
-			faces[t + faceOffset].indices.y += vertexOffset;
-			faces[t + faceOffset].indices.z += vertexOffset;
+			glm::uvec3& ind = faces[t + faceOffset].indices;
+			ind.x += vertexOffset;
+			ind.y += vertexOffset;
+			ind.z += vertexOffset;
 
 			faces[t + faceOffset].material += materialOffset;
+
+			// Expand bounds using min/max functions
+			const glm::vec3 pos0 = vertices[ind.x].position;
+			const glm::vec3 pos1 = vertices[ind.y].position;
+			const glm::vec3 pos2 = vertices[ind.z].position;
+
+			glm::vec3 max = pos0;
+			glm::vec3 min = pos0;
+
+			max = glm::max(pos1, max);
+			min = glm::min(pos1, min);
+
+			max = glm::max(pos2, max);
+			min = glm::min(pos2, min);
+
+			BoundingBox& box = boxes[t + faceOffset];
+			box.max = max;
+			box.min = min;
 		}
 		if (t < obj.tetAmount) {
 			tets[t + tetOffset] = obj.tets[t];

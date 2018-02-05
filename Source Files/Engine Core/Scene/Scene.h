@@ -5,7 +5,6 @@
 #include "Engine Core\Scene\Sky.h"
 #include "Engine Core\Material\Material.h"
 #include "Data Structures\Bounding Volume Heirarchy\BVH.h"
-
 #include "Compute/ComputeBuffer.h"
 
 class Scene
@@ -37,6 +36,7 @@ public:
 	ComputeBuffer<Tet> tets;
 	ComputeBuffer<Material> materials;
 	ComputeBuffer<MiniObject> objects;
+	ComputeBuffer<BoundingBox> boxes;
 
 private:
 
@@ -46,7 +46,10 @@ private:
 	//scene bounding box
 	BoundingBox sceneBox;
 
-	ComputeBuffer<BVH> bvh;
+	//bvh for scene management
+	BVH bvh;
+
+	//structures for preparing bvh
 	ComputeBuffer<uint64> mortonCodes; //codes for all the faces
 
 };

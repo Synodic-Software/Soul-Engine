@@ -9,8 +9,6 @@ class Face
 public:
 	
 	glm::uvec3 indices;
-	uint material;
-
-private:
+	uint material; //TODO investigate materials
 
 };
