@@ -9,7 +9,7 @@ __device__ uint HighestBit(uint i, uint64* morton)
 	return morton[i] ^ morton[i + 1];
 }
 
-__global__ void BuildTree(uint n, BVHData* data, InnerNode* innerNodes, LeafNode* leafNodes, uint64* mortonCodes, BoundingBox* boxes)
+__global__ void BuildTree(uint n, BVHData* data, Node* nodes, uint64* mortonCodes, BoundingBox* boxes)
 {
 	const uint index = ThreadIndex1D();
 
@@ -28,11 +28,10 @@ __global__ void BuildTree(uint n, BVHData* data, InnerNode* innerNodes, LeafNode
 
 		// parent = right, set parent left child and range to node	
 		const uint parentID = index;
-		InnerNode& parentNode = innerNodes[parentID];
+		Node& parentNode = nodes[parentID];
 
-		parentNode.childLeft = index;
+		parentNode.childLeft = index + n;
 		parentNode.rangeLeft = index;
-		parentNode.leftLeaf = true;
 		nodeID = parentID;
 
 	}
@@ -41,11 +40,10 @@ __global__ void BuildTree(uint n, BVHData* data, InnerNode* innerNodes, LeafNode
 
 		// parent = left -1, set parent right child and range to node
 		const uint parentID = index - 1;
-		InnerNode& parentNode = innerNodes[parentID];
+		Node& parentNode = nodes[parentID];
 
-		parentNode.childRight = index;
+		parentNode.childRight = index + n;
 		parentNode.rangeRight = index;
-		parentNode.rightLeaf = true;
 		nodeID = parentID;
 
 	}
@@ -55,22 +53,22 @@ __global__ void BuildTree(uint n, BVHData* data, InnerNode* innerNodes, LeafNode
 	while (true) {
 
 		//only process first thread at the node
-		if (atomicAdd(&innerNodes[nodeID].atomic, 1) != 1) {
+		if (atomicAdd(&nodes[nodeID].atomic, 1) != 1) {
 			return;
 		}
 
 		//only one thread is here, read in the node
-		InnerNode node = innerNodes[nodeID];
+		Node node = nodes[nodeID];
 
 		//TODO store bounding boxes to cut 2 global reads
 		//combine the bounding boxes
-		const BoundingBox boxLeft = node.leftLeaf ? boxes[leafNodes[node.childLeft].boxID] : innerNodes[node.childLeft].box;
-		const BoundingBox boxRight = node.rightLeaf ? boxes[leafNodes[node.childRight].boxID] : innerNodes[node.childRight].box;
+		const BoundingBox boxLeft = node.childLeft >= n ? boxes[node.childLeft - n] : nodes[node.childLeft].box;
+		const BoundingBox boxRight = node.childRight >= n ? boxes[node.childRight - n] : nodes[node.childRight].box;
 
 		node.box.max = glm::max(boxLeft.max, boxRight.max);
 		node.box.min = glm::min(boxLeft.min, boxRight.min);
 
-		innerNodes[nodeID].box = node.box;
+		nodes[nodeID].box = node.box;
 
 		if (node.rangeLeft == 0 && node.rangeRight == innerSize) {
 			data->root = nodeID;
@@ -83,7 +81,7 @@ __global__ void BuildTree(uint n, BVHData* data, InnerNode* innerNodes, LeafNode
 
 			// parent = right, set parent left child and range to node		
 			const uint parentID = node.rangeRight;
-			InnerNode& parentNode = innerNodes[parentID];
+			Node& parentNode = nodes[parentID];
 			
 			parentNode.childLeft = nodeID;
 			parentNode.rangeLeft = node.rangeLeft;
@@ -95,7 +93,7 @@ __global__ void BuildTree(uint n, BVHData* data, InnerNode* innerNodes, LeafNode
 
 			// parent = left -1, set parent right child and range to node
 			const uint parentID = node.rangeLeft - 1;
-			InnerNode& parentNode = innerNodes[parentID];
+			Node& parentNode = nodes[parentID];
 			
 			parentNode.childRight = nodeID;
 			parentNode.rangeRight = node.rangeRight;
@@ -106,7 +104,7 @@ __global__ void BuildTree(uint n, BVHData* data, InnerNode* innerNodes, LeafNode
 	}
 }
 
-__global__ void Reset(uint n, InnerNode* innerNodes, LeafNode* leafNodes)
+__global__ void Reset(uint n, Node* nodes)
 {
 
 	const uint index = ThreadIndex1D();
@@ -116,16 +114,8 @@ __global__ void Reset(uint n, InnerNode* innerNodes, LeafNode* leafNodes)
 	}
 
 	//inner node
-	InnerNode tempInner;
+	Node tempInner;
 	tempInner.atomic = 0; //inner nodes are not visited
-	tempInner.leftLeaf = false;
-	tempInner.rightLeaf = false;
-	innerNodes[index] = tempInner;
+	nodes[index] = tempInner;
 
-	//TODO change 'index' to actual values of the data
-	//set the leaf node
-	LeafNode tempLeaf;
-	tempLeaf.dataID = index;
-	tempLeaf.boxID = index;
-	leafNodes[index] = tempLeaf;
 }

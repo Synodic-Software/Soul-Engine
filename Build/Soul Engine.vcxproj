@@ -129,8 +129,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Data Structures\BitList\BitList.h" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.h" />
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.h" />
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.h" />
     <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.h" />
     <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Face.h" />
     <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Tet.h" />
@@ -193,8 +192,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLTexture.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\BitList\BitList.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp" />
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.cpp" />
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Face.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Tet.cpp" />

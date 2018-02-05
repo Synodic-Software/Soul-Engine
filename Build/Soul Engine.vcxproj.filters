@@ -612,12 +612,6 @@
     <ClInclude Include="..\Source Files\Compute\DeviceAPI.h">
       <Filter>Engine Backend\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.h">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.h">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Engine Core\Object\CUDA\Object.cuh">
       <Filter>Engine Backend\Engine Core\Object\CUDA</Filter>
     </ClInclude>
@@ -638,6 +632,9 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Data Structures\BitList\BitList.h">
       <Filter>Engine Backend\Data Structures\BitList</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.h">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -839,12 +836,6 @@
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.cpp">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.cpp">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Face.cpp">
       <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
     </ClCompile>
@@ -859,6 +850,9 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\BitList\BitList.cpp">
       <Filter>Engine Backend\Data Structures\BitList</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.cpp">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
