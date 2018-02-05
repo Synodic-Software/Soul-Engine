@@ -9,11 +9,13 @@ BVH::BVH() :
 
 }
 
-void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& mortonCodes, ComputeBuffer<Face>& faces, ComputeBuffer<Vertex>& vertices) {
+void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& mortonCodes, ComputeBuffer<BoundingBox>& boxes) {
 
 	if (size > 0) {
 
-		innerNodes.ResizeDevice(size - 1);
+		const GPUExecutePolicy normalPolicy(size, 64, 0, 0);
+
+		innerNodes.ResizeDevice(size); // size-1 nodes are actually used. 1 is tacked on to remove conditional statements
 		leafNodes.ResizeDevice(size);
 
 		data[0].leafSize = size;
@@ -23,49 +25,39 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 
 		ComputeDevice device = S_BEST_GPU;
 
-		const GPUExecutePolicy normalPolicy(size, 64, 0, 0);
 
 		device.Launch(normalPolicy, Reset,
 			size,
-			size - 1,
 			innerNodes.DataDevice(),
-			leafNodes.DataDevice(),
-			faces.DataDevice(),
-			vertices.DataDevice());
+			leafNodes.DataDevice());
 
 		
-		innerNodes.TransferToHost();
+		/*innerNodes.TransferToHost();
 		leafNodes.TransferToHost();
 
-		auto id = 0;
-		for (auto& node : innerNodes) {
+		for (auto id = 0; id < size - 1; ++id) {
+			const auto node = innerNodes[id];
+			std::cout << "Node" << " " << id << ": " << node.childLeft << " " << node.childRight << "        " << node.atomic << " " << node.rangeLeft << " " << node.rangeRight << std::endl;
+		}*/
 
-			std::cout << "Node" << " " << id << ": " << node.childLeft << " " << node.childLeft << "        " << node.atomic << " " << node.rangeLeft << " " << node.rangeRight << std::endl;
-
-			id++;
-		}
-
-		std::cout << std::endl;
+		//std::cout << std::endl;
 
 
 		device.Launch(normalPolicy, BuildTree,
 			size,
-			size - 1,
 			data.DataDevice(),
 			innerNodes.DataDevice(),
 			leafNodes.DataDevice(),
-			mortonCodes.DataDevice());
+			mortonCodes.DataDevice(),
+			boxes.DataDevice());
 
-		innerNodes.TransferToHost();
+		/*innerNodes.TransferToHost();
 		leafNodes.TransferToHost();
 
-		id = 0;
-		for (auto& node : innerNodes) {
-
-			std::cout << "Node" << " " << id << ": " << node.childLeft << " " << node.childLeft << "        " << node.atomic << " " << node.rangeLeft << " " << node.rangeRight << std::endl;
-
-			id++;
-		}
+		for (auto id = 0; id < size - 1; ++id) {
+			const auto node = innerNodes[id];
+			std::cout << "Node" << " " << id << ": " << node.childLeft << " " << node.childRight << "        " << node.atomic << " " << node.rangeLeft << " " << node.rangeRight << std::endl;
+		}*/
 	}
 
 }

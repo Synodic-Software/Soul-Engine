@@ -11,12 +11,12 @@ public:
 	BoundingBox box;
 
 	uint childLeft;
-	uint childRight;
-
-	uint flags;
-	uint atomic;
-
-	uint rangeRight;
 	uint rangeLeft;
-	
+
+	uint childRight;
+	uint rangeRight;
+
+	uint atomic;
+	bool leftLeaf;
+	bool rightLeaf;
 };

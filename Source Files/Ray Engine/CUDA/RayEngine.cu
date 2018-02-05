@@ -536,7 +536,7 @@ namespace RayEngineCUDA {
 //				currentLeaf = nullptr;   // No postponed leaf.
 //				currentNode = bvh.innerNodes + bvh.root;   // Start from the root.
 				ray.currentHit = uint(-1);  // No triangle intersected so far.
-			}
+//			}
 
 			//Traversal starts here
 

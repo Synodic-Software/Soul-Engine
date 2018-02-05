@@ -10,9 +10,8 @@ class BVH {
 public:
 
 	BVH();
-	~BVH() = default;
 
-	void Build(int, ComputeBuffer<BVHData>&, ComputeBuffer<uint64>&, ComputeBuffer<Face>&, ComputeBuffer<Vertex>&);
+	void Build(int, ComputeBuffer<BVHData>&, ComputeBuffer<uint64>&, ComputeBuffer<BoundingBox>&);
 
 
 private:

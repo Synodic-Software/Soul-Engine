@@ -1,9 +1,5 @@
 #include "GPUExecutePolicy.h"
-
-GPUExecutePolicy::GPUExecutePolicy()
-{
-
-}
+#include "glm/gtx/component_wise.hpp"
 
 GPUExecutePolicy::GPUExecutePolicy(uint size_, uint blockSize_, int sharedBytes, int stream_) :
 	gridsize((size_ + blockSize_ - 1) / blockSize_, 1, 1), 
@@ -21,4 +17,8 @@ GPUExecutePolicy::GPUExecutePolicy(glm::uvec3 grid, glm::uvec3 block, int shared
 	stream(stream_) 
 {
 
+}
+
+uint GPUExecutePolicy::GetThreadCount() const{
+	return glm::compMul(gridsize)*glm::compMul(blocksize);
 }

@@ -238,6 +238,9 @@
     <Filter Include="Engine Backend\Data Structures\Geometric Primatives">
       <UniqueIdentifier>{831f3f20-650f-49c2-ba64-679d0fa809f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Data Structures\BitList">
+      <UniqueIdentifier>{d0d798f0-80b3-472a-b63c-5571f515f989}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -525,9 +528,6 @@
     <ClInclude Include="..\Source Files\Transput\FileManager.h">
       <Filter>Engine Backend\Transput</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\DataHelper.h">
-      <Filter>Engine Backend\Data Structures</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.h">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClInclude>
@@ -635,6 +635,9 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.h">
       <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\BitList\BitList.h">
+      <Filter>Engine Backend\Data Structures\BitList</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -758,9 +761,6 @@
     <ClCompile Include="..\Source Files\Algorithms\Filters\Filter.cpp">
       <Filter>Engine Backend\Algorithms\Filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Data Structures\DataHelper.cpp">
-      <Filter>Engine Backend\Data Structures</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Engine Core\Scene\Scene.cpp">
       <Filter>Engine Backend\Engine Core\Scene</Filter>
     </ClCompile>
@@ -856,6 +856,9 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.cpp">
       <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\BitList\BitList.cpp">
+      <Filter>Engine Backend\Data Structures\BitList</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

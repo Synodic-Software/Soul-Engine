@@ -114,9 +114,9 @@ void RenderWidget::RecreateData() {
 	const auto jobsize = size.x*size.y;
 
 	//create the new accumulation Buffer
-	accumulator.Resize(jobsize);
-	buffer.Resize(jobsize);
-	extraData.Resize(jobsize);
+	accumulator.ResizeDevice(jobsize);
+	buffer.ResizeDevice(jobsize);
+	extraData.ResizeDevice(jobsize);
 
 	if (currentSize != size) {
 		currentSize = size;

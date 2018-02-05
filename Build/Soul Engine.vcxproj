@@ -126,11 +126,11 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Compute\OpenCL\OpenCLKernel.h" />
     <ClInclude Include="..\Source Files\Compute\OpenCL\OpenCLRasterBuffer.h" />
     <ClInclude Include="..\Source Files\Compute\OpenCL\OpenCLTexture.h" />
+    <ClInclude Include="..\Source Files\Data Structures\BitList\BitList.h" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.h" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cuh" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.h" />
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.h" />
-    <ClInclude Include="..\Source Files\Data Structures\DataHelper.h" />
     <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\BoundingBox.h" />
     <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Face.h" />
     <ClInclude Include="..\Source Files\Data Structures\Geometric Primatives\Tet.h" />
@@ -191,6 +191,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLKernel.cpp" />
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLRasterBuffer.cpp" />
     <ClCompile Include="..\Source Files\Compute\OpenCL\OpenCLTexture.cpp" />
+    <ClCompile Include="..\Source Files\Data Structures\BitList\BitList.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\InnerNode.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LeafNode.cpp" />
@@ -256,7 +257,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Algorithms\Filters\Filter.cpp" />
-    <ClCompile Include="..\Source Files\Data Structures\DataHelper.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RadixTree.cpp" />
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RTNode.cpp" />
     <ClCompile Include="..\Source Files\Display\Layout\Layout.cpp" />
