@@ -27,17 +27,6 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 			size,
 			nodes.DataDevice());
 
-		
-		/*nodes.TransferToHost();
-
-		for (auto id = 0; id < size - 1; ++id) {
-			const auto node = nodes[id];
-			std::cout << "Node" << " " << id << ": " << node.childLeft << " " << node.childRight << "        " << node.atomic << " " << node.rangeLeft << " " << node.rangeRight << std::endl;
-		}*/
-
-		//std::cout << std::endl;
-
-
 		device.Launch(normalPolicy, BuildTree,
 			size,
 			data.DataDevice(),
@@ -45,12 +34,12 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 			mortonCodes.DataDevice(),
 			boxes.DataDevice());
 
-		/*nodes.TransferToHost();
+		nodes.TransferToHost();
 
 		for (auto id = 0; id < size - 1; ++id) {
 			const auto node = nodes[id];
 			std::cout << "Node" << " " << id << ": " << node.childLeft << " " << node.childRight << "        " << node.atomic << " " << node.rangeLeft << " " << node.rangeRight << std::endl;
-		}*/
+		}
 	}
 
 }
