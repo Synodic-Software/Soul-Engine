@@ -243,7 +243,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Transput\ArchiveXML.h" />
     <ClInclude Include="..\Source Files\Transput\FileManager.h" />
     <ClInclude Include="..\Source Files\Transput\Settings.h" />
-    <ClInclude Include="..\Source Files\Utility\Assert.h" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CudaHelper.cuh" />
     <ClInclude Include="..\Source Files\Utility\CUDA\CUDAMath.h" />
     <ClInclude Include="..\Source Files\Utility\Includes\GLFWIncludes.h" />
@@ -293,7 +292,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClCompile Include="..\Source Files\Raster Engine\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="..\Source Files\Ray Engine\RayEngine.cpp" />
     <ClCompile Include="..\Source Files\Transput\Settings.cpp" />
-    <ClCompile Include="..\Source Files\Utility\Assert.cpp" />
     <ClCompile Include="..\Source Files\Utility\Logger.cpp" />
     <ClCompile Include="..\Source Files\Utility\Timer.cpp" />
     <CudaCompile Include="..\Source Files\Algorithms\Data Algorithms\GPU Prefix Sum\CUDA\PrefixSum.cu" />

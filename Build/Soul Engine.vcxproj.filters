@@ -16,9 +16,6 @@
     <Filter Include="Engine Backend\Engine Core">
       <UniqueIdentifier>{b1cc8635-7429-4fa8-9d93-24788c28bc85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Backend\Sound">
-      <UniqueIdentifier>{a32a3c77-3bdc-463e-81f0-b1e41ac61e21}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Backend\Engine Core\Object">
       <UniqueIdentifier>{ad590c37-6f78-45fc-ad10-3410cfbfa4a7}</UniqueIdentifier>
     </Filter>
@@ -241,6 +238,9 @@
     <Filter Include="Engine Backend\Data Structures\BitList">
       <UniqueIdentifier>{d0d798f0-80b3-472a-b63c-5571f515f989}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Audio">
+      <UniqueIdentifier>{a32a3c77-3bdc-463e-81f0-b1e41ac61e21}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -449,9 +449,6 @@
     </ClInclude>
     <ClInclude Include="..\Source Files\Data Structures\Radix Tree\RTNode.h">
       <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source Files\Utility\Assert.h">
-      <Filter>Engine Backend\Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Events\EventManager.h">
       <Filter>Engine Backend\Events</Filter>
@@ -724,9 +721,6 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Radix Tree\RTNode.cpp">
       <Filter>Engine Backend\Data Structures\Radix Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source Files\Utility\Assert.cpp">
-      <Filter>Engine Backend\Utility</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Events\Event.cpp">
       <Filter>Engine Backend\Events</Filter>
