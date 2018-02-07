@@ -3,11 +3,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/xe6bh7hiiofmkh49?svg=true)](https://ci.appveyor.com/project/AsherNorland/soul-engine)
 
 # What is Soul Engine?
-Soul Engine is a physically based renderer and engine for real-time applications. It is cross-platform with CUDA (primary) or OpenCL (secondary) support for computation tasks. 
-
+Soul Engine is a physically based renderer and engine for real-time applications.
 ![Tree Model](Documentation/Tree.png)
-
-Check out the currently open [issues](https://github.com/Synodic-Software/Soul-Engine/issues) for opportunities to contribute!
 
 For more information, visit our [Wiki](https://github.com/Synodic-Software/Soul-Engine/wiki)
 
