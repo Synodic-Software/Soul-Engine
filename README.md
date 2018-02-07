@@ -6,14 +6,10 @@
 Soul Engine is a physically based renderer and engine for real-time applications. It is cross-platform with CUDA (primary) or OpenCL (secondary) support for computation tasks. 
 
 ![Tree Model](Documentation/Tree.png)
-(This is image is produced after 5 seconds of accumulation on a consumer graphics card)
-
-Ways to interact with Soul Engine beyond this repository are currently being investigated.
-For your propiertery purposes, an alternate license will be also made available once the project is near feature complete.
 
 Check out the currently open [issues](https://github.com/Behemyth/Soul-Engine/issues) for opportunities to contribute!
 
-# User (programmer) Setup
+# Installation
 To compile within the visual studio project dependancies with the following must be met:
 
   - GLFW          - http://www.glfw.org/
@@ -28,10 +24,10 @@ To compile within the visual studio project dependancies with the following must
   
   - GLEW          - http://glew.sourceforge.net/ 
   
-  - Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
+  - Cuda 9.1      - https://developer.nvidia.com/cuda-toolkit
   
   - OpenCL	  - http://developer.amd.com/amd-accelerated-parallel-processing-app-sdk/
   
   - tinyobjloader - https://github.com/syoyo/tinyobjloader
   
-Soul Engine can be compiled in Microsoft Visual Studio 2017.
+For a detailed explaination, visit our Wiki's [Getting Started](https://github.com/Synodic-Software/Soul-Engine/wiki/Getting-Started)
