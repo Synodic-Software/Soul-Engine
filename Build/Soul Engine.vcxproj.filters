@@ -525,9 +525,6 @@
     <ClInclude Include="..\Source Files\Transput\FileManager.h">
       <Filter>Engine Backend\Transput</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.h">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\CUDA\BVH.cuh">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy\CUDA</Filter>
     </ClInclude>
@@ -631,6 +628,9 @@
       <Filter>Engine Backend\Data Structures\BitList</Filter>
     </ClInclude>
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.h">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LBVHManager.h">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClInclude>
   </ItemGroup>
@@ -827,9 +827,6 @@
     <ClCompile Include="..\Source Files\Compute\ComputeManager.cpp">
       <Filter>Engine Backend\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\BVH.cpp">
-      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Geometric Primatives\Face.cpp">
       <Filter>Engine Backend\Data Structures\Geometric Primatives</Filter>
     </ClCompile>
@@ -846,6 +843,9 @@
       <Filter>Engine Backend\Data Structures\BitList</Filter>
     </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\Node.cpp">
+      <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LBVHManager.cpp">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClCompile>
   </ItemGroup>

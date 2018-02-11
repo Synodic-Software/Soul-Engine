@@ -3,13 +3,13 @@
 #include "Compute/ComputeBuffer.h"
 #include "CUDA/BVH.cuh"
 
-class BVH {
+class LBVHManager {
 
 public:
 
-	BVH();
+	LBVHManager();
 
-	void Build(int, ComputeBuffer<BVHData>&, ComputeBuffer<uint64>&, ComputeBuffer<BoundingBox>&);
+	void Build(int, ComputeBuffer<BVH>&, ComputeBuffer<uint64>&, ComputeBuffer<BoundingBox>&);
 
 
 private:

@@ -7,7 +7,7 @@
 #define TwoE20 1048575 //2^20-1
 #define TwoE21 2097151 //2^21-1
 
-__inline__ __host__ __device__ uint64 Split64_3D(unsigned int a) {
+__host__ __device__ uint64 Split64_3D(unsigned int a) {
 	uint64 x = a;
 	x = (x | x << 32) & 0x1f00000000ffff;
 	x = (x | x << 16) & 0x1f0000ff0000ff;
@@ -17,7 +17,7 @@ __inline__ __host__ __device__ uint64 Split64_3D(unsigned int a) {
 	return x;
 }
 
-__inline__ __host__ __device__ uint Unsplit64_3D(const uint64 m) {
+__host__ __device__ uint Unsplit64_3D(const uint64 m) {
 	uint64 x = m & 0x1249249249249249;
 	x = (x ^ (x >> 2)) & 0x10c30c30c30c30c3;
 	x = (x ^ (x >> 4)) & 0x100f00f00f00f00f;
@@ -27,7 +27,7 @@ __inline__ __host__ __device__ uint Unsplit64_3D(const uint64 m) {
 	return static_cast<uint>(x);
 }
 
-__inline__ __host__ __device__ uint64 Split64_2D(unsigned int a) {
+__host__ __device__ uint64 Split64_2D(unsigned int a) {
 	uint64 x = a;
 	x = (x | x << 32) & 0x00000000FFFFFFFF;
 	x = (x | x << 16) & 0x0000FFFF0000FFFF;
@@ -39,7 +39,7 @@ __inline__ __host__ __device__ uint64 Split64_2D(unsigned int a) {
 	return x;
 }
 
-__inline__ __host__ __device__ uint Unsplit64_2D(const uint64 m) {
+__host__ __device__ uint Unsplit64_2D(const uint64 m) {
 	uint64 x = m & 0x3333333333333333;
 	x = (x ^ (x >> 2)) & 0x0F0F0F0F0F0F0F0F;
 	x = (x ^ (x >> 4)) & 0x00FF00FF00FF00FF;

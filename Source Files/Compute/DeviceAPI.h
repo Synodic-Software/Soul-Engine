@@ -10,3 +10,10 @@ uint ThreadIndex1D() {
 	return 0;
 #endif
 }
+
+template <class T> __host__ __device__ __inline__ void Swap(T& a, T& b)
+{
+	T t = a;
+	a = b;
+	b = t;
+}

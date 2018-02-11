@@ -12,7 +12,7 @@
 #include "Algorithms/Data Algorithms/GPU Sort/Sort.h"
 
 Scene::Scene():
-	bvhData(S_BEST_GPU),
+	BVH(S_BEST_GPU),
 	sky(S_BEST_GPU),
 	faces(S_BEST_GPU),
 	vertices(S_BEST_GPU),
@@ -23,7 +23,7 @@ Scene::Scene():
 	boxes(S_BEST_GPU)
 {
 
-	bvhData.Resize(1);
+	BVH.Resize(1);
 	sky.PushBack({ "Starmap.png" });
 
 	sky.TransferToDevice();
@@ -47,7 +47,7 @@ __host__ void Scene::Build(double deltaTime) {
 
 	}
 
-	bvh.Build(size, bvhData, mortonCodes, boxes);
+	bvh.Build(size, BVH, mortonCodes, boxes);
 
 }
 
