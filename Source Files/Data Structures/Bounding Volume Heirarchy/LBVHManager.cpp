@@ -1,14 +1,14 @@
-#include "BVH.h"
+#include "LBVHManager.h"
 #include "CUDA/BVH.cuh"
 #include "Compute/ComputeManager.h"
 
-BVH::BVH() :
+LBVHManager::LBVHManager() :
 	nodes(S_BEST_GPU)
 {
 
 }
 
-void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& mortonCodes, ComputeBuffer<BoundingBox>& boxes) {
+void LBVHManager::Build(int size, ComputeBuffer<BVH>& data, ComputeBuffer<uint64>& mortonCodes, ComputeBuffer<BoundingBox>& boxes) {
 
 	if (size > 0) {
 
@@ -18,6 +18,7 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 
 		data[0].leafSize = size;
 		data[0].nodes = nodes.DataDevice();
+		data[0].boxes = boxes.DataDevice();
 		data.TransferToDevice();
 
 		ComputeDevice device = S_BEST_GPU;
@@ -34,12 +35,5 @@ void BVH::Build(int size, ComputeBuffer<BVHData>& data, ComputeBuffer<uint64>& m
 			mortonCodes.DataDevice(),
 			boxes.DataDevice());
 
-		nodes.TransferToHost();
-
-		for (auto id = 0; id < size - 1; ++id) {
-			const auto node = nodes[id];
-			std::cout << "Node" << " " << id << ": " << node.childLeft << " " << node.childRight << "        " << node.atomic << " " << node.rangeLeft << " " << node.rangeRight << std::endl;
-		}
 	}
-
 }

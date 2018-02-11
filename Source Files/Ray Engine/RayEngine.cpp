@@ -260,7 +260,7 @@ void RayEngine::Process(Scene& scene, double target) {
 				device.Launch(persistantPolicy, RayEngineCUDA::ExecuteJobs,
 					numActive,
 					deviceRaysA.DataDevice(),
-					scene.bvhData.DataDevice(),
+					scene.BVH.DataDevice(),
 					scene.vertices.DataDevice(),
 					scene.faces.DataDevice(),
 					scene.boxes.DataDevice(),

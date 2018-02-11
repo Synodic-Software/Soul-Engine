@@ -4,7 +4,7 @@
 #include "Engine Core\Object\MiniObject.h"
 #include "Engine Core\Scene\Sky.h"
 #include "Engine Core\Material\Material.h"
-#include "Data Structures\Bounding Volume Heirarchy\BVH.h"
+#include "Data Structures\Bounding Volume Heirarchy\LBVHManager.h"
 #include "Compute/ComputeBuffer.h"
 
 class Scene
@@ -26,7 +26,7 @@ public:
 	void RemoveObject(Object&);
 
 	//the bvh data for the scene
-	ComputeBuffer<BVHData> bvhData;
+	ComputeBuffer<BVH> BVH;
 
 	//the sky data for the scene
 	ComputeBuffer<Sky> sky;
@@ -47,7 +47,7 @@ private:
 	BoundingBox sceneBox;
 
 	//bvh for scene management
-	BVH bvh;
+	LBVHManager bvh;
 
 	//structures for preparing bvh
 	ComputeBuffer<uint64> mortonCodes; //codes for all the faces

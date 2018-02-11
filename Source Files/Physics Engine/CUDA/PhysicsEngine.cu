@@ -22,7 +22,7 @@
 //};
 //
 //
-//__global__ void NarrowPhase(uint n, BVHData* bvh, Collision* collisions, int* sizeCounter){
+//__global__ void NarrowPhase(uint n, BVH* bvh, Collision* collisions, int* sizeCounter){
 //
 //	uint index = ThreadIndex1D();
 //
@@ -36,7 +36,7 @@
 //
 //}
 //
-//__global__ void BroadPhase(uint n, BVHData* bvh, Collision* collisions, int* sizeCounter){
+//__global__ void BroadPhase(uint n, BVH* bvh, Collision* collisions, int* sizeCounter){
 //
 //	uint index = ThreadIndex1D();
 //
@@ -94,7 +94,7 @@
 //
 //}
 //
-//__host__ void ProcessScene(ComputeBuffer<BVHData>& bvh){
+//__host__ void ProcessScene(ComputeBuffer<BVH>& bvh){
 //
 //	collisions.Move(S_BEST_GPU);
 //
