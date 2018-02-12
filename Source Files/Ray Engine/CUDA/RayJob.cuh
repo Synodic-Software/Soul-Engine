@@ -2,6 +2,7 @@
 
 #include "Metrics.h"
 #include "Utility/CUDA/CudaHelper.cuh"
+#include "Photography/Camera/Camera.h"
 
 enum rayType {
 	RayCOLOUR				//RayCOLOUR: A vec3 of RGB values to be displayed
@@ -21,23 +22,19 @@ public:
 	//@param The number of samples per ray or point that will be averaged into the result. Is more of a probability than number.
 	//@param A camera that contains all the information to shoot a ray.
 	//@param The amount of buffers used for result storage.
-	__host__ RayJob(rayType, uint, bool, float, uint camera, void* resultsIn, int*);
 	__host__ RayJob();
+	__host__ RayJob(rayType, bool, float);
 	__host__ ~RayJob();
 
 	//result variables
 
-	void* results;
-	int* groupData;
-
 	//counting variables
-	uint startIndex;
-	uint ID;
+	uint rayOffset;
+
+	uint id;
 	//common variables
-	uint camera;
+	Camera camera;
 	rayType type;
-	uint rayAmount;
-	uint rayBaseAmount;
 	float samples;
 	bool canChange;
 
@@ -49,14 +46,10 @@ private:
 public:
 	bool operator==(const RayJob& other) const {
 		return
-			results == other.results &&
-			groupData == other.groupData &&
-			startIndex == other.startIndex &&
-			ID == other.ID &&
+			rayOffset == other.rayOffset &&
+			id == other.id &&
 			camera == other.camera &&
 			type == other.type &&
-			rayAmount == other.rayAmount &&
-			rayBaseAmount == other.rayBaseAmount &&
 			samples == other.samples &&
 			canChange == other.canChange;
 
@@ -64,14 +57,10 @@ public:
 
 	RayJob& operator=(RayJob arg)
 	{
-		this->results = arg.results;
-		this->groupData = arg.groupData;
-		this->startIndex = arg.startIndex;
-		this->ID = arg.ID;
+		this->rayOffset = arg.rayOffset;
+		this->id = arg.id;
 		this->camera = arg.camera;
 		this->type = arg.type;
-		this->rayAmount = arg.rayAmount;
-		this->rayBaseAmount = arg.rayBaseAmount;
 		this->samples = arg.samples;
 		this->canChange = arg.canChange;
 

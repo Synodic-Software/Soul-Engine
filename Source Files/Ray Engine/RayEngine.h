@@ -1,16 +1,29 @@
 #pragma once
 
-#include "Engine Core/BasicDependencies.h"
-#include "Engine Core\Scene\Scene.h"
+#include "Engine Core/Scene/Scene.h"
 #include "RayJob.h"
-#include <thrust/device_vector.h>
+#include "Compute/ComputeBuffer.h"
+#include "Utility/Timer.h"
+#include "Ray.h"
 
-//defined in winspool.h
 #undef AddJob
+#undef GetJob
 
 //The main engine that processes RayJobs
-namespace RayEngine {
+class RayEngine {
 
+public:
+
+	static RayEngine& Instance()
+	{
+
+		static RayEngine instance; 
+		return instance;
+	}
+
+
+	RayEngine(const RayEngine&) = delete;
+	void operator=(const RayEngine&) = delete;
 	/*
 	 *    Adds a job to be executed after all updates have taken place. It will execute the given
 	 *    function to initialize all its rays and returns the tag that can be used to extract the
@@ -24,8 +37,8 @@ namespace RayEngine {
 	 *    @param [in,out]	parameter7	If non-null, the parameter 7.
 	 *    @return	Null if it fails, else a pointer to a RayJob.
 	 */
-	
-	RayJob* AddJob(rayType, uint, bool,float, uint, void*,int*);
+
+	uint AddJob(rayType, bool, float);
 
 	//A varient that does not copy the results to the CPU but instead returns a cuda* that can be procesed further.
 	//adds a job with a hint to keep its allocated data for ray storage. Speed gains if large ray bundles are given.
@@ -38,7 +51,7 @@ namespace RayEngine {
 	 *    @return	True if it succeeds, false if it fails.
 	 */
 
-	bool RemoveJob(RayJob*);
+	bool RemoveJob(uint);
 
 	/*
 	 *    Modify job.
@@ -46,7 +59,7 @@ namespace RayEngine {
 	 *    @param [in,out]	parameter2	The second parameter.
 	 */
 
-	void ModifyJob(RayJob*, uint);
+	RayJob& GetJob(uint);
 
 	/*
 	 *    Process this object.
@@ -54,10 +67,49 @@ namespace RayEngine {
 	 *    @param	parameter2	The second parameter.
 	 */
 
-	void Process(const Scene*, double);
-	/* Initializes this object. */
-	void Initialize();
-	/* Terminates this object. */
-	void Terminate();
+	void Process(Scene&, double);
 
-}
+	void Update();
+
+	void PreProcess();
+	void PostProcess();
+
+private:
+
+	/* List of jobs */
+	ComputeBuffer<RayJob> jobList;
+
+	/* The render derivatives */
+	std::deque<double> renderDerivatives;
+
+	/* The old render time */
+	double oldRenderTime;
+
+	/* The frame hold */
+	uint frameHold;
+
+	/* timer. */
+	Timer renderTimer;
+
+	ComputeBuffer<Ray> deviceRaysA;
+	ComputeBuffer<Ray> deviceRaysB;
+
+	ComputeBuffer<curandState> randomState;
+
+	uint raySeedGl;
+
+	const uint rayDepth;
+
+	//stored counters
+	ComputeBuffer<int> counter;
+	ComputeBuffer<int> hitAtomic;
+
+	GPUExecutePolicy persistantPolicy;
+
+	RayEngine();
+
+	void UpdateJobs(double, double, ComputeBuffer<RayJob>&);
+
+	uint WangHash();
+
+};

@@ -7,39 +7,23 @@
 
 #include "Utility\Logger.h"
 
-//#include <cuda.h>  
-////#include <cuda_runtime_api.h>
-//
-//#include "Utility\Includes\GLMIncludes.h"
-////#include <cuda_runtime.h>
-////#include <device_launch_parameters.h>
-////#include <device_functions.h>
-//#include <curand.h>
-//#include <curand_kernel.h>
-//#include <vector_types.h>
-//#include <driver_functions.h>
-//#include "CUDA\CUDAMath.h"
-//#include <cuda_profiler_api.h>
-//#include "Metrics.h"
-
-
 #define WARP_SIZE 32
 
 #define CudaCheck(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool = true)
+inline void gpuAssert(cudaError_t code, const char *file, int line)
 {
 	if (code != cudaSuccess)
 	{
-		std::cout << cudaGetErrorString(code) << file << line << std::endl;
-		//if (abort) exit(code);
+		std::cout << cudaGetErrorString(code) << " "<< file << line << std::endl;
+		throw std::exception("Cuda Error");
+	}
+
+	if(cudaSuccess != cudaGetLastError()) {
+		throw std::exception("Missed 'CudaCheck on Something");
 	}
 }
 
 __host__ __device__ uint randHash(uint a);
-inline __device__ int getGlobalIdx_1D_1D()
-{
-	return blockIdx.x *blockDim.x + threadIdx.x;
-}
 
 __device__ int warp_bcast(int v, int leader);
 __device__ int lane_id();

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Metrics.h"
+#include "Compute/ComputeBuffer.h"
+#include "Data Structures/Geometric Primatives/Face.h"
 
 namespace Sort {
 
@@ -12,6 +13,5 @@ namespace Sort {
 	 *    @return	Null if it fails, else a pointer to a P.
 	 */
 
-	uint* Calculate(uint size, uint64* keys, uint* values);
-
+	void Sort(ComputeBuffer<uint64_t>& keys, ComputeBuffer<Face>& values);
 }
