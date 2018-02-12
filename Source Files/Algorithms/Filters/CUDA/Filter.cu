@@ -94,7 +94,7 @@ __global__ void GPUHermiteBicubic(uint n, glm::vec4* data, glm::vec4* buffer, gl
 }
 
 __global__ void GPUNearest(uint n, glm::vec4* data, glm::vec4* buffer, const glm::uvec2 originalSize, const glm::uvec2 desiredSize) {
-	const uint index = getGlobalIdx_1D_1D();
+	const uint index = ThreadIndex1D();
 
 	if (index >= n) {
 		return;
