@@ -93,12 +93,33 @@ __global__ void GPUHermiteBicubic(uint n, glm::vec4* data, glm::vec4* buffer, gl
 
 }
 
+__global__ void GPUNearest(uint n, glm::vec4* data, glm::vec4* buffer, const glm::uvec2 originalSize, const glm::uvec2 desiredSize) {
+	const uint index = getGlobalIdx_1D_1D();
+
+	if (index >= n) {
+		return;
+	}
+
+	const float x = index % originalSize.x;
+	const float y = index / originalSize.x;
+
+	const float u = x / float(originalSize.x);
+	const float v = y / float(originalSize.y);
+
+	const int xInt = int(u * desiredSize.x);
+	const int yInt = int(v * desiredSize.y);
+
+	const int oldIndex = yInt * desiredSize.x + xInt;
+	buffer[index] = data[oldIndex];
+
+}
+
 namespace CUDAFilter {
 
 
 	__host__ void HermiteBicubic(glm::vec4* data, glm::uvec2& originalSize, glm::uvec2& desiredSize) {
 
-		uint count = desiredSize.x*desiredSize.y;
+		uint count = originalSize.x*originalSize.y;
 
 		uint blockSize = 64;
 		uint blockCount = (count + blockSize - 1) / blockSize;
@@ -107,6 +128,25 @@ namespace CUDAFilter {
 		CudaCheck(cudaMalloc((void**)&deviceBuffer, count * sizeof(glm::vec4)));
 
 		GPUHermiteBicubic << < blockCount, blockSize >> > (count, data, deviceBuffer, originalSize, desiredSize);
+		CudaCheck(cudaPeekAtLastError());
+		CudaCheck(cudaDeviceSynchronize());
+
+		CudaCheck(cudaMemcpy(data, deviceBuffer, count * sizeof(glm::vec4), cudaMemcpyDeviceToDevice));
+		CudaCheck(cudaFree(deviceBuffer));
+
+	}
+
+	__host__ void Nearest(glm::vec4* data, const glm::uvec2& originalSize, const glm::uvec2& desiredSize) {
+
+		uint count = originalSize.x*originalSize.y;
+
+		uint blockSize = 64;
+		uint blockCount = (count + blockSize - 1) / blockSize;
+
+		glm::vec4* deviceBuffer;
+		CudaCheck(cudaMalloc((void**)&deviceBuffer, count * sizeof(glm::vec4)));
+
+		GPUNearest << < blockCount, blockSize >> > (count, data, deviceBuffer, originalSize, desiredSize);
 		CudaCheck(cudaPeekAtLastError());
 		CudaCheck(cudaDeviceSynchronize());
 

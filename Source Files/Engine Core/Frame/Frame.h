@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Metrics.h"
+
 class Frame {
 	Frame():frameCount(0){};
 	
 public:
-	int frameCount;
+
+	uint frameCount;
 	
 private:
 	
