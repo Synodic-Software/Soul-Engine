@@ -117,16 +117,12 @@ void Scene::AddObject(Object& obj) {
 			faces[t + faceOffset] = obj.faces[t];
 
 			glm::uvec3& ind = faces[t + faceOffset].indices;
-			ind.x += vertexOffset;
-			ind.y += vertexOffset;
-			ind.z += vertexOffset;
 
-			faces[t + faceOffset].material += materialOffset;
-
-			// Expand bounds using min/max functions
-			const glm::vec3 pos0 = vertices[ind.x].position;
-			const glm::vec3 pos1 = vertices[ind.y].position;
-			const glm::vec3 pos2 = vertices[ind.z].position;
+			//before adding the offsets, updated the bounding box
+			
+			const glm::vec3 pos0 = obj.vertices[ind.x].position;
+			const glm::vec3 pos1 = obj.vertices[ind.y].position;
+			const glm::vec3 pos2 = obj.vertices[ind.z].position;
 
 			glm::vec3 max = pos0;
 			glm::vec3 min = pos0;
@@ -140,6 +136,12 @@ void Scene::AddObject(Object& obj) {
 			BoundingBox& box = boxes[t + faceOffset];
 			box.max = max;
 			box.min = min;
+
+			ind.x += vertexOffset;
+			ind.y += vertexOffset;
+			ind.z += vertexOffset;
+
+			faces[t + faceOffset].material += materialOffset;			
 		}
 		if (t < obj.tetAmount) {
 			tets[t + tetOffset] = obj.tets[t];

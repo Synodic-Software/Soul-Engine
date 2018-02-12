@@ -11,7 +11,8 @@ uint ThreadIndex1D() {
 #endif
 }
 
-template <class T> __host__ __device__ __inline__ void Swap(T& a, T& b)
+template <class T> 
+__host__ __device__ __inline__ void Swap(T& a, T& b)
 {
 	T t = a;
 	a = b;
