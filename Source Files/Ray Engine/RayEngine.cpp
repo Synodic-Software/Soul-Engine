@@ -96,44 +96,39 @@ void RayEngine::UpdateJobs(double renderTime, double targetTime, ComputeBuffer<R
 		RayJob& job = jobList[i];
 		if (false) {
 
+
 			Camera& camera = job.camera;
+
+			//set the previous resolution
+			camera.film.resolutionPrev = camera.film.resolution;
 
 			float delta = change * camera.film.resolutionRatio;
 			float newRatio = camera.film.resolutionRatio + delta;
 
+			if (camera.film.resolutionMax.x * newRatio < 64) {
 
-		Camera& camera = job.camera;
+				newRatio = 64 / (float)camera.film.resolutionMax.x;
 
-		//set the previous resolution
-		camera.film.resolutionPrev = camera.film.resolution;
+			}
 
-		float delta = change*camera.film.resolutionRatio;
-		float newRatio = camera.film.resolutionRatio + delta;
+			if (newRatio >= 1.0f) {
 
-		if (camera.film.resolutionMax.x * newRatio < 64) {
+				camera.film.resolution = camera.film.resolutionMax;
+				job.samples = newRatio;
 
-			newRatio = 64 / (float)camera.film.resolutionMax.x;
+				//TODO investigate error with scopes
+				camera.film.resolution.x = camera.film.resolutionMax.x * newRatio;
+				camera.film.resolution.y = camera.film.resolutionMax.y * newRatio;
+				job.samples = 1.0f;
 
-		}
+			}
 
-		if (newRatio >= 1.0f) {
-
-			camera.film.resolution = camera.film.resolutionMax;
-			job.samples = newRatio;
-      
-      //TODO investigate error with scopes
-			camera.film.resolution.x = camera.film.resolutionMax.x * newRatio;
-			camera.film.resolution.y = camera.film.resolutionMax.y * newRatio;
-			job.samples = 1.0f;
+			//update the camera ratio
+			camera.film.resolutionRatio = newRatio;
 
 		}
-
-		//update the camera ratio
-		camera.film.resolutionRatio = newRatio;
-
 	}
 }
-
 
 /*
  *    Process this object.
