@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Engine Core\Scene\CUDA/Scene.cuh"
+#include "Compute/ComputeBuffer.h"
+#include "Engine Core/Scene/Scene.h"
 
 
-__host__ void ProcessScene(const Scene*);
+//__host__ void ProcessScene(ComputeBuffer<BVH>&);

@@ -1,7 +1,7 @@
 #include "WindowManager.h"
 
 #include "Utility\Logger.h"
-#include "Utility\Settings.h"
+#include "Transput\Settings.h"
 #include "Multithreading\Scheduler.h"
 #include "Raster Engine\RasterBackend.h"
 
@@ -43,9 +43,6 @@ namespace WindowManager {
 		runningFlag = runningFlagIn;
 
 		Scheduler::Block();
-
-		//windows.emplace_back(new Window(static_cast<WindowType>(-1), "", 0, 0, 1, 1, monitors[0], nullptr));
-		//masterWindow = windows.back().get();
 	}
 
 	/* Terminates this object. */

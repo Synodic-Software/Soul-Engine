@@ -1,61 +1,39 @@
 #pragma once
 
 #include "Display\Widget\Widget.h"
+
 #include "Metrics.h"
-#include "GPGPU\GPURasterBuffer.h"
-#include "GPGPU\GPUBuffer.h"
-#include "Ray Engine/RayEngine.h"
-#include "Photography/Camera/Camera.h"
+#include "Compute\ComputeRasterBuffer.h"
+#include "Compute\ComputeBuffer.h"
 
 /* A render widget. */
 class RenderWidget : public Widget
 {
 public:
 
-	/*
-	 *    Constructor.
-	 *    @param [in,out]	parameter1	If non-null, the first parameter.
-	 */
+	RenderWidget(uint&);
+	~RenderWidget() = default;
 
-	RenderWidget(Camera*);
-	/* Destructor. */
-	~RenderWidget();
+	void Draw() override;
 
-	/* Draws this object. */
-	virtual void Draw();
-	/* Recreate data. */
-	virtual void RecreateData();
-
-protected:
-
+	void RecreateData() override;
 
 
 private:
 
-	/* Size of the current */
 	glm::uvec2 currentSize;
-	/* Size of the render */
 	glm::uvec2 renderSize;
 
-	/* The buffer */
-	GPURasterBuffer<glm::vec4> buffer;
-	/* The accumulator */
-	GPUBuffer<glm::vec4> accumulator;
-	/* Information describing the extra */
-	GPUBuffer<int> extraData;
+	ComputeRasterBuffer<glm::vec4> buffer;
+	ComputeBuffer<glm::vec4> accumulator;
+	ComputeBuffer<int> extraData;
 
-	/* The samples */
 	float samples;
-	/* The camera */
-	Camera* camera;
-	/* The ray job */
-	RayJob* rayJob;
 
-	/* Zero-based index of the counter */
+	uint rayJob;
+
 	uint iCounter;
-	/* True to integrate */
 	bool integrate;
-	/* The time */
 	double time;
 };
 
