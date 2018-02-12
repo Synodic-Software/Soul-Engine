@@ -2,9 +2,6 @@
 
 #include "ArchiveBase.h"
 
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-
 namespace FileSystem {
 
 	/*
@@ -23,19 +20,15 @@ namespace FileSystem {
 		/*
 			Serializes object as binary stored in the file specified by filename
 		*/
-		virtual void Read() {
-			std::ifstream ifs(filename);
-			boost::archive::binary_iarchive ar(ifs);
-			ar & *object; 
+		void Read() override {
+
 		}
 
 		/*
 		 	Loads the object serialized in binary file specified by filename into object
 		 */
-		virtual void Write() {
-			std::ofstream ofs(filename);
-			boost::archive::binary_oarchive ar(ofs);
-			ar & *object;
+		void Write() override {
+
 		}
 	};
 };

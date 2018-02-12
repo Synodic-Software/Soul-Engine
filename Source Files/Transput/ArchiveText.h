@@ -2,9 +2,6 @@
 
 #include "ArchiveBase.h"
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-
 namespace FileSystem {
 
 	/*
@@ -23,19 +20,15 @@ namespace FileSystem {
 		/*
 			@effects		serializes object as text stored in the file specified by filename
 		*/
-		virtual void Read() {
-			std::ifstream ifs(filename);
-			boost::archive::text_iarchive ar(ifs);
-			ar & *object; 
+		void Read() override {
+
 		}
 
 		/*
 		 @effects		loads the object serialized in text file specified by filename into object
 		 */
-		virtual void Write() {
-			std::ofstream ofs(filename);
-			boost::archive::text_oarchive ar(ofs);
-			ar & *object;
+		void Write() override {
+
 		}
 	};
 };

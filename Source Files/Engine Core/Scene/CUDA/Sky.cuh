@@ -12,7 +12,7 @@ class Sky
 {
 
 public:
-
+	Sky();
 	Sky(std::string); 
 
 	__host__ void UpdateSky();
