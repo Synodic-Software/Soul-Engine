@@ -230,7 +230,7 @@ namespace RayEngineCUDA {
 				//ray local storage + precalculations
 				ray = rays[rayidx];
 
-				ray.currentHit = uint(-1);
+				ray.currentHit = static_cast<uint>(-1);
 				bvh.ResetTraversal(ray);
 			}
 

@@ -88,17 +88,17 @@ __device__ __inline__ float fmax_fmax(float a, float b, float c) { return __int_
 
 __device__ __inline__ float magic_max7(float a0, float a1, float b0, float b1, float c0, float c1, float d)
 {
-	float t1 = fmin_fmax(a0, a1, d);
-	float t2 = fmin_fmax(b0, b1, t1);
-	float t3 = fmin_fmax(c0, c1, t2);
+	const float t1 = fmin_fmax(a0, a1, d);
+	const float t2 = fmin_fmax(b0, b1, t1);
+	const float t3 = fmin_fmax(c0, c1, t2);
 	return t3;
 }
 
 __device__ __inline__ float magic_min7(float a0, float a1, float b0, float b1, float c0, float c1, float d)
 {
-	float t1 = fmax_fmin(a0, a1, d);
-	float t2 = fmax_fmin(b0, b1, t1);
-	float t3 = fmax_fmin(c0, c1, t2);
+	const float t1 = fmax_fmin(a0, a1, d);
+	const float t2 = fmax_fmin(b0, b1, t1);
+	const float t3 = fmax_fmin(c0, c1, t2);
 	return t3;
 }
 
@@ -126,15 +126,15 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA,
 	float W = Bx * Ay - By * Ax;
 
 	if (U == 0.0f || V == 0.0f || W == 0.0f) {
-		double CxBy = (double)Cx*(double)By;
-		double CyBx = (double)Cy*(double)Bx;
-		U = (float)(CxBy - CyBx);
-		double AxCy = (double)Ax*(double)Cy;
-		double AyCx = (double)Ay*(double)Cx;
-		V = (float)(AxCy - AyCx);
-		double BxAy = (double)Bx*(double)Ay;
-		double ByAx = (double)By*(double)Ax;
-		W = (float)(BxAy - ByAx);
+		const double CxBy = static_cast<double>(Cx)*static_cast<double>(By);
+		const double CyBx = static_cast<double>(Cy)*static_cast<double>(Bx);
+		U = static_cast<float>(CxBy - CyBx);
+		const double AxCy = static_cast<double>(Ax)*static_cast<double>(Cy);
+		const double AyCx = static_cast<double>(Ay)*static_cast<double>(Cx);
+		V = static_cast<float>(AxCy - AyCx);
+		const double BxAy = static_cast<double>(Bx)*static_cast<double>(Ay);
+		const double ByAx = static_cast<double>(By)*static_cast<double>(Ax);
+		W = static_cast<float>(BxAy - ByAx);
 	}
 
 	if ((U < 0.0f || V < 0.0f || W < 0.0f) &&
@@ -142,7 +142,7 @@ __host__ __device__ __inline__ bool FindTriangleIntersect(const glm::vec3& triA,
 		return false;
 	}
 
-	float det = U + V + W;
+	const float det = U + V + W;
 
 	if (det == 0.0f) {
 		return false;
@@ -303,9 +303,9 @@ __device__ bool BVH::IsTerminated() const {
 
 __device__ void BVH::ResetTraversal(const Ray& ray) {
 
-
 	//triangle precalc
-	glm::vec3 absDir = glm::abs(ray.direction);
+	const glm::vec3 absDir = glm::abs(ray.direction);
+
 	if (absDir.x >= absDir.y&&absDir.x >= absDir.z) {
 		kz = 0;
 	}
@@ -316,8 +316,17 @@ __device__ void BVH::ResetTraversal(const Ray& ray) {
 		kz = 2;
 	}
 
-	kx = kz + 1; if (kx == 3) kx = 0;
-	ky = kx + 1; if (ky == 3) ky = 0;
+	kx = kz + 1;
+
+	if (kx == 3) {
+		kx = 0;
+	}
+
+	ky = kx + 1;
+
+	if (ky == 3) {
+		ky = 0;
+	}
 
 	if (ray.direction[kz] < 0.0f) {
 		Swap(kx, ky);
@@ -357,36 +366,29 @@ __device__ void BVH::ResetTraversal(const Ray& ray) {
 
 __device__ void BVH::Traverse(Ray& ray, Vertex* vertices, Face* faces) {
 
-	//Traversal starts here
+	//While the current node is either a leaf or an inner noed
 	while (currentNode != terminator)
 	{
 		// Until all threads find a leaf, traverse
-
 		while (!IsLeaf(currentNode) && currentNode != terminator)
 		{
-			// Fetch AABBs of the two child nodes.
+			// Fetch AABBs of the two child nodes
+			uint childL = nodes[currentNode].childLeft;
+			uint childR = nodes[currentNode].childRight;
 
-			const Node& node = nodes[currentNode];
-			uint childL = node.childLeft;
-			uint childR = node.childRight;
+			const BoundingBox boxLeft = IsLeaf(childL) ? boxes[childL - leafSize] : nodes[childL].box;
+			const BoundingBox boxRight = IsLeaf(childR) ? boxes[childR - leafSize] : nodes[childR].box;
 
-			const BoundingBox boxLeft = IsLeaf(node.childLeft) ? boxes[node.childLeft - leafSize] : nodes[node.childLeft].box;
-			const BoundingBox boxRight = IsLeaf(node.childRight) ? boxes[node.childRight - leafSize] : nodes[node.childRight].box;
-
-			const glm::vec3&  b0Min = boxLeft.min;
-			const glm::vec3&  b0Max = boxLeft.max;
-			const glm::vec3&  b1Min = boxRight.min;
-			const glm::vec3&  b1Max = boxRight.max;
 
 #if defined WOOP_AABB
 
 			//grab the modifyable bounds
-			float nearX0 = b0Min[kx], farX0 = b0Max[kx];
-			float nearY0 = b0Min[ky], farY0 = b0Max[ky];
-			float nearZ0 = b0Min[kz], farZ0 = b0Max[kz];
-			float nearX1 = b1Min[kx], farX1 = b1Max[kx];
-			float nearY1 = b1Min[ky], farY1 = b1Max[ky];
-			float nearZ1 = b1Min[kz], farZ1 = b1Max[kz];
+			float nearX0 = boxLeft.min[kx], farX0 = boxLeft.max[kx];
+			float nearY0 = boxLeft.min[ky], farY0 = boxLeft.max[ky];
+			float nearZ0 = boxLeft.min[kz], farZ0 = boxLeft.max[kz];
+			float nearX1 = boxRight.min[kx], farX1 = boxRight.max[kx];
+			float nearY1 = boxRight.min[ky], farY1 = boxRight.max[ky];
+			float nearZ1 = boxRight.min[kz], farZ1 = boxRight.max[kz];
 
 			if (ray.direction[kx] < 0.0f) swap(nearX0, farX0);
 			if (ray.direction[ky] < 0.0f) swap(nearY0, farY0);
@@ -395,10 +397,10 @@ __device__ void BVH::Traverse(Ray& ray, Vertex* vertices, Face* faces) {
 			if (ray.direction[ky] < 0.0f) swap(nearY1, farY1);
 			if (ray.direction[kz] < 0.0f) swap(nearZ1, farZ1);
 
-			glm::vec3 lower0 = Dn(glm::abs(glm::vec3(ray.origin) - b0Min));
-			glm::vec3 upper0 = Up(glm::abs(glm::vec3(ray.origin) - b0Max));
-			glm::vec3 lower1 = Dn(abs(glm::vec3(ray.origin) - b1Min));
-			glm::vec3 upper1 = Up(abs(glm::vec3(ray.origin) - b1Max));
+			glm::vec3 lower0 = Dn(glm::abs(glm::vec3(ray.origin) - boxLeft.min));
+			glm::vec3 upper0 = Up(glm::abs(glm::vec3(ray.origin) - boxLeft.max));
+			glm::vec3 lower1 = Dn(abs(glm::vec3(ray.origin) - boxRight.min));
+			glm::vec3 upper1 = Up(abs(glm::vec3(ray.origin) - boxRight.max));
 
 			float max_z0 = glm::max(lower0[kz], upper0[kz]);
 			float max_z1 = glm::max(lower1[kz], upper1[kz]);
@@ -456,20 +458,20 @@ __device__ void BVH::Traverse(Ray& ray, Vertex* vertices, Face* faces) {
 
 #else
 
-			const float c0lox = b0Min.x * idirx - oodx;
-			const float c0hix = b0Max.x * idirx - oodx;
-			const float c0loy = b0Min.y * idiry - oody;
-			const float c0hiy = b0Max.y * idiry - oody;
-			const float c0loz = b0Min.z   * idirz - oodz;
-			const float c0hiz = b0Max.z   * idirz - oodz;
-			const float c1loz = b1Min.z   * idirz - oodz;
-			const float c1hiz = b1Max.z   * idirz - oodz;
+			const float c0lox = boxLeft.min.x * idirx - oodx;
+			const float c0hix = boxLeft.max.x * idirx - oodx;
+			const float c0loy = boxLeft.min.y * idiry - oody;
+			const float c0hiy = boxLeft.max.y * idiry - oody;
+			const float c0loz = boxLeft.min.z   * idirz - oodz;
+			const float c0hiz = boxLeft.max.z   * idirz - oodz;
+			const float c1loz = boxRight.min.z   * idirz - oodz;
+			const float c1hiz = boxRight.max.z   * idirz - oodz;
 			const float c0min = spanBeginKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.origin.w);
 			const float c0max = spanEndKepler(c0lox, c0hix, c0loy, c0hiy, c0loz, c0hiz, ray.direction.w);
-			const float c1lox = b1Min.x * idirx - oodx;
-			const float c1hix = b1Max.x * idirx - oodx;
-			const float c1loy = b1Min.y * idiry - oody;
-			const float c1hiy = b1Max.y * idiry - oody;
+			const float c1lox = boxRight.min.x * idirx - oodx;
+			const float c1hix = boxRight.max.x * idirx - oodx;
+			const float c1loy = boxRight.min.y * idiry - oody;
+			const float c1hiy = boxRight.max.y * idiry - oody;
 			const float c1min = spanBeginKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.origin.w);
 			const float c1max = spanEndKepler(c1lox, c1hix, c1loy, c1hiy, c1loz, c1hiz, ray.direction.w);
 
@@ -479,19 +481,16 @@ __device__ void BVH::Traverse(Ray& ray, Vertex* vertices, Face* faces) {
 			const bool traverseChild1 = c1max >= c1min;
 
 
+			//Neither child is intersected, change the current node
 			if (!traverseChild0 && !traverseChild1)
 			{
 				currentNode = traversalStack[stackPtr--];
 			}
-
-			// Otherwise => fetch child pointers.
-
 			else
 			{
 				currentNode = traverseChild0 ? childL : childR;
 
-				// Both children were intersected => push the farther one.
-
+				//Both are intersected
 				if (traverseChild0 && traverseChild1)
 				{
 					if (c1min < c0min) {
@@ -502,8 +501,7 @@ __device__ void BVH::Traverse(Ray& ray, Vertex* vertices, Face* faces) {
 				}
 			}
 
-			// First leaf => postpone and continue traversal.
-
+			//hold the first leaf
 			if (IsLeaf(currentNode) && !IsLeaf(currentLeaf))     // Postpone leaf
 			{
 				currentLeaf = currentNode;
@@ -515,7 +513,7 @@ __device__ void BVH::Traverse(Ray& ray, Vertex* vertices, Face* faces) {
 				break;
 			}
 
-		}
+	}
 
 		// Process postponed leaf nodes.
 
@@ -528,11 +526,13 @@ __device__ void BVH::Traverse(Ray& ray, Vertex* vertices, Face* faces) {
 			float bary2;
 			float tTemp;
 
-			const bool test = FindTriangleIntersect(vertices[face.x].position, vertices[face.y].position, vertices[face.z].position,
-				ray.origin, kx, ky, kz, Sx, Sy, Sz,
-				tTemp, ray.direction.w, bary1, bary2);
+			const glm::vec3 pos0 = vertices[face.x].position;
+			const glm::vec3 pos1 = vertices[face.y].position;
+			const glm::vec3 pos2 = vertices[face.z].position;
 
-			if (test) {
+			if (FindTriangleIntersect(pos0, pos1, pos2,
+				ray.origin, kx, ky, kz, Sx, Sy, Sz,
+				tTemp, ray.direction.w, bary1, bary2)) {
 
 				ray.direction.w = tTemp;
 				ray.bary = glm::vec2(bary1, bary2);
@@ -552,5 +552,5 @@ __device__ void BVH::Traverse(Ray& ray, Vertex* vertices, Face* faces) {
 		if (__popc(__ballot(true)) < DYNAMIC_FETCH_THRESHOLD) {
 			break;
 		}
-	}
+}
 }
