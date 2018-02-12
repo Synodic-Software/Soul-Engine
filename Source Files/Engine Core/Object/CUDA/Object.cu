@@ -17,7 +17,7 @@ Object::Object() {
 	isStatic = false;
 
 }
-Object::Object(std::string name, Material* mat) {
+Object::Object(std::string name, Material mat) {
 
 	verticeAmount = 0;
 	faceAmount = 0;
@@ -27,7 +27,7 @@ Object::Object(std::string name, Material* mat) {
 	requestRemoval = false;
 	isStatic = false;
 
-	materials.push_back(*mat);
+	materials.push_back(mat);
 	materialAmount++;
 
 	ExtractFromFile(name.c_str());
@@ -56,7 +56,7 @@ void Object::ExtractFromFile(const char* name) {
 
 	assert(shapes.size() == 1);
 
-	faceAmount = shapes[0].mesh.indices.size() / 3;
+	faceAmount = static_cast<uint>(shapes[0].mesh.indices.size() / 3);
 
 	glm::vec3 max = glm::vec3(attrib.vertices[0], attrib.vertices[1], attrib.vertices[2]);
 	glm::vec3 min = max;
@@ -87,7 +87,7 @@ void Object::ExtractFromFile(const char* name) {
 			};
 
 			if (uniqueVertices.count(vertex) == 0) {
-				uniqueVertices[vertex] = vertices.size();
+				uniqueVertices[vertex] = static_cast<uint>(vertices.size());
 
 				max = glm::max(vertex.position, max);
 				min = glm::min(vertex.position, min);
@@ -99,7 +99,7 @@ void Object::ExtractFromFile(const char* name) {
 		}
 	}
 
-	verticeAmount = vertices.size();
+	verticeAmount = static_cast<uint>(vertices.size());
 	faces.resize(faceAmount);
 	for (uint i = 0; i < facesUngrouped.size() / 3; i++) {
 		faces[i].indices.x = facesUngrouped[i * 3 + 0];

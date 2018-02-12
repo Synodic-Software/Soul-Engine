@@ -1,5 +1,7 @@
 #include "Filter.cuh"
 
+#include "Compute\DeviceAPI.h"
+
 inline __device__ __host__ uint PowTwoDivider(uint n)
 {
 	if (n == 0) return 0;
@@ -31,7 +33,7 @@ __device__ const glm::vec4 GetClamped(const glm::vec4* data, const glm::ivec2& o
 
 __global__ void GPUHermiteBicubic(uint n, glm::vec4* data, glm::vec4* buffer, glm::uvec2 originalSize, glm::uvec2 desiredSize) {
 
-	uint index = getGlobalIdx_1D_1D();
+	uint index = ThreadIndex1D();
 
 	if (index >= n) {
 		return;

@@ -1,18 +1,23 @@
 #include "RenderWidget.h"
-#include "GPGPU\GPUManager.h"
+#include "Compute\ComputeManager.h"
 #include "CUDA\RenderWidget.cuh"
 #include "Events\EventManager.h"
 #include "Raster Engine/RasterBackend.h"
 #include "Input/InputManager.h"
-#include "GPGPU/GPUBuffer.h"
+#include "Compute/ComputeBuffer.h"
+#include "Photography/Camera/Camera.h"
+#include "Ray Engine/RayEngine.h"
 
 /*
  *    Constructor.
  *    @param [in,out]	cameraIn	If non-null, the camera in.
  */
 
-RenderWidget::RenderWidget(uint& id)
-	: buffer(GPUManager::GetBestGPU()), accumulator(GPUManager::GetBestGPU()), extraData(GPUManager::GetBestGPU())
+RenderWidget::RenderWidget(uint& id): 
+	buffer(S_BEST_GPU), 
+	accumulator(S_BEST_GPU), 
+	extraData(S_BEST_GPU),
+	time(0)
 {
 	widgetJob = RasterBackend::CreateJob();
 
@@ -67,15 +72,9 @@ RenderWidget::RenderWidget(uint& id)
 	integrate = false;
 	currentSize = glm::uvec2(312, 720);
 
+	rayJob = RayEngine::Instance().AddJob(RayCOLOUR, true, samples);
 
-	rayJob = RayEngine::AddJob(RayCOLOUR, true, samples);
 	id = rayJob;
-}
-
-/* Destructor. */
-RenderWidget::~RenderWidget()
-{
-
 }
 
 /* Draws this object. */
@@ -90,7 +89,7 @@ void RenderWidget::Draw() {
 	});
 
 	if (integrate) {
-		Integrate(renderSize.x*renderSize.y, buffer, accumulator, extraData, iCounter);
+		Integrate(renderSize.x*renderSize.y, buffer.DataDevice(), accumulator.DataDevice(), extraData.DataDevice(), iCounter);
 		iCounter++;
 	}
 	else {
@@ -112,15 +111,12 @@ void RenderWidget::Draw() {
 /* Recreate data. */
 void RenderWidget::RecreateData() {
 
-	uint jobsize = size.x*size.y;
+	const auto jobsize = size.x*size.y;
 
 	//create the new accumulation Buffer
-	accumulator.resize(jobsize);
-
-	buffer.resize(jobsize);
-
-	extraData.resize(jobsize);
-
+	accumulator.ResizeDevice(jobsize);
+	buffer.ResizeDevice(jobsize);
+	extraData.ResizeDevice(jobsize);
 
 	if (currentSize != size) {
 		currentSize = size;
@@ -132,10 +128,12 @@ void RenderWidget::RecreateData() {
 	buffer.MapResources();
 
 	//set job values
-	RayJob& job = RayEngine::GetJob(rayJob);
-	job.camera.aspectRatio = renderSize.x / (float)renderSize.y;
+	RayJob& job = RayEngine::Instance().GetJob(rayJob);
+
+	job.camera.aspectRatio = static_cast<float>(renderSize.x) / static_cast<float>(renderSize.y);
 	job.camera.film.resolution = renderSize;
 	job.camera.film.resolutionMax = renderSize;
-	job.camera.film.results = (glm::vec4*)buffer;
-	job.camera.film.hits = extraData;
+	job.camera.film.results = buffer.DataDevice();
+	job.camera.film.hits = extraData.DataDevice();
+
 }

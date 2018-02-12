@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Engine Core/Object/Object.h"
-#include "Engine Core/Object/Character/Character.h"
 #include "Engine Core\Scene\Scene.h"
-#include <functional>
 
 /* Values that represent render types. */
 enum RenderType {SPECTRAL, PATH};
@@ -38,9 +35,10 @@ double GetDeltaTime();
 
 void SubmitScene(Scene*);
 
+
 /*
  *    Removes the scene described by parameter1.
  *    @param [in,out]	parameter1	If non-null, the first parameter.
  */
 
-void RemoveScene(Scene*);
+void RemoveScene(Scene);

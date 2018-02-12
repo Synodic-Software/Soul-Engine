@@ -6,7 +6,7 @@
 class MiniObject {
 
 public:
-
+	MiniObject();
 	MiniObject(Object&);
 
 	bool requestRemoval;

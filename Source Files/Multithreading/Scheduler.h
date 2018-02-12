@@ -2,11 +2,9 @@
 
 //removes all fiber specifics and calls functions immediatly by pointer 
 //(all tasks that repeat and yield will need to be removed)
-//#define SOUL_SINGLE_STACK
+#define SOUL_SINGLE_STACK
 
 #include <boost/fiber/all.hpp>
-
-#include <iostream>
 
 //TODO: Implement boost Fiber: Work_stealing
 

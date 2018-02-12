@@ -1,5 +1,6 @@
 #include "RenderWidget.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
+#include "Compute\DeviceAPI.h"
 
 static uint allocatedSize = 0;
 static uint* deviceWeights = 0;
@@ -7,7 +8,7 @@ static uint* deviceWeights = 0;
 __global__ void IntegrateKernal(const uint n, glm::vec4* A, glm::vec4* B, int* mask, uint* weights, const uint counter) {
 
 
-	uint index = getGlobalIdx_1D_1D();
+	uint index = ThreadIndex1D();
 
 	if (index >= n) {
 		return;
