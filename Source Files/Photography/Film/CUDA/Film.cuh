@@ -19,6 +19,7 @@ public:
 
 	__device__ glm::vec2 GetSample(uint, curandState&);
 
+	glm::uvec2 resolutionPrev;
 	glm::uvec2 resolution;
 	glm::uvec2 resolutionMax;
 
@@ -30,6 +31,7 @@ public:
 
 	bool operator==(const Film& other) const {
 		return
+			resolutionPrev == other.resolutionPrev &&
 			resolution == other.resolution &&
 			resolutionMax == other.resolutionMax &&
 			resolutionRatio == other.resolutionRatio &&
@@ -40,6 +42,7 @@ public:
 
 	Film& operator=(const Film& arg)
 	{
+		this->resolutionPrev = arg.resolutionPrev;
 		this->resolution = arg.resolution;
 		this->resolutionMax = arg.resolutionMax;
 		this->resolutionRatio = arg.resolutionRatio;

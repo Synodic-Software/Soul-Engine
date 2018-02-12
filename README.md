@@ -3,71 +3,14 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/xe6bh7hiiofmkh49?svg=true)](https://ci.appveyor.com/project/AsherNorland/soul-engine)
 
 # What is Soul Engine?
-Soul Engine is a physically based renderer and engine for real-time applications. It is cross-platform with CUDA (primary) or OpenCL (secondary) support for computation tasks. 
+Soul Engine is a real-time visualization engine built on the back of CUDA and OpenCL. With a focus on lightweight parallelism that can be leveraged for expensive techniques, Soul Engine provides a platform for path tracing, finite element physics, and general simulation.
 
 ![Tree Model](Documentation/Tree.png)
-(This is image is produced after 5 seconds of accumulation on a consumer graphics card)
 
-Ways to interact with Soul Engine beyond this repository are currently being investigated.
-For your propiertery purposes, an alternate license will be also made available once the project is near feature complete.
+For more information, visit our [Wiki](https://github.com/Synodic-Software/Soul-Engine/wiki)
 
-Check out the currently open [issues](https://github.com/Behemyth/Soul-Engine/issues) for opportunities to contribute!
+# Installation
 
-# User (programmer) Setup
-To compile within the visual studio project dependancies with the following must be met:
-
-  - GLFW          - http://www.glfw.org/
+A CMake implementation is currently in the works.
   
-  - GLM           - http://glm.g-truc.net/0.9.8/index.html
-  
-  - stb_image.h   - https://github.com/nothings/stb
-  
-  - Vulkan SDK    - https://lunarg.com/vulkan-sdk/
-  
-  - Boost 1.64    - http://www.boost.org/
-  
-  - GLEW          - http://glew.sourceforge.net/ 
-  
-  - Cuda 8.0      - https://developer.nvidia.com/cuda-toolkit
-  
-  - OpenCL	  - http://developer.amd.com/amd-accelerated-parallel-processing-app-sdk/
-  
-  - tinyobjloader - https://github.com/syoyo/tinyobjloader
-  
-Soul Engine can be compiled in Microsoft Visual Studio 2017.
-  
-# Example Usage
-
-``` C++
-
-#include "SoulCore.h"
-
-int main()
-{
-	SoulInit();
-
-	EventManager::Listen("Input", "ESCAPE", [](keyState state) {
-		if (state == RELEASE) {
-			SoulSignalClose();
-		}
-	});
-
-	//create a Window
-	GLFWwindow* win=SoulCreateWindow(0, 0.95f, 0.95f);
-
-	Material* whiteGray = new Material();
-	whiteGray->diffuse = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
-	whiteGray->emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	Scene* scene = new Scene();
-	AddObject(scene, glm::vec3(0, 0, 0), "Rebellion.obj", whiteGray);
-
-	SubmitScene(scene);
-
-	SoulRun();
-
-	return 0;
-}
-```
-
-The documentation Wiki for Soul Engine can be found [here](https://github.com/Synodic-Software/Soul-Engine/wiki).
+For a detailed explaination, visit our Wiki's [Getting Started](https://github.com/Synodic-Software/Soul-Engine/wiki/Getting-Started)

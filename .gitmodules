@@ -1,15 +1,18 @@
-[submodule "Libraries/glfw"]
-	path = Libraries/glfw
-	url = https://github.com/glfw/glfw
-[submodule "Libraries/glm"]
-	path = Libraries/glm
-	url = https://github.com/g-truc/glm
-[submodule "Libraries/stb"]
-	path = Libraries/stb
-	url = https://github.com/nothings/stb
-[submodule "Libraries/glew"]
-	path = Libraries/glew
-	url = https://github.com/nigels-com/glew
-[submodule "Libraries/tinyobjloader"]
-	path = Libraries/tinyobjloader
+[submodule "Libraries/src/tinyobjloader/tinyobjloader"]
+	path = Libraries/src/tinyobjloader/tinyobjloader
 	url = https://github.com/syoyo/tinyobjloader
+[submodule "Libraries/src/stb/stb"]
+	path = Libraries/src/stb/stb
+	url = https://github.com/nothings/stb
+[submodule "Libraries/src/glew/glew"]
+	path = Libraries/src/glew/glew
+	url = https://github.com/nigels-com/glew
+[submodule "Libraries/src/glfw/glfw"]
+	path = Libraries/src/glfw/glfw
+	url = https://github.com/glfw/glfw
+[submodule "Libraries/src/glm/glm"]
+	path = Libraries/src/glm/glm
+	url = https://github.com/g-truc/glm
+[submodule "Libraries/src/units"]
+	path = Libraries/src/units
+	url = https://github.com/nholthaus/units
