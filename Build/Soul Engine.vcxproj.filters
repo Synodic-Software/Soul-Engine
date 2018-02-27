@@ -241,6 +241,18 @@
     <Filter Include="Engine Backend\Audio">
       <UniqueIdentifier>{a32a3c77-3bdc-463e-81f0-b1e41ac61e21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Backend\Composition">
+      <UniqueIdentifier>{764133bb-591f-40d8-b29f-f96c89d0234c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Composition\Component">
+      <UniqueIdentifier>{0e7b3f37-0294-42cc-b163-eb606fad62a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Composition\Entity">
+      <UniqueIdentifier>{841dfaef-dd88-4a20-9738-76541586dfb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Backend\Composition\System">
+      <UniqueIdentifier>{4c488995-a715-4b22-93f1-514cf491bea5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source Files\Algorithms\Data Algorithms\GPU Compact\Compactor.cuh">
@@ -633,6 +645,18 @@
     <ClInclude Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LBVHManager.h">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source Files\Composition\System\System.h">
+      <Filter>Engine Backend\Composition\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Composition\Entity\EntityManager.h">
+      <Filter>Engine Backend\Composition\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Composition\Entity\Entity.h">
+      <Filter>Engine Backend\Composition\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source Files\Composition\Component\Component.h">
+      <Filter>Engine Backend\Composition\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source Files\Display\Layout\Layout.cpp">
@@ -847,6 +871,18 @@
     </ClCompile>
     <ClCompile Include="..\Source Files\Data Structures\Bounding Volume Heirarchy\LBVHManager.cpp">
       <Filter>Engine Backend\Data Structures\Bounding Volume Heirarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Composition\System\System.cpp">
+      <Filter>Engine Backend\Composition\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Composition\Entity\Entity.cpp">
+      <Filter>Engine Backend\Composition\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Composition\Entity\EntityManager.cpp">
+      <Filter>Engine Backend\Composition\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source Files\Composition\Component\Component.cpp">
+      <Filter>Engine Backend\Composition\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

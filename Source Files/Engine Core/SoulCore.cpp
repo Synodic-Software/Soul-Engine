@@ -459,6 +459,9 @@ int main()
 	Object plane("Resources\\Objects\\Plane.obj", whiteGray);
 	scene->AddObject(plane);
 
+	Object lucy("Resources\\Objects\\Lucy.obj", whiteGray);
+	scene->AddObject(lucy);
+
 	SubmitScene(scene);
 
 	SoulRun();

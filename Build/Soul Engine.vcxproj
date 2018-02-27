@@ -100,6 +100,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Algorithms\Filters\Filter.h" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\CUDA\MortonCode.cuh" />
     <ClInclude Include="..\Source Files\Algorithms\Morton Code\MortonCode.h" />
+    <ClInclude Include="..\Source Files\Composition\Component\Component.h" />
+    <ClInclude Include="..\Source Files\Composition\Entity\Entity.h" />
+    <ClInclude Include="..\Source Files\Composition\Entity\EntityManager.h" />
+    <ClInclude Include="..\Source Files\Composition\System\System.h" />
     <ClInclude Include="..\Source Files\Compute\AbstractComputeBuffer.h" />
     <ClInclude Include="..\Source Files\Compute\ComputeBuffer.h" />
     <ClInclude Include="..\Source Files\Compute\CUDA\CUDABackend.h" />
@@ -166,6 +170,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)Resources\" /Y /D /E</Command>
     <ClInclude Include="..\Source Files\Engine Core\Scene\Sky.h" />
     <ClInclude Include="..\Source Files\Events\Event.h" />
     <ClInclude Include="..\Source Files\Events\EventManager.h" />
+    <ClCompile Include="..\Source Files\Composition\Component\Component.cpp" />
+    <ClCompile Include="..\Source Files\Composition\Entity\Entity.cpp" />
+    <ClCompile Include="..\Source Files\Composition\Entity\EntityManager.cpp" />
+    <ClCompile Include="..\Source Files\Composition\System\System.cpp" />
     <ClCompile Include="..\Source Files\Compute\AbstractComputeBuffer.cpp" />
     <ClCompile Include="..\Source Files\Compute\ComputeBuffer.cpp" />
     <ClCompile Include="..\Source Files\Compute\CUDA\CUDABackend.cpp" />
