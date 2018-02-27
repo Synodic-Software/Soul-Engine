@@ -110,7 +110,6 @@ void Scene::AddObject(Object& obj) {
 	for (uint t = 0; t < maxIter; ++t) {
 		if (t < obj.verticeAmount) {
 			vertices[t + vertexOffset] = obj.vertices[t];
-			vertices[t + vertexOffset].position = glm::vec3(vertices[t].position);
 			vertices[t + vertexOffset].object = objectOffset;
 		}
 		if (t < obj.faceAmount) {

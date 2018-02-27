@@ -362,7 +362,7 @@ namespace Scheduler {
 
 		boost::fibers::use_scheduling_algorithm< detail::SoulScheduler >();
 
-		//the main thread takes up one slot, leave one open for system+background.
+		//the main thread takes up one slot
 		threadCount = std::thread::hardware_concurrency() - 1;
 		threads = new std::thread[threadCount];
 
