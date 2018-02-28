@@ -1,24 +1,30 @@
 {
   // See https://go.microsoft.com//fwlink//?linkid=834763 for more information about this file.
+  "environments": [
+    {
+      "environment": "msvc_x64_14_11",
+      "VCToolsVersion": "14.11.25503"
+    }
+  ],
   "configurations": [
     {
       "name": "x64-Debug",
-      "generator": "Ninja",
+      "generator": "Visual Studio 15 2017 Win64",
       "configurationType": "Debug",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "${projectDir}\\CMake\\Build\\${name}",
-      "installRoot": "${projectDir}\\CMake\\Install\\${name}",
+      "inheritEnvironments": [ "msvc_x64_14_11" ],
+      "buildRoot": "${projectDir}\\Build\\${name}",
+      "installRoot": "${projectDir}\\CMake\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
     },
     {
       "name": "x64-Release",
-      "generator": "Ninja",
+      "generator": "Visual Studio 15 2017 Win64",
       "configurationType": "Release",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "${projectDir}\\CMake\\Build\\${name}",
-      "installRoot": "${projectDir}\\CMake\\Install\\${name}",
+      "inheritEnvironments": [ "msvc_x64_14_11" ],
+      "buildRoot": "${projectDir}\\Build\\${name}",
+      "installRoot": "${projectDir}\\CMake\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
