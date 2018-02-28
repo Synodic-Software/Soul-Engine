@@ -1,19 +1,19 @@
-cmake_minimum_required(VERSION 3.9.2)
+cmake_minimum_required(VERSION 3.9.2 FATAL_ERROR)
 project(Soul_Engine 
 	VERSION 0.0.1
 	DESCRIPTION "Real-time simulation and rendering engine."
-	LANGUAGES CXX
+	LANGUAGES CXX CUDA
 )
 
 
 ##############################################
 #Global Variables
 
-set(LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/Libraries)
-set(INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/Include\ Files)
-set(SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/Source\ Files)
-set(BUILD ${CMAKE_CURRENT_SOURCE_DIR}/Build)
-set(INSTALL ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+set(LIBRARIES ${CMAKE_SOURCE_DIR}/Libraries)
+set(INCLUDE ${CMAKE_SOURCE_DIR}/Includes)
+set(SOURCE ${CMAKE_SOURCE_DIR}/Source)
+set(BUILD ${CMAKE_SOURCE_DIR}/Build)
+set(INSTALL ${CMAKE_SOURCE_DIR}/CMake)
 
 ##############################################
 # Submodule Update
@@ -83,7 +83,7 @@ if(NOT EXISTS "${LIBRARIES}/units/CMakeLists.txt")
 endif()
 
 if (NOT TARGET units)
-	option(BUILD_TESTS "" OFF)
+	option(BUILD_TESTS "Remove the BuildTests for units" OFF)
 	add_subdirectory(${LIBRARIES}/units)
 endif ()
 
@@ -115,13 +115,13 @@ target_compile_features(SoulEngine
 set_target_properties(SoulEngine 
 	PROPERTIES 
 		CXX_EXTENSIONS OFF	
+		CUDA_SEPARABLE_COMPILATION ON
 )
 
 target_link_libraries(SoulEngine
     PUBLIC
         
     PRIVATE
-      
 )
 
 
