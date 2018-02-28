@@ -13,3 +13,9 @@
 [submodule "Libraries/units"]
 	path = Libraries/units
 	url = https://github.com/nholthaus/units
+[submodule "Libraries/di"]
+	path = Libraries/di
+	url = https://github.com/boost-experimental/di
+[submodule "Libraries/googletest"]
+	path = Libraries/googletest
+	url = https://github.com/google/googletest
