@@ -47,13 +47,14 @@ add_library(SoulEngine::SoulEngine STATIC IMPORTED)
 set_target_properties(SoulEngine::SoulEngine PROPERTIES
   INTERFACE_COMPILE_FEATURES "cxx_std_17"
   INTERFACE_INCLUDE_DIRECTORIES "N:/Projects/Soul Engine/Includes"
+  INTERFACE_LINK_LIBRARIES "SoulEngine::gtest_main;\$<LINK_ONLY:SoulEngine::units>"
 )
 
-# Import target "SoulEngine::SoulEngine" for configuration "Release"
-set_property(TARGET SoulEngine::SoulEngine APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+# Import target "SoulEngine::SoulEngine" for configuration "Debug"
+set_property(TARGET SoulEngine::SoulEngine APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(SoulEngine::SoulEngine PROPERTIES
-  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
-  IMPORTED_LOCATION_RELEASE "N:/Projects/Soul Engine/Build/x64-Release/Release/SoulEngine.lib"
+  IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "CXX"
+  IMPORTED_LOCATION_DEBUG "N:/Projects/Soul Engine/Build/x64-Debug/Debug/SoulEngined.lib"
   )
 
 # This file does not depend on other imported targets which have
