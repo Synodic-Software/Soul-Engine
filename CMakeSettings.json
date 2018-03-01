@@ -8,10 +8,10 @@
   ],
   "configurations": [
     {
-      "name": "x64-Debug",
-      "generator": "Visual Studio 15 2017 Win64",
+      "name": "Debug[x64]",
+      "generator": "Visual Studio 14 2015 Win64",
       "configurationType": "Debug",
-      "inheritEnvironments": [ "msvc_x64_14_11" ],
+      "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${projectDir}\\Build\\${name}",
       "installRoot": "${projectDir}\\CMake\\${name}",
       "cmakeCommandArgs": "",
@@ -19,10 +19,10 @@
       "ctestCommandArgs": ""
     },
     {
-      "name": "x64-Release",
-      "generator": "Visual Studio 15 2017 Win64",
+      "name": "Release[x64]",
+      "generator": "Visual Studio 14 2015 Win64",
       "configurationType": "Release",
-      "inheritEnvironments": [ "msvc_x64_14_11" ],
+      "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${projectDir}\\Build\\${name}",
       "installRoot": "${projectDir}\\CMake\\${name}",
       "cmakeCommandArgs": "",

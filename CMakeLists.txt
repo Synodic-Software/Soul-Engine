@@ -9,11 +9,15 @@ project(Soul_Engine
 ##############################################
 #Global Variables
 
-set(LIBRARIES ${CMAKE_SOURCE_DIR}/Libraries)
-set(INCLUDE ${CMAKE_SOURCE_DIR}/Includes)
-set(SOURCE ${CMAKE_SOURCE_DIR}/Source)
-set(BUILD ${CMAKE_SOURCE_DIR}/Build)
-set(INSTALL ${CMAKE_SOURCE_DIR}/CMake)
+set(SOUL_LIBRARIES ${PROJECT_SOURCE_DIR}/Libraries)
+set(SOUL_INCLUDE ${PROJECT_SOURCE_DIR}/Includes)
+set(SOUL_SOURCE ${PROJECT_SOURCE_DIR}/Source)
+set(SOUL_BUILD ${PROJECT_SOURCE_DIR}/Build)
+set(SOUL_INSTALL ${PROJECT_SOURCE_DIR}/CMake)
+
+set(APPEND CMAKE_CUDA_FLAGS " -arch=sm_50")
+#set(CMAKE_SUPPRESS_REGENERATION true) #zero check is not needed/clutter
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ##############################################
 # Submodule Update
@@ -25,7 +29,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     if(GIT_SUBMODULE)
         message(STATUS "Submodule update")
         execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                         RESULT_VARIABLE GIT_SUBMOD_RESULT)
         if(NOT GIT_SUBMOD_RESULT EQUAL "0")
             message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
@@ -34,78 +38,84 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 endif()
 
 
+#GLFW target
+if(NOT EXISTS "${SOUL_LIBRARIES}/glfw/CMakeLists.txt")
+    message(FATAL_ERROR "GLFW was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+#GLM target
+if(NOT EXISTS "${SOUL_LIBRARIES}/glm/CMakeLists.txt")
+    message(FATAL_ERROR "GLM was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+#stb_image target
+if(NOT EXISTS "${SOUL_LIBRARIES}/stb/stb_image.h")
+    message(FATAL_ERROR "STB was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+#DI target
+if(NOT EXISTS "${SOUL_LIBRARIES}/di/CMakeLists.txt")
+    message(FATAL_ERROR "DI was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+#tinyobjloader target
+if(NOT EXISTS "${SOUL_LIBRARIES}/tinyobjloader/CMakeLists.txt")
+    message(FATAL_ERROR "tinyobjloader was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+#Units target
+if(NOT EXISTS "${SOUL_LIBRARIES}/units/CMakeLists.txt")
+	message(FATAL_ERROR "Units was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+#googletest target
+if(NOT EXISTS "${SOUL_LIBRARIES}/googletest/CMakeLists.txt")
+	message(FATAL_ERROR "googletest was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+#flatbuffers target
+if(NOT EXISTS "${SOUL_LIBRARIES}/flatbuffers/CMakeLists.txt")
+	message(FATAL_ERROR "flatbuffers was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+
 ##############################################
 # Create target and set properties
 
-add_library(SoulEngine ${SOURCE}/Engine\ Core/SoulCore.cpp)
-
 #GLFW target
-if(NOT EXISTS "${LIBRARIES}/glfw/CMakeLists.txt")
-    message(FATAL_ERROR "GLFW was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-
-if (NOT TARGET GLFW)
-	add_subdirectory(${LIBRARIES}/glfw)
-endif ()
-
+set(GLFW_BUILD_EXAMPLES OFF CACHE STRING "" FORCE)
+set(GLFW_BUILD_TESTS    OFF CACHE STRING "" FORCE)
+set(GLFW_INSTALL        OFF CACHE STRING "" FORCE)
+add_subdirectory(${SOUL_LIBRARIES}/glfw)
 
 #GLM target
-if(NOT EXISTS "${LIBRARIES}/glm/CMakeLists.txt")
-    message(FATAL_ERROR "GLM was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-
+#header only
 
 #stb_image target
-if(NOT EXISTS "${LIBRARIES}/stb/stb_image.h")
-    message(FATAL_ERROR "STB was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-
+#header only
 
 #DI target
-if(NOT EXISTS "${LIBRARIES}/di/CMakeLists.txt")
-    message(FATAL_ERROR "DI was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
+#header only
 
+#flatbuffers target
+add_subdirectory(${SOUL_LIBRARIES}/flatbuffers)
 
 #tinyobjloader target
-if(NOT EXISTS "${LIBRARIES}/tinyobjloader/CMakeLists.txt")
-    message(FATAL_ERROR "tinyobjloader was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-
-if (NOT TARGET TINYOBJLOADER)
-	add_subdirectory(${LIBRARIES}/tinyobjloader)
-endif ()
-
+add_subdirectory(${SOUL_LIBRARIES}/tinyobjloader)
 
 #Units target
-if(NOT EXISTS "${LIBRARIES}/units/CMakeLists.txt")
-	message(FATAL_ERROR "Units was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-
-if (NOT TARGET units)
-	option(BUILD_TESTS "Remove the BuildTests for units" OFF)
-	add_subdirectory(${LIBRARIES}/units)
-endif ()
-
+set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
+add_subdirectory(${SOUL_LIBRARIES}/units)
 
 #googletest target
-if(NOT EXISTS "${LIBRARIES}/googletest/CMakeLists.txt")
-	message(FATAL_ERROR "googletest was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-
-if (NOT TARGET gtest)
-	add_subdirectory(${LIBRARIES}/googletest)
-endif ()
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+add_subdirectory(${SOUL_LIBRARIES}/googletest)
 
 
-#Main target
-target_include_directories(SoulEngine
-    PUBLIC 
-        $<INSTALL_INTERFACE:include>    
-        $<BUILD_INTERFACE:${INCLUDE}>
-    PRIVATE
-        ${SOURCE}
-)
+##############################################
+#Main target properties
+
+file(GLOB_RECURSE SourceFiles ${SOUL_SOURCE}/*.cu ${SOUL_SOURCE}/*.cpp)
+
+file(GLOB_RECURSE IncludeFiles ${SOUL_SOURCE}/*.h ${SOUL_SOURCE}/*.cuh)
+
+set(SOUL_All_SOURCES ${SourceFiles} ${IncludeFiles})
+
+file(GLOB_RECURSE InterfaceIncludes ${SOUL_INCLUDE}/*.h)
+
+add_library(SoulEngine STATIC ${SOUL_All_SOURCES})
 
 target_compile_features(SoulEngine 
 	PUBLIC 
@@ -118,10 +128,20 @@ set_target_properties(SoulEngine
 		CUDA_SEPARABLE_COMPILATION ON
 )
 
+#Main target linking and stuff
+target_include_directories(SoulEngine
+    PUBLIC 
+        ${SOUL_INCLUDE}
+    PRIVATE
+		${SOUL_LIBRARIES}/glfw/include
+		${SOUL_LIBRARIES}/glm
+        ${SOUL_SOURCE}
+)
+
 target_link_libraries(SoulEngine
     PUBLIC
-        
     PRIVATE
+		gtest
 )
 
 
@@ -133,39 +153,37 @@ target_link_libraries(SoulEngine
 ##############################################
 # Installation
 
-install(TARGETS SoulEngine
-    EXPORT SoulEngine-targets
-    LIBRARY DESTINATION ${BUILD}
-    ARCHIVE DESTINATION ${BUILD}
-)
+#install(TARGETS SoulEngine
+#    EXPORT SoulEngine-targets
+#    LIBRARY DESTINATION ${SOUL_BUILD}
+#    ARCHIVE DESTINATION ${SOUL_BUILD}
+#)
 
-set_target_properties(SoulEngine PROPERTIES EXPORT_NAME SoulEngine)
+#set_target_properties(SoulEngine PROPERTIES EXPORT_NAME SoulEngine)
 
-install(DIRECTORY include/ DESTINATION ${BUILD})
+#bring from 
+#install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(EXPORT SoulEngine-targets
-	FILE
-		SoulEngineTargets.cmake
-	NAMESPACE
-		SoulEngine::
-	DESTINATION
-		${BUILD}
-)
+#install(EXPORT SoulEngine-targets
+#	FILE
+#		SoulEngineTargets.cmake
+#	NAMESPACE
+#		SoulEngine::
+#	DESTINATION
+#		${SOUL_BUILD}
+#)
+
 
 ##############################################
-## Exporting for others
+# Exporting for others
 
-#configure_file(${INSTALL}/CMake/FindSoulEngine.cmake
-#    ${INSTALL}/FindSoulEngine.cmake
-#    COPYONLY)
+#export(
+#	EXPORT 
+#		SoulEngine-targets 
+#	FILE 
+#		${SOUL_BUILD}/SoulEngineTargets.cmake 
+#	NAMESPACE 
+#		SoulEngine::
+#)
 
-export(
-	EXPORT 
-		SoulEngine-targets 
-	FILE 
-		${INSTALL}/SoulEngineTargets.cmake 
-	NAMESPACE 
-		SoulEngine::
-)
-
-export(PACKAGE SoulEngine)
+#export(PACKAGE SoulEngine)
