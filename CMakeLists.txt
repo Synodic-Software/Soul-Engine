@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
 project(Soul_Engine 
 	VERSION 0.0.1
 	DESCRIPTION "Real-time simulation and rendering engine."
@@ -76,9 +76,10 @@ endif()
 # Create target and set properties
 
 #GLFW target
-set(GLFW_BUILD_EXAMPLES OFF CACHE STRING "" FORCE)
-set(GLFW_BUILD_TESTS    OFF CACHE STRING "" FORCE)
-set(GLFW_INSTALL        OFF CACHE STRING "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL        OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS        OFF CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/glfw)
 
 #GLM target
@@ -91,6 +92,8 @@ add_subdirectory(${SOUL_LIBRARIES}/glfw)
 #header only
 
 #flatbuffers target
+set(FLATBUFFERS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(FLATBUFFERS_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/flatbuffers)
 
 #tinyobjloader target
@@ -101,18 +104,15 @@ set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/units)
 
 #googletest target
+set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
+set(INSTALL_GMOCK OFF CACHE BOOL "" FORCE)
+set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/googletest)
 
 SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/Libraries/boost)
+find_package(Boost 1.66.0 EXACT COMPONENTS fiber REQUIRED)
 
-find_package(Boost 1.66.0 COMPONENTS fiber REQUIRED)
-
-if(Boost_FOUND)
-
-elseif(NOT Boost_FOUND)
-  message(FATAL_ERROR "Unable to find correct Boost version. Did you place a compiled Boost into 'Libraries/boost'?")
-endif()
 
 ##############################################
 #Main target properties
