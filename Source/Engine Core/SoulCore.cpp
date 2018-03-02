@@ -11,7 +11,7 @@
 #include "Display\Window\WindowManager.h"
 #include "Display\Layout\SingleLayout.h"
 #include "Display\Widget\RenderWidget.h"
-#include "Multithreading\Scheduler.h"
+
 #include "Events\EventManager.h"
 #include "Input/InputManager.h"
 #include "Ray Engine/RayEngine.h"
@@ -35,15 +35,13 @@ namespace Soul {
 	/* //////////////////////Synchronization///////////////////////////. */
 
 	void SynchCPU() {
-		Scheduler::Block();
+		//Scheduler::Block(); //TODO Implement MT calls
 	}
 
-	/* Synchronises the GPU. */
 	void SynchGPU() {
 		//CudaCheck(cudaDeviceSynchronize());
 	}
 
-	/* Synchronises the system. */
 	void SynchSystem() {
 		SynchCPU();
 		SynchGPU();
@@ -65,48 +63,19 @@ namespace Soul {
 			ComputeManager::Instance().InitThread();
 		});
 
-		//setup the multithreader
-		Scheduler::Initialize();
-
-#if defined(_DEBUG) && !defined(SOUL_SINGLE_STACK) 
-		//log errors to the console for now
-		Scheduler::AddTask(LAUNCH_CONTINUE, FIBER_LOW, false, []() {
-			while (Scheduler::Running()) {
-				std::cout << Logger::Get();
-				Scheduler::Defer();
-			}
-		});
-#endif
-
 		//open the config file for the duration of the runtime
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			Settings::Read("config.ini", TEXT);
-		});
+		Settings::Read("config.ini", TEXT);
 
 		//extract all available GPU devices
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			ComputeManager::Instance().ExtractDevices();
-		});
+		ComputeManager::Instance().ExtractDevices();
 
 		//set the error callback
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
-			glfwSetErrorCallback([](int error, const char* description) {
-				S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
-			});
+		glfwSetErrorCallback([](int error, const char* description) {
+			S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
 		});
 
 		//Initialize glfw context for Window handling
-		int didInit;
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [&didInit]() {
-			didInit = glfwInit();
-		});
-
-		Scheduler::Block();
-
-		//init main Window
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			WindowManager::Initialize(&running);
-		});
+		const int	didInit = glfwInit();
 
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
@@ -115,8 +84,6 @@ namespace Soul {
 		Settings::Get("Engine.Delta_Time", 1 / 60.0, engineRefreshRate);
 		Settings::Get("Engine.Alloted_Render_Time", 0.01, allotedRenderTime);
 
-		Scheduler::Block();
-
 	}
 
 	/* Call to deconstuct both the engine and its dependencies. */
@@ -124,30 +91,14 @@ namespace Soul {
 		Soul::SynchSystem();
 
 		//Write the settings into a file
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			Settings::Write("config.ini", TEXT);
-		});
-
-		//destroy all windows
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			WindowManager::Terminate();
-		});
-
-		Scheduler::Block();
+		Settings::Write("config.ini", TEXT);
 
 		//destroy glfw, needs to wait on the window manager
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
-			glfwTerminate();
-		});
+		glfwTerminate();
 
 		//extract all available GPU devices
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-			ComputeManager::Instance().DestroyDevices();
-		});
+		ComputeManager::Instance().DestroyDevices();
 
-		Scheduler::Block();
-
-		Scheduler::Terminate();
 	}
 
 
@@ -169,22 +120,18 @@ namespace Soul {
 	void Raster() {
 
 		//Backends should handle multithreading
-		WindowManager::Draw();
+		WindowManager::Instance().Draw();
 
 	}
 
 	/* Warmups this object. */
 	void Warmup() {
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
-			glfwPollEvents();
-		});
+		glfwPollEvents();
 
 		for (auto& scene : scenes) {
 			scene->Build(engineRefreshRate);
 		}
-
-		Scheduler::Block();
 
 	}
 
@@ -205,9 +152,7 @@ namespace Soul {
 	void EarlyUpdate() {
 
 		//poll events before this update, making the state as close as possible to real-time input
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
-			glfwPollEvents();
-		});
+		glfwPollEvents();
 
 		//poll input after glfw processes all its callbacks (updating some input states)
 		InputManager::Poll();
@@ -219,8 +164,6 @@ namespace Soul {
 
 		//pull cameras into jobs
 		EventManager::Emit("Update", "Job Cameras");
-
-		Scheduler::Block();
 
 	}
 
@@ -242,7 +185,7 @@ namespace Soul {
 		double currentTime = glfwGetTime();
 		double accumulator = 0.0f;
 
-		while (running && !WindowManager::ShouldClose()) {
+		while (running && !WindowManager::Instance().ShouldClose()) {
 
 			//start frame timers
 			double newTime = glfwGetTime();
@@ -298,16 +241,12 @@ namespace Soul {
 
 void SoulSignalClose() {
 	Soul::running = false;
-	WindowManager::SignelClose();
+	WindowManager::Instance().SignelClose();
 }
 
 /* Soul run. */
 void SoulRun() {
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
-		Soul::Run();
-	});
-
-	Scheduler::Block();
+	Soul::Run();
 }
 
 /*
@@ -381,10 +320,10 @@ int main()
 	glm::uvec2 size = glm::uvec2(xSize, ySize);
 
 
-	Window* mainWindow = WindowManager::CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
+	Window* mainWindow = WindowManager::Instance().CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 
 	uint jobID;
-	WindowManager::SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(jobID)));
+	WindowManager::Instance().SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(jobID)));
 
 	RayJob& job = RayEngine::Instance().GetJob(jobID);
 	Camera& camera = job.camera;

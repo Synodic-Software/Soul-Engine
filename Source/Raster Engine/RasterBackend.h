@@ -6,7 +6,6 @@
 #include "Raster Engine\Buffer.h"
 
 #include "RasterBase.h"
-#include "OpenGL\OpenGLBackend.h"
 #include "Vulkan\VulkanBackend.h"
 
 /* Values that represent backend names. */

@@ -19,7 +19,6 @@ set(APPEND CMAKE_CUDA_FLAGS " -arch=sm_50")
 #set(CMAKE_SUPPRESS_REGENERATION true) #zero check is not needed/clutter
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-
 ##############################################
 # Submodule Update
 
@@ -76,11 +75,14 @@ endif()
 # Create target and set properties
 
 #GLFW target
+
+find_package(Vulkan REQUIRED)
+
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL        OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_DOCS        OFF CACHE BOOL "" FORCE)
-set(GLFW_VULKAN_STATIC        ON CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
+set(GLFW_VULKAN_STATIC  ON  CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/glfw)
 
 #GLM target
@@ -114,8 +116,6 @@ add_subdirectory(${SOUL_LIBRARIES}/googletest)
 SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/Libraries/boost)
 find_package(Boost 1.66.0 EXACT COMPONENTS fiber REQUIRED)
 
-find_package(Vulkan REQUIRED)
-
 
 ##############################################
 #Main target properties
@@ -129,6 +129,8 @@ set(SOUL_All_SOURCES ${SourceFiles} ${IncludeFiles})
 file(GLOB_RECURSE InterfaceIncludes ${SOUL_INCLUDE}/*.h)
 
 add_library(SoulEngine STATIC ${SOUL_All_SOURCES})
+set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SoulEngine)
+
 
 target_compile_features(SoulEngine 
 	PUBLIC 

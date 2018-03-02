@@ -22,9 +22,8 @@ namespace Logger {
 		 *    @param 		 	line	The line.
 		 */
 
-		void WriteInfo(std::ostream& oss, const char* file, int line) {
-			std::string baseName = boost::filesystem::path(file).filename().string();
-			oss << "File: " << baseName << " Line: " << line << " | ";
+		void WriteInfo(std::ostream& oss, const char* file, int line) {		
+			oss << "File: TODO" << " Line: " << line << " | ";
 		}
 	}
 
@@ -35,7 +34,7 @@ namespace Logger {
 
 	std::string Get() {
 		detail::logMut.lock();
-		if (detail::storage.size() > 0) {
+		if (detail::storage.empty() > 0) {
 
 			detail::LogI temp = detail::storage.front();
 			detail::storage.pop_front();
@@ -49,22 +48,8 @@ namespace Logger {
 		}
 	}
 
-	//limited to a set "test default" output, overwrites existing log file
 	void WriteFile()
 	{
-		namespace pt = boost::posix_time;
-		std::ostringstream msg;
-		std::string time;
-		std::ofstream log("Engine.log");
-		//should be changed to pull from a storage system
-		char* file = "Engine.log";
-		//should be changed like above
-		int line;
-		line = 7;
-		char* str;
-		time = pt::to_iso_string(pt::second_clock::universal_time());
-		log << time << std::endl;
-		detail::WriteInfo(log, file, line);
-		log.close();
+		//TODO
 	}
 }

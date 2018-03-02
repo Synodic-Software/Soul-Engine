@@ -1,13 +1,5 @@
 #include "RasterBackend.h"
-#include "Vulkan/VulkanBackend.h"
-#include "OpenGL/OpenGLBackend.h"
-#include "Vulkan/VulkanShader.h"
-#include "OpenGL/OpenGLShader.h"
-#include "Vulkan/VulkanJob.h"
-#include "OpenGL/OpenGLJob.h"
-#include "Vulkan/VulkanBuffer.h"
-#include "OpenGL/OpenGLBuffer.h"
-#include <memory>
+#include "Vulkan/All.h"
 
 namespace RasterBackend {
 

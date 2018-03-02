@@ -3,9 +3,10 @@
 #include "Metrics.h"
 
 class Frame {
-	Frame():frameCount(0){};
+	
 	
 public:
+	Frame():frameCount(0){};
 
 	uint frameCount;
 	
