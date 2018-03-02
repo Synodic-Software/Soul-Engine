@@ -80,6 +80,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL        OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS        OFF CACHE BOOL "" FORCE)
+set(GLFW_VULKAN_STATIC        ON CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/glfw)
 
 #GLM target
@@ -112,6 +113,8 @@ add_subdirectory(${SOUL_LIBRARIES}/googletest)
 
 SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/Libraries/boost)
 find_package(Boost 1.66.0 EXACT COMPONENTS fiber REQUIRED)
+
+find_package(Vulkan REQUIRED)
 
 
 ##############################################
@@ -148,6 +151,7 @@ target_include_directories(SoulEngine
 		${SOUL_LIBRARIES}/stb
 		${SOUL_LIBRARIES}/tinyobjloader
 		${Boost_INCLUDE_DIRS}
+		${Vulkan_INCLUDE_DIRS}
         ${SOUL_SOURCE}
 )
 
@@ -155,6 +159,7 @@ target_link_libraries(SoulEngine
     PUBLIC
     PRIVATE
 		${Boost_LIBRARIES}
+		${Vulkan_LIBRARIES}
 		gtest
 )
 
