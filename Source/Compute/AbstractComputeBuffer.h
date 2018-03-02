@@ -9,6 +9,7 @@
 #include "Compute/ComputeDevice.h"
 
 #include "Utility/Logger.h"
+#include <vector>
 
 /*
  *    Buffer for device/host(GPU/CPU) communication and storage.

@@ -1,6 +1,6 @@
 #include "MortonCode.cuh"
 #include "Utility\CUDA\CUDAHelper.cuh"
-#include "Utility\Includes\GLMIncludes.h"
+#include "glm/glm.hpp"
 #include "Compute\DeviceAPI.h"
 
 

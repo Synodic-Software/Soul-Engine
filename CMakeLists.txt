@@ -19,6 +19,7 @@ set(APPEND CMAKE_CUDA_FLAGS " -arch=sm_50")
 #set(CMAKE_SUPPRESS_REGENERATION true) #zero check is not needed/clutter
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+
 ##############################################
 # Submodule Update
 
@@ -103,6 +104,15 @@ add_subdirectory(${SOUL_LIBRARIES}/units)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/googletest)
 
+SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/Libraries/boost)
+
+find_package(Boost 1.66.0 COMPONENTS fiber REQUIRED)
+
+if(Boost_FOUND)
+
+elseif(NOT Boost_FOUND)
+  message(FATAL_ERROR "Unable to find correct Boost version. Did you place a compiled Boost into 'Libraries/boost'?")
+endif()
 
 ##############################################
 #Main target properties
@@ -135,12 +145,16 @@ target_include_directories(SoulEngine
     PRIVATE
 		${SOUL_LIBRARIES}/glfw/include
 		${SOUL_LIBRARIES}/glm
+		${SOUL_LIBRARIES}/stb
+		${SOUL_LIBRARIES}/tinyobjloader
+		${Boost_INCLUDE_DIRS}
         ${SOUL_SOURCE}
 )
 
 target_link_libraries(SoulEngine
     PUBLIC
     PRIVATE
+		${Boost_LIBRARIES}
 		gtest
 )
 

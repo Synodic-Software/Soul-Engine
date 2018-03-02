@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Compute/ComputeDevice.h"
+#include <vector>
 
 /*
 *    Buffer for gpu/cpu communication and storage.

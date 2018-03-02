@@ -1,7 +1,7 @@
 #include "BVH.cuh"
 
 #include "Compute\DeviceAPI.h"
-#include "Utility/Includes/GLMIncludes.h"
+#include <glm/glm.hpp>
 
 #define eps 0.00000000000000000000000082718061
 #define terminator static_cast<uint>(-1)
