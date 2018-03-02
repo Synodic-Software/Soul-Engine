@@ -6,8 +6,6 @@
 
 // 3rd Party Libraries
 #include "glm\glm.hpp"
-#include "Utility\CUDA\CUDAHelper.cuh"
-#include "Utility\CUDA\CUDADevices.cuh"
 
 // Standard C++ Libraries
 #include <exception>

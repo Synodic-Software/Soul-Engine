@@ -7,7 +7,7 @@
 
 #include "boost\variant.hpp"
 #include "Metrics.h"
-#include "Utility\Includes\GLMIncludes.h"
+#include <glm/glm.hpp>
 #include <string>
 
 typedef boost::variant<

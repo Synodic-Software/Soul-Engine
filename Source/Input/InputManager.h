@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Utility\Includes\GLFWIncludes.h"
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 #include "InputSet.h"
 #include "Key.h"
 #include <unordered_map>
