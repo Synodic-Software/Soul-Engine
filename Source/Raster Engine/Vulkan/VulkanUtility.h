@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Utility\Includes\GLFWIncludes.h"
-#include "Utility\Includes\GLMIncludes.h"
 #include "Utility\Logger.h"
 
 #include <functional>

@@ -216,17 +216,11 @@ namespace InputManager {
 
 	void AttachWindow(GLFWwindow* window) {
 
-		Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [=]() {
-
-			glfwSetKeyCallback(window, detail::keyCallback);
-			glfwSetCharCallback(window, detail::characterCallback);
-			glfwSetCursorPosCallback(window, detail::cursorCallback);
-			glfwSetScrollCallback(window, detail::scrollCallback);
-			glfwSetMouseButtonCallback(window, detail::buttonCallback);
-
-		});
-
-		Scheduler::Block();
+		glfwSetKeyCallback(window, detail::keyCallback);
+		glfwSetCharCallback(window, detail::characterCallback);
+		glfwSetCursorPosCallback(window, detail::cursorCallback);
+		glfwSetScrollCallback(window, detail::scrollCallback);
+		glfwSetMouseButtonCallback(window, detail::buttonCallback);
 
 	}
 

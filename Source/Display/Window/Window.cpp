@@ -1,7 +1,7 @@
 #include "Window.h"
-#include "Utility\Logger.h"
-#include "Raster Engine\RasterBackend.h"
-#include "Multithreading\Scheduler.h"
+#include "Utility/Logger.h"
+#include "Raster Engine/RasterBackend.h"
+#include "Multithreading/Scheduler.h"
 #include "WindowManager.h"
 #include "Input/InputManager.h"
 
@@ -27,53 +27,47 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	title = inTitle;
 	windowHandle = nullptr;
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, sharedContext, monitorIn ]() {
+	RasterBackend::SetWindowHints();
+	glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
+	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-		RasterBackend::SetWindowHints();
-		glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
+	const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
+
+	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+	if (windowType == FULLSCREEN) {
+
+		glfwWindowHint(GLFW_RESIZABLE, false);
+		glfwWindowHint(GLFW_DECORATED, false);
+
+		windowHandle = glfwCreateWindow(width, height, title.c_str(), monitorIn, sharedContext);
+
+	}
+	else if (windowType == WINDOWED) {
+
+		glfwWindowHint(GLFW_RESIZABLE, true);
+
+		windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
+
+	}
+	else if (windowType == BORDERLESS) {
+
+		glfwWindowHint(GLFW_RESIZABLE, false);
+		glfwWindowHint(GLFW_DECORATED, false);
+
+		windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
+
+	}
+	else {
+		glfwWindowHint(GLFW_RESIZABLE, false);
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-		const GLFWvidmode* mode = glfwGetVideoMode(monitorIn);
+		windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
 
-		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-
-		if (windowType == FULLSCREEN) {
-
-			glfwWindowHint(GLFW_RESIZABLE, false);
-			glfwWindowHint(GLFW_DECORATED, false);
-
-			windowHandle = glfwCreateWindow(width, height, title.c_str(), monitorIn, sharedContext);
-
-		}
-		else if (windowType == WINDOWED) {
-
-			glfwWindowHint(GLFW_RESIZABLE, true);
-
-			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
-
-		}
-		else if (windowType == BORDERLESS) {
-
-			glfwWindowHint(GLFW_RESIZABLE, false);
-			glfwWindowHint(GLFW_DECORATED, false);
-
-			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
-
-		}
-		else {
-			glfwWindowHint(GLFW_RESIZABLE, false);
-			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-
-			windowHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, sharedContext);
-
-		}
-
-	});
-
-	Scheduler::Block();
+	}
 
 	if (windowHandle == nullptr)
 	{
@@ -86,51 +80,44 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 
 	Window* thisWindow = this;
 
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this, thisWindow]() {
-		glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-		glfwSetWindowUserPointer(windowHandle, thisWindow);
+	glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetWindowUserPointer(windowHandle, thisWindow);
 
-		//all window related callbacks
-		glfwSetWindowSizeCallback(windowHandle, [](GLFWwindow* w, int x, int y)
-		{
-			WindowManager::Resize(w, x, y);
-		});
-
-		glfwSetWindowPosCallback(windowHandle, [](GLFWwindow* w, int x, int y)
-		{
-			WindowManager::WindowPos(w, x, y);
-		});
-
-		glfwSetWindowRefreshCallback(windowHandle, [](GLFWwindow* w)
-		{
-			WindowManager::Refresh(w);
-		});
-
-		glfwSetWindowCloseCallback(windowHandle, [](GLFWwindow* w)
-		{
-			WindowManager::Close(w);
-		});
-
-		glfwShowWindow(windowHandle);
-
+	//all window related callbacks
+	glfwSetWindowSizeCallback(windowHandle, [](GLFWwindow* w, int x, int y)
+	{
+		WindowManager::Instance().Resize(w, x, y);
 	});
+
+	glfwSetWindowPosCallback(windowHandle, [](GLFWwindow* w, int x, int y)
+	{
+		WindowManager::Instance().WindowPos(w, x, y);
+	});
+
+	glfwSetWindowRefreshCallback(windowHandle, [](GLFWwindow* w)
+	{
+		WindowManager::Instance().Refresh(w);
+	});
+
+	glfwSetWindowCloseCallback(windowHandle, [](GLFWwindow* w)
+	{
+		WindowManager::Instance().Close(w);
+	});
+
+	glfwShowWindow(windowHandle);
+
 
 	InputManager::AttachWindow(windowHandle);
 
-	Scheduler::Block();
 
 }
 
 /* Destructor. */
 Window::~Window()
 {
-	Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, [this]() {
-		if (windowHandle) {
-			glfwDestroyWindow(windowHandle);
-		}
-	});
-
-	Scheduler::Block();
+	if (windowHandle) {
+		glfwDestroyWindow(windowHandle);
+	}
 }
 
 /* Draws this object. */
