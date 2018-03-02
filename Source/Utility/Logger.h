@@ -5,9 +5,6 @@
 #include <deque>
 #include <mutex>
 #include <iostream>
-#include <boost/filesystem.hpp>
-#include <boost/date_time.hpp>
-
 
 /* Values that represent log severities. */
 enum SLogSeverity {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Compute/ComputeDevice.h"
-#include "glm/glm.hpp"
 
 
 template <class T>

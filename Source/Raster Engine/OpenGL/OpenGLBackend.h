@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Utility\Includes\GLFWIncludes.h"
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 #include "Display\Window\Window.h"
 #include "Raster Engine\RasterBase.h"
-#include "Utility\Includes\GLMIncludes.h"
+#include <glm/glm.hpp>
 
 #include <map>
 #include <memory>

@@ -1,10 +1,12 @@
 #pragma once
 
-#include "glm/glm.hpp"
 #include "Metrics.h"
 
 #include <curand_kernel.h>
 #include "Compute/GPUTexture.h"
+
+#define GLM_FORCE_CUDA
+#include <glm/glm.hpp>
 
 class Film {
 public:

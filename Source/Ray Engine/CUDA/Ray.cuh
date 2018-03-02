@@ -2,7 +2,7 @@
 
 #include <cuda_runtime.h>
 
-#include "Utility\Includes\GLMIncludes.h"
+#include <glm/glm.hpp>
 #include "Metrics.h"
 
 class Ray

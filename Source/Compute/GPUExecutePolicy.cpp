@@ -1,5 +1,7 @@
 #include "GPUExecutePolicy.h"
-#include "glm/gtx/component_wise.hpp"
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm\gtx\component_wise.hpp"
 
 GPUExecutePolicy::GPUExecutePolicy(uint size_, uint blockSize_, int sharedBytes, int stream_) :
 	gridsize((size_ + blockSize_ - 1) / blockSize_, 1, 1), 

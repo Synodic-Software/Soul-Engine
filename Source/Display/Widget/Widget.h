@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Raster Engine\RasterJob.h"
-#include "Utility\Includes\GLFWIncludes.h"
+
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 
 /* A widget. */
 class Widget

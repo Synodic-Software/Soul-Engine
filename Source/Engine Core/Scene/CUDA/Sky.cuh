@@ -2,12 +2,8 @@
 
 #include "Engine Core/Material/Texture/Image.cuh"
 #include <string>
-#include "Utility\Includes\GLMIncludes.h"
-
+#include <glm/glm.hpp>
 	
-
-
-
 class Sky
 {
 

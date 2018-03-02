@@ -1,6 +1,5 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "Compute/ComputeBuffer.h"
 
 namespace Filter {
 

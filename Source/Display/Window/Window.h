@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Utility\Includes\GLFWIncludes.h"
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 #include "Metrics.h"
 #include "Display\Layout\Layout.h"
 

@@ -1,6 +1,7 @@
 #include "Photography/Camera/CUDA/Camera.cuh"
-#include <glm/gtx/rotate_vector.hpp>
-#include <cstdio>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm\gtx\rotate_vector.hpp"
 
 Camera::Camera() :
 	aspectRatio(0),

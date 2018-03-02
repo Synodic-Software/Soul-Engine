@@ -4,8 +4,6 @@
 #include "Utility\Includes\GLMIncludes.h"
 #include "Utility\Logger.h"
 
-#include <glm/gtx/hash.hpp>
-
 #include <functional>
 #include <array>
 #include <iostream>
