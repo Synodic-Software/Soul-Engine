@@ -180,23 +180,6 @@ struct Vertex {
 	}
 };
 
-/* . */
-namespace std {
-	/* A hash. */
-	template<> struct hash<Vertex> {
-
-		/*
-		 *    Function call operator.
-		 *    @param	vertex	The vertex.
-		 *    @return	The result of the operation.
-		 */
-
-		size_t operator()(Vertex const& vertex) const {
-			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
-		}
-	};
-}
-
 /* An uniform buffer object. */
 struct UniformBufferObject {
 	/* The model */

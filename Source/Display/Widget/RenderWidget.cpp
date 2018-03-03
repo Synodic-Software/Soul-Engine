@@ -2,7 +2,7 @@
 #include "Compute\ComputeManager.h"
 #include "CUDA\RenderWidget.cuh"
 #include "Events\EventManager.h"
-#include "Raster Engine/RasterBackend.h"
+#include "Raster Engine/RasterManager.h"
 #include "Input/InputManager.h"
 #include "Compute/ComputeBuffer.h"
 #include "Photography/Camera/Camera.h"
@@ -19,14 +19,14 @@ RenderWidget::RenderWidget(uint& id):
 	extraData(S_BEST_GPU),
 	time(0)
 {
-	widgetJob = RasterBackend::CreateJob();
+	widgetJob = RasterManager::Instance().CreateJob();
 
 	samples = 1.0f;
 
 	//attach shaders to render a quad and apply a texture
 	widgetJob->AttachShaders({
-		RasterBackend::CreateShader("Resources/Shaders/vertex-shader[Renderer].glsl",VERTEX_SHADER),
-		RasterBackend::CreateShader("Resources/Shaders/fragment-shader[Renderer].glsl",FRAGMENT_SHADER)
+		RasterManager::Instance().CreateShader("Resources/Shaders/vertex-shader[Renderer].glsl",VERTEX_SHADER),
+		RasterManager::Instance().CreateShader("Resources/Shaders/fragment-shader[Renderer].glsl",FRAGMENT_SHADER)
 	});
 
 

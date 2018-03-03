@@ -1,6 +1,6 @@
 #include "Window.h"
 #include "Utility/Logger.h"
-#include "Raster Engine/RasterBackend.h"
+#include "Raster Engine/RasterManager.h"
 #include "Multithreading/Scheduler.h"
 #include "WindowManager.h"
 #include "Input/InputManager.h"
@@ -27,7 +27,7 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	title = inTitle;
 	windowHandle = nullptr;
 
-	RasterBackend::SetWindowHints();
+	RasterManager::Instance().SetWindowHints();
 	glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
@@ -74,7 +74,7 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 		S_LOG_FATAL("Could not Create GLFW Window");
 	}
 
-	RasterBackend::BuildWindow(windowHandle);
+	RasterManager::Instance().BuildWindow(windowHandle);
 
 	//the backend is the new user
 
@@ -124,8 +124,8 @@ Window::~Window()
 void Window::Draw()
 {
 
-	RasterBackend::PreRaster(windowHandle);
+	RasterManager::Instance().PreRaster(windowHandle);
 	layout->Draw();
-	RasterBackend::PostRaster(windowHandle);
+	RasterManager::Instance().PostRaster(windowHandle);
 
 }

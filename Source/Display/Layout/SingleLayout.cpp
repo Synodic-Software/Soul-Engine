@@ -1,5 +1,5 @@
 #include "SingleLayout.h"
-#include "Raster Engine\RasterBackend.h"
+#include "Raster Engine\RasterManager.h"
 
 /*
  *    Constructor.
