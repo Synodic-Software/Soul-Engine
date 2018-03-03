@@ -1,5 +1,5 @@
 #include "Widget.h"
-#include "Raster Engine\RasterBackend.h"
+#include "Raster Engine\RasterManager.h"
 
 void Widget::Draw()
 {

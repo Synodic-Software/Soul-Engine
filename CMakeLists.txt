@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
 project(Soul_Engine 
 	VERSION 0.0.1
 	DESCRIPTION "Real-time simulation and rendering engine."
@@ -120,16 +120,35 @@ find_package(Boost 1.66.0 EXACT COMPONENTS fiber REQUIRED)
 ##############################################
 #Main target properties
 
-file(GLOB_RECURSE SourceFiles ${SOUL_SOURCE}/*.cu ${SOUL_SOURCE}/*.cpp)
+file(GLOB_RECURSE SourceFiles 
+	LIST_DIRECTORIES false 
+	${SOUL_SOURCE}/*.cu ${SOUL_SOURCE}/*.cpp)
 
-file(GLOB_RECURSE IncludeFiles ${SOUL_SOURCE}/*.h ${SOUL_SOURCE}/*.cuh)
+file(GLOB_RECURSE IncludeFiles 
+	LIST_DIRECTORIES false 
+	${SOUL_SOURCE}/*.h ${SOUL_SOURCE}/*.cuh)
 
-set(SOUL_All_SOURCES ${SourceFiles} ${IncludeFiles})
-
-file(GLOB_RECURSE InterfaceIncludes ${SOUL_INCLUDE}/*.h)
+file(GLOB SOUL_All_SOURCES ${SourceFiles} ${IncludeFiles})
 
 add_library(SoulEngine STATIC ${SOUL_All_SOURCES})
 set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SoulEngine)
+
+
+#Visual filters for all source files
+foreach(_source IN ITEMS ${SOUL_All_SOURCES})
+    get_filename_component(_source_path "${_source}" PATH)
+    file(RELATIVE_PATH _source_path_rel "${PROJECT_SOURCE_DIR}" "${_source_path}")
+    string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
+    source_group("${_group_path}" FILES "${_source}")
+endforeach()
+
+#Visual filters for all frontend files
+foreach(_source IN ITEMS ${SOUL_INCLUDE})
+    get_filename_component(_source_path "${_source}" PATH)
+    file(RELATIVE_PATH _source_path_rel "${PROJECT_SOURCE_DIR}" "${_source_path}")
+    string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
+    source_group("${_group_path}" FILES "${_source}")
+endforeach()
 
 
 target_compile_features(SoulEngine 

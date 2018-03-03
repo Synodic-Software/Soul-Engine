@@ -3,7 +3,7 @@
 #include "Utility\Logger.h"
 #include "Transput\Settings.h"
 
-#include "Raster Engine\RasterBackend.h"
+#include "Raster Engine\RasterManager.h"
 
 #include <memory>
 
@@ -13,7 +13,6 @@ WindowManager::WindowManager() :
 	monitors(nullptr),
 	runningFlag(true)
 {
-	RasterBackend::Initialize();
 
 	monitors = glfwGetMonitors(&monitorCount);
 
@@ -22,7 +21,6 @@ WindowManager::WindowManager() :
 WindowManager::~WindowManager()
 {
 
-	RasterBackend::Terminate();
 	masterWindow = nullptr;
 
 }
@@ -148,7 +146,7 @@ void WindowManager::Close(GLFWwindow* handler) {
 
 void WindowManager::Resize(GLFWwindow* handler, int width, int height)
 {
-	RasterBackend::ResizeWindow(handler, width, height);
+	RasterManager::Instance().ResizeWindow(handler, width, height);
 }
 
 /*
