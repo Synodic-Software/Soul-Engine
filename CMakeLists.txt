@@ -82,7 +82,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL        OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
-set(GLFW_VULKAN_STATIC  ON  CACHE BOOL "" FORCE)
+#set(GLFW_VULKAN_STATIC  ON  CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/glfw)
 
 #GLM target
@@ -113,8 +113,14 @@ set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/googletest)
 
+add_definitions(-DBOOST_ALL_NO_LIB)
+
+set(Boost_USE_STATIC_LIBS        ON)
+set(Boost_USE_MULTITHREADED      ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+
 SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/Libraries/boost)
-find_package(Boost 1.66.0 EXACT COMPONENTS fiber REQUIRED)
+find_package(Boost 1.66.0 REQUIRED COMPONENTS fiber)
 
 
 ##############################################
@@ -130,7 +136,8 @@ file(GLOB_RECURSE IncludeFiles
 
 file(GLOB SOUL_All_SOURCES ${SourceFiles} ${IncludeFiles})
 
-add_library(SoulEngine STATIC ${SOUL_All_SOURCES})
+#add_library(SoulEngine STATIC ${SOUL_All_SOURCES})
+add_executable(SoulEngine ${SOUL_All_SOURCES})
 set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SoulEngine)
 
 
@@ -172,16 +179,17 @@ target_include_directories(SoulEngine
 		${SOUL_LIBRARIES}/stb
 		${SOUL_LIBRARIES}/tinyobjloader
 		${Boost_INCLUDE_DIRS}
-		${Vulkan_INCLUDE_DIRS}
+		Vulkan::Vulkan
         ${SOUL_SOURCE}
 )
 
 target_link_libraries(SoulEngine
     PUBLIC
-    PRIVATE
-		${Boost_LIBRARIES}
-		${Vulkan_LIBRARIES}
-		gtest
+  
+    PRIVATE		
+		glfw ${GLFW_LIBRARIES}
+		Boost::boost Boost::fiber 
+		Vulkan::Vulkan
 )
 
 

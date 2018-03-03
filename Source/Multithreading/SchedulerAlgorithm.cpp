@@ -1,5 +1,9 @@
 #include "SchedulerAlgorithm.h"
 
+SchedulerAlgorithm::rqueue_t	SchedulerAlgorithm::readyQueue;
+SchedulerAlgorithm::rqueue_t	SchedulerAlgorithm::mainOnlyQueue;
+std::mutex    	  				SchedulerAlgorithm::queueMutex;
+
 SchedulerAlgorithm::SchedulerAlgorithm() :
 	flag_(false),
 	suspend_(false)
