@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
 project(Soul_Engine 
 	VERSION 0.0.1
 	DESCRIPTION "Real-time simulation and rendering engine."
