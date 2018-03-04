@@ -12,15 +12,15 @@
 #include "Algorithms/Data Algorithms/GPU Sort/Sort.h"
 
 Scene::Scene():
-	BVH(S_BEST_GPU),
-	sky(S_BEST_GPU),
-	faces(S_BEST_GPU),
-	vertices(S_BEST_GPU),
-	tets(S_BEST_GPU),
-	materials(S_BEST_GPU),
-	objects(S_BEST_GPU),
-	mortonCodes(S_BEST_GPU),
-	boxes(S_BEST_GPU)
+	BVH(S_BEST_DEVICE),
+	sky(S_BEST_DEVICE),
+	faces(S_BEST_DEVICE),
+	vertices(S_BEST_DEVICE),
+	tets(S_BEST_DEVICE),
+	materials(S_BEST_DEVICE),
+	objects(S_BEST_DEVICE),
+	mortonCodes(S_BEST_DEVICE),
+	boxes(S_BEST_DEVICE)
 {
 
 	BVH.Resize(1);
@@ -36,7 +36,7 @@ __host__ void Scene::Build(double deltaTime) {
 	auto size = faces.SizeHost();
 	if (size > 0) {
 
-		ComputeDevice device = S_BEST_GPU;
+		ComputeDevice device = S_BEST_DEVICE;
 
 		const auto blockSize = 64;
 		const GPUExecutePolicy normalPolicy(glm::vec3((size + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);

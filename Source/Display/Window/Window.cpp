@@ -27,7 +27,6 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	title = inTitle;
 	windowHandle = nullptr;
 
-	RasterManager::Instance().SetWindowHints();
 	glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
@@ -73,8 +72,6 @@ Window::Window(WindowType inWin, const std::string& inTitle, uint x, uint y, uin
 	{
 		S_LOG_FATAL("Could not Create GLFW Window");
 	}
-
-	RasterManager::Instance().BuildWindow(windowHandle);
 
 	//the backend is the new user
 
@@ -123,9 +120,5 @@ Window::~Window()
 /* Draws this object. */
 void Window::Draw()
 {
-
-	RasterManager::Instance().PreRaster(windowHandle);
 	layout->Draw();
-	RasterManager::Instance().PostRaster(windowHandle);
-
 }

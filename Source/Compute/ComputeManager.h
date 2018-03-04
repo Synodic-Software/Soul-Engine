@@ -5,8 +5,7 @@
 
 #include <vector>
 
-#define S_BEST_GPU ComputeManager::Instance().GetBestGPU()
-#define S_BEST_CPU ComputeManager::Instance().GetBestCPU()
+#define S_BEST_DEVICE ComputeManager::Instance().GetBestGPU()
 
 class ComputeManager {
 

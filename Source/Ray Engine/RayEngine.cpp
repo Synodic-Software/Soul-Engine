@@ -5,13 +5,13 @@
 #include "Compute/ComputeManager.h"
 
 RayEngine::RayEngine() :
-	jobList(S_BEST_GPU),
-	deviceRaysA(S_BEST_GPU),
-	deviceRaysB(S_BEST_GPU),
-	randomState(S_BEST_GPU),
-	counter(S_BEST_GPU),
+	jobList(S_BEST_DEVICE),
+	deviceRaysA(S_BEST_DEVICE),
+	deviceRaysB(S_BEST_DEVICE),
+	randomState(S_BEST_DEVICE),
+	counter(S_BEST_DEVICE),
 	rayDepth(3),
-	hitAtomic(S_BEST_GPU),
+	hitAtomic(S_BEST_DEVICE),
 	frameHold(5),
 	raySeedGl(0),
 	oldRenderTime(0)
@@ -20,7 +20,7 @@ RayEngine::RayEngine() :
 	counter.Resize(1);
 	hitAtomic.Resize(1);
 
-	persistantPolicy = S_BEST_GPU.BestExecutePolicy(RayEngineCUDA::ExecuteJobs);
+	persistantPolicy = S_BEST_DEVICE.BestExecutePolicy(RayEngineCUDA::ExecuteJobs);
 
 	///////////////Alternative Hardcoded Calculation/////////////////
 	//uint blockPerSM = CUDABackend::GetBlocksPerMP();
@@ -172,7 +172,7 @@ void RayEngine::Process(Scene& scene, double target) {
 
 			//clear the jobs result memory, required for accumulation of multiple samples
 
-			ComputeDevice device = S_BEST_GPU;
+			ComputeDevice device = S_BEST_DEVICE;
 
 			const uint blockSize = 64;
 			const GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);

@@ -146,7 +146,7 @@ void WindowManager::Close(GLFWwindow* handler) {
 
 void WindowManager::Resize(GLFWwindow* handler, int width, int height)
 {
-	RasterManager::Instance().ResizeWindow(handler, width, height);
+
 }
 
 /*
