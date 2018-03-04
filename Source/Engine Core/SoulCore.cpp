@@ -105,14 +105,14 @@ namespace Soul {
 	/* Ray pre process */
 	void RayPreProcess() {
 
-		RayEngine::Instance().PreProcess();
+		//RayEngine::Instance().PreProcess();
 
 	}
 
 	/* Ray post process */
 	void RayPostProcess() {
 
-		RayEngine::Instance().PostProcess();
+		//RayEngine::Instance().PostProcess();
 
 	}
 
@@ -160,7 +160,7 @@ namespace Soul {
 		EventManager::Emit("Update", "Early");
 
 		//Update the engine cameras
-		RayEngine::Instance().Update();
+		//RayEngine::Instance().Update();
 
 		//pull cameras into jobs
 		EventManager::Emit("Update", "Job Cameras");
