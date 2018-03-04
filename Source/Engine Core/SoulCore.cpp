@@ -224,7 +224,7 @@ namespace Soul {
 
 			RayPreProcess();
 
-			RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
+			//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
 
 			RayPostProcess();
 
@@ -317,91 +317,9 @@ int main()
 	Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), typeCast);
 	type = static_cast<WindowType>(typeCast);
 
-	glm::uvec2 size = glm::uvec2(xSize, ySize);
-
-
 	Window* mainWindow = WindowManager::Instance().CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 
-	uint jobID;
-	WindowManager::Instance().SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget(jobID)));
-
-	RayJob& job = RayEngine::Instance().GetJob(jobID);
-	Camera& camera = job.camera;
-	camera.position = glm::vec3(DECAMETER * 5, DECAMETER * 5, (DECAMETER) * 5);
-	camera.OffsetOrientation(225, 45);
-
-	double deltaTime = GetDeltaTime();
-	float moveSpeed = 10 * METER * deltaTime;
-
-	InputManager::AfixMouse(*mainWindow);
-
-	EventManager::Listen("Input", "S", [&camera, &moveSpeed](keyState state) {
-
-		if (state == PRESS || state == REPEAT) {
-			camera.position += float(moveSpeed) * -camera.forward;
-		}
-	});
-
-	EventManager::Listen("Input", "W", [&camera, &moveSpeed](keyState state) {
-		if (state == PRESS || state == REPEAT) {
-			camera.position += float(moveSpeed) * camera.forward;
-		}
-	});
-
-	EventManager::Listen("Input", "A", [&camera, &moveSpeed](keyState state) {
-		if (state == PRESS || state == REPEAT) {
-			camera.position += float(moveSpeed) * -camera.right;
-		}
-	});
-
-	EventManager::Listen("Input", "D", [&camera, &moveSpeed](keyState state) {
-		if (state == PRESS || state == REPEAT) {
-			camera.position += float(moveSpeed) * camera.right;
-		}
-	});
-
-	EventManager::Listen("Input", "Z", [&camera, &moveSpeed](keyState state) {
-		if (state == PRESS || state == REPEAT) {
-			camera.position += float(moveSpeed) * -glm::vec3(0, 1, 0);
-		}
-	});
-
-	EventManager::Listen("Input", "X", [&camera, &moveSpeed](keyState state) {
-		if (state == PRESS || state == REPEAT) {
-			camera.position += float(moveSpeed) * glm::vec3(0, 1, 0);
-		}
-	});
-
-	EventManager::Listen("Input", "LEFT SHIFT", [deltaTime, &moveSpeed](keyState state) {
-		if (state == PRESS || state == REPEAT) {
-			moveSpeed = 90 * METER * deltaTime;
-		}
-		else if (state == RELEASE) {
-			moveSpeed = 10 * METER * deltaTime;
-		}
-	});
-
-	EventManager::Listen("Input", "Mouse Position", [&camera](double x, double y) {
-		glm::dvec2 mouseChangeDegrees;
-		mouseChangeDegrees.x = x / camera.fieldOfView.x * 10;
-		mouseChangeDegrees.y = y / camera.fieldOfView.y * 10;
-
-		camera.OffsetOrientation(mouseChangeDegrees.x, mouseChangeDegrees.y);
-	});
-
-	Scene* scene = new Scene();
-
-	Material whiteGray;
-	whiteGray.diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
-	whiteGray.emit = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	Object plane("Resources\\Objects\\Plane.obj", whiteGray);
-	scene->AddObject(plane);
-
-	Object lucy("Resources\\Objects\\Lucy.obj", whiteGray);
-	scene->AddObject(lucy);
-
-	SubmitScene(scene);
+	WindowManager::Instance().SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget()));
 
 	SoulRun();
 

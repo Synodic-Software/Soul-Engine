@@ -3,7 +3,7 @@
 #include "Compute/ComputeManager.h"
 
 LBVHManager::LBVHManager() :
-	nodes(S_BEST_GPU)
+	nodes(S_BEST_DEVICE)
 {
 
 }
@@ -21,7 +21,7 @@ void LBVHManager::Build(int size, ComputeBuffer<BVH>& data, ComputeBuffer<uint64
 		data[0].boxes = boxes.DataDevice();
 		data.TransferToDevice();
 
-		ComputeDevice device = S_BEST_GPU;
+		ComputeDevice device = S_BEST_DEVICE;
 
 
 		device.Launch(normalPolicy, Reset,

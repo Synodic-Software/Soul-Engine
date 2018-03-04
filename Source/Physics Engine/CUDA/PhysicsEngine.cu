@@ -96,7 +96,7 @@
 //
 //__host__ void ProcessScene(ComputeBuffer<BVH>& bvh){
 //
-//	collisions.Move(S_BEST_GPU);
+//	collisions.Move(S_BEST_DEVICE);
 //
 //	//uint n = bvh->currentSize;
 //
