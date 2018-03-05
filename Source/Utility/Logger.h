@@ -137,6 +137,7 @@ namespace Logger {
 			detail::logMut.lock();
 			detail::storage.push_back({ oss.str() ,logType ,line,file });
 			detail::logMut.unlock();
+			std::cout << oss.str() << std::endl; //temporary
 		}
 	}
 
