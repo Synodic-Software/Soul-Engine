@@ -3,12 +3,12 @@
 enum RasterAPI { Vulkan }; // Backend types.
 
 //Rendering Hardware Interface
-class RHI {
+class GraphicsAPI {
 
 public:
 
-	RHI();
-	~RHI();
+	GraphicsAPI();
+	~GraphicsAPI();
 
 
 private:
