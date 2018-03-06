@@ -1,18 +1,24 @@
-[submodule "Libraries/src/tinyobjloader/tinyobjloader"]
-	path = Libraries/src/tinyobjloader/tinyobjloader
+[submodule "Libraries/tinyobjloader"]
+	path = Libraries/tinyobjloader
 	url = https://github.com/syoyo/tinyobjloader
-[submodule "Libraries/src/stb/stb"]
-	path = Libraries/src/stb/stb
+[submodule "Libraries/stb"]
+	path = Libraries/stb
 	url = https://github.com/nothings/stb
-[submodule "Libraries/src/glew/glew"]
-	path = Libraries/src/glew/glew
-	url = https://github.com/nigels-com/glew
-[submodule "Libraries/src/glfw/glfw"]
-	path = Libraries/src/glfw/glfw
+[submodule "Libraries/glfw"]
+	path = Libraries/glfw
 	url = https://github.com/glfw/glfw
-[submodule "Libraries/src/glm/glm"]
-	path = Libraries/src/glm/glm
+[submodule "Libraries/glm"]
+	path = Libraries/glm
 	url = https://github.com/g-truc/glm
-[submodule "Libraries/src/units"]
-	path = Libraries/src/units
+[submodule "Libraries/units"]
+	path = Libraries/units
 	url = https://github.com/nholthaus/units
+[submodule "Libraries/di"]
+	path = Libraries/di
+	url = https://github.com/boost-experimental/di
+[submodule "Libraries/googletest"]
+	path = Libraries/googletest
+	url = https://github.com/google/googletest
+[submodule "Libraries/flatbuffers"]
+	path = Libraries/flatbuffers
+	url = https://github.com/google/flatbuffers
