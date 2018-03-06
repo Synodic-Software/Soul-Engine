@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RHI/RHI.h"
+#include "Graphics API/GraphicsAPI.h"
 
 #include "glm/glm.hpp"
 
@@ -27,6 +27,6 @@ private:
 	RasterManager();
 	~RasterManager();
 
-	RHI rasterAPI;
+	GraphicsAPI rasterAPI;
 
 };
