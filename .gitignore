@@ -1,4 +1,6 @@
 /Build
 /Libraries
+/Resources
+/Objects
 /.vs
 *.ini
