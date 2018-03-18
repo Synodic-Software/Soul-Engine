@@ -4,3 +4,5 @@
 /Resources/Textures
 /.vs
 *.ini
+/Resources/Objects/*
+/Resources/Textures/*
