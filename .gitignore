@@ -2,5 +2,5 @@
 /Libraries
 /.vs
 *.ini
-/Resources/Objects
-/Resources/Textures
+/Resources/Objects/*
+/Resources/Textures/*
