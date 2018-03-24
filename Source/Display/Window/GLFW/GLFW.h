@@ -24,7 +24,7 @@ public:
 	GLFW(WindowType, const std::string&, uint x, uint y, uint width, uint height, GLFWmonitor*, GLFWwindow*);
 	
 	/* Destructor. */
-	~GLFW();
+	~GLFW() override;
 
 	/* Draws this object. */
 	void Draw();
@@ -33,6 +33,4 @@ private:
 	/* Type of the window */
 	WindowType windowType;
 	
-	/* Handle of the window */
-	GLFWwindow* windowHandle;
 };

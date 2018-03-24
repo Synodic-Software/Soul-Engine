@@ -7,6 +7,8 @@
 
 #include <memory>
 
+#include "GLFW\GLFW.h"
+
 
 WindowManager::WindowManager() :
 	monitorCount(0),
@@ -73,12 +75,12 @@ Window* WindowManager::CreateWindow(WindowType type, const std::string& name, in
 	GLFWmonitor* monitorIn = monitors[monitor];
 
 	if (!masterWindow) {
-		windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, nullptr));
+		windows.emplace_back(new GLFW(type, name, x, y, width, height, monitorIn, nullptr));
 		masterWindow = windows.front().get();
 	}
 	else {
 		GLFWwindow* sharedCtx = masterWindow->windowHandle;
-		windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, sharedCtx));
+		windows.emplace_back(new GLFW(type, name, x, y, width, height, monitorIn, sharedCtx));
 	}
 
 	return windows.back().get();

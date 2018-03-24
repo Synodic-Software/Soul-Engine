@@ -85,7 +85,7 @@ GLFW::GLFW(WindowType inWin, const std::string& inTitle, uint x, uint y, uint iw
 /* Destructor. */
 GLFW::~GLFW() {
 	if (windowHandle) {
-		glfwDestroyWindow(windowHandle);
+		glfwDestroyWindow(static_cast<GLFWwindow*>(windowHandle));
 	}
 }
 

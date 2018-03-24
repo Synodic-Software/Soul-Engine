@@ -28,13 +28,16 @@ public:
 
 	Window(const std::string&, uint x, uint y, uint width, uint height);
 	/* Destructor. */
-	virtual ~Window() = 0;
+	virtual ~Window() {}
 
 	/* Draws this object. */
 	virtual void Draw() = 0;
 
 	/* The layout */
 	std::unique_ptr<Layout> layout;
+
+	/* Handle of the window */
+	GLFWwindow* windowHandle;
 
 	/* Type of the window */
 	WindowType windowType;
