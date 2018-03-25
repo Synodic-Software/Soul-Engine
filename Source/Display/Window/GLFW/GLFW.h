@@ -1,13 +1,5 @@
 #pragma once
 
-<<<<<<< HEAD
-class GLFW {
-public:
-	GLFW();
-	~GLFW();
-private:
-	int a;
-=======
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
@@ -41,5 +33,4 @@ private:
 	/* Type of the window */
 	WindowType windowType;
 	
->>>>>>> dev-falkom
 };

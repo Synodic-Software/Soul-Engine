@@ -1,13 +1,5 @@
 #include "GLFW.h"
 
-<<<<<<< HEAD
-GLFW::GLFW()
-{
-}
-
-GLFW::~GLFW()
-{
-=======
 #include "Utility/Logger.h"
 #include "Raster Engine/RasterManager.h"
 #include "Multithreading/Scheduler.h"
@@ -100,5 +92,4 @@ GLFW::~GLFW() {
 /* Draws this object. */
 void GLFW::Draw() {
 	layout->Draw();
->>>>>>> dev-falkom
 }
