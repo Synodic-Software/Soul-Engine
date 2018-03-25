@@ -34,7 +34,7 @@ WindowManager::~WindowManager()
 
 bool WindowManager::ShouldClose() {
 	if (masterWindow != nullptr) {
-		return glfwWindowShouldClose(masterWindow->windowHandle);
+		return (bool)glfwWindowShouldClose(masterWindow->windowHandle);
 	}
 	else {
 		//in the case that there is no window system, this should always return false
@@ -43,7 +43,7 @@ bool WindowManager::ShouldClose() {
 }
 
 /* Signel close. */
-void WindowManager::SignelClose() {
+void WindowManager::SignalClose() {
 
 	for (auto& win : windows) {
 		glfwSetWindowShouldClose(win->windowHandle, GLFW_TRUE);
@@ -121,7 +121,7 @@ void WindowManager::Close(GLFWwindow* handler) {
 	Window* window = static_cast<Window*>(glfwGetWindowUserPointer(handler));
 
 	if (masterWindow == window) {
-		SignelClose();
+		SignalClose();
 		masterWindow = nullptr;
 	}
 
