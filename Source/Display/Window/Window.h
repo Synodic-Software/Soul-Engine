@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
+// #include <vulkan/vulkan.hpp>
+// #include <GLFW/glfw3.h>
 
 #include "Metrics.h"
 #include "Display\Layout\Layout.h"
@@ -26,18 +26,18 @@ public:
 	 *    @param [in,out]	parameter8	If non-null, the parameter 8.
 	 */
 
-	Window(WindowType,const std::string&, uint x, uint y, uint width, uint height, GLFWmonitor*, GLFWwindow*);
+	Window(const std::string&, uint x, uint y, uint width, uint height);
 	/* Destructor. */
-	~Window();
-
-	/* Handle of the window */
-	GLFWwindow* windowHandle;
+	virtual ~Window() {}
 
 	/* Draws this object. */
-	void Draw();
+	virtual void Draw() = 0;
 
 	/* The layout */
 	std::unique_ptr<Layout> layout;
+
+	/* Handle of the window */
+	GLFWwindow* windowHandle;
 
 	/* Type of the window */
 	WindowType windowType;

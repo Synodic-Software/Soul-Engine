@@ -7,6 +7,8 @@
 
 #include <memory>
 
+#include "GLFW\GLFW.h"
+
 
 WindowManager::WindowManager() :
 	monitorCount(0),
@@ -32,7 +34,7 @@ WindowManager::~WindowManager()
 
 bool WindowManager::ShouldClose() {
 	if (masterWindow != nullptr) {
-		return glfwWindowShouldClose(masterWindow->windowHandle);
+		return (bool)glfwWindowShouldClose(masterWindow->windowHandle);
 	}
 	else {
 		//in the case that there is no window system, this should always return false
@@ -41,7 +43,7 @@ bool WindowManager::ShouldClose() {
 }
 
 /* Signel close. */
-void WindowManager::SignelClose() {
+void WindowManager::SignalClose() {
 
 	for (auto& win : windows) {
 		glfwSetWindowShouldClose(win->windowHandle, GLFW_TRUE);
@@ -73,12 +75,12 @@ Window* WindowManager::CreateWindow(WindowType type, const std::string& name, in
 	GLFWmonitor* monitorIn = monitors[monitor];
 
 	if (!masterWindow) {
-		windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, nullptr));
+		windows.emplace_back(new GLFW(type, name, x, y, width, height, monitorIn, nullptr));
 		masterWindow = windows.front().get();
 	}
 	else {
 		GLFWwindow* sharedCtx = masterWindow->windowHandle;
-		windows.emplace_back(new Window(type, name, x, y, width, height, monitorIn, sharedCtx));
+		windows.emplace_back(new GLFW(type, name, x, y, width, height, monitorIn, sharedCtx));
 	}
 
 	return windows.back().get();
@@ -119,7 +121,7 @@ void WindowManager::Close(GLFWwindow* handler) {
 	Window* window = static_cast<Window*>(glfwGetWindowUserPointer(handler));
 
 	if (masterWindow == window) {
-		SignelClose();
+		SignalClose();
 		masterWindow = nullptr;
 	}
 

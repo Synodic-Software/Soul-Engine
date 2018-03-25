@@ -241,7 +241,7 @@ namespace Soul {
 
 void SoulSignalClose() {
 	Soul::running = false;
-	WindowManager::Instance().SignelClose();
+	WindowManager::Instance().SignalClose();
 }
 
 /* Soul run. */

@@ -22,7 +22,7 @@ public:
 
 
 	bool ShouldClose();
-	void SignelClose();
+	void SignalClose();
 
 	Window* CreateWindow(WindowType, const std::string&, int monitor, uint x, uint y, uint width, uint height);
 
