@@ -16,10 +16,10 @@ public:
 	AbstractWindow(WindowType, const std::string&, uint x, uint y, uint width, uint height, void*, void*);
 
 	/* Destructor. */
-	~AbstractWindow();
+	~AbstractWindow() = default;
 
 	/* Draws this object. */
-	void Draw();
+	virtual void Draw() = 0;
 
 	/* Handle of the window. */
 	void* windowHandle;
