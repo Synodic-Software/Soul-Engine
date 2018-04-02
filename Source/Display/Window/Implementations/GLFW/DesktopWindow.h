@@ -9,7 +9,7 @@ public:
 	DesktopWindow(WindowType, const std::string&, uint x, uint y, uint width, uint height, void*, void*);
 
 	/* Destructor. */
-	~DesktopWindow() = default;
+	~DesktopWindow();
 
 	/* Draws this object. */
 	void Draw();

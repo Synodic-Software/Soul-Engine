@@ -107,7 +107,7 @@ DesktopWindow::~DesktopWindow()
 }
 
 /* Draws this object. */
-void Window::Draw()
+void DesktopWindow::Draw()
 {
 	layout->Draw();
 }

@@ -24,7 +24,7 @@ public:
 	virtual AbstractWindow* CreateWindow(WindowType, const std::string&, int monitor, uint x, uint y, uint width, uint height) = 0;
 
 	/* Set the Window's Layout. */
-	virtual void SetWindowLayout(AbstractManager*, Layout*) = 0;
+	virtual void SetWindowLayout(AbstractWindow*, Layout*) = 0;
 
 	/* Modifier operations. */
 	void Draw();
@@ -51,7 +51,7 @@ public:
 protected:
 
 	/* Constructor. */
-	AbstractManager() = default;
+	AbstractManager();
 	/* Destructor. */
-	~AbstractManager() = default;
+	~AbstractManager();
 };

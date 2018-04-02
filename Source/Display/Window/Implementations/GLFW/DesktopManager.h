@@ -5,7 +5,7 @@
 class DesktopManager : public AbstractManager
 {
 public:
-	static AbstractManager& Instance() {
+	static DesktopManager& Instance() {
 		static DesktopManager instance;
 		return instance;
 	}
@@ -37,7 +37,7 @@ private:
 	DesktopManager();
 
 	/* Destructor. */
-	~DesktopManager();
+	~DesktopManager() = default;
 
 
 };

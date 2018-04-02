@@ -13,11 +13,6 @@ DesktopManager::DesktopManager() : AbstractManager()
 	monitors = glfwGetMonitors(&monitorCount);
 }
 
-DesktopManager::~DesktopManager()
-{
-	masterWindow = nullptr;
-}
-
 AbstractWindow* DesktopManager::CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height)
 {
 	if (monitor > monitorCount) {
@@ -55,23 +50,80 @@ void DesktopManager::SignalClose()
 {
 }
 
-void DesktopManager::Close(void*)
+
+/*
+*    Closes the given handler.
+*    @param [in,out]	handler	If non-null, the handler.
+*/
+void DesktopManager::Close(void* handler)
 {
+	DesktopWindow* window = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(static_cast<GLFWwindow*>(handler)));
+
+	if (masterWindow == window) {
+		SignalClose();
+		masterWindow = nullptr;
+	}
+
+
+	// Find the matching unique_ptr
+	auto b = windows.begin();
+	auto e = windows.end();
+	while (b != e)
+	{
+		if (window == b->get())
+			b = windows.erase(b);
+		else
+			++b;
+	}
 }
 
+
+
+/* Draws this object. */
 void DesktopManager::Draw()
 {
+	for (auto& itr : windows) {
+		itr->Draw();
+	}
 }
 
+
+
+/*
+*    Resizes.
+*    @param [in,out]	handler	If non-null, the handler.
+*    @param 		 	width  	The width.
+*    @param 		 	height 	The height.
+*/
 void DesktopManager::Resize(void*, int, int)
 {
+
+
 }
 
-void DesktopManager::Refresh(void*)
+
+
+
+/*
+*    Refreshes the given handler.
+*    @param [in,out]	handler	If non-null, the handler.
+*/
+void DesktopManager::Refresh(void* handler)
 {
+	DesktopWindow* window = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(static_cast<GLFWwindow*>(handler)));
+	window->Draw();
 }
 
+
+/*
+*    Window position.
+*    @param [in,out]	handler	If non-null, the handler.
+*    @param 		 	x	   	The x coordinate.
+*    @param 		 	y	   	The y coordinate.
+*/
 void DesktopManager::WindowPos(void*, int, int)
 {
+
+
 }
 
