@@ -2,17 +2,17 @@
 
 #include "Display\Window\AbstractManager.h"
 
-class GLFWManager : public AbstractManager
+class DesktopManager : public AbstractManager
 {
 public:
 	static AbstractManager& Instance() {
-		static GLFWManager instance;
+		static DesktopManager instance;
 		return instance;
 	}
 
 	/* GLFWManager can be neither copied, nor assigned. */
-	GLFWManager(GLFWManager const&) = delete;
-	void operator=(GLFWManager const&) = delete;
+	DesktopManager(DesktopManager const&) = delete;
+	void operator=(DesktopManager const&) = delete;
 
 	/* Close operations. */
 	bool ShouldClose();
@@ -33,9 +33,9 @@ public:
 
 private:
 	/* Constructor. */
-	GLFWManager();
+	DesktopManager();
 
 	/* Destructor. */
-	~GLFWManager();
+	~DesktopManager();
 
 };

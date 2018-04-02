@@ -11,18 +11,6 @@ class AbstractManager
 {
 public:
 
-	/* 
-		Creates a static AbstractManager instance. 
-		Only one instance of the AbstractManager should exist at a time. 
-	*/
-	//static AbstractManager& Instance();
-	/*
-	{
-		static AbstractManager instance;
-		return instance;
-	}
-	*/
-
 	/* AbstractManager can be neither copied, nor assigned. */
 	AbstractManager(AbstractManager const&) = delete;
 	void operator=(AbstractManager const&) = delete;
@@ -31,7 +19,7 @@ public:
 	/* Close operations. */
 	virtual bool ShouldClose() = 0;
 	virtual void SignalClose() = 0;
-	virtual void Close(AbstractManager*) = 0;
+	virtual void Close(void*) = 0;
 
 	/* Process. to create a window. */
 	virtual AbstractWindow* CreateWindow(WindowType, const std::string&, int monitor, uint x, uint y, uint width, uint height) = 0;
@@ -41,9 +29,9 @@ public:
 
 	/* Modifier operations. */
 	void Draw();
-	virtual void Resize(AbstractWindow*, int, int) = 0;
-	virtual void Refresh(AbstractManager*) = 0;
-	virtual void WindowPos(AbstractManager*, int, int) = 0;
+	virtual void Resize(void*, int, int) = 0;
+	virtual void Refresh(void*) = 0;
+	virtual void WindowPos(void*, int, int) = 0;
 
 private:
 
