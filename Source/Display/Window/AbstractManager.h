@@ -10,7 +10,6 @@
 class AbstractManager
 {
 public:
-
 	/* AbstractManager can be neither copied, nor assigned. */
 	AbstractManager(AbstractManager const&) = delete;
 	void operator=(AbstractManager const&) = delete;
@@ -33,25 +32,26 @@ public:
 	virtual void Refresh(void*) = 0;
 	virtual void WindowPos(void*, int, int) = 0;
 
-private:
-
-	/* Constructor. */
-	AbstractManager();
-	/* Destructor. */
-	~AbstractManager();
 
 	/* List of all windows handled by the AbstractManager. */
 	std::list<std::unique_ptr<AbstractWindow>> windows;
 	/* Pointer to the master--or 'main'--window. */
 	AbstractWindow* masterWindow = nullptr;
 
-	/* 
-		Monitor Count Variables. 
-		monitors is a void* for abstraction purposes.
+	/*
+		Monitor Count Variables.
+		monitors is a GLFWmonitor** since it gave compiler errors when declared as a void**.
 	*/
 	int monitorCount;
-	void** monitors;
+	GLFWmonitor** monitors;
 
 	/* Flag that keeps track of if the AbstractManager is running. */
 	bool runningFlag;
+
+protected:
+
+	/* Constructor. */
+	AbstractManager() = default;
+	/* Destructor. */
+	~AbstractManager() = default;
 };

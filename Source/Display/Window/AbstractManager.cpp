@@ -8,11 +8,13 @@
 #include "Metrics.h"
 #include "Display\Layout\Layout.h"
 
-AbstractManager::AbstractManager() :
-	monitorCount(0),
-	monitors(nullptr),
-	runningFlag(true)
-{}
+AbstractManager::AbstractManager()
+{
+	monitorCount = 0;
+	monitors = nullptr;
+	runningFlag = true;
+
+}
 
 AbstractManager::~AbstractManager() {
 	masterWindow = nullptr;

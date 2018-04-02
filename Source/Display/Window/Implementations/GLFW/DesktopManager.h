@@ -14,22 +14,23 @@ public:
 	DesktopManager(DesktopManager const&) = delete;
 	void operator=(DesktopManager const&) = delete;
 
-	/* Close operations. */
-	bool ShouldClose();
-	void SignalClose();
-	void Close(AbstractManager*);
-
 	/* Process. to create a window. */
 	AbstractWindow* CreateWindow(WindowType, const std::string&, int monitor, uint x, uint y, uint width, uint height);
 
 	/* Set the Window's Layout. */
-	void SetWindowLayout(AbstractManager*, Layout*);
+	void SetWindowLayout(AbstractWindow*, Layout*);
+
+	/* Close operations. */
+	bool ShouldClose();
+	void SignalClose();
+	void Close(void*);
+
 
 	/* Modifier operations. */
 	void Draw();
-	void Resize(AbstractWindow*, int, int);
-	void Refresh(AbstractManager*);
-	void WindowPos(AbstractManager*, int, int);
+	void Resize(void*, int, int);
+	void Refresh(void*);
+	void WindowPos(void*, int, int);
 
 private:
 	/* Constructor. */
@@ -37,5 +38,6 @@ private:
 
 	/* Destructor. */
 	~DesktopManager();
+
 
 };

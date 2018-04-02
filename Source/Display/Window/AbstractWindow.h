@@ -24,6 +24,9 @@ public:
 	/* Handle of the window. */
 	void* windowHandle;
 
+	/* The layout */
+	std::unique_ptr<Layout> layout;
+
 	/* Type of the window */
 	WindowType windowType;
 	/* The title */

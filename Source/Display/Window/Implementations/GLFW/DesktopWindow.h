@@ -4,6 +4,7 @@
 
 class DesktopWindow : public AbstractWindow 
 {
+public:
 	/* Constructor. */
 	DesktopWindow(WindowType, const std::string&, uint x, uint y, uint width, uint height, void*, void*);
 
