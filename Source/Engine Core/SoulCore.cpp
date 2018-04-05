@@ -3,7 +3,7 @@
 #include "SoulCore.h"
 
 
-#include "Transput/Settings.h"
+#include "Transput/Configuration/Settings.h"
 #include "Utility/Logger.h"
 #include "Engine Core/Frame/Frame.h"
 #include "Physics Engine\PhysicsEngine.h"
