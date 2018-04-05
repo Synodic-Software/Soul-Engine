@@ -1,10 +1,12 @@
 #pragma once
+#include "AbstractResourceManager.h"
 
-class ResourceManager {
+class ResourceManager: public AbstractResourceManager {
 	
 public:
 
 	ResourceManager();
+
 
 private:
 

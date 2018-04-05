@@ -16,7 +16,10 @@
 #include "Input/InputManager.h"
 #include "Ray Engine/RayEngine.h"
 
+#include "Transput/Resource/ResourceManager.h"
+
 #undef GetJob
+
 
 namespace Soul {
 
@@ -53,6 +56,7 @@ namespace Soul {
 
 
 	/////////////////////////Engine Core/////////////////////////////////
+	// 
 
 	/* Initializes the engine. */
 	void Initialize() {
