@@ -1,5 +1,5 @@
 #include "InputManager.h"
-#include "Events/EventManager.h"
+#include "Event/EventManager.h"
 #include "Multithreading/Scheduler.h"
 #include "Utility/Logger.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Data Structures/Geometric Primatives/BoundingBox.h"
+#include "Data Structure/Geometry/BoundingBox.h"
 #include "Metrics.h"
 
 class Node

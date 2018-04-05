@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Data Structures\Bounding Volume Heirarchy\Node.h"
+#include "Data Structure/Bounding Volume Heirarchy\Node.h"
 #include "Ray Engine/CUDA/Ray.cuh"
-#include "Data Structures/Geometric Primatives/Face.h"
-#include "Data Structures/Geometric Primatives/Vertex.h"
+#include "Data Structure/Geometry/Face.h"
+#include "Data Structure/Geometry/Vertex.h"
 
 #include <cuda.h>
 #include <cuda_runtime.h>

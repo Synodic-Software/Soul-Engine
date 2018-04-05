@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Compute/ComputeBuffer.h"
-#include "Data Structures/Geometric Primatives/Face.h"
+#include "Data Structure/Geometry/Face.h"
 
 namespace Sort {
 

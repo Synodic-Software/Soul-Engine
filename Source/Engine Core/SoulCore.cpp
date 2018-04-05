@@ -12,7 +12,7 @@
 #include "Display\Layout\SingleLayout.h"
 #include "Display\Widget\RenderWidget.h"
 
-#include "Events\EventManager.h"
+#include "Event\EventManager.h"
 #include "Input/InputManager.h"
 #include "Ray Engine/RayEngine.h"
 
