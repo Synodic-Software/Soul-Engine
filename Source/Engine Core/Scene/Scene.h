@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Engine Core\Object\Object.h"
-#include "Engine Core\Object\MiniObject.h"
-#include "Engine Core\Scene\Sky.h"
-#include "Engine Core\Material\Material.h"
-#include "Data Structures\Bounding Volume Heirarchy\LBVHManager.h"
+#include "Engine Core/Object/Object.h"
+#include "Engine Core/Object/MiniObject.h"
+#include "Engine Core/Scene/Sky.h"
+#include "Engine Core/Material/Material.h"
+#include "Data/Structure/Bounding Volume Heirarchy/LBVHManager.h"
 #include "Compute/ComputeBuffer.h"
 
 class Scene

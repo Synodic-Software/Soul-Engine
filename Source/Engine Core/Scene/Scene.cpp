@@ -4,12 +4,12 @@
 #define BVH_STACK_SIZE 64
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 
-#include "Utility\Logger.h"
+#include "Utility/Logger.h"
 
-#include "Algorithms\Morton Code\MortonCode.h"
+#include "Algorithm/Morton Code/MortonCode.h"
 
 #include "Compute/ComputeManager.h"
-#include "Algorithms/Data Algorithms/GPU Sort/Sort.h"
+#include "Algorithm/Data Algorithms/GPU Sort/Sort.h"
 
 Scene::Scene():
 	BVH(S_BEST_DEVICE),

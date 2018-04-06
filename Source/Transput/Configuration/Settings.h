@@ -3,7 +3,7 @@
 //Standard Library includes
 #include <string>
 
-#include "ArchiveBase.h"
+#include "Transput/Serialization/ArchiveBase.h"
 
 /* Values that represent file types. */
 enum FileType { null, BINARY, XML, TEXT };

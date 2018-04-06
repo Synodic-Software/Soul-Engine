@@ -1,6 +1,6 @@
 #include "InputManager.h"
-#include "Events/EventManager.h"
-#include "Multithreading/Scheduler.h"
+#include "Event/EventManager.h"
+#include "Parallelism/Scheduler.h"
 #include "Utility/Logger.h"
 
 #include <string> 
