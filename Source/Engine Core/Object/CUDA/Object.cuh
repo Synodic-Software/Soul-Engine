@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Engine Core/Material/Material.h"
-#include "Data Structures/Geometric Primatives/Vertex.h"
-#include "Data Structures/Geometric Primatives/Face.h"
-#include "Data Structures/Geometric Primatives/Tet.h"
-#include "Data Structures/Geometric Primatives\BoundingBox.h"
+#include "Data/Structure/Geometry/Vertex.h"
+#include "Data/Structure/Geometry/Face.h"
+#include "Data/Structure/Geometry/Tet.h"
+#include "Data/Structure/Geometry/BoundingBox.h"
 #include "Metrics.h"
 
 #include <vector>

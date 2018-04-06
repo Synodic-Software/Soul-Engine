@@ -3,7 +3,7 @@
 #include "SoulCore.h"
 
 
-#include "Transput/Settings.h"
+#include "Transput/Configuration/Settings.h"
 #include "Utility/Logger.h"
 #include "Engine Core/Frame/Frame.h"
 #include "Physics Engine\PhysicsEngine.h"
@@ -12,11 +12,14 @@
 #include "Display\Layout\SingleLayout.h"
 #include "Display\Widget\RenderWidget.h"
 
-#include "Events\EventManager.h"
+#include "Event\EventManager.h"
 #include "Input/InputManager.h"
 #include "Ray Engine/RayEngine.h"
 
+#include "Transput/Resource/ResourceManager.h"
+
 #undef GetJob
+
 
 namespace Soul {
 
@@ -53,6 +56,7 @@ namespace Soul {
 
 
 	/////////////////////////Engine Core/////////////////////////////////
+	// 
 
 	/* Initializes the engine. */
 	void Initialize() {
