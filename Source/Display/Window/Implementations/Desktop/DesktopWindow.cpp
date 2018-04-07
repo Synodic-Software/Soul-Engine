@@ -1,5 +1,5 @@
 #include "DesktopWindow.h"
-#include "Display\Window\Implementations\GLFW\DesktopManager.h"
+#include "Display\Window\Implementations\Desktop\DesktopManager.h"
 
 #include "Utility\Logger.h"
 #include "Raster Engine\RasterManager.h"

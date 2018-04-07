@@ -41,13 +41,22 @@ void DesktopManager::SetWindowLayout(AbstractWindow* window, Layout* layout)
 	window->layout->RecreateData();
 }
 
-bool DesktopManager::ShouldClose()
-{
-	return false;
+bool DesktopManager::ShouldClose() {
+	GLFWwindow* mainWindow = static_cast<GLFWwindow*>(masterWindow->windowHandle);
+	if (mainWindow != nullptr) {
+		return glfwWindowShouldClose(mainWindow);
+	} else {
+		// In the case that there is no window system, this should always return false.
+		return false;
+	}
 }
 
-void DesktopManager::SignalClose()
-{
+void DesktopManager::SignalClose() {
+	for (auto& win : windows) {
+		glfwSetWindowShouldClose(static_cast<GLFWwindow*>(win->windowHandle), GLFW_TRUE);
+	}
+
+	runningFlag = false;
 }
 
 
@@ -55,15 +64,14 @@ void DesktopManager::SignalClose()
 *    Closes the given handler.
 *    @param [in,out]	handler	If non-null, the handler.
 */
-void DesktopManager::Close(void* handler)
-{
-	DesktopWindow* window = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(static_cast<GLFWwindow*>(handler)));
+void DesktopManager::Close(void* handler) {
+	GLFWwindow* windowHandler = static_cast<GLFWwindow*>(handler);
+	void* window = glfwGetWindowUserPointer(windowHandler);
 
 	if (masterWindow == window) {
 		SignalClose();
 		masterWindow = nullptr;
 	}
-
 
 	// Find the matching unique_ptr
 	auto b = windows.begin();
