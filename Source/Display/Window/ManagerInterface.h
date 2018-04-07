@@ -1,11 +1,11 @@
 #pragma once
 #include "AbstractManager.h"
 
-class CentralManager
+class ManagerInterface
 {
 public:
-	static CentralManager& Instance() {
-		static CentralManager instance;
+	static ManagerInterface& Instance() {
+		static ManagerInterface instance;
 		return instance;
 	}
 
@@ -30,10 +30,10 @@ public:
 
 private:
 	/* Constructor. */
-	CentralManager();
+	ManagerInterface();
 
 	/* Destructor. */
-	~CentralManager();
+	~ManagerInterface();
 
 	/* Pointer to the manager. */
 	AbstractManager* manager;

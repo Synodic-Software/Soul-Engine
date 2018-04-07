@@ -1,10 +1,10 @@
-#include "CentralManager.h"
+#include "ManagerInterface.h"
 #include "Utility\Logger.h"
 #include "Display\Window\Implementations\Desktop\DesktopManager.h"
 
 #define CURRENT_PLATFORM "DESKTOP"
 
-CentralManager::CentralManager() {
+ManagerInterface::ManagerInterface() {
 	if (CURRENT_PLATFORM == "DESKTOP") {
 		manager = new DesktopManager();
 	} else {
@@ -12,15 +12,15 @@ CentralManager::CentralManager() {
 	}
 }
 
-CentralManager::~CentralManager() {
+ManagerInterface::~ManagerInterface() {
 	delete manager;
 }
 
-AbstractWindow * CentralManager::CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height) {
+AbstractWindow* ManagerInterface::CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height) {
 	return manager->CreateWindow(type, name, monitor, x, y, width, height);
 }
 
-void CentralManager::SetWindowLayout(AbstractWindow* window, Layout* layout) {
+void ManagerInterface::SetWindowLayout(AbstractWindow* window, Layout* layout) {
 	manager->SetWindowLayout(window, layout);
 }
 
