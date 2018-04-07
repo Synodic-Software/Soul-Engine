@@ -96,22 +96,6 @@ void DesktopManager::Draw()
 }
 
 
-
-/*
-*    Resizes.
-*    @param [in,out]	handler	If non-null, the handler.
-*    @param 		 	width  	The width.
-*    @param 		 	height 	The height.
-*/
-void DesktopManager::Resize(void*, int, int)
-{
-
-
-}
-
-
-
-
 /*
 *    Refreshes the given handler.
 *    @param [in,out]	handler	If non-null, the handler.
@@ -124,12 +108,25 @@ void DesktopManager::Refresh(void* handler)
 
 
 /*
+*    Resizes.
+*    @param [in,out]	handler	If non-null, the handler.
+*    @param 		 	width  	The width.
+*    @param 		 	height 	The height.
+*/
+void DesktopManager::Resize(void* handler, int width, int height)
+{
+
+
+}
+
+
+/*
 *    Window position.
 *    @param [in,out]	handler	If non-null, the handler.
 *    @param 		 	x	   	The x coordinate.
 *    @param 		 	y	   	The y coordinate.
 */
-void DesktopManager::WindowPos(void*, int, int)
+void DesktopManager::WindowPos(void* handler, int x, int y)
 {
 
 

@@ -1,5 +1,20 @@
 #pragma once
-#include "AbstractManager.h"
+#include "Metrics.h"
+
+#include "Display\Window\AbstractManager.h"
+
+/*
+This is an interface.
+The majority of the functions in this file refer to the methods of the files with which they interface.
+Those methods are defined in their respective classes.
+For more details on desktop-specific processes, see the following files:
+- Display\Window\Implementations\Desktop\DesktopManager.h
+- Display\Window\Implementations\Desktop\DesktopWindow.h
+There no current support for other platfroms.
+
+*/
+
+class AbstractManager;
 
 class ManagerInterface
 {
@@ -29,12 +44,13 @@ public:
 
 
 private:
+	/* Pointer to the manager. */
+	AbstractManager* manager;
+
 	/* Constructor. */
 	ManagerInterface();
 
 	/* Destructor. */
 	~ManagerInterface();
 
-	/* Pointer to the manager. */
-	AbstractManager* manager;
 };

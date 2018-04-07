@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Display\Window\AbstractManager.h"
-#include "Display\Window\CentralManager.h"
+#include "Display\Window\ManagerInterface.h"
 
 class DesktopManager : public AbstractManager
 {
@@ -30,11 +30,11 @@ public:
 
 	/* Modifier operations. */
 	void Draw();
-	void Resize(void*, int, int);
-	void Refresh(void*);
-	void WindowPos(void*, int, int);
+	void Refresh(void* handler);
+	void Resize(void* handler, int width, int height);
+	void WindowPos(void* handler, int x, int y);
 
-	friend class CentralManager;
+	friend class ManagerInterface;
 
 private:
 	/* Constructor. */

@@ -7,7 +7,7 @@
 #include "AbstractWindow.h"
 
 #include "Display\Layout\Layout.h"
-#include "Display\Window\CentralManager.h"
+#include "Display\Window\ManagerInterface.h"
 
 class AbstractManager
 {
@@ -30,8 +30,8 @@ public:
 
 	/* Modifier operations. */
 	void Draw();
-	virtual void Resize(void*, int, int) = 0;
 	virtual void Refresh(void*) = 0;
+	virtual void Resize(void*, int, int) = 0;
 	virtual void WindowPos(void*, int, int) = 0;
 
 
@@ -50,7 +50,7 @@ public:
 	/* Flag that keeps track of if the AbstractManager is running. */
 	bool runningFlag;
 
-	friend class CentralManager;
+	friend class ManagerInterface;
 
 protected:
 
