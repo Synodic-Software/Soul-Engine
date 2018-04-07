@@ -16,7 +16,7 @@ DesktopManager::DesktopManager() : AbstractManager()
 AbstractWindow* DesktopManager::CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height)
 {
 	if (monitor > monitorCount) {
-		S_LOG_ERROR("The specified moniter '", monitor, "' needs to be less than ", monitorCount);
+		S_LOG_ERROR("The specified monitor '", monitor, "' needs to be less than ", monitorCount);
 		return nullptr;
 	}
 

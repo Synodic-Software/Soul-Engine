@@ -5,7 +5,9 @@
 
 #include "Metrics.h"
 #include "AbstractWindow.h"
+
 #include "Display\Layout\Layout.h"
+#include "Display\Window\CentralManager.h"
 
 class AbstractManager
 {
@@ -47,6 +49,8 @@ public:
 
 	/* Flag that keeps track of if the AbstractManager is running. */
 	bool runningFlag;
+
+	friend class CentralManager;
 
 protected:
 
