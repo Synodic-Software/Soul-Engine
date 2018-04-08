@@ -3,7 +3,7 @@
 
 #include "Utility\Logger.h"
 #include "Raster Engine\RasterManager.h"
-#include "Multithreading\Scheduler.h"
+#include "Parallelism\Scheduler.h"
 #include "Input\InputManager.h"
 
 DesktopWindow::DesktopWindow(WindowType inWin, const std::string& inTitle, uint x, uint y, uint iwidth, uint iheight, void* monitorIn, void* sharedContext) :
