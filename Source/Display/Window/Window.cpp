@@ -1,4 +1,9 @@
 #include "Window.h"
+#include "Utility/Logger.h"
+#include "Raster Engine/RasterManager.h"
+#include "Parallelism/Scheduler.h"
+#include "WindowManager.h"
+#include "Input/InputManager.h"
 
 /*
  *    Constructor.
