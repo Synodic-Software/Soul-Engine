@@ -1,7 +1,7 @@
 #include "RayEngine.h"
 #include "CUDA/RayEngine.cuh"
 
-#include "Algorithms/Filters/Filter.h"
+#include "Algorithm/Filters/Filter.h"
 #include "Compute/ComputeManager.h"
 
 RayEngine::RayEngine() :
