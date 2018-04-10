@@ -2,7 +2,7 @@
 #include "AbstractManager.h"
 
 #include "Input\InputManager.h"
-#include "Multithreading\Scheduler.h"
+#include "Parallelism\Scheduler.h"
 #include "Utility\Logger.h"
 
 
