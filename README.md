@@ -11,6 +11,6 @@ For more information, visit our [Wiki](https://github.com/Synodic-Software/Soul-
 
 # Installation
 
-A CMake implementation is currently in the works.
+Our CMake implementation is currently a preliminary implementation only tested with Visual Studio on Windows.
   
 For a detailed explaination, visit our Wiki's [Getting Started](https://github.com/Synodic-Software/Soul-Engine/wiki/Getting-Started)
