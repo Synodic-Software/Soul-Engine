@@ -1,7 +1,7 @@
 #include "Settings.h"
-#include "ArchiveText.h"
-#include "ArchiveBinary.h"
-#include "ArchiveXML.h"
+#include "Transput/Serialization/ArchiveText.h"
+#include "Transput/Serialization/ArchiveBinary.h"
+#include "Transput/Serialization/ArchiveXML.h"
 #include <boost/filesystem.hpp>
 
 //Will try to minimize size of boost variants.  May have a negative impact on performance.

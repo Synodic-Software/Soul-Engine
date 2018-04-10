@@ -43,7 +43,10 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
-
+#entt target
+if(NOT EXISTS "${SOUL_LIBRARIES}/entt/CMakeLists.txt")
+    message(FATAL_ERROR "entt was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
 #GLFW target
 if(NOT EXISTS "${SOUL_LIBRARIES}/glfw/CMakeLists.txt")
     message(FATAL_ERROR "GLFW was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
@@ -105,13 +108,6 @@ set(FLATBUFFERS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(FLATBUFFERS_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/flatbuffers)
 
-#tinyobjloader target
-add_subdirectory(${SOUL_LIBRARIES}/tinyobjloader)
-
-#Units target
-set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
-add_subdirectory(${SOUL_LIBRARIES}/units)
-
 #googletest target
 set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
 set(INSTALL_GMOCK OFF CACHE BOOL "" FORCE)
@@ -164,10 +160,8 @@ foreach(_source IN ITEMS ${SOUL_INCLUDE})
 endforeach()
 
 
-target_compile_features(SoulEngine 
-	PUBLIC 
-		cxx_std_17
-)
+set_property(TARGET SoulEngine PROPERTY CXX_STANDARD 17)
+set_property(TARGET SoulEngine PROPERTY CXX_STANDARD_REQUIRED ON)
 
 set_target_properties(SoulEngine 
 	PROPERTIES 
@@ -184,6 +178,8 @@ target_include_directories(SoulEngine
 		${SOUL_LIBRARIES}/glm
 		${SOUL_LIBRARIES}/stb
 		${SOUL_LIBRARIES}/tinyobjloader
+        ${SOUL_LIBRARIES}/entt/src
+        ${SOUL_LIBRARIES}/di/include
 		${Boost_INCLUDE_DIRS}
 		Vulkan::Vulkan
         ${SOUL_SOURCE}

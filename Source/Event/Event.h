@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Multithreading/Scheduler.h"
+#include "Parallelism/Scheduler.h"
 
 #include "Metrics.h"
 

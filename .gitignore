@@ -1,5 +1,7 @@
 /Build
 /Libraries
+/Resources/Objects
+/Resources/Textures
 /.vs
 *.ini
 /Resources/Objects/*

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-#include "Multithreading/Scheduler.h"
+#include "Parallelism/Scheduler.h"
 #include "Metrics.h"
 
 #include <functional>
