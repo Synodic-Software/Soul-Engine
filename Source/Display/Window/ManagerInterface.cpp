@@ -41,7 +41,7 @@ ManagerInterface::~ManagerInterface() {
 PROCESS TO CREATE A WINDOW.
 */
 AbstractWindow* ManagerInterface::CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height) {
-	return manager->CreateWindow(type, name, monitor, x, y, width, height);
+	return DesktopManager::Instance().CreateWindow(type, name, monitor, x, y, width, height);
 }
 
 
@@ -49,7 +49,7 @@ AbstractWindow* ManagerInterface::CreateWindow(WindowType type, const std::strin
 SET THE WINDOW'S LAYOUT.
 */
 void ManagerInterface::SetWindowLayout(AbstractWindow* window, Layout* layout) {
-	manager->SetWindowLayout(window, layout);
+	DesktopManager::Instance().SetWindowLayout(window, layout);
 }
 
 
@@ -59,15 +59,15 @@ CLOSE OPERATIONS.
 
 */
 bool ManagerInterface::ShouldClose() {
-	return manager->ShouldClose();
+	return DesktopManager::Instance().ShouldClose();
 }
 
 void ManagerInterface::SignalClose() {
-	manager->SignalClose();
+	DesktopManager::Instance().SignalClose();
 }
 
 void ManagerInterface::Close(void* handler) {
-	manager->Close(handler);
+	DesktopManager::Instance().Close(handler);
 }
 
 /*
@@ -77,20 +77,20 @@ MODIFIER OPERATIONS.
 */
 
 void ManagerInterface::Draw() {
-	manager->Draw();
+	DesktopManager::Instance().Draw();
 }
 
 void ManagerInterface::Refresh(void* handler) {
-	manager->Refresh(handler);
+	DesktopManager::Instance().Refresh(handler);
 }
 
 void ManagerInterface::Resize(void* handler, int width, int height) {
-	manager->Resize(handler, width, height);
+	DesktopManager::Instance().Resize(handler, width, height);
 }
 
 
 void ManagerInterface::WindowPos(void* handler, int x, int y) {
-	manager->WindowPos(handler, x, y);
+	DesktopManager::Instance().WindowPos(handler, x, y);
 }
 
 

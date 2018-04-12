@@ -14,6 +14,9 @@ AbstractWindow(inWin, inTitle, x,y, iwidth, iheight, monitorIn, sharedContext)
 
 	GLFWmonitor* monitor = static_cast<GLFWmonitor*>(monitorIn);
 	GLFWwindow* context = static_cast<GLFWwindow*>(sharedContext);
+	if (monitor == nullptr) {
+		monitor = glfwGetPrimaryMonitor();
+	}
 
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
