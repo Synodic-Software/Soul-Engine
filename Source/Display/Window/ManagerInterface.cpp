@@ -3,8 +3,10 @@
 #include "ManagerInterface.h"
 #include "Display\Window\Implementations\Desktop\DesktopManager.h"
 
-/* [ PLACE HOLDER SOLUTION TO PLATFORM SELECTION ] */
-#define CURRENT_PLATFORM "DESKTOP"
+///* [ PLACE HOLDER SOLUTION TO PLATFORM SELECTION ] */
+//#define CURRENT_PLATFORM "DESKTOP"
+
+const std::string CURRENT_PLATFORM = "DESKTOP";
 
 /* 
 	This is an interface. 
@@ -22,19 +24,18 @@ CONSTRUCTOR.
 */
 ManagerInterface::ManagerInterface() {
 	if (CURRENT_PLATFORM == "DESKTOP") {
-		manager = &DesktopManager::Instance();
+		manager.reset(new DesktopManager());
 	} else {
 		S_LOG_FATAL("The platform '", CURRENT_PLATFORM, "' is not currently supported by Soul Engine.");
 	}
 }
 
 
-/*
-DESTRUCTOR.
-*/
-ManagerInterface::~ManagerInterface() {
-	delete manager;
-}
+///*
+//DESTRUCTOR.
+//*/
+//ManagerInterface::~ManagerInterface() {
+//}
 
 
 /* 
