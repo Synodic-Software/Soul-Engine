@@ -3,12 +3,14 @@
 #include "SoulCore.h"
 
 
+
 #include "Transput\Configuration\Settings.h"
 #include "Utility\Logger.h"
 #include "Engine Core\Frame\Frame.h"
 #include "Physics Engine\PhysicsEngine.h"
 #include "Compute\ComputeManager.h"
 
+#include "Display\Window\AbstractWindow.h"
 #include "Display\Window\ManagerInterface.h"
 
 #include "Display\Layout\SingleLayout.h"
