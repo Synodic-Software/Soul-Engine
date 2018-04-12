@@ -7,10 +7,6 @@
 #include "cygwin.h"
 #endif
 
-#ifdef _WIN32
-#include "windows32.h"
-#endif
-
 #ifdef _WIN64
 #include "windows64.h"
 #endif

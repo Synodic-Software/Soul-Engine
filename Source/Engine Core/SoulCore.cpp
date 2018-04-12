@@ -3,20 +3,25 @@
 #include "SoulCore.h"
 
 
-#include "Transput/Configuration/Settings.h"
-#include "Utility/Logger.h"
-#include "Engine Core/Frame/Frame.h"
+
+#include "Transput\Configuration\Settings.h"
+#include "Utility\Logger.h"
+#include "Engine Core\Frame\Frame.h"
 #include "Physics Engine\PhysicsEngine.h"
 #include "Compute\ComputeManager.h"
-#include "Display\Window\WindowManager.h"
+
+#include "Display\Window\AbstractWindow.h"
+#include "Display\Window\ManagerInterface.h"
+
 #include "Display\Layout\SingleLayout.h"
 #include "Display\Widget\RenderWidget.h"
 
 #include "Event\EventManager.h"
-#include "Input/InputManager.h"
-#include "Ray Engine/RayEngine.h"
 
-#include "Transput/Resource/ResourceManager.h"
+#include "Input\InputManager.h"
+#include "Ray Engine\RayEngine.h"
+
+#include "Transput\Resource\ResourceManager.h"
 
 #undef GetJob
 
@@ -124,7 +129,7 @@ namespace Soul {
 	void Raster() {
 
 		//Backends should handle multithreading
-		WindowManager::Instance().Draw();
+		ManagerInterface::Instance().Draw();
 
 	}
 
@@ -189,7 +194,7 @@ namespace Soul {
 		double currentTime = glfwGetTime();
 		double accumulator = 0.0f;
 
-		while (running && !WindowManager::Instance().ShouldClose()) {
+		while (running && !ManagerInterface::Instance().ShouldClose()) {
 
 			//start frame timers
 			double newTime = glfwGetTime();
@@ -245,7 +250,7 @@ namespace Soul {
 
 void SoulSignalClose() {
 	Soul::running = false;
-	WindowManager::Instance().SignelClose();
+	ManagerInterface::Instance().SignalClose();
 }
 
 /* Soul run. */
@@ -321,9 +326,9 @@ int main()
 	Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), typeCast);
 	type = static_cast<WindowType>(typeCast);
 
-	Window* mainWindow = WindowManager::Instance().CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
+	AbstractWindow* mainWindow = ManagerInterface::Instance().CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
 
-	WindowManager::Instance().SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget()));
+	ManagerInterface::Instance().SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget()));
 
 	SoulRun();
 

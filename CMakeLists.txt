@@ -45,7 +45,7 @@ endif()
 
 #entt target
 if(NOT EXISTS "${SOUL_LIBRARIES}/entt/CMakeLists.txt")
-    message(FATAL_ERROR "entt was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+	message(FATAL_ERROR "entt was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
 endif()
 #GLFW target
 if(NOT EXISTS "${SOUL_LIBRARIES}/glfw/CMakeLists.txt")
