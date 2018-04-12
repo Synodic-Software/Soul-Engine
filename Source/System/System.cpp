@@ -26,8 +26,3 @@
 #ifdef 	__APPLE__
 #include "osx.h"
 #endif
-
-int main(){
-	printOS();
-	return 0;
-}
