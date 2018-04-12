@@ -12,6 +12,11 @@
 class AbstractManager
 {
 public:
+	/* Constructor. */
+	AbstractManager();
+	/* Destructor. */
+	~AbstractManager();
+
 	/* AbstractManager can be neither copied, nor assigned. */
 	AbstractManager(AbstractManager const&) = delete;
 	void operator=(AbstractManager const&) = delete;
@@ -54,8 +59,4 @@ public:
 
 protected:
 
-	/* Constructor. */
-	AbstractManager();
-	/* Destructor. */
-	~AbstractManager();
 };

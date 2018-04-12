@@ -12,8 +12,10 @@ AbstractWindow(inWin, inTitle, x,y, iwidth, iheight, monitorIn, sharedContext)
 	glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
+	//TODO: Rework Monitor Pointer
 	GLFWmonitor* monitor = static_cast<GLFWmonitor*>(monitorIn);
 	GLFWwindow* context = static_cast<GLFWwindow*>(sharedContext);
+	
 	if (monitor == nullptr) {
 		monitor = glfwGetPrimaryMonitor();
 	}
@@ -77,22 +79,22 @@ AbstractWindow(inWin, inTitle, x,y, iwidth, iheight, monitorIn, sharedContext)
 	//all window related callbacks
 	glfwSetWindowSizeCallback(winHandle, [](GLFWwindow* w, int x, int y)
 	{
-		DesktopManager::Instance().Resize(w, x, y);
+		ManagerInterface::Instance().Resize(w, x, y);
 	});
 
 	glfwSetWindowPosCallback(winHandle, [](GLFWwindow* w, int x, int y)
 	{
-		DesktopManager::Instance().WindowPos(w, x, y);
+		ManagerInterface::Instance().WindowPos(w, x, y);
 	});
 
 	glfwSetWindowRefreshCallback(winHandle, [](GLFWwindow* w)
 	{
-		DesktopManager::Instance().Refresh(w);
+		ManagerInterface::Instance().Refresh(w);
 	});
 
 	glfwSetWindowCloseCallback(winHandle, [](GLFWwindow* w)
 	{
-		DesktopManager::Instance().Close(w);
+		ManagerInterface::Instance().Close(w);
 	});
 
 	glfwShowWindow(winHandle);

@@ -3,8 +3,10 @@
 #include "ManagerInterface.h"
 #include "Display\Window\Implementations\Desktop\DesktopManager.h"
 
-/* [ PLACE HOLDER SOLUTION TO PLATFORM SELECTION ] */
-#define CURRENT_PLATFORM "DESKTOP"
+///* [ PLACE HOLDER SOLUTION TO PLATFORM SELECTION ] */
+//#define CURRENT_PLATFORM "DESKTOP"
+
+const std::string CURRENT_PLATFORM = "DESKTOP";
 
 /* 
 	This is an interface. 
@@ -22,26 +24,25 @@ CONSTRUCTOR.
 */
 ManagerInterface::ManagerInterface() {
 	if (CURRENT_PLATFORM == "DESKTOP") {
-		manager = &DesktopManager::Instance();
+		manager.reset(new DesktopManager());
 	} else {
 		S_LOG_FATAL("The platform '", CURRENT_PLATFORM, "' is not currently supported by Soul Engine.");
 	}
 }
 
 
-/*
-DESTRUCTOR.
-*/
-ManagerInterface::~ManagerInterface() {
-	delete manager;
-}
+///*
+//DESTRUCTOR.
+//*/
+//ManagerInterface::~ManagerInterface() {
+//}
 
 
 /* 
 PROCESS TO CREATE A WINDOW.
 */
 AbstractWindow* ManagerInterface::CreateWindow(WindowType type, const std::string& name, int monitor, uint x, uint y, uint width, uint height) {
-	return DesktopManager::Instance().CreateWindow(type, name, monitor, x, y, width, height);
+	return manager->CreateWindow(type, name, monitor, x, y, width, height);
 }
 
 
@@ -49,7 +50,7 @@ AbstractWindow* ManagerInterface::CreateWindow(WindowType type, const std::strin
 SET THE WINDOW'S LAYOUT.
 */
 void ManagerInterface::SetWindowLayout(AbstractWindow* window, Layout* layout) {
-	DesktopManager::Instance().SetWindowLayout(window, layout);
+	manager->SetWindowLayout(window, layout);
 }
 
 
@@ -59,15 +60,15 @@ CLOSE OPERATIONS.
 
 */
 bool ManagerInterface::ShouldClose() {
-	return DesktopManager::Instance().ShouldClose();
+	return manager->ShouldClose();
 }
 
 void ManagerInterface::SignalClose() {
-	DesktopManager::Instance().SignalClose();
+	manager->SignalClose();
 }
 
 void ManagerInterface::Close(void* handler) {
-	DesktopManager::Instance().Close(handler);
+	manager->Close(handler);
 }
 
 /*
@@ -77,20 +78,20 @@ MODIFIER OPERATIONS.
 */
 
 void ManagerInterface::Draw() {
-	DesktopManager::Instance().Draw();
+	manager->Draw();
 }
 
 void ManagerInterface::Refresh(void* handler) {
-	DesktopManager::Instance().Refresh(handler);
+	manager->Refresh(handler);
 }
 
 void ManagerInterface::Resize(void* handler, int width, int height) {
-	DesktopManager::Instance().Resize(handler, width, height);
+	manager->Resize(handler, width, height);
 }
 
 
 void ManagerInterface::WindowPos(void* handler, int x, int y) {
-	DesktopManager::Instance().WindowPos(handler, x, y);
+	manager->WindowPos(handler, x, y);
 }
 
 

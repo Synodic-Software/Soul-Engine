@@ -6,11 +6,16 @@
 class DesktopManager : public AbstractManager
 {
 public:
+	/* Constructor. */
+	DesktopManager();
+
+	/* Destructor. */
+	~DesktopManager() = default;
 	
-	static DesktopManager& Instance() {
+	/*static DesktopManager& Instance() {
 		static DesktopManager instance;
 		return instance;
-	}
+	}*/
 	
 	/* GLFWManager can be neither copied, nor assigned. */
 	DesktopManager(DesktopManager const&) = delete;
@@ -37,10 +42,5 @@ public:
 	friend class ManagerInterface;
 
 private:
-	/* Constructor. */
-	DesktopManager();
-
-	/* Destructor. */
-	~DesktopManager() = default;
 
 };

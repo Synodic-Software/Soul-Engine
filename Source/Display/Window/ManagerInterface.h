@@ -2,6 +2,7 @@
 #include "Metrics.h"
 
 #include "Display\Window\AbstractManager.h"
+#include <memory>
 
 /*
 This is an interface.
@@ -45,12 +46,12 @@ public:
 
 private:
 	/* Pointer to the manager. */
-	AbstractManager* manager;
+	std::unique_ptr<AbstractManager> manager;
 
 	/* Constructor. */
 	ManagerInterface();
 
 	/* Destructor. */
-	~ManagerInterface();
+	~ManagerInterface() = default;
 
 };
