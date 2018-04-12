@@ -260,9 +260,9 @@ namespace InputManager {
 
 	}
 
-	void AfixMouse(Window& win) {
-
-		glfwSetInputMode(win.windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	void AfixMouse(AbstractWindow& win) {
+		//TODO: Abstract.
+		glfwSetInputMode(static_cast<GLFWwindow*>(win.windowHandle), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	}
 

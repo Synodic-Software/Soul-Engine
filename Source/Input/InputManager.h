@@ -6,7 +6,7 @@
 #include "Key.h"
 #include <unordered_map>
 
-#include "Display/Window/Window.h"
+#include "Display/Window/AbstractWindow.h"
 
 /* . */
 namespace InputManager {
@@ -85,5 +85,5 @@ namespace InputManager {
 	 *    @param	win	The window.
 	 */
 
-	void AfixMouse(Window& win);
+	void AfixMouse(AbstractWindow& win);
 };
