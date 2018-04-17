@@ -2,11 +2,7 @@
 #include "Graphics API/Vulkan/VulkanAPI.h"
 
 RasterManager::RasterManager() {
-	rasterAPI = new VulkanAPI();
-}
-
-RasterManager::~RasterManager() {
-	
+	rasterAPI.reset(new VulkanAPI());
 }
 
 void RasterManager::PreRaster() {

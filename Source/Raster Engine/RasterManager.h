@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics API/GraphicsAPI.h"
+#include <memory>
 
 //#include "glm/glm.hpp"
 
@@ -25,8 +26,8 @@ public:
 private:
 
 	RasterManager();
-	~RasterManager();
+	~RasterManager() = default;
 
-	GraphicsAPI* rasterAPI;
+	std::unique_ptr<GraphicsAPI> rasterAPI;
 
 };
