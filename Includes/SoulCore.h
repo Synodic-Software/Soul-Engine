@@ -4,8 +4,6 @@
 
 /* Values that represent render types. */
 enum RenderType {SPECTRAL, PATH};
-/* Values that represent graphics the pis. */
-enum GraphicsAPI{ OPENGL,VULKAN };
 
 /* Soul initialize. */
 void SoulInit();
