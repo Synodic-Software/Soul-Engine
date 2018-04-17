@@ -4,7 +4,7 @@
 #include "Utility\Logger.h"
 #include "Transput\Configuration\Settings.h"
 
-#include "Raster Engine\RasterManager.h"
+//#include "Raster Engine\RasterManager.h"
 
 #include <memory>
 

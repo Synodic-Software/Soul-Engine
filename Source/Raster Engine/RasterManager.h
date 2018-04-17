@@ -2,7 +2,7 @@
 
 #include "Graphics API/GraphicsAPI.h"
 
-#include "glm/glm.hpp"
+//#include "glm/glm.hpp"
 
 class RasterManager {
 
@@ -27,6 +27,6 @@ private:
 	RasterManager();
 	~RasterManager();
 
-	GraphicsAPI rasterAPI;
+	GraphicsAPI* rasterAPI;
 
 };
