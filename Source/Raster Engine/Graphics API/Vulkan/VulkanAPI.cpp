@@ -1,6 +1,10 @@
 #include "VulkanAPI.h"
+#include <assert.h>
+#include <GLFW\glfw3.h>
 
-VulkanAPI::VulkanAPI() {
+VulkanAPI::VulkanAPI(): GraphicsAPI::GraphicsAPI()
+{
+	backendType = Vulkan;
 	InitInstance();
 }
 
@@ -33,11 +37,11 @@ void VulkanAPI::InitInstance()
 	instance_create_info.ppEnabledExtensionNames = glfwExtensions;
 	instance_create_info.enabledLayerCount = 0;
 
-	auto err  =  vkCreateInstance(&instance_create_info,nullptr,&_instance);
-	if (VK_SUCCESS != err){
-		assert(0 && "Vulkan ERROR: Create instance failed.");
-	    std::exit(-1);
+	VkResult result = vkCreateInstance(&instance_create_info, nullptr, &_instance);
+	if (vkCreateInstance(&instance_create_info, nullptr, &_instance) != VK_SUCCESS) {
+		//throw std::runtime_error("failed to create instance!");
 	}
+	
 }
 
 void VulkanAPI::DeInstance()

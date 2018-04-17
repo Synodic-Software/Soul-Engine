@@ -1,10 +1,8 @@
 #include "GraphicsAPI.h"
 
 
-GraphicsAPI::GraphicsAPI() {
-	
+GraphicsAPI::GraphicsAPI(): backendType(NoAPI)
+{
+
 }
 
-GraphicsAPI::~GraphicsAPI() {
-	
-}

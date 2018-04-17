@@ -2,7 +2,7 @@
 
 #include "SoulCore.h"
 
-
+#include "Raster Engine/RasterManager.h"
 
 #include "Transput\Configuration\Settings.h"
 #include "Utility\Logger.h"
@@ -89,6 +89,8 @@ namespace Soul {
 		if (!didInit) {
 			S_LOG_FATAL("GLFW did not initialize");
 		}
+
+		RasterManager::Instance();
 
 		Settings::Get("Engine.Delta_Time", 1 / 60.0, engineRefreshRate);
 		Settings::Get("Engine.Alloted_Render_Time", 0.01, allotedRenderTime);
