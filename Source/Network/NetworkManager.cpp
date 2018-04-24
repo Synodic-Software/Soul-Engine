@@ -1,6 +1,7 @@
-#include " NetworkManager.h"
+#include "NetworkManager.h"
 
-NetworkManager::NetworkManager() {
+NetworkManager::NetworkManager(): AbstractNetworkManager::AbstractNetworkManager()
+{
 
 
 

@@ -1,12 +1,11 @@
 #pragma once
-
-class NetworkManager {
-
+#include "AbstractNetworkManager.h"
+class NetworkManager: public AbstractNetworkManager {
 public:
 
 	NetworkManager();
 
-
+	~NetworkManager();
 
 
 };
