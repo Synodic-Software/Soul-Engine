@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine Core/Scene/Scene.h"
+#include "Core/Scene/Scene.h"
 #include "RayJob.h"
 #include "Compute/ComputeBuffer.h"
 #include "Utility/Timer.h"
@@ -94,7 +94,7 @@ private:
 	ComputeBuffer<Ray> deviceRaysA;
 	ComputeBuffer<Ray> deviceRaysB;
 
-	ComputeBuffer<curandState> randomState;
+	//ComputeBuffer<curandState> randomState;
 
 	uint raySeedGl;
 

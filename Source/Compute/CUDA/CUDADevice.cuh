@@ -2,7 +2,7 @@
 
 #include "Compute/GPUExecutePolicy.h"
 #include "Compute/AbstractComputeDevice.h"
-#include <cuda_runtime.h>
+//#include <cuda_runtime.h>
 #include "Utility/CUDA/CUDAHelper.cuh"
 
 /* A cuda device. */
@@ -28,7 +28,7 @@ public:
 	
 private:
 
-	cudaDeviceProp deviceProperties;
+	//cudaDeviceProp deviceProperties;
 	int deviceID;
 
 };

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Metrics.h"
-#include "Data/Structure/Bounding Volume Heirarchy/LBVHManager.h"
+#include "Data/Structures/Bounding Volume Heirarchy/LBVHManager.h"
 
-#include "Data/Structure/Geometry/Face.h"
-#include "Data/Structure/Geometry/Vertex.h"
+#include "Data/Structures/Geometry/Face.h"
+#include "Data/Structures/Geometry/Vertex.h"
 
 namespace MortonCode{
 

@@ -1,11 +1,19 @@
 #pragma once
 
-//#   if defined(__CUDACC__)
+#include "Metrics.h"
+#include <glm/glm.hpp>
 
-#include "CUDA/Ray.cuh"
+class Ray
+{
 
-//#	else
-//
-//#include "OpenCL\CLRay.h"
-//
-//#endif
+public:
+
+	glm::vec4 storage;
+	glm::vec4 origin;
+	glm::vec4 direction;
+	glm::vec2 bary;
+	uint currentHit;
+	uint resultOffset;
+	char job;
+
+};

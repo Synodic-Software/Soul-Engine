@@ -11,7 +11,7 @@
 #include "Compute/ComputeDevice.h"
 #include "Compute/DeviceBuffer.h"
 
-#include "Compute/CUDA/CUDABuffer.h"
+//#include "Compute/CUDA/CUDABuffer.h"
 #include "Compute/OpenCL/OpenCLBuffer.h"
 
 #include "Utility/Logger.h"
@@ -98,7 +98,7 @@ ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device) :
 {
 
 	if (device.GetBackend() == CUDA_API) {
-		deviceBuffer.reset(new CUDABuffer<T>(device));
+		//deviceBuffer.reset(new CUDABuffer<T>(device));
 	}
 	else if (device.GetBackend() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device));
@@ -112,7 +112,7 @@ ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device, size_type n) :
 {
 
 	if (device.GetBackend() == CUDA_API) {
-		deviceBuffer.reset(new CUDABuffer<T>(device, n));
+		//deviceBuffer.reset(new CUDABuffer<T>(device, n));
 	}
 	else if (device.GetBackend() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device, n));
@@ -125,7 +125,7 @@ ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device, size_type n, const 
 	AbstractComputeBuffer(device, n, val)
 {
 	if (device.GetBackend() == CUDA_API) {
-		deviceBuffer.reset(new CUDABuffer<T>(device, n, val));
+		//deviceBuffer.reset(new CUDABuffer<T>(device, n, val));
 	}
 	else if (device.GetBackend() == OPENCL_API) {
 		deviceBuffer.reset(new OpenCLBuffer<T>(device, n, val));
@@ -163,7 +163,7 @@ ComputeBuffer<T>& ComputeBuffer<T>::operator= (const ComputeBuffer<T>& other)
 	AbstractComputeBuffer<T>::operator=(other);
 
 	if (other.deviceBuffer->GetBackend() == CUDA_API) {
-		deviceBuffer.reset(new CUDABuffer<T>(*dynamic_cast<CUDABuffer<T>*>(other.deviceBuffer.get())));
+		//deviceBuffer.reset(new CUDABuffer<T>(*dynamic_cast<CUDABuffer<T>*>(other.deviceBuffer.get())));
 	}
 	else if (other.deviceBuffer->GetBackend() == OPENCL_API)
 	{
@@ -189,7 +189,7 @@ void ComputeBuffer<T>::Move(const ComputeDevice& device) {
 	else
 	{
 		if (device.GetBackend() == CUDA_API) {
-			deviceBuffer.reset(new CUDABuffer<T>(device));
+			//deviceBuffer.reset(new CUDABuffer<T>(device));
 		}
 		else if (device.GetBackend() == OPENCL_API)
 		{

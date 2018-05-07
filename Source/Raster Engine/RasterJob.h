@@ -4,13 +4,12 @@
 #include <string>
 #include <vector>
 #include "Shader.h"
-
-#include "boost\variant.hpp"
 #include "Metrics.h"
 #include <glm/glm.hpp>
 #include <string>
+#include <variant>
 
-typedef boost::variant<
+typedef std::variant<
 	int, 
 	float, 
 	double, 
@@ -23,7 +22,6 @@ typedef boost::variant<
 	glm::uvec4, 
 	glm::vec2, 
 	glm::uvec2
-/* The raster variant */
 > RasterVariant;
 
 /* A raster job. */

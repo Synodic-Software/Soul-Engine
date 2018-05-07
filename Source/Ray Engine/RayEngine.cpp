@@ -8,7 +8,7 @@ RayEngine::RayEngine() :
 	jobList(S_BEST_DEVICE),
 	deviceRaysA(S_BEST_DEVICE),
 	deviceRaysB(S_BEST_DEVICE),
-	randomState(S_BEST_DEVICE),
+	//randomState(S_BEST_DEVICE),
 	counter(S_BEST_DEVICE),
 	rayDepth(3),
 	hitAtomic(S_BEST_DEVICE),
@@ -20,7 +20,7 @@ RayEngine::RayEngine() :
 	counter.Resize(1);
 	hitAtomic.Resize(1);
 
-	persistantPolicy = S_BEST_DEVICE.BestExecutePolicy(RayEngineCUDA::ExecuteJobs);
+	//persistantPolicy = S_BEST_DEVICE.BestExecutePolicy(RayEngineCUDA::ExecuteJobs);
 
 	///////////////Alternative Hardcoded Calculation/////////////////
 	//uint blockPerSM = CUDABackend::GetBlocksPerMP();
@@ -177,96 +177,96 @@ void RayEngine::Process(Scene& scene, double target) {
 			const uint blockSize = 64;
 			const GPUExecutePolicy normalPolicy(glm::vec3((numberResults + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-			device.Launch(normalPolicy, RayEngineCUDA::EngineSetup,
-				numberResults,
-				jobList.DataDevice(),
-				numberJobs);
+			//device.Launch(normalPolicy, RayEngineCUDA::EngineSetup,
+			//	numberResults,
+			//	jobList.DataDevice(),
+			//	numberJobs);
 
-			if (numberRays > deviceRaysA.SizeDevice()) {
+			//if (numberRays > deviceRaysA.SizeDevice()) {
 
-				randomState.ResizeDevice(numberRays);
-				deviceRaysA.ResizeDevice(numberRays);
-				deviceRaysB.ResizeDevice(numberRays);
+			//	randomState.ResizeDevice(numberRays);
+			//	deviceRaysA.ResizeDevice(numberRays);
+			//	deviceRaysB.ResizeDevice(numberRays);
 
-				device.Launch(normalPolicy, RayEngineCUDA::RandomSetup,
-					numberRays,
-					randomState.DataDevice(),
-					WangHash());
+			//	device.Launch(normalPolicy, RayEngineCUDA::RandomSetup,
+			//		numberRays,
+			//		randomState.DataDevice(),
+			//		WangHash());
 
-			}
+			//}
 
-			//TODO handle multiple scenes
-			//copy the scene data over
-			scene.faces.TransferToDevice();
-			scene.vertices.TransferToDevice();
-			scene.materials.TransferToDevice();
-			scene.tets.TransferToDevice();
-			scene.objects.TransferToDevice();
-			scene.sky.TransferToDevice();
+			////TODO handle multiple scenes
+			////copy the scene data over
+			//scene.faces.TransferToDevice();
+			//scene.vertices.TransferToDevice();
+			//scene.materials.TransferToDevice();
+			//scene.tets.TransferToDevice();
+			//scene.objects.TransferToDevice();
+			//scene.sky.TransferToDevice();
 
-			//setup the counters
-			counter[0] = 0;
-			hitAtomic[0] = 0;
+			////setup the counters
+			//counter[0] = 0;
+			//hitAtomic[0] = 0;
 
-			counter.TransferToDevice();
-			hitAtomic.TransferToDevice();
+			//counter.TransferToDevice();
+			//hitAtomic.TransferToDevice();
 
-			device.Launch(normalPolicy, RayEngineCUDA::RaySetup,
-				numberRays,
-				numberJobs,
-				jobList.DataDevice(),
-				deviceRaysA.DataDevice(),
-				hitAtomic.DataDevice(),
-				randomState.DataDevice());
+			//device.Launch(normalPolicy, RayEngineCUDA::RaySetup,
+			//	numberRays,
+			//	numberJobs,
+			//	jobList.DataDevice(),
+			//	deviceRaysA.DataDevice(),
+			//	hitAtomic.DataDevice(),
+			//	randomState.DataDevice());
 
-			//start the engine loop
-			hitAtomic.TransferToHost();
+			////start the engine loop
+			//hitAtomic.TransferToHost();
 
-			uint numActive = hitAtomic[0];
+			//uint numActive = hitAtomic[0];
 
-			for (uint i = 0; i < rayDepth && numActive>0; ++i) {
+			//for (uint i = 0; i < rayDepth && numActive>0; ++i) {
 
-				//reset counters
-				counter[0] = 0;
-				hitAtomic[0] = 0;
+			//	//reset counters
+			//	counter[0] = 0;
+			//	hitAtomic[0] = 0;
 
-				counter.TransferToDevice();
-				hitAtomic.TransferToDevice();
+			//	counter.TransferToDevice();
+			//	hitAtomic.TransferToDevice();
 
-				//grab the current block sizes for collecting hits based on numActive
-				const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
+			//	//grab the current block sizes for collecting hits based on numActive
+			//	const GPUExecutePolicy activePolicy(glm::vec3((numActive + blockSize - 1) / blockSize, 1, 1), glm::vec3(blockSize, 1, 1), 0, 0);
 
-				//main engine, collects hits
-				device.Launch(persistantPolicy, RayEngineCUDA::ExecuteJobs,
-					numActive,
-					deviceRaysA.DataDevice(),
-					scene.BVH.DataDevice(),
-					scene.vertices.DataDevice(),
-					scene.faces.DataDevice(),
-					scene.boxes.DataDevice(),
-					counter.DataDevice());
+			//	//main engine, collects hits
+			//	device.Launch(persistantPolicy, RayEngineCUDA::ExecuteJobs,
+			//		numActive,
+			//		deviceRaysA.DataDevice(),
+			//		scene.BVH.DataDevice(),
+			//		scene.vertices.DataDevice(),
+			//		scene.faces.DataDevice(),
+			//		scene.boxes.DataDevice(),
+			//		counter.DataDevice());
 
-				//processes hits 
-				device.Launch(activePolicy, RayEngineCUDA::ProcessHits,
-					numActive,
-					jobList.DataDevice(),
-					numberJobs,
-					deviceRaysA.DataDevice(),
-					deviceRaysB.DataDevice(),
-					scene.sky.DataDevice(),
-					scene.faces.DataDevice(),
-					scene.vertices.DataDevice(),
-					scene.materials.DataDevice(),
-					hitAtomic.DataDevice(),
-					randomState.DataDevice());
+			//	//processes hits 
+			//	device.Launch(activePolicy, RayEngineCUDA::ProcessHits,
+			//		numActive,
+			//		jobList.DataDevice(),
+			//		numberJobs,
+			//		deviceRaysA.DataDevice(),
+			//		deviceRaysB.DataDevice(),
+			//		scene.sky.DataDevice(),
+			//		scene.faces.DataDevice(),
+			//		scene.vertices.DataDevice(),
+			//		scene.materials.DataDevice(),
+			//		hitAtomic.DataDevice(),
+			//		randomState.DataDevice());
 
-				std::swap(deviceRaysA, deviceRaysB);
+			//	std::swap(deviceRaysA, deviceRaysB);
 
 
-				hitAtomic.TransferToHost();
+			//	hitAtomic.TransferToHost();
 
-				numActive = hitAtomic[0];
-			}
+			//	numActive = hitAtomic[0];
+			//}
 		}
 
 	}

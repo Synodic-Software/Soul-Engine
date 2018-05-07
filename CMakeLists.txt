@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
 project(Soul_Engine 
 	VERSION 0.0.1
 	DESCRIPTION "Real-time simulation and rendering engine."
-	LANGUAGES CXX CUDA
+	LANGUAGES CXX #CUDA temporarily removed CUDA support
 )
 
 
@@ -14,11 +14,11 @@ set(SOUL_INCLUDE ${PROJECT_SOURCE_DIR}/Includes)
 set(SOUL_SOURCE ${PROJECT_SOURCE_DIR}/Source)
 set(SOUL_BUILD ${PROJECT_SOURCE_DIR}/Build)
 
-set(EXTRA_CUDA_FLAGS " -arch=sm_50")
-set(CUDA_VISIBLES  "5")
+#set(EXTRA_CUDA_FLAGS " -arch=sm_50")
+#set(CUDA_VISIBLES  "5")
 
-set( CMAKE_CUDA_FLAGS  "${CMAKE_CUDA_FLAGS} ${EXTRA_CUDA_FLAGS}" )
-set( CUDA_VISIBLE_DEVICES  "${CUDA_VISIBLE_DEVICES} ${CUDA_VISIBLES}" )
+#set( CMAKE_CUDA_FLAGS  "${CMAKE_CUDA_FLAGS} ${EXTRA_CUDA_FLAGS}" )
+#set( CUDA_VISIBLE_DEVICES  "${CUDA_VISIBLE_DEVICES} ${CUDA_VISIBLES}" )
 
 
 #set(CMAKE_SUPPRESS_REGENERATION true) #zero check is not needed/clutter
@@ -114,26 +114,19 @@ set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_subdirectory(${SOUL_LIBRARIES}/googletest)
 
-add_definitions(-DBOOST_ALL_NO_LIB)
-
-set(Boost_USE_STATIC_LIBS        ON)
-set(Boost_USE_MULTITHREADED      ON)
-set(Boost_USE_STATIC_RUNTIME    OFF)
-
-SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/Libraries/boost)
-find_package(Boost 1.66.0 REQUIRED COMPONENTS fiber)
-
 
 ##############################################
 #Main target properties
 
 file(GLOB_RECURSE SourceFiles 
 	LIST_DIRECTORIES false 
-	${SOUL_SOURCE}/*.cu ${SOUL_SOURCE}/*.cpp)
+	#${SOUL_SOURCE}/*.cu 
+    ${SOUL_SOURCE}/*.cpp)
 
 file(GLOB_RECURSE IncludeFiles 
 	LIST_DIRECTORIES false 
-	${SOUL_SOURCE}/*.h ${SOUL_SOURCE}/*.cuh)
+	#${SOUL_SOURCE}/*.cuh 
+    ${SOUL_SOURCE}/*.h)
 
 file(GLOB SOUL_All_SOURCES ${SourceFiles} ${IncludeFiles})
 
@@ -179,7 +172,6 @@ target_include_directories(SoulEngine
 		${SOUL_LIBRARIES}/tinyobjloader
         ${SOUL_LIBRARIES}/entt/src
         ${SOUL_LIBRARIES}/di/include
-		${Boost_INCLUDE_DIRS}
 		Vulkan::Vulkan
         ${SOUL_SOURCE}
 )
@@ -189,7 +181,6 @@ target_link_libraries(SoulEngine
   
     PRIVATE		
 		glfw ${GLFW_LIBRARIES}
-		Boost::boost Boost::fiber 
 		Vulkan::Vulkan
 )
 

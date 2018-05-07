@@ -1,5 +1,7 @@
 #pragma once
-#include "Compute\ComputeDevice.h"
+
+#include "Metrics.h"
+#include "Compute\AbstractComputeDevice.h"
 
 /* An open cl device. */
 class OpenCLDevice :public AbstractComputeDevice {

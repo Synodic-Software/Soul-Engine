@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine Core\Scene\Scene.h"
+#include "Core\Scene\Scene.h"
 
 
 /* . */

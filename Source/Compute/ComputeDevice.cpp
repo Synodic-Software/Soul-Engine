@@ -7,7 +7,7 @@ ComputeDevice::ComputeDevice(ComputeBackend backend_, int order_, int deviceID_)
 {
 
 	if (backend_ == CUDA_API) {
-		device.reset(new CUDADevice(deviceID_));
+		//device.reset(new CUDADevice(deviceID_));
 	}
 	else if (backend_ == OPENCL_API) {
 		device.reset(new OpenCLDevice(deviceID_));

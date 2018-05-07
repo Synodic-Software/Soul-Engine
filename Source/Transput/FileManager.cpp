@@ -1,9 +1,6 @@
 #pragma once
 
-#include <iostream>
-#include <fstream>
 #include <string>
-#include <boost/filesystem.hpp>
 
 /*
 	Namespace to enclose all i/o operations.
@@ -16,7 +13,7 @@ public:
 	/*
 			@param			filename_				name of file to operate on
 	*/
-	FileManager(const std::string & filename_) :filename(filename_) {}
+	FileManager(const std::string& filename_) :filename(filename_) {}
 
 	/*
 			@effects				read from the file specified by gilename

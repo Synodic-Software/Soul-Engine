@@ -1,9 +1,12 @@
 #pragma once
 
-#include "CUDA/CUDADevice.cuh"
+#include "AbstractComputeDevice.h"
+//#include "CUDA/CUDADevice.cuh"
 #include "OpenCL/OpenCLDevice.h"
 
 #include "Compute/GPUExecutePolicy.h"
+#include <memory>
+
 
 /* A GPU device. */
 class ComputeDevice {

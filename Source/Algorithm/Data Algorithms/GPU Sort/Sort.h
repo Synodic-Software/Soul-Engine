@@ -2,7 +2,7 @@
 
 //#   if defined(__CUDACC__)
 
-#include "CUDA/Sort.cuh"
+//#include "CUDA/Sort.cuh"
 
 //#	else
 //
