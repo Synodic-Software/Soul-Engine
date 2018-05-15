@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 #include "SchedulerAlgorithm.h"
 
-#include "Event/EventManager.h"
+#include "Composition/Event/EventManager.h"
 #include <cassert>
 
 
