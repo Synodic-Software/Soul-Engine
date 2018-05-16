@@ -1,7 +1,5 @@
 /////////////////////////Includes/////////////////////////////////
 
-#include "Soul.h"
-
 #include "Rasterer/RasterManager.h"
 #include "Transput/Configuration/Settings.h"
 #include "Core/Utility/Logger.h"
@@ -272,15 +270,6 @@ void SoulTerminate() {
 
 void SubmitScene(Scene* scene) {
 	Soul::scenes.push_back(std::unique_ptr<Scene>(scene));
-}
-
-/*
- *    Removes the scene described by scene.
- *    @param [in,out]	scene	If non-null, the scene.
- */
-
-void RemoveScene(Scene scene) {
-
 }
 
 
