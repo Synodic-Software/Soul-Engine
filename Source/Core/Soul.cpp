@@ -9,18 +9,16 @@
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
 #include "Tracer/RayEngine.h"
+#include "Application.h"
 
 namespace Soul {
 
 	/* //////////////////////Variables and Declarations//////////////////. */
 
-	std::vector<std::unique_ptr<Scene>> scenes;
+	//Application app;
 
-	/* The engine refresh rate */
 	double engineRefreshRate;
-	/* The alloted render time */
 	double allotedRenderTime;
-	/* True to running */
 	bool running = true;
 
 
@@ -124,9 +122,9 @@ namespace Soul {
 
 		glfwPollEvents();
 
-		for (auto& scene : scenes) {
-			scene->Build(engineRefreshRate);
-		}
+		//for (auto& scene : scenes) {
+		//	scene->Build(engineRefreshRate);
+		//}
 
 	}
 
@@ -200,9 +198,9 @@ namespace Soul {
 
 				EarlyUpdate();
 
-				for (auto& scene : scenes) {
+				/*for (auto& scene : scenes) {
 					scene->Build(engineRefreshRate);
-				}
+				}*/
 				/*
 				for (auto const& scene : scenes){
 					PhysicsEngine::Process(scene);
@@ -269,13 +267,14 @@ void SoulTerminate() {
  */
 
 void SubmitScene(Scene* scene) {
-	Soul::scenes.push_back(std::unique_ptr<Scene>(scene));
+	//Soul::scenes.push_back(std::unique_ptr<Scene>(scene));
 }
 
 
 int main()
 {
 
+	
 	//SoulInit();
 
 	//EventManager::Listen("Input", "ESCAPE", [](keyState state) {

@@ -1,97 +1,71 @@
 cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
-project(Soul_Engine 
+
+
+##############################################
+#Options
+
+
+option(BUILD_TESTS "Build tests." OFF)
+set(HUNTER_ALLOW_SPACES_IN_PATH ON)
+
+
+##############################################
+#Project 
+
+
+include("CMake/Hunter/HunterGate.cmake")
+
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.21.0.tar.gz"
+    SHA1 "11967f8ed5218914f1f22393ed36a7b0424f3c09"
+    FILEPATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Hunter/config.cmake
+)
+
+project(SoulEngine 
 	VERSION 0.0.1
 	DESCRIPTION "Real-time simulation and rendering engine."
 	LANGUAGES CXX #CUDA temporarily removed CUDA support
 )
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 
-##############################################
-#Global Variables
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 
-set(SOUL_LIBRARIES ${PROJECT_SOURCE_DIR}/Libraries)
-set(SOUL_INCLUDE ${PROJECT_SOURCE_DIR}/Includes)
-set(SOUL_SOURCE ${PROJECT_SOURCE_DIR}/Source)
-set(SOUL_BUILD ${PROJECT_SOURCE_DIR}/Build)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 #set(EXTRA_CUDA_FLAGS " -arch=sm_50")
-#set(CUDA_VISIBLES  "5")
-
 #set( CMAKE_CUDA_FLAGS  "${CMAKE_CUDA_FLAGS} ${EXTRA_CUDA_FLAGS}" )
-#set( CUDA_VISIBLE_DEVICES  "${CUDA_VISIBLE_DEVICES} ${CUDA_VISIBLES}" )
 
-
-#set(CMAKE_SUPPRESS_REGENERATION true) #zero check is not needed/clutter
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ##############################################
-# Submodule Update
+#Sources
 
-# Update all submodules. Taken from `https://cliutils.gitlab.io/modern-cmake/chapters/smallinc.html`
-find_package(Git QUIET)
-if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
-    option(GIT_SUBMODULE "Check submodules during build" ON)
-    if(GIT_SUBMODULE)
-        message(STATUS "Submodule update")
-        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-                        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
-        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif()
-    endif()
-endif()
 
-#entt target
-if(NOT EXISTS "${SOUL_LIBRARIES}/entt/CMakeLists.txt")
-	message(FATAL_ERROR "entt was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-#GLFW target
-if(NOT EXISTS "${SOUL_LIBRARIES}/glfw/CMakeLists.txt")
-    message(FATAL_ERROR "GLFW was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-#GLM target
-if(NOT EXISTS "${SOUL_LIBRARIES}/glm/CMakeLists.txt")
-    message(FATAL_ERROR "GLM was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-#stb_image target
-if(NOT EXISTS "${SOUL_LIBRARIES}/stb/stb_image.h")
-    message(FATAL_ERROR "STB was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-#DI target
-if(NOT EXISTS "${SOUL_LIBRARIES}/di/CMakeLists.txt")
-    message(FATAL_ERROR "DI was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-#tinyobjloader target
-if(NOT EXISTS "${SOUL_LIBRARIES}/tinyobjloader/CMakeLists.txt")
-    message(FATAL_ERROR "tinyobjloader was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-#Units target
-if(NOT EXISTS "${SOUL_LIBRARIES}/units/CMakeLists.txt")
-	message(FATAL_ERROR "Units was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-#googletest target
-if(NOT EXISTS "${SOUL_LIBRARIES}/googletest/CMakeLists.txt")
-	message(FATAL_ERROR "googletest was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-#flatbuffers target
-if(NOT EXISTS "${SOUL_LIBRARIES}/flatbuffers/CMakeLists.txt")
-	message(FATAL_ERROR "flatbuffers was not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
+file(GLOB_RECURSE PROJECT_HEADERS Source/*.h Include/*.h)
+file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp)
+set (PROJECT_FILES 
+    ${PROJECT_HEADERS} 
+    ${PROJECT_SOURCES} 
+)
+
+
+include(source_groups)
+source_groups(${PROJECT_FILES})
+
 
 ##############################################
-# Create target and set properties
+#Dependencies
 
-#GLFW target
 
+#Vulkan target
 find_package(Vulkan REQUIRED)
 
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
-set(GLFW_INSTALL        OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
-#set(GLFW_VULKAN_STATIC  ON  CACHE BOOL "" FORCE)
-add_subdirectory(${SOUL_LIBRARIES}/glfw)
+#GLFW target
+hunter_add_package(glfw)
+find_package(glfw3 CONFIG REQUIRED)
 
 #GLM target
 #header only
@@ -103,142 +77,113 @@ add_subdirectory(${SOUL_LIBRARIES}/glfw)
 #header only
 
 #flatbuffers target
-set(FLATBUFFERS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(FLATBUFFERS_INSTALL OFF CACHE BOOL "" FORCE)
-add_subdirectory(${SOUL_LIBRARIES}/flatbuffers)
+hunter_add_package(flatbuffers)
+find_package(flatbuffers CONFIG REQUIRED)
 
 #googletest target
-mark_as_advanced(BUILD_GMOCK)
-mark_as_advanced(BUILD_GTEST)
+hunter_add_package(GTest)
+find_package(GTest CONFIG REQUIRED)
 
-set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
-set(BUILD_GTEST ON CACHE BOOL "" FORCE)
-set(INSTALL_GMOCK OFF CACHE BOOL "" FORCE)
-set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-add_subdirectory(${SOUL_LIBRARIES}/googletest)
-
-
-add_definitions(-DBOOST_ALL_NO_LIB)
-
-set(Boost_USE_STATIC_LIBS        ON)
-set(Boost_USE_MULTITHREADED      ON)
-set(Boost_USE_STATIC_RUNTIME    OFF)
-
-SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/Libraries/boost)
-find_package(Boost 1.67.0 REQUIRED COMPONENTS fiber)
+#boost target
+hunter_add_package(Boost COMPONENTS fiber)
+find_package(Boost CONFIG REQUIRED fiber)
 
 
 ##############################################
-#Main target properties
-
-file(GLOB_RECURSE SourceFiles 
-	LIST_DIRECTORIES false 
-	#${SOUL_SOURCE}/*.cu 
-    ${SOUL_SOURCE}/*.cpp)
-
-file(GLOB_RECURSE IncludeFiles 
-	LIST_DIRECTORIES false 
-	#${SOUL_SOURCE}/*.cuh 
-    ${SOUL_SOURCE}/*.h)
-
-file(GLOB SOUL_All_SOURCES ${SourceFiles} ${IncludeFiles})
-
-add_executable(SoulEngine ${SOUL_All_SOURCES})
-set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SoulEngine)
+#Targets
 
 
-#Visual filters for all source files
-foreach(_source IN ITEMS ${SOUL_All_SOURCES})
-    get_filename_component(_source_path "${_source}" PATH)
-    file(RELATIVE_PATH _source_path_rel "${PROJECT_SOURCE_DIR}" "${_source_path}")
-    string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
-    source_group("${_group_path}" FILES "${_source}")
-endforeach()
+add_library(${PROJECT_NAME} STATIC ${PROJECT_FILES})
 
-#Visual filters for all frontend files
-foreach(_source IN ITEMS ${SOUL_INCLUDE})
-    get_filename_component(_source_path "${_source}" PATH)
-    file(RELATIVE_PATH _source_path_rel "${PROJECT_SOURCE_DIR}" "${_source_path}")
-    string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
-    source_group("${_group_path}" FILES "${_source}")
-endforeach()
-
-
-set_property(TARGET SoulEngine PROPERTY CXX_STANDARD 17)
-set_property(TARGET SoulEngine PROPERTY CXX_STANDARD_REQUIRED ON)
-
-set_target_properties(SoulEngine 
+set_target_properties(${PROJECT_NAME} 
 	PROPERTIES 
-		CXX_EXTENSIONS OFF	
+        LINKER_LANGUAGE CXX
+	   	CXX_EXTENSIONS OFF	
 		CUDA_SEPARABLE_COMPILATION ON
 )
 
-#Main target linking and stuff
-target_include_directories(SoulEngine
+target_include_directories(${PROJECT_NAME}
     PUBLIC 
-        ${SOUL_INCLUDE}
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<INSTALL_INTERFACE:Include>
     PRIVATE
-		${SOUL_LIBRARIES}/glfw/include
-		${SOUL_LIBRARIES}/glm
-		${SOUL_LIBRARIES}/stb
-		${SOUL_LIBRARIES}/tinyobjloader
-        ${SOUL_LIBRARIES}/entt/src
-        ${SOUL_LIBRARIES}/di/include
-        ${Boost_INCLUDE_DIRS}
+#		Libraries/glfw/include
+		Libraries/glm
+		Libraries/stb
+		Libraries/tinyobjloader
+        Libraries/entt/src
+        Libraries/di/include
+ #       ${Boost_INCLUDE_DIRS}
 		Vulkan::Vulkan
-        ${SOUL_SOURCE}
+        Source
 )
 
-target_link_libraries(SoulEngine
+target_link_libraries(${PROJECT_NAME}
     PUBLIC
-  
+        GTest::main
     PRIVATE		
-		glfw ${GLFW_LIBRARIES}
-        Boost::boost Boost::fiber 
+        flatbuffers::flatbuffers
+		glfw
+        Boost::fiber 
 		Vulkan::Vulkan
 )
 
 
 ##############################################
-# Unit Tests
+#Tests
 
+
+if(BUILD_TESTS)
+ 
+
+endif()
 
 
 ##############################################
 # Installation
 
-#install(TARGETS SoulEngine
-#    EXPORT SoulEngine-targets
-#    LIBRARY DESTINATION ${SOUL_BUILD}
-#    ARCHIVE DESTINATION ${SOUL_BUILD}
-#)
 
-#set_target_properties(SoulEngine PROPERTIES EXPORT_NAME SoulEngine)
+set_target_properties( ${PROJECT_NAME} 
+    PROPERTIES 
+        EXPORT_NAME ${PROJECT_NAME}
+)
 
-#bring from 
-#install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}-config
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION Binaries
+)
 
-#install(EXPORT SoulEngine-targets
-#	FILE
-#		SoulEngineTargets.cmake
-#	NAMESPACE
-#		SoulEngine::
-#	DESTINATION
-#		${SOUL_BUILD}
-#)
+install(
+    DIRECTORY
+        Include/
+    DESTINATION 
+        Include
+)
+
+install(
+    EXPORT  
+        ${PROJECT_NAME}-config 
+    DESTINATION 
+        CMake
+    NAMESPACE
+        SoulEngine::
+)
 
 
 ##############################################
-# Exporting for others
+#Export
 
-#export(
-#	EXPORT 
-#		SoulEngine-targets 
-#	FILE 
-#		${SOUL_BUILD}/SoulEngineTargets.cmake 
-#	NAMESPACE 
-#		SoulEngine::
-#)
 
-#export(PACKAGE SoulEngine)
+export (
+    EXPORT 
+        ${PROJECT_NAME}-config
+    FILE 
+        ${PROJECT_NAME}-config.cmake
+    NAMESPACE 
+       SoulEngine::
+)
+
+export(PACKAGE ${PROJECT_NAME})

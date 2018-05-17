@@ -4,9 +4,6 @@
 [submodule "Libraries/stb"]
 	path = Libraries/stb
 	url = https://github.com/nothings/stb
-[submodule "Libraries/glfw"]
-	path = Libraries/glfw
-	url = https://github.com/glfw/glfw
 [submodule "Libraries/glm"]
 	path = Libraries/glm
 	url = https://github.com/g-truc/glm
@@ -16,12 +13,6 @@
 [submodule "Libraries/di"]
 	path = Libraries/di
 	url = https://github.com/boost-experimental/di
-[submodule "Libraries/googletest"]
-	path = Libraries/googletest
-	url = https://github.com/google/googletest
-[submodule "Libraries/flatbuffers"]
-	path = Libraries/flatbuffers
-	url = https://github.com/google/flatbuffers
 [submodule "Libraries/entt"]
 	path = Libraries/entt
 	url = https://github.com/skypjack/entt.git
