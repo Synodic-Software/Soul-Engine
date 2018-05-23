@@ -3,7 +3,7 @@
 #include "Core/Utility/CRTP.h"
 
 template<class T>
-class Application : CRTP<T, Application> {
+class SoulApplication : CRTP<T, SoulApplication> {
 public:
 
 
@@ -16,7 +16,7 @@ public:
 
 protected:
 
-	Application()
+	SoulApplication()
 	{
 		registered = false;	//forces static specialization
 	}
@@ -36,4 +36,4 @@ private:
 };
 
 template<class T>
-bool Application<T>::registered = Register();
+bool SoulApplication<T>::registered = Register();

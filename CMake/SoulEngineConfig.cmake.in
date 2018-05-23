@@ -1,0 +1,39 @@
+get_filename_component(SoulEngine_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+#list(APPEND CMAKE_MODULE_PATH ${SoulEngine_CMAKE_DIR})
+
+#Vulkan target
+#find_package(Vulkan REQUIRED)
+
+#GLFW target
+#hunter_add_package(glfw)
+#find_package(glfw3 CONFIG REQUIRED)
+
+#GLM target
+#hunter_add_package(glm)
+#find_package(glm REQUIRED)
+
+#stb_image target
+#hunter_add_package(stb)
+#find_package(stb CONFIG REQUIRED)
+
+#flatbuffers target
+#hunter_add_package(flatbuffers)
+#find_package(flatbuffers CONFIG REQUIRED)
+
+#googletest target
+#hunter_add_package(GTest)
+#find_package(GTest CONFIG REQUIRED)
+
+#boost target
+#hunter_add_package(Boost COMPONENTS fiber)
+#find_package(Boost CONFIG REQUIRED fiber)
+
+#list(REMOVE_AT CMAKE_MODULE_PATH -1)
+
+if(NOT TARGET Soul::SoulEngine)
+    include("${SoulEngine_CMAKE_DIR}/SoulTargets.cmake")
+endif()
+
+set(SoulEngine_LIBRARIES Soul::SoulEngine)

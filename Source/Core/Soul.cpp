@@ -9,7 +9,7 @@
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
 #include "Tracer/RayEngine.h"
-#include "Application.h"
+#include "SoulApplication.h"
 
 namespace Soul {
 
