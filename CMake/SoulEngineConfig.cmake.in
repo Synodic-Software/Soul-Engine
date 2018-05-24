@@ -1,5 +1,5 @@
-get_filename_component(SoulEngine_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-include(CMakeFindDependencyMacro)
+#get_filename_component(SoulEngine_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+#include(CMakeFindDependencyMacro)
 
 #list(APPEND CMAKE_MODULE_PATH ${SoulEngine_CMAKE_DIR})
 
@@ -32,8 +32,8 @@ include(CMakeFindDependencyMacro)
 
 #list(REMOVE_AT CMAKE_MODULE_PATH -1)
 
-if(NOT TARGET Soul::SoulEngine)
-    include("${SoulEngine_CMAKE_DIR}/SoulTargets.cmake")
-endif()
+#if(NOT TARGET Soul::SoulEngine)
+#    include("${SoulEngine_CMAKE_DIR}/SoulTargets.cmake")
+#endif()
 
-set(SoulEngine_LIBRARIES Soul::SoulEngine)
+#set(SoulEngine_LIBRARIES Soul::SoulEngine)
