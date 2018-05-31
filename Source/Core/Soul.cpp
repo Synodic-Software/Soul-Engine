@@ -1,5 +1,3 @@
-/////////////////////////Includes/////////////////////////////////
-
 #include "Rasterer/RasterManager.h"
 #include "Transput/Configuration/Settings.h"
 #include "Core/Utility/Logger.h"
@@ -274,7 +272,9 @@ void SubmitScene(Scene* scene) {
 int main()
 {
 
-	
+	//auto app = SoulApplication::CreateApplication();
+
+
 	//SoulInit();
 
 	//EventManager::Listen("Input", "ESCAPE", [](keyState state) {

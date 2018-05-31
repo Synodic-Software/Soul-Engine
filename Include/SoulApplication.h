@@ -11,7 +11,7 @@ public:
 		this->Type().Initialize();
 	}
 
-
+	
 
 
 protected:
@@ -27,7 +27,6 @@ private:
 
 	bool Register()
 	{
-		//AnimalManager::registerAnimal(t.name());
 		return true;
 	}
 
