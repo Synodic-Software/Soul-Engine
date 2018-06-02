@@ -1,3 +1,5 @@
+#include "Soul.h"
+
 #include "Rasterer/RasterManager.h"
 #include "Transput/Configuration/Settings.h"
 #include "Core/Utility/Logger.h"
@@ -249,11 +251,6 @@ double GetDeltaTime() {
 	return Soul::engineRefreshRate;
 }
 
-/* Initializes Soul. This should be the first command in a program. */
-void SoulInit() {
-	Soul::Initialize();
-}
-
 /* Soul terminate. */
 void SoulTerminate() {
 	Soul::Terminate();
@@ -269,8 +266,6 @@ void SubmitScene(Scene* scene) {
 }
 
 
-int main()
-{
 
 	//auto app = SoulApplication::CreateApplication();
 
@@ -308,5 +303,3 @@ int main()
 	//SoulTerminate();
 
 	//return EXIT_SUCCESS;
-
-}

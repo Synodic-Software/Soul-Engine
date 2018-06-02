@@ -1,38 +1,20 @@
 #pragma once
 
-#include "Core/Utility/CRTP.h"
+class SoulApplication {
 
-template<class T>
-class SoulApplication : CRTP<T, SoulApplication> {
 public:
 
+	SoulApplication();
+	virtual ~SoulApplication() = default;
 
-	void Initialize() {
-		this->Type().Initialize();
-	}
+	virtual void Initialize();
 
-	
-
+	void Run();
 
 protected:
-
-	SoulApplication()
-	{
-		registered = false;	//forces static specialization
-	}
 
 	bool setupWindow;
 
 private:
 
-	bool Register()
-	{
-		return true;
-	}
-
-	static bool registered;
-
 };
-
-template<class T>
-bool SoulApplication<T>::registered = Register();
