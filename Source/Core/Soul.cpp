@@ -9,297 +9,217 @@
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
 #include "Tracer/RayEngine.h"
-#include "SoulApplication.h"
-
-namespace Soul {
-
-	/* //////////////////////Variables and Declarations//////////////////. */
-
-	//Application app;
-
-	double engineRefreshRate;
-	double allotedRenderTime;
-	bool running = true;
 
 
-	/* //////////////////////Synchronization///////////////////////////. */
-
-	void SynchCPU() {
-		//Scheduler::Block(); //TODO Implement MT calls
-	}
-
-	void SynchGPU() {
-		//CudaCheck(cudaDeviceSynchronize());
-	}
-
-	void SynchSystem() {
-		SynchCPU();
-		SynchGPU();
-	}
+Soul::Soul(SoulParameters& params):
+	parameters(params)
+{
+	
+}
 
 
-	/////////////////////////Hints and Toggles///////////////////////////
+/* //////////////////////Variables and Declarations//////////////////. */
+
+//Application app;
+
+/* //////////////////////Synchronization///////////////////////////. */
+
+void SynchCPU() {
+	//Scheduler::Block(); //TODO Implement MT calls
+}
+
+void SynchGPU() {
+	//CudaCheck(cudaDeviceSynchronize());
+}
+
+void SynchSystem() {
+	SynchCPU();
+	SynchGPU();
+}
+
+
+/////////////////////////Hints and Toggles///////////////////////////
 
 
 
-	/////////////////////////Core/////////////////////////////////
-	// 
-
-	/* Initializes the engine. */
-	void Initialize() {
-
-		//create the listener for threads initializeing
-		EventManager::Listen("Thread", "Initialize", []()
-		{
-			ComputeManager::Instance().InitThread();
-		});
-
-		//open the config file for the duration of the runtime
-		Settings::Read("config.ini", TEXT);
-
-		//extract all available GPU devices
-		ComputeManager::Instance().ExtractDevices();
-
-		//set the error callback
-		glfwSetErrorCallback([](int error, const char* description) {
-			S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
-		});
-
-		//Initialize glfw context for Window handling
-		const int	didInit = glfwInit();
-
-		if (!didInit) {
-			S_LOG_FATAL("GLFW did not initialize");
-		}
-
-		RasterManager::Instance();
-
-		Settings::Get("Engine.Delta_Time", 1 / 60.0, engineRefreshRate);
-		Settings::Get("Engine.Alloted_Render_Time", 0.01, allotedRenderTime);
-
-	}
-
-	/* Call to deconstuct both the engine and its dependencies. */
-	void Terminate() {
-		Soul::SynchSystem();
-
-		//Write the settings into a file
-		Settings::Write("config.ini", TEXT);
-
-		//destroy glfw, needs to wait on the window manager
-		glfwTerminate();
-
-		//extract all available GPU devices
-		ComputeManager::Instance().DestroyDevices();
-
-	}
+/////////////////////////Core/////////////////////////////////
 
 
-	/* Ray pre process */
-	void RayPreProcess() {
+/* Initializes the engine. */
+void Soul::Initialize() {
 
-		//RayEngine::Instance().PreProcess();
-
-	}
-
-	/* Ray post process */
-	void RayPostProcess() {
-
-		//RayEngine::Instance().PostProcess();
-
-	}
-
-	/* Rasters this object. */
-	void Raster() {
-
-		//Backends should handle multithreading
-		ManagerInterface::Instance().Draw();
-
-	}
-
-	/* Warmups this object. */
-	void Warmup() {
-
-		glfwPollEvents();
-
-		//for (auto& scene : scenes) {
-		//	scene->Build(engineRefreshRate);
-		//}
-
-	}
-
-	/* Early frame update. */
-	void EarlyFrameUpdate() {
-
-		EventManager::Emit("Update", "EarlyFrame");
-
-	}
-	/* Late frame update. */
-	void LateFrameUpdate() {
-
-		EventManager::Emit("Update", "LateFrame");
-
-	}
-
-	/* Early update. */
-	void EarlyUpdate() {
-
-		//poll events before this update, making the state as close as possible to real-time input
-		glfwPollEvents();
-
-		//poll input after glfw processes all its callbacks (updating some input states)
-		InputManager::Poll();
-
-		EventManager::Emit("Update", "Early");
-
-		//Update the engine cameras
-		//RayEngine::Instance().Update();
-
-		//pull cameras into jobs
-		EventManager::Emit("Update", "Job Cameras");
-
-	}
-
-	/* Late update. */
-	void LateUpdate() {
-
-		EventManager::Emit("Update", "Late");
-
-	}
-
-	/* Runs this object. */
-	void Run()
+	//create the listener for threads initializeing
+	EventManager::Listen("Thread", "Initialize", []()
 	{
+		ComputeManager::Instance().InitThread();
+	});
 
-		Warmup();
+	//open the config file for the duration of the runtime
+	Settings::Read("config.ini", TEXT);
 
-		//setup timer info
-		double t = 0.0f;
-		double currentTime = glfwGetTime();
-		double accumulator = 0.0f;
+	//extract all available GPU devices
+	ComputeManager::Instance().ExtractDevices();
 
-		while (running && !ManagerInterface::Instance().ShouldClose()) {
+	//set the error callback
+	glfwSetErrorCallback([](int error, const char* description) {
+		S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
+	});
 
-			//start frame timers
-			double newTime = glfwGetTime();
-			double frameTime = newTime - currentTime;
+	//Initialize glfw context for Window handling
+	const int	didInit = glfwInit();
 
-			if (frameTime > 0.25) {
-				frameTime = 0.25;
-			}
+	if (!didInit) {
+		S_LOG_FATAL("GLFW did not initialize");
+	}
 
-			currentTime = newTime;
-			accumulator += frameTime;
+	RasterManager::Instance();
 
-			EarlyFrameUpdate();
+}
 
-			//consumes time created by the renderer
-			while (accumulator >= engineRefreshRate) {
+/* Call to deconstuct both the engine and its dependencies. */
+void Soul::Terminate() {
+	SynchSystem();
 
-				EarlyUpdate();
+	//Write the settings into a file
+	Settings::Write("config.ini", TEXT);
 
-				/*for (auto& scene : scenes) {
-					scene->Build(engineRefreshRate);
-				}*/
-				/*
-				for (auto const& scene : scenes){
-					PhysicsEngine::Process(scene);
-				}*/
+	//destroy glfw, needs to wait on the window manager
+	glfwTerminate();
 
-				LateUpdate();
+	//extract all available GPU devices
+	ComputeManager::Instance().DestroyDevices();
 
-				t += engineRefreshRate;
-				accumulator -= engineRefreshRate;
-			}
+}
 
 
-			LateFrameUpdate();
+/* Ray pre process */
+void RayPreProcess() {
 
-			RayPreProcess();
+	//RayEngine::Instance().PreProcess();
 
-			//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
+}
 
-			RayPostProcess();
+/* Ray post process */
+void RayPostProcess() {
 
-			Raster();
+	//RayEngine::Instance().PostProcess();
 
+}
+
+/* Rasters this object. */
+void Raster() {
+
+	//Backends should handle multithreading
+	ManagerInterface::Instance().Draw();
+
+}
+
+/* Warmups this object. */
+void Warmup() {
+
+	glfwPollEvents();
+
+	//for (auto& scene : scenes) {
+	//	scene->Build(engineRefreshRate);
+	//}
+
+}
+
+/* Early frame update. */
+void EarlyFrameUpdate() {
+
+	EventManager::Emit("Update", "EarlyFrame");
+
+}
+/* Late frame update. */
+void LateFrameUpdate() {
+
+	EventManager::Emit("Update", "LateFrame");
+
+}
+
+/* Early update. */
+void EarlyUpdate() {
+
+	//poll events before this update, making the state as close as possible to real-time input
+	glfwPollEvents();
+
+	//poll input after glfw processes all its callbacks (updating some input states)
+	InputManager::Poll();
+
+	EventManager::Emit("Update", "Early");
+
+	//Update the engine cameras
+	//RayEngine::Instance().Update();
+
+	//pull cameras into jobs
+	EventManager::Emit("Update", "Job Cameras");
+
+}
+
+/* Late update. */
+void LateUpdate() {
+
+	EventManager::Emit("Update", "Late");
+
+}
+
+void Soul::Run()
+{
+
+	Warmup();
+
+	//setup timer info
+	double t = 0.0f;
+	double currentTime = glfwGetTime();
+	double accumulator = 0.0f;
+
+	const double refreshDT = 1.0 / parameters.engineRefreshRate;
+
+	while (!ManagerInterface::Instance().ShouldClose()) {
+
+		//start frame timers
+		double newTime = glfwGetTime();
+		double frameTime = newTime - currentTime;
+
+		if (frameTime > 0.25) {
+			frameTime = 0.25;
 		}
+
+		currentTime = newTime;
+		accumulator += frameTime;
+
+		EarlyFrameUpdate();
+
+		//consumes time created by the renderer
+		while (accumulator >= refreshDT) {
+
+			EarlyUpdate();
+
+			/*for (auto& scene : scenes) {
+				scene->Build(engineRefreshRate);
+			}*/
+			/*
+			for (auto const& scene : scenes){
+				PhysicsEngine::Process(scene);
+			}*/
+
+			LateUpdate();
+
+			t += refreshDT;
+			accumulator -= refreshDT;
+		}
+
+
+		LateFrameUpdate();
+
+		RayPreProcess();
+
+		//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
+
+		RayPostProcess();
+
+		Raster();
+
 	}
 }
-
-/*
- *    //////////////////////User Interface///////////////////////////.
- *    @param	pressType	Type of the press.
- */
-
-void SoulSignalClose() {
-	Soul::running = false;
-	ManagerInterface::Instance().SignalClose();
-}
-
-/* Soul run. */
-void SoulRun() {
-	Soul::Run();
-}
-
-/*
- *    Gets delta time.
- *    @return	The delta time.
- */
-
-double GetDeltaTime() {
-	return Soul::engineRefreshRate;
-}
-
-/* Soul terminate. */
-void SoulTerminate() {
-	Soul::Terminate();
-}
-
-/*
- *    Submit scene.
- *    @param [in,out]	scene	If non-null, the scene.
- */
-
-void SubmitScene(Scene* scene) {
-	//Soul::scenes.push_back(std::unique_ptr<Scene>(scene));
-}
-
-
-
-	//auto app = SoulApplication::CreateApplication();
-
-
-	//SoulInit();
-
-	//EventManager::Listen("Input", "ESCAPE", [](keyState state) {
-	//	if (state == RELEASE) {
-	//		SoulSignalClose();
-	//	}
-	//});
-
-	//uint xSize;
-	//Settings::Get("MainWindow.Width", uint(800), xSize);
-	//uint ySize;
-	//Settings::Get("MainWindow.Height", uint(450), ySize);
-	//uint xPos;
-	//Settings::Get("MainWindow.X_Position", uint(0), xPos);
-	//uint yPos;
-	//Settings::Get("MainWindow.Y_Position", uint(0), yPos);
-	//int monitor;
-	//Settings::Get("MainWindow.Monitor", 0, monitor);
-
-	//WindowType type;
-	//int typeCast;
-	//Settings::Get("MainWindow.Type", static_cast<int>(WINDOWED), typeCast);
-	//type = static_cast<WindowType>(typeCast);
-
-	//AbstractWindow* mainWindow = ManagerInterface::Instance().CreateWindow(type, "main", monitor, xPos, yPos, xSize, ySize);
-
-	//ManagerInterface::Instance().SetWindowLayout(mainWindow, new SingleLayout(new RenderWidget()));
-
-	//SoulRun();
-
-	//SoulTerminate();
-
-	//return EXIT_SUCCESS;
