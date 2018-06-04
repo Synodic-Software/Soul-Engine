@@ -1,7 +1,7 @@
 #include "DesktopManager.h"
 #include "DesktopWindow.h"
 
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 #include "Transput\Configuration\Settings.h"
 
 //#include "Raster Engine\RasterManager.h"

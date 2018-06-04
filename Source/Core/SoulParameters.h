@@ -1,11 +1,23 @@
 #pragma once
 
-struct SoulParameters{
+#include <thread>
+
+#include "Core/Utility/Property/Property.h"
+
+struct SoulParameters {
 
 	SoulParameters() :
-		engineRefreshRate(90)
+		engineRefreshRate(90),
+		threadCount(std::thread::hardware_concurrency())
 	{
+
+		//may return 0; see https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency
+		if (threadCount == 0) {
+			threadCount = 1; //garunteed a single thread
+		}
+
 	}
 
-	int engineRefreshRate; //the update rate tied to physics and...
+	Property<int> engineRefreshRate; //the update rate tied to physics and...
+	Property<int> threadCount; //the amount of threads at the program's disposal
 };

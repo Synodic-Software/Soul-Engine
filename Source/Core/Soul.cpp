@@ -2,25 +2,44 @@
 
 #include "Rasterer/RasterManager.h"
 #include "Transput/Configuration/Settings.h"
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 #include "Physics/PhysicsEngine.h"
 #include "Parallelism/Compute/ComputeManager.h"
 #include "Display/Window/ManagerInterface.h"
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
 #include "Tracer/RayEngine.h"
+#include "Parallelism/Fiber/Scheduler.h"
 
-
-Soul::Soul(SoulParameters& params):
-	parameters(params)
+class Soul::Implementation
 {
-	
+
+public:
+
+	Implementation(const Soul&);
+
+	//services and modules
+	Scheduler scheduler;
+
+};
+
+Soul::Implementation::Implementation(const Soul& soul):
+	scheduler(soul.parameters.threadCount)
+{
 }
 
+Soul::Soul(SoulParameters& params):
+	parameters(params),
+	detail(std::make_unique<Implementation>(*this))
+{
+}
 
-/* //////////////////////Variables and Declarations//////////////////. */
+//definitions to complete PIMPL idiom
+Soul::~Soul() = default;
 
-//Application app;
+Soul::Soul(Soul&&) noexcept = default;
+Soul& Soul::operator=(Soul&&) noexcept = default;
+
 
 /* //////////////////////Synchronization///////////////////////////. */
 
@@ -48,31 +67,31 @@ void SynchSystem() {
 /* Initializes the engine. */
 void Soul::Initialize() {
 
-	//create the listener for threads initializeing
-	EventManager::Listen("Thread", "Initialize", []()
-	{
-		ComputeManager::Instance().InitThread();
-	});
+	////create the listener for threads initializeing
+	//EventManager::Listen("Thread", "Initialize", []()
+	//{
+	//	ComputeManager::Instance().InitThread();
+	//});
 
-	//open the config file for the duration of the runtime
-	Settings::Read("config.ini", TEXT);
+	////open the config file for the duration of the runtime
+	//Settings::Read("config.ini", TEXT);
 
-	//extract all available GPU devices
-	ComputeManager::Instance().ExtractDevices();
+	////extract all available GPU devices
+	//ComputeManager::Instance().ExtractDevices();
 
-	//set the error callback
-	glfwSetErrorCallback([](int error, const char* description) {
-		S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
-	});
+	////set the error callback
+	//glfwSetErrorCallback([](int error, const char* description) {
+	//	S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
+	//});
 
-	//Initialize glfw context for Window handling
-	const int	didInit = glfwInit();
+	////Initialize glfw context for Window handling
+	//const int	didInit = glfwInit();
 
-	if (!didInit) {
-		S_LOG_FATAL("GLFW did not initialize");
-	}
+	//if (!didInit) {
+	//	S_LOG_FATAL("GLFW did not initialize");
+	//}
 
-	RasterManager::Instance();
+	//RasterManager::Instance();
 
 }
 

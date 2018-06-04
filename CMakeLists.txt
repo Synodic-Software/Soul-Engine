@@ -85,8 +85,8 @@ hunter_add_package(GTest)
 find_package(GTest CONFIG REQUIRED)
 
 #boost target
-hunter_add_package(Boost COMPONENTS fiber)
-find_package(Boost CONFIG REQUIRED fiber)
+hunter_add_package(Boost COMPONENTS context fiber)
+find_package(Boost CONFIG REQUIRED context fiber)
 
 
 ##############################################
@@ -120,6 +120,7 @@ target_link_libraries(${PROJECT_NAME}
         GTest::main	
         flatbuffers::flatbuffers
 		glfw
+        Boost::context 
         Boost::fiber 
 		Vulkan::Vulkan
         glm

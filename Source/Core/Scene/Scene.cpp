@@ -4,7 +4,7 @@
 #define BVH_STACK_SIZE 64
 #define DYNAMIC_FETCH_THRESHOLD 20          // If fewer than this active, fetch new rays
 
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 
 #include "Core/Scene/Morton Code/MortonCode.h"
 

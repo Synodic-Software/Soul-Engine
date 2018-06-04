@@ -7,7 +7,7 @@
 #include <cassert>
 #include <sstream>
 
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 
 /*
  *    Constructor.

@@ -1,6 +1,6 @@
 #include "OpenCLBackend.h"
 
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 
 void OpenCLBackend::ExtractDevices(std::vector<ComputeDevice>& devices) {
 

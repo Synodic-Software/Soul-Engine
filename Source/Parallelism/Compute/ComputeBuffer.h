@@ -14,7 +14,7 @@
 //#include "Parallelism/Compute/CUDA/CUDABuffer.h"
 #include "Parallelism/Compute/OpenCL/OpenCLBuffer.h"
 
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 
 /*
  *    Buffer for device/host(GPU/CPU) communication and storage.

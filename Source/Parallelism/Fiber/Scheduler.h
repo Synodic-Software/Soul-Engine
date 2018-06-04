@@ -1,12 +1,13 @@
 #pragma once
 
-#include "FiberProperties.h"
-
 #include <boost/fiber/fss.hpp>
 #include <boost/fiber/condition_variable.hpp>
 
 #include <thread>
 #include <mutex>
+
+#include "Core/Utility/Property/Property.h"
+
 
 //Boost fiber includes some nasty windows stuff
 #undef CreateWindow
@@ -17,8 +18,8 @@
 
 
 /*
-IMMEDIATE: Run the fiber immediatly with no context switch
-Use Case: You will execute 100 tasks and will wait till they complete
+IMMEDIATE: Schedule the fiber with the garuntee that you will 
+Use Case: You will execute a task and wait upon its completion later.
 CONTINUE: Keep the current context and add the fiber to the queue
 Use Case: You want to process other things while this function gets executed elsewhere
 */
@@ -34,21 +35,8 @@ class Scheduler {
 
 public:
 
-	static Scheduler& Instance()
-	{
-		static Scheduler instance;
-		return instance;
-	}
-
-	Scheduler(Scheduler const&) = delete;
-	void operator=(Scheduler const&) = delete;
-
-
-	template <typename T, typename ... Args>
-	void AddTask(FiberPolicy, FiberPriority, bool, T*, void(T::*)(Args...) const);
-
-	template <typename T, typename ... Args>
-	void AddTask(FiberPolicy, FiberPriority, bool, T*, void(T::*)(Args...));
+	Scheduler(Property<int>&);
+	~Scheduler();
 
 	template<typename Fn, typename ... Args>
 	void AddTask(FiberPolicy, FiberPriority, bool, Fn &&, Args && ...);
@@ -58,10 +46,9 @@ public:
 	void Defer();
 	bool Running() const;
 
+
 private:
 
-	Scheduler();
-	~Scheduler();
 
 	void InitPointers();
 	void ThreadRun();
@@ -73,38 +60,14 @@ private:
 
 	bool shouldRun;
 
-	boost::fibers::fiber_specific_ptr<std::size_t> holdCount;
-	boost::fibers::fiber_specific_ptr<std::mutex> holdMutex;
-	boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable_any> blockCondition;
+	boost::fibers::fiber_specific_ptr<std::size_t> blockCount;
+	boost::fibers::fiber_specific_ptr<boost::fibers::mutex> blockMutex;
+	boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable> blockCondition;
 
 	std::vector<std::thread> threads;
 	boost::fibers::condition_variable_any threadCondition;
 
 };
-
-
-/*
-*    Adds a task.
-*    @param 		 	policy	  	The policy.
-*    @param 		 	priority  	The priority.
-*    @param 		 	runsOnMain	True to runs on main.
-*    @param [in,out]	instance  	If non-null, the instance.
-*    @param [in,out]	func	  	If non-null, the function.
-*/
-
-template <typename T, typename ... Args>
-void Scheduler::AddTask(FiberPolicy policy, FiberPriority priority, bool runsOnMain, T *instance, void(T::*func)(Args...) const) {
-	AddTask(policy, priority, runsOnMain, [=](Args... args) {
-		(instance->*func)(args...);
-	});
-}
-
-template <typename T, typename ... Args>
-void Scheduler::AddTask(FiberPolicy policy, FiberPriority priority, bool runsOnMain, T *instance, void(T::*func)(Args...)) {
-	AddTask(policy, priority, runsOnMain, [=](Args... args) {
-		(instance->*func)(args...);
-	});
-}
 
 
 /*
@@ -118,54 +81,49 @@ void Scheduler::AddTask(FiberPolicy policy, FiberPriority priority, bool runsOnM
 */
 
 template<typename Fn, typename ... Args>
-void Scheduler::AddTask(FiberPolicy policy, FiberPriority priority, bool runsOnMain, Fn && fn, Args && ... args) {
+void Scheduler::AddTask(const FiberPolicy policy, const FiberPriority priority, const bool runsOnMain, Fn && fn, Args && ... args) {
 
-	//this thread increments the locks, the launched fiber implements the decrement
+	//increment the global fiber count
 	fiberMutex.lock();
 	fiberCount++;
 	fiberMutex.unlock();
 
 	auto fiberExecute = [mainID, priority, runsOnMain]() mutable {
-		//prefix code
+
+		//initialze the data associated with the fiber
 		InitPointers();
 
-		//yielding garuntees that the fiber properties are saved at the expense of another round of context switching
-		boost::this_fiber::properties< FiberProperties >().SetPriority(mainID, priority, runsOnMain);
-		boost::this_fiber::yield();
+		/////////////////////////////////////////////
+		std::invoke(fn, std::forward<Args>(args)...);
+		/////////////////////////////////////////////
 
-		//assert that the function is executing on the right thread
-		assert(!boost::this_fiber::properties< FiberProperties >().RunOnMain() ||
-			boost::this_fiber::properties< FiberProperties >().RunOnMain() && mainID == std::this_thread::get_id());
-
-
-		///////////////////////////////////////////
-		fn(std::forward<Args>(args)...);
-		///////////////////////////////////////////
-
-		//suffix code
+		//execution finished, decrease the global fiber count
 		fiberMutex.lock();
 		fiberCount--;
 		fiberMutex.unlock();
+
 	};
 
 	//only difference is the hold lock increment
 	if (policy == LAUNCH_IMMEDIATE) {
 
-		std::mutex* holdLock = holdMutex.get();
-		std::size_t* holdSize = holdCount.get();
-		boost::fibers::condition_variable_any* holdConditional = blockCondition.get();
+		//grab the parent fiber locks and data
+		boost::fibers::mutex* holdLock = blockMutex.get();
+		std::size_t* holdSize = blockCount.get();
+		boost::fibers::condition_variable* holdConditional = blockCondition.get();
 
+		//increment the parent fiber count
 		holdLock->lock();
 		(*holdSize)++;
 		holdLock->unlock();
 
 
-		//lambda wrapping the called function with other information
 		boost::fibers::fiber fiber(
 			[holdLock, holdSize, holdConditional]() mutable {
 
 			fiberExecute();
 
+			//decrement the parent fiber count and notify the parent if it reached 0
 			holdLock->lock();
 			(*holdSize)--;
 			holdLock->unlock();

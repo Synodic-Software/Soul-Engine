@@ -10,18 +10,13 @@
 *    @param [in,out]	ptr	If non-null, the pointer.
 */
 
-void CleanUpMutex(std::mutex* ptr) {
-	ptr->~mutex();
-	delete ptr;
-}
-
 /*
 *    clean up the block datatype (needs 64 alignment)
 *    @param [in,out]	ptr	If non-null, the pointer.
 */
 
-void CleanUpAlignedCondition(boost::fibers::condition_variable_any* ptr) {
-	ptr->~condition_variable_any();
+void CleanUpAlignedCondition(boost::fibers::condition_variable* ptr) {
+	ptr->~condition_variable();
 
 	//TODO: Make this aligned_alloc with c++17, not visual studio specific code
 	_aligned_free(ptr);
@@ -30,10 +25,9 @@ void CleanUpAlignedCondition(boost::fibers::condition_variable_any* ptr) {
 
 
 /* Initializes this object. */
-Scheduler::Scheduler() :
+Scheduler::Scheduler(Property<int>& threadCount) :
 	fiberCount(0),
 	shouldRun(true),
-	holdMutex(CleanUpMutex),
 	blockCondition(CleanUpAlignedCondition)
 {
 
@@ -46,8 +40,8 @@ Scheduler::Scheduler() :
 
 	fiberCount++;
 
-	for (uint i = 0; i < threads.size(); ++i) {
-		threads[i] = std::thread(
+	for(auto& thread : threads) {
+		thread = std::thread(
 			[this] { ThreadRun(); }
 		);
 	}
@@ -89,18 +83,18 @@ Scheduler::~Scheduler() {
 
 /* Initialize the fiber specific stuff. */
 void Scheduler::InitPointers() {
-	if (!holdMutex.get()) {
-		holdMutex.reset(new std::mutex);
+	if (!blockMutex.get()) {
+		blockMutex.reset(new boost::fibers::mutex);
 	}
-	if (!holdCount.get()) {
-		holdCount.reset(new std::size_t(0));
+	if (!blockCount.get()) {
+		blockCount.reset(new std::size_t(0));
 	}
 	if (!blockCondition.get()) {
 
 		//TODO: Make this aligned_alloc with c++17, not visual studio specific code
-		boost::fibers::condition_variable_any* newData =
-			static_cast<boost::fibers::condition_variable_any*>(_aligned_malloc(sizeof(boost::fibers::condition_variable_any), 64)); //needs 64 alignment
-		new (newData) boost::fibers::condition_variable_any();
+		boost::fibers::condition_variable* newData =
+			static_cast<boost::fibers::condition_variable*>(_aligned_malloc(sizeof(boost::fibers::condition_variable), 64)); //needs 64 alignment
+		new (newData) boost::fibers::condition_variable();
 		blockCondition.reset(newData);
 	}
 }
@@ -110,9 +104,9 @@ void Scheduler::Block() {
 
 
 	//get the current fibers stats for blocking
-	std::size_t* holdSize = holdCount.get();
+	std::size_t* holdSize = blockCount.get();
 
-	std::unique_lock<std::mutex> lock(*holdMutex);
+	std::unique_lock<boost::fibers::mutex> lock(*blockMutex);
 	blockCondition->wait(lock, [=]() { return 0 == *holdSize; });
 
 	assert(*holdSize == 0);
@@ -120,14 +114,10 @@ void Scheduler::Block() {
 
 }
 
-/* Defers this object. */
+//Defers this current fiber.
 void Scheduler::Defer() {
 
-#ifndef	SOUL_SINGLE_STACK
-
 	boost::this_fiber::yield();
-
-#endif
 
 }
 

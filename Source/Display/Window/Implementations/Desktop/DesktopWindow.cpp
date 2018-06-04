@@ -1,7 +1,7 @@
 #include "DesktopWindow.h"
 #include "Display\Window\Implementations\Desktop\DesktopManager.h"
 
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 #include "Rasterer/RasterManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Transput/Input/InputManager.h"

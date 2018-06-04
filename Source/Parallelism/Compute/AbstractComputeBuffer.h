@@ -8,7 +8,7 @@
 
 #include "Parallelism/Compute/ComputeDevice.h"
 
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 #include <vector>
 
 /*

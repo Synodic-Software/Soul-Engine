@@ -1,7 +1,7 @@
 #include "InputManager.h"
 #include "Composition/Event/EventManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
-#include "Core/Utility/Logger.h"
+#include "Core/Utility/Log/Logger.h"
 
 #include <string> 
 

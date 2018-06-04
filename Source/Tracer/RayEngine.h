@@ -3,7 +3,7 @@
 #include "Core/Scene/Scene.h"
 #include "RayJob.h"
 #include "Parallelism/Compute/ComputeBuffer.h"
-#include "Core/Utility/Timer.h"
+#include "Core/Utility/Timer/Timer.h"
 #include "Ray.h"
 
 #undef AddJob
