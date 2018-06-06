@@ -53,7 +53,7 @@ void SoulApplication::Run() {
 
 	//SoulRun();
 
-	//SoulTerminate();
+	soul.Terminate();
 }
 
 void SoulApplication::CheckParameters() {

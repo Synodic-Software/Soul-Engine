@@ -1,14 +1,6 @@
 #include "Scheduler.h"
 #include "SchedulerAlgorithm.h"
 
-#include "Composition/Event/EventManager.h"
-#include <cassert>
-
-
-/*
-*    clean up the block datatype (needs 64 alignment)
-*    @param [in,out]	ptr	If non-null, the pointer.
-*/
 
 /*
 *    clean up the block datatype (needs 64 alignment)
@@ -26,8 +18,8 @@ void CleanUpAlignedCondition(boost::fibers::condition_variable* ptr) {
 
 /* Initializes this object. */
 Scheduler::Scheduler(Property<int>& threadCount) :
-	fiberCount(0),
 	shouldRun(true),
+	fiberCount(0),
 	blockCondition(CleanUpAlignedCondition)
 {
 
@@ -36,17 +28,16 @@ Scheduler::Scheduler(Property<int>& threadCount) :
 	boost::fibers::use_scheduling_algorithm< SchedulerAlgorithm >();
 
 	//the main thread takes up one slot
-	threads.resize(std::thread::hardware_concurrency() - 1);
+	threads.resize(threadCount - 1);
 
-	fiberCount++;
-
-	for(auto& thread : threads) {
-		thread = std::thread(
-			[this] { ThreadRun(); }
-		);
+	for (auto& thread : threads) {
+		thread = std::thread([this] {
+			ThreadRun();
+		});
 	}
 
 	//init the main fiber specifics
+	fiberCount++;
 	InitPointers();
 
 }
@@ -58,25 +49,16 @@ Scheduler::~Scheduler() {
 	--fiberCount;
 	fiberMutex.unlock();
 
-	//yield this fiber until all the remaining work is done
-
-	bool run = true;
-	while (run) {
-		fiberMutex.lock();
-		if (fiberCount == 0) {
-			run = false;
-			fiberMutex.unlock();
-			threadCondition.notify_all();
-		}
-		else {
-			fiberMutex.unlock();
-			boost::this_fiber::yield();
-		}
-	}
+	//wait until all remaining work is done
+	std::unique_lock<boost::fibers::mutex> lock(fiberMutex);
+	fiberCondition.wait(lock, [this]()
+	{
+		return 0 == fiberCount && !shouldRun;
+	});
 
 	//join all complete threads
-	for (uint i = 0; i < threads.size(); ++i) {
-		threads[i].join();
+	for (auto& thread : threads) {
+		thread.join();
 	}
 
 }
@@ -107,10 +89,10 @@ void Scheduler::Block() {
 	std::size_t* holdSize = blockCount.get();
 
 	std::unique_lock<boost::fibers::mutex> lock(*blockMutex);
-	blockCondition->wait(lock, [=]() { return 0 == *holdSize; });
-
-	assert(*holdSize == 0);
-
+	blockCondition->wait(lock, [holdSize]()
+	{
+		return 0 == *holdSize;
+	});
 
 }
 
@@ -127,7 +109,9 @@ void Scheduler::Defer() {
  */
 
 bool Scheduler::Running() const {
+
 	return shouldRun;
+
 }
 
 /*
@@ -138,10 +122,8 @@ bool Scheduler::Running() const {
 void Scheduler::ThreadRun() {
 	boost::fibers::use_scheduling_algorithm<SchedulerAlgorithm >();
 
-	EventManager::Emit("Thread", "Initialize");
-
-	std::unique_lock<std::mutex> lock(fiberMutex);
-	threadCondition.wait(lock, [this]()
+	std::unique_lock<boost::fibers::mutex> lock(fiberMutex);
+	fiberCondition.wait(lock, [this]()
 	{
 		return 0 == fiberCount && !shouldRun;
 	});

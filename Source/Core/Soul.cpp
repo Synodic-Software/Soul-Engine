@@ -23,12 +23,12 @@ public:
 
 };
 
-Soul::Implementation::Implementation(const Soul& soul):
+Soul::Implementation::Implementation(const Soul& soul) :
 	scheduler(soul.parameters.threadCount)
 {
 }
 
-Soul::Soul(SoulParameters& params):
+Soul::Soul(SoulParameters& params) :
 	parameters(params),
 	detail(std::make_unique<Implementation>(*this))
 {
@@ -41,7 +41,8 @@ Soul::Soul(Soul&&) noexcept = default;
 Soul& Soul::operator=(Soul&&) noexcept = default;
 
 
-/* //////////////////////Synchronization///////////////////////////. */
+//////////////////////Synchronization///////////////////////////
+
 
 void SynchCPU() {
 	//Scheduler::Block(); //TODO Implement MT calls
@@ -52,61 +53,48 @@ void SynchGPU() {
 }
 
 void SynchSystem() {
-	SynchCPU();
 	SynchGPU();
+	SynchCPU();
 }
-
-
-/////////////////////////Hints and Toggles///////////////////////////
-
 
 
 /////////////////////////Core/////////////////////////////////
 
 
-/* Initializes the engine. */
-void Soul::Initialize() {
+void Soul::Initialize() const {
 
-	////create the listener for threads initializeing
-	//EventManager::Listen("Thread", "Initialize", []()
-	//{
-	//	ComputeManager::Instance().InitThread();
-	//});
+	//TODO: Init SoulParameter serialization
 
-	////open the config file for the duration of the runtime
-	//Settings::Read("config.ini", TEXT);
+	//TODO: Init Compute Manager
 
-	////extract all available GPU devices
-	//ComputeManager::Instance().ExtractDevices();
+	detail->scheduler.AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []()
+	{
+		//set the error callback
+		glfwSetErrorCallback([](int error, const char* description) {
+			S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
+		});
 
-	////set the error callback
-	//glfwSetErrorCallback([](int error, const char* description) {
-	//	S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
-	//});
+		//Initialize glfw context for Window handling
+		const int didInit = glfwInit();
 
-	////Initialize glfw context for Window handling
-	//const int	didInit = glfwInit();
+		if (!didInit) {
+			S_LOG_FATAL("GLFW did not initialize");
+		}
 
-	//if (!didInit) {
-	//	S_LOG_FATAL("GLFW did not initialize");
-	//}
+	});
 
-	//RasterManager::Instance();
-
+	detail->scheduler.Block();
 }
 
 /* Call to deconstuct both the engine and its dependencies. */
-void Soul::Terminate() {
-	SynchSystem();
-
-	//Write the settings into a file
-	Settings::Write("config.ini", TEXT);
+void Soul::Terminate() const {
 
 	//destroy glfw, needs to wait on the window manager
 	glfwTerminate();
 
-	//extract all available GPU devices
-	ComputeManager::Instance().DestroyDevices();
+	//TODO: Destroy ComputeManager
+
+	//TODO: SoulParameter serialization
 
 }
 

@@ -13,8 +13,8 @@ public:
 	Soul(Soul&&) noexcept;
 	Soul& operator=(Soul&&) noexcept;
 
-	void Initialize();
-	void Terminate();
+	void Initialize() const;
+	void Terminate() const;
 
 	void Run();
 

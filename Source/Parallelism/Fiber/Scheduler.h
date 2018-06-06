@@ -8,17 +8,10 @@
 
 #include "Core/Utility/Property/Property.h"
 
-
-//Boost fiber includes some nasty windows stuff
-#undef CreateWindow
-
-
 //TODO: Implement boost Fiber: Work_stealing
 
-
-
 /*
-IMMEDIATE: Schedule the fiber with the garuntee that you will 
+IMMEDIATE: Schedule the fiber with the garuntee that you will
 Use Case: You will execute a task and wait upon its completion later.
 CONTINUE: Keep the current context and add the fiber to the queue
 Use Case: You want to process other things while this function gets executed elsewhere
@@ -29,7 +22,7 @@ enum FiberPolicy { LAUNCH_IMMEDIATE, LAUNCH_CONTINUE };
 FIBER_HIGH: A high priority task.
 FIBER_LOW: A comparitivley low priority task.
 */
-enum FiberPriority { FIBER_HIGH, FIBER_LOW };
+enum FiberPriority { FIBER_HIGH, FIBER_LOW, UX };
 
 class Scheduler {
 
@@ -38,9 +31,12 @@ public:
 	Scheduler(Property<int>&);
 	~Scheduler();
 
+	Scheduler(Scheduler const&) = delete;
+	void operator=(Scheduler const&) = delete;
+
+
 	template<typename Fn, typename ... Args>
 	void AddTask(FiberPolicy, FiberPriority, bool, Fn &&, Args && ...);
-
 
 	void Block();
 	void Defer();
@@ -55,28 +51,28 @@ private:
 
 	std::thread::id mainID;
 
-	std::size_t fiberCount;
-	std::mutex fiberMutex;
-
 	bool shouldRun;
+	
+	std::size_t fiberCount;
+	boost::fibers::mutex fiberMutex;
+	boost::fibers::condition_variable fiberCondition;
 
 	boost::fibers::fiber_specific_ptr<std::size_t> blockCount;
 	boost::fibers::fiber_specific_ptr<boost::fibers::mutex> blockMutex;
 	boost::fibers::fiber_specific_ptr<boost::fibers::condition_variable> blockCondition;
 
 	std::vector<std::thread> threads;
-	boost::fibers::condition_variable_any threadCondition;
 
 };
 
 
 /*
 *    Adds a task.
-*    @param 		 	policy	  	The fiber policy after running the segment
+*    @param 		 	policy	  	The fiber policy for running the segment
 *    @param 		 	priority  	Fiber execution priority
 *    @param 		 	runsOnMain	Requirement that this function runs on the main thread
 *    @param [in,out]	fn		  	The function.
-*    @param 		 	args	  	Variable arguments providing [in,out] The arguments.
+*    @param 		 	args	  	Function Arguments The arguments.
 *	 @
 */
 
@@ -84,11 +80,12 @@ template<typename Fn, typename ... Args>
 void Scheduler::AddTask(const FiberPolicy policy, const FiberPriority priority, const bool runsOnMain, Fn && fn, Args && ... args) {
 
 	//increment the global fiber count
-	fiberMutex.lock();
-	fiberCount++;
-	fiberMutex.unlock();
+	{
+		std::scoped_lock<boost::fibers::mutex> incrementLock(fiberMutex);
+		fiberCount++;
+	}
 
-	auto fiberExecute = [mainID, priority, runsOnMain]() mutable {
+	auto fiberExecute = [this, fn]() mutable {
 
 		//initialze the data associated with the fiber
 		InitPointers();
@@ -97,37 +94,53 @@ void Scheduler::AddTask(const FiberPolicy policy, const FiberPriority priority, 
 		std::invoke(fn, std::forward<Args>(args)...);
 		/////////////////////////////////////////////
 
+		//user may have forgoten a block call
+		Block();
+
 		//execution finished, decrease the global fiber count
-		fiberMutex.lock();
-		fiberCount--;
-		fiberMutex.unlock();
+		size_t remainingFibers;
+		{
+			std::scoped_lock<boost::fibers::mutex> incrementLock(fiberMutex);
+			fiberCount--;
+			remainingFibers = fiberCount;
+		}
+
+		if (remainingFibers == 0) {
+			fiberCondition.notify_all();
+		}
 
 	};
 
 	//only difference is the hold lock increment
 	if (policy == LAUNCH_IMMEDIATE) {
 
-		//grab the parent fiber locks and data
+		//grab the parent fiber data and the relevant locks
 		boost::fibers::mutex* holdLock = blockMutex.get();
 		std::size_t* holdSize = blockCount.get();
 		boost::fibers::condition_variable* holdConditional = blockCondition.get();
 
 		//increment the parent fiber count
-		holdLock->lock();
-		(*holdSize)++;
-		holdLock->unlock();
-
+		{
+			std::scoped_lock<boost::fibers::mutex> incrementLock(*holdLock);
+			(*holdSize)++;
+		}
 
 		boost::fibers::fiber fiber(
-			[holdLock, holdSize, holdConditional]() mutable {
+			[fiberExecute, holdLock, holdSize, holdConditional]() mutable {
 
 			fiberExecute();
 
 			//decrement the parent fiber count and notify the parent if it reached 0
-			holdLock->lock();
-			(*holdSize)--;
-			holdLock->unlock();
-			holdConditional->notify_all();
+			size_t remainingHolds;
+			{
+				std::scoped_lock<boost::fibers::mutex> incrementLock(*holdLock);
+				(*holdSize)--;
+				remainingHolds = *holdSize;
+			}
+
+			if (remainingHolds == 0) {
+				holdConditional->notify_all();
+			}
 
 		});
 		fiber.detach();
@@ -136,7 +149,7 @@ void Scheduler::AddTask(const FiberPolicy policy, const FiberPriority priority, 
 	else {
 
 		boost::fibers::fiber fiber(
-			fiberExecute()
+			fiberExecute
 		);
 		fiber.detach();
 
