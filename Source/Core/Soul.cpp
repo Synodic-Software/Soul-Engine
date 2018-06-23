@@ -66,8 +66,12 @@ void Soul::Initialize() const {
 	//TODO: Init SoulParameter serialization
 
 	//TODO: Init Compute Manager
+	
+	FiberParameters fiberParams;
+	fiberParams.priority = FiberPriority::HIGH;
+	fiberParams.needsMainThread = true;
 
-	detail->scheduler.AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []()
+	detail->scheduler.AddTask(fiberParams, []()
 	{
 		//set the error callback
 		glfwSetErrorCallback([](int error, const char* description) {
@@ -90,12 +94,20 @@ void Soul::Initialize() const {
 void Soul::Terminate() const {
 
 	//destroy glfw, needs to wait on the window manager
-	glfwTerminate();
+	FiberParameters fiberParams;
+	fiberParams.priority = FiberPriority::HIGH;
+	fiberParams.needsMainThread = true;
+
+	detail->scheduler.AddTask(fiberParams, []()
+	{
+		glfwTerminate();
+	});
 
 	//TODO: Destroy ComputeManager
 
 	//TODO: SoulParameter serialization
 
+	detail->scheduler.Block();
 }
 
 

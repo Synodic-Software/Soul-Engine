@@ -1,13 +1,13 @@
 #include "FiberProperties.h"
 
-FiberProperties::FiberProperties(boost::fibers::context * context) :
+FiberProperties::FiberProperties(boost::fibers::context* context) :
 	fiber_properties(context),
-	priority(0),
+	priority(FiberPriority::LOW),
 	runOnMain(false)
 {
 }
 
-int FiberProperties::GetPriority() const {
+FiberPriority FiberProperties::GetPriority() const {
 	return priority;
 }
 
@@ -15,9 +15,8 @@ bool FiberProperties::RunOnMain() const {
 	return runOnMain;
 }
 
-void FiberProperties::SetPriority(std::thread::id id, int p, bool m) {
-	if (id != mainID || p != priority || m != runOnMain) {
-		mainID = id;
+void FiberProperties::SetProperties(FiberPriority p, bool m) {
+	if (p != priority || m != runOnMain) {
 		priority = p;
 		runOnMain = m;
 		notify();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "boost/fiber/properties.hpp"
-#include <thread>
+#include "FiberParameters.h"
 
 class FiberProperties : public boost::fibers::fiber_properties {
 
@@ -11,15 +11,14 @@ public:
 	FiberProperties(boost::fibers::context*);
 
 	//Implementation
-	int GetPriority() const;
+	FiberPriority GetPriority() const;
 	bool RunOnMain() const;
-	void SetPriority(std::thread::id, int, bool);
 
+	void SetProperties(FiberPriority, bool);
+	
 
 private:
 
-	int priority;
+	FiberPriority priority;
 	bool runOnMain;
-	std::thread::id mainID;
-
 };

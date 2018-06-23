@@ -3,6 +3,7 @@
 #include <thread>
 
 #include "Core/Utility/Property/Property.h"
+#include "Core/Utility/Types.h"
 
 struct SoulParameters {
 
@@ -19,5 +20,5 @@ struct SoulParameters {
 	}
 
 	Property<int> engineRefreshRate; //the update rate tied to physics and...
-	Property<int> threadCount; //the amount of threads at the program's disposal
+	Property<uint> threadCount; //the amount of threads at the program's disposal
 };
