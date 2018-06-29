@@ -2,6 +2,7 @@
 
 #include "SoulParameters.h"
 #include <memory>
+#include "Display/Window/SoulWindow.h"
 
 class Soul {
 
@@ -13,13 +14,12 @@ public:
 	Soul(Soul&&) noexcept;
 	Soul& operator=(Soul&&) noexcept;
 
-	void Initialize() const;
-	void Terminate() const;
-
 	void Run();
-
+	SoulWindow* CreateWindow(WindowParameters&);
 
 private:
+
+	void Raster();
 
 	SoulParameters& parameters;
 

@@ -15,8 +15,6 @@ public:
 
 	void Draw() override;
 
-	void UpdateWindow(GLFWwindow*) override;
-
 	void UpdatePositioning(glm::uvec2, glm::uvec2) override;
 
 	void RecreateData() override;

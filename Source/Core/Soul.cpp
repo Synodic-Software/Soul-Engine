@@ -1,14 +1,8 @@
 #include "Soul.h"
 
-#include "Rasterer/RasterManager.h"
-#include "Transput/Configuration/Settings.h"
-#include "Core/Utility/Log/Logger.h"
-#include "Physics/PhysicsEngine.h"
-#include "Parallelism/Compute/ComputeManager.h"
-#include "Display/Window/ManagerInterface.h"
+#include "Display/Window/DisplayManager.h"
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
-#include "Tracer/RayEngine.h"
 #include "Parallelism/Fiber/Scheduler.h"
 
 class Soul::Implementation
@@ -20,6 +14,7 @@ public:
 
 	//services and modules
 	Scheduler scheduler;
+	DisplayManager displayManager;
 
 };
 
@@ -61,56 +56,6 @@ void SynchSystem() {
 /////////////////////////Core/////////////////////////////////
 
 
-void Soul::Initialize() const {
-
-	//TODO: Init SoulParameter serialization
-
-	//TODO: Init Compute Manager
-	
-	FiberParameters fiberParams;
-	fiberParams.priority = FiberPriority::HIGH;
-	fiberParams.needsMainThread = true;
-
-	detail->scheduler.AddTask(fiberParams, []()
-	{
-		//set the error callback
-		glfwSetErrorCallback([](int error, const char* description) {
-			S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
-		});
-
-		//Initialize glfw context for Window handling
-		const int didInit = glfwInit();
-
-		if (!didInit) {
-			S_LOG_FATAL("GLFW did not initialize");
-		}
-
-	});
-
-	detail->scheduler.Block();
-}
-
-/* Call to deconstuct both the engine and its dependencies. */
-void Soul::Terminate() const {
-
-	//destroy glfw, needs to wait on the window manager
-	FiberParameters fiberParams;
-	fiberParams.priority = FiberPriority::HIGH;
-	fiberParams.needsMainThread = true;
-
-	detail->scheduler.AddTask(fiberParams, []()
-	{
-		glfwTerminate();
-	});
-
-	//TODO: Destroy ComputeManager
-
-	//TODO: SoulParameter serialization
-
-	detail->scheduler.Block();
-}
-
-
 /* Ray pre process */
 void RayPreProcess() {
 
@@ -126,10 +71,10 @@ void RayPostProcess() {
 }
 
 /* Rasters this object. */
-void Raster() {
+void Soul::Raster() {
 
 	//Backends should handle multithreading
-	ManagerInterface::Instance().Draw();
+	detail->displayManager.Draw();
 
 }
 
@@ -183,6 +128,11 @@ void LateUpdate() {
 
 }
 
+SoulWindow* Soul::CreateWindow(WindowParameters& params) {
+	return detail->displayManager.CreateWindow(params);
+}
+
+
 void Soul::Run()
 {
 
@@ -195,7 +145,7 @@ void Soul::Run()
 
 	const double refreshDT = 1.0 / parameters.engineRefreshRate;
 
-	while (!ManagerInterface::Instance().ShouldClose()) {
+	while (!detail->displayManager.ShouldClose()) {
 
 		//start frame timers
 		double newTime = glfwGetTime();

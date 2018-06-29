@@ -260,9 +260,9 @@ namespace InputManager {
 
 	}
 
-	void AfixMouse(AbstractWindow& win) {
-		//TODO: Abstract.
-		glfwSetInputMode(static_cast<GLFWwindow*>(win.windowHandle), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	void AfixMouse(SoulWindow& win) {
+		//TODO: Abstract and remove/hide GLFW.
+		glfwSetInputMode(std::any_cast<GLFWwindow*>(win.context_), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	}
 

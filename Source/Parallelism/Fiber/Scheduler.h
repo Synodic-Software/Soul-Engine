@@ -11,6 +11,8 @@
 #include "FiberProperties.h"
 #include "Core/Utility/Types.h"
 
+#undef CreateWindow
+
 //TODO: Implement boost Fiber: Work_stealing
 
 

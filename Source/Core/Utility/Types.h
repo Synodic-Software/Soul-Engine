@@ -63,9 +63,6 @@ typedef unsigned long long uint64;
 /* Defines an alias representing the wchar. */
 typedef wchar_t wchar;
 
-/* global enumerations. */
-enum WindowType { WINDOWED, FULLSCREEN, BORDERLESS, EMPTY};
-
 
 /* A metrics. */
 class Metrics{

@@ -21,4 +21,5 @@ struct SoulParameters {
 
 	Property<int> engineRefreshRate; //the update rate tied to physics and...
 	Property<uint> threadCount; //the amount of threads at the program's disposal
+
 };
