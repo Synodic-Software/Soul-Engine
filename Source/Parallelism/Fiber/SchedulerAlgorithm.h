@@ -30,14 +30,14 @@ public:
 
 	//Implementation
 
-	void						awakened(boost::fibers::context*, FiberProperties&)			noexcept override;
-	boost::fibers::context*		PickFromQueue(queueType&, uint)								noexcept;
-	boost::fibers::context*		pick_next()													noexcept override;
-	boost::fibers::context*		Steal(uint)													noexcept;
-	bool						has_ready_fibers()											const noexcept override;
-	void						property_change(boost::fibers::context*, FiberProperties&)  noexcept override;
-	void						suspend_until(std::chrono::steady_clock::time_point const&) noexcept override;
-	void						notify()													noexcept override;
+	void								awakened(boost::fibers::context*, FiberProperties&)			noexcept override;
+	inline boost::fibers::context*		PickFromQueue(queueType&, uint)								noexcept;
+	boost::fibers::context*				pick_next()													noexcept override;
+	boost::fibers::context*				Steal(uint)													noexcept;
+	bool								has_ready_fibers()											const noexcept override;
+	void								property_change(boost::fibers::context*, FiberProperties&)  noexcept override;
+	void								suspend_until(std::chrono::steady_clock::time_point const&) noexcept override;
+	void								notify()													noexcept override;
 
 
 private:

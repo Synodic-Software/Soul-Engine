@@ -1,6 +1,6 @@
 #include "Soul.h"
 
-#include "Display/Window/DisplayManager.h"
+#include "Display/Window/AbstractWindowManager.h"
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
@@ -14,13 +14,18 @@ public:
 
 	//services and modules
 	Scheduler scheduler;
-	DisplayManager displayManager;
+
+	std::unique_ptr<AbstractWindowManager> displayManager;
 
 };
 
 Soul::Implementation::Implementation(const Soul& soul) :
 	scheduler(soul.parameters.threadCount)
 {
+
+	WindowManagerFactory wmFactory;
+	displayManager = wmFactory.CreateWindowManager();
+
 }
 
 Soul::Soul(SoulParameters& params) :
@@ -74,7 +79,7 @@ void RayPostProcess() {
 void Soul::Raster() {
 
 	//Backends should handle multithreading
-	detail->displayManager.Draw();
+	detail->displayManager->Draw();
 
 }
 
@@ -129,7 +134,7 @@ void LateUpdate() {
 }
 
 SoulWindow* Soul::CreateWindow(WindowParameters& params) {
-	return detail->displayManager.CreateWindow(params);
+	return detail->displayManager->CreateWindow(params);
 }
 
 
@@ -145,7 +150,7 @@ void Soul::Run()
 
 	const double refreshDT = 1.0 / parameters.engineRefreshRate;
 
-	while (!detail->displayManager.ShouldClose()) {
+	while (!detail->displayManager->ShouldClose()) {
 
 		//start frame timers
 		double newTime = glfwGetTime();

@@ -9,7 +9,7 @@ Scheduler::Scheduler(Property<uint>& threadCountIn) :
 
 	mainID = std::this_thread::get_id();
 
-	boost::fibers::use_scheduling_algorithm<SchedulerAlgorithm>(threadCount, true);
+	boost::fibers::use_scheduling_algorithm<SchedulerAlgorithm>(threadCount, true, true);
 
 	//the main thread takes up one slot
 	childThreads.resize(threadCount - 1);
@@ -29,7 +29,7 @@ Scheduler::Scheduler(Property<uint>& threadCountIn) :
 	}
 
 	//suprisingly, the main fiber does not need to run on main.
-	boost::this_fiber::properties<FiberProperties>().SetProperties(FiberPriority::UX, false); 
+	boost::this_fiber::properties<FiberProperties>().SetProperties(FiberPriority::UX, false);
 }
 
 Scheduler::~Scheduler() {
@@ -115,7 +115,7 @@ bool Scheduler::Running() const {
 
 void Scheduler::ThreadRun() {
 
-	boost::fibers::use_scheduling_algorithm<SchedulerAlgorithm>(threadCount, false);
+	boost::fibers::use_scheduling_algorithm<SchedulerAlgorithm>(threadCount, false, true);
 
 	boost::this_fiber::properties<FiberProperties>().SetProperties(FiberPriority::LOW, false);
 

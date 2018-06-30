@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Display/Window/SoulWindow.h"
-#include "Display/Window/DisplayManager.h"
+#include "Display/Window/Desktop/DesktopWindowManager.h"
 
 class DesktopWindow : public SoulWindow 
 {

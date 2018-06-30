@@ -1,10 +1,8 @@
-#include "DisplayManager.h"
+#include "DesktopWindowManager.h"
 #include "Core/Utility/Log/Logger.h"
-#include "Desktop/DesktopWindow.h"
+#include "Display/Window/Desktop/DesktopWindow.h"
 
-DisplayManager::DisplayManager() :
-	monitorCount(0),
-	runningFlag(true)
+DesktopWindowManager::DesktopWindowManager()
 {
 
 	//set the error callback
@@ -23,18 +21,18 @@ DisplayManager::DisplayManager() :
 
 }
 
-DisplayManager::~DisplayManager() {
+DesktopWindowManager::~DesktopWindowManager() {
 	masterWindow = nullptr;
 	glfwTerminate();
 }
 
-void DisplayManager::Draw() {
+void DesktopWindowManager::Draw() {
 	for (auto& itr : windows) {
 		itr->Draw();
 	}
 }
 
-bool DisplayManager::ShouldClose() const {
+bool DesktopWindowManager::ShouldClose() const {
 	const auto mainWindow = std::any_cast<GLFWwindow*>(masterWindow->context_);
 	if (mainWindow != nullptr) {
 		return glfwWindowShouldClose(mainWindow);
@@ -45,7 +43,7 @@ bool DisplayManager::ShouldClose() const {
 
 }
 
-void DisplayManager::SignalClose() {
+void DesktopWindowManager::SignalClose() {
 	for (auto& win : windows) {
 		glfwSetWindowShouldClose(std::any_cast<GLFWwindow*>(win->context_), GLFW_TRUE);
 	}
@@ -53,13 +51,13 @@ void DisplayManager::SignalClose() {
 	runningFlag = false;
 }
 
-SoulWindow* DisplayManager::CreateWindow(WindowParameters& params) {
+SoulWindow* DesktopWindowManager::CreateWindow(WindowParameters& params) {
 	if (params.monitor > monitorCount) {
 		S_LOG_ERROR("The specified monitor '", params.monitor, "' needs to be less than ", monitorCount);
 		return nullptr;
 	}
 
-	void* monitorIn = monitors[params.monitor];
+	void* monitorIn = std::any_cast<GLFWmonitor**>(monitors)[params.monitor];
 
 	if (!masterWindow) {
 		windows.emplace_back(new DesktopWindow(params, nullptr, nullptr));
@@ -73,14 +71,14 @@ SoulWindow* DisplayManager::CreateWindow(WindowParameters& params) {
 	return windows.back().get();
 }
 
-void DisplayManager::Refresh() {
+void DesktopWindowManager::Refresh() {
 
 }
 
-void DisplayManager::Resize(int, int) {
+void DesktopWindowManager::Resize(int, int) {
 
 }
 
-void DisplayManager::WindowPos(int, int) {
+void DesktopWindowManager::WindowPos(int, int) {
 
 }
