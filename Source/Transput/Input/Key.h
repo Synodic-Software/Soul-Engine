@@ -2,21 +2,17 @@
 
 #include "Core/Utility/Timer/Timer.h"
 
-#include <string>
-
-enum keyState { PRESS, REPEAT, RELEASE, OPEN };
+enum class KeyState { PRESS, REPEAT, RELEASE, OPEN };
 
 class Key {
 
 public:
-	Key() : timeToRepeat(50.0f), state(OPEN) {
-	}
+
+	Key();
 
 	float timeToRepeat; //in milliseconds
 	Timer sincePress;
 
-	keyState state;
-
-private:
+	KeyState state;
 
 };

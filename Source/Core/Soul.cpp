@@ -1,31 +1,54 @@
 #include "Soul.h"
 
-#include "Display/Window/AbstractWindowManager.h"
+#include "Platform/Platform.h"
+
+#include "Display/Window/WindowManager.h"
+#include "Display/Window/Desktop/DesktopWindowManager.h"
+
+#include "Transput/Input/Desktop/DesktopInputManager.h"
+
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
+#include "Core/Utility/HashString/HashString.h"
 
 class Soul::Implementation
 {
 
 public:
 
+	//monostate allows for empty construction
+	using inputManagerVariantType = std::variant<std::monostate, DesktopInputManager>;
+	using windowManagerVariantType = std::variant<std::monostate, DesktopWindowManager>;
+
 	Implementation(const Soul&);
 
-	//services and modules
-	Scheduler scheduler;
 
-	std::unique_ptr<AbstractWindowManager> displayManager;
+	//services and modules
+	Scheduler scheduler_;
+	EventManager eventManager_;
+	inputManagerVariantType inputManagerVariant_;
+	InputManager* inputManager_;
+	windowManagerVariantType windowManagerVariant_;
+	WindowManager* windowManager_;
 
 };
 
 Soul::Implementation::Implementation(const Soul& soul) :
-	scheduler(soul.parameters.threadCount)
+	scheduler_(soul.parameters.threadCount),
+	eventManager_(),
+	inputManagerVariant_(),
+	inputManager_(nullptr),
+	windowManagerVariant_(),
+	windowManager_(nullptr)
 {
+	if constexpr (Platform::IsDesktop()) {
+		inputManagerVariant_.emplace<DesktopInputManager>(eventManager_);
+		inputManager_ = &std::get<DesktopInputManager>(inputManagerVariant_);
 
-	WindowManagerFactory wmFactory;
-	displayManager = wmFactory.CreateWindowManager();
-
+		windowManagerVariant_.emplace<DesktopWindowManager>(dynamic_cast<DesktopInputManager&>(*inputManager_));
+		windowManager_ = &std::get<DesktopWindowManager>(windowManagerVariant_);
+	}
 }
 
 Soul::Soul(SoulParameters& params) :
@@ -34,12 +57,8 @@ Soul::Soul(SoulParameters& params) :
 {
 }
 
-//definitions to complete PIMPL idiom
+//definition to complete PIMPL idiom
 Soul::~Soul() = default;
-
-Soul::Soul(Soul&&) noexcept = default;
-Soul& Soul::operator=(Soul&&) noexcept = default;
-
 
 //////////////////////Synchronization///////////////////////////
 
@@ -79,14 +98,20 @@ void RayPostProcess() {
 void Soul::Raster() {
 
 	//Backends should handle multithreading
-	detail->displayManager->Draw();
+	detail->windowManager_->Draw();
 
 }
 
 /* Warmups this object. */
-void Warmup() {
+void Soul::Warmup() {
 
-	glfwPollEvents();
+	detail->eventManager_.Listen("Update"_hashed, "Late"_hashed,[]()
+	{
+		std::cout << "hi" << std::endl;
+	});
+
+	//TODO abstract
+	detail->inputManager_->Poll();
 
 	//for (auto& scene : scenes) {
 	//	scene->Build(engineRefreshRate);
@@ -95,46 +120,43 @@ void Warmup() {
 }
 
 /* Early frame update. */
-void EarlyFrameUpdate() {
+void Soul::EarlyFrameUpdate() {
 
-	EventManager::Emit("Update", "EarlyFrame");
+	detail->eventManager_.Emit("Update"_hashed, "EarlyFrame"_hashed);
 
 }
 /* Late frame update. */
-void LateFrameUpdate() {
+void Soul::LateFrameUpdate() {
 
-	EventManager::Emit("Update", "LateFrame");
+	detail->eventManager_.Emit("Update"_hashed, "LateFrame"_hashed);
 
 }
 
 /* Early update. */
-void EarlyUpdate() {
+void Soul::EarlyUpdate() {
 
 	//poll events before this update, making the state as close as possible to real-time input
-	glfwPollEvents();
+	detail->inputManager_->Poll();
 
-	//poll input after glfw processes all its callbacks (updating some input states)
-	InputManager::Poll();
-
-	EventManager::Emit("Update", "Early");
+	detail->eventManager_.Emit("Update"_hashed, "Early"_hashed);
 
 	//Update the engine cameras
 	//RayEngine::Instance().Update();
 
 	//pull cameras into jobs
-	EventManager::Emit("Update", "Job Cameras");
+	detail->eventManager_.Emit("Update"_hashed, "Job Cameras"_hashed);
 
 }
 
 /* Late update. */
-void LateUpdate() {
+void Soul::LateUpdate() {
 
-	EventManager::Emit("Update", "Late");
+	detail->eventManager_.Emit("Update"_hashed, "Late"_hashed);
 
 }
 
-SoulWindow* Soul::CreateWindow(WindowParameters& params) {
-	return detail->displayManager->CreateWindow(params);
+Window* Soul::CreateWindow(WindowParameters& params) {
+	return detail->windowManager_->CreateWindow(params);
 }
 
 
@@ -150,7 +172,7 @@ void Soul::Run()
 
 	const double refreshDT = 1.0 / parameters.engineRefreshRate;
 
-	while (!detail->displayManager->ShouldClose()) {
+	while (!detail->windowManager_->ShouldClose()) {
 
 		//start frame timers
 		double newTime = glfwGetTime();

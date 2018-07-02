@@ -17,17 +17,17 @@ struct WindowParameters {
 	uint pixelPosY;
 	uint pixelWidth;
 	uint pixelHeight;
-	uint monitor;
+	int monitor;
 
 };
 
-class SoulWindow
+class Window
 {
 
 public:
 
-	SoulWindow(WindowParameters&);
-	virtual ~SoulWindow() = default;
+	Window(WindowParameters&);
+	virtual ~Window() = default;
 
 	virtual void Draw() = 0;
 
@@ -38,13 +38,13 @@ public:
 
 	virtual void SetLayout(Layout*) = 0;
 
+	std::any& GetContext();
+
+protected:
+
 	std::any context_;
 	std::unique_ptr<Layout> layout_;
 
 	WindowParameters windowParams_;
-
-protected:
-
-private:
 
 };

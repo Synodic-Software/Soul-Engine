@@ -1,89 +1,31 @@
 #pragma once
 
-#include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
-#include "InputSet.h"
-#include "Key.h"
-#include <unordered_map>
+#include "Composition/Event/EventManager.h"
 
-#include "Display/Window/SoulWindow.h"
+class InputManager {
 
-/* . */
-namespace InputManager {
+public:
 
-	/* . */
-	namespace detail {
+	InputManager(EventManager&);
+	virtual ~InputManager() = default;
 
-		/*
-		 *    Callback, called when the key.
-		 *    @param [in,out]	window  	If non-null, the window.
-		 *    @param 		 	key			The key.
-		 *    @param 		 	scancode	The scancode.
-		 *    @param 		 	action  	The action.
-		 *    @param 		 	mods		The mods.
-		 */
+	InputManager(InputManager const&) = delete;
+	void operator=(InputManager const&) = delete;
 
-		void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
-		/*
-		 *    Callback, called when the character.
-		 *    @param [in,out]	window   	If non-null, the window.
-		 *    @param 		 	codepoint	The codepoint.
-		 */
-
-		void characterCallback(GLFWwindow* window, unsigned int codepoint);
-
-		/*
-		 *    Callback, called when the cursor.
-		 *    @param [in,out]	window	If non-null, the window.
-		 *    @param 		 	xpos  	The xpos.
-		 *    @param 		 	ypos  	The ypos.
-		 */
-
-		void cursorCallback(GLFWwindow* window, double xpos, double ypos);
-
-		/*
-		 *    Callback, called when the scroll.
-		 *    @param [in,out]	window 	If non-null, the window.
-		 *    @param 		 	xoffset	The xoffset.
-		 *    @param 		 	yoffset	The yoffset.
-		 */
-
-		void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-
-		/*
-		 *    Callback, called when the button.
-		 *    @param [in,out]	window	If non-null, the window.
-		 *    @param 		 	button	The button.
-		 *    @param 		 	action	The action.
-		 *    @param 		 	mods  	The mods.
-		 */
-
-		void buttonCallback(GLFWwindow* window, int button, int action, int mods);
-
-
-		extern std::unordered_map<std::string, Key> keyStates;
-
-	}
+	InputManager(InputManager&& o) = delete;
+	InputManager& operator=(InputManager&& other) = delete;
 
 	/*
-	 *    Attach window.
-	 *    @param [in,out]	window	If non-null, the window.
+	 * Window specific callbacks are registered within the function
+	 *
+	 * @param [in,out]	window	If non-null, the window.
 	 */
 
-	void AttachWindow(GLFWwindow* window);
+	virtual void Poll() = 0;
 
-	/*
-	 *     Polls this object.
-	 *    @requires GLFW events must be polled this functions (for the frame)
-	 */
 
-	void Poll();
+protected:
 
-	/*
-	 *    Afix mouse.
-	 *    @param	win	The window.
-	 */
+	EventManager* eventManager_;
 
-	void AfixMouse(SoulWindow& win);
 };

@@ -1,5 +1,5 @@
 #include "VulkanAPI.h"
-#include <assert.h>
+
 #include <GLFW\glfw3.h>
 
 VulkanAPI::VulkanAPI(): GraphicsAPI::GraphicsAPI()

@@ -8,7 +8,7 @@ SoulApplication::SoulApplication(SoulParameters params) :
 {
 }
 
-SoulWindow* SoulApplication::CreateWindow(WindowParameters& params) {
+Window* SoulApplication::CreateWindow(WindowParameters& params) {
 
 	return soul.CreateWindow(params);
 
@@ -25,7 +25,7 @@ void SoulApplication::Run() {
 	//	}
 	//});
 
-	//SoulRun();
+	soul.Run();
 
 }
 

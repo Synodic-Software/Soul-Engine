@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Display/Window/SoulWindow.h"
-#include "Display/Window/Desktop/DesktopWindowManager.h"
+#include "Display/Window/Window.h"
+#include "Transput/Input/Desktop/DesktopInputManager.h"
 
-class DesktopWindow : public SoulWindow 
+class DesktopWindow : public Window 
 {
 public:
 
-	DesktopWindow(WindowParameters&, void*, void*);
-	~DesktopWindow();
+	DesktopWindow(WindowParameters&, GLFWmonitor*, GLFWwindow*, DesktopInputManager&);
+	~DesktopWindow() override;
 
 
-	void Draw();
+	void Draw() override;
 
 	void Refresh() override;
 	void Close() override;
@@ -19,7 +19,11 @@ public:
 	void PositionUpdate(int,int) override;
 	void SetLayout(Layout*) override;
 
-protected:
+	DesktopInputManager& GetInputSet() const;
 
 private:
+
+	//the stored input manager will always be desktop, as this class is a the desktop version
+	DesktopInputManager* inputManager_;
+
 };

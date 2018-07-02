@@ -1,31 +1,28 @@
 #pragma once
 
-#include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
+#include "Display/Window/WindowManager.h"
+#include "Display/Window/Window.h"
+#include "Transput/Input/Desktop/DesktopInputManager.h"
 
-#include "Display/Layout/Layout.h"
-#include "Display/Window/SoulWindow.h"
-
-#include "Display/Window/AbstractWindowManager.h"
-
-class DesktopWindowManager : public AbstractWindowManager
+class DesktopWindowManager : public WindowManager
 {
 public:
 
-	DesktopWindowManager();
-	~DesktopWindowManager();
+	DesktopWindowManager(DesktopInputManager&);
+	~DesktopWindowManager() override;
 
-	/* DesktopWindowManager can be neither copied, nor assigned. */
 	DesktopWindowManager(DesktopWindowManager const&) = delete;
 	void operator=(DesktopWindowManager const&) = delete;
 
+	DesktopWindowManager(DesktopWindowManager&& o) = delete;
+	DesktopWindowManager& operator=(DesktopWindowManager&& other) = delete;
 
 	/* Close operations. */
 	bool ShouldClose() const override;
 	void SignalClose() override;
 
 	//Process. to create a window.
-	SoulWindow* CreateWindow(WindowParameters&) override;
+	Window* CreateWindow(WindowParameters&) override;
 
 	//Modifier operations.
 	void Draw();
@@ -34,5 +31,8 @@ public:
 	void WindowPos(int, int);
 
 private:
+
+	DesktopInputManager* inputManager_;
+	GLFWmonitor** monitors_;
 
 };

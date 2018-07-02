@@ -4,20 +4,12 @@
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Transput/Input/InputManager.h"
 
-DesktopWindow::DesktopWindow(WindowParameters& params, void* monitorIn, void* sharedContext) :
-SoulWindow(params)
+DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, GLFWwindow* sharedContext, DesktopInputManager& inputManager) :
+	Window(params),
+	inputManager_(&inputManager)
 {
-	glfwWindowHint(GLFW_SAMPLES, GLFW_DONT_CARE);
-	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
 	//TODO: Rework Monitor Pointer
-	GLFWmonitor* monitor = static_cast<GLFWmonitor*>(monitorIn);
-	GLFWwindow* context = static_cast<GLFWwindow*>(sharedContext);
-	
-	if (monitor == nullptr) {
-		monitor = glfwGetPrimaryMonitor();
-	}
-
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
 	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
@@ -25,19 +17,24 @@ SoulWindow(params)
 	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
+	//TODO Cleanup and implement more features
+
+	//defaulted params
+	GLFWmonitor* fullscreenMonitor = nullptr;
+
+	//specific window type creation settings, each setting is global, so all should be set in each possibility
 	if (windowParams_.type == WindowType::FULLSCREEN) {
 
 		glfwWindowHint(GLFW_RESIZABLE, false);
 		glfwWindowHint(GLFW_DECORATED, false);
 
-		context_ = glfwCreateWindow(windowParams_.pixelWidth, windowParams_.pixelHeight, windowParams_.title.c_str(), monitor, context);
+		fullscreenMonitor = monitor;
 
 	}
 	else if (windowParams_.type == WindowType::WINDOWED) {
 
 		glfwWindowHint(GLFW_RESIZABLE, true);
-
-		context_ = glfwCreateWindow(windowParams_.pixelWidth, windowParams_.pixelHeight, windowParams_.title.c_str(), nullptr, context);
+		glfwWindowHint(GLFW_DECORATED, true);
 
 	}
 	else if (windowParams_.type == WindowType::BORDERLESS) {
@@ -45,67 +42,62 @@ SoulWindow(params)
 		glfwWindowHint(GLFW_RESIZABLE, false);
 		glfwWindowHint(GLFW_DECORATED, false);
 
-		context_ = glfwCreateWindow(windowParams_.pixelWidth, windowParams_.pixelHeight, windowParams_.title.c_str(), nullptr, context);
-
 	}
 	else {
-		glfwWindowHint(GLFW_RESIZABLE, false);
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-		context_ = glfwCreateWindow(windowParams_.pixelWidth, windowParams_.pixelHeight, windowParams_.title.c_str(), nullptr, context);
+		glfwWindowHint(GLFW_RESIZABLE, false);
+		glfwWindowHint(GLFW_DECORATED, true);
 
 	}
-	
 
-	// convert windowHandle from void* to a GLFWwindow*
-	auto winHandle = std::any_cast<GLFWwindow*>(context_);
+	GLFWwindow* context = glfwCreateWindow(windowParams_.pixelWidth, windowParams_.pixelHeight, windowParams_.title.c_str(), fullscreenMonitor, sharedContext);
 
-
-	if (winHandle == nullptr)
+	//TODO: Proper error checking
+	if (!context)
 	{
 		S_LOG_FATAL("Could not Create GLFW Window");
 	}
 
-	//the backend is the new user
+	//set the stored window context
+	context_ = context;
 
-	DesktopWindow* thisWindow = this;
+	//context related settings
+	glfwSetInputMode(context, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 
-	glfwSetInputMode(winHandle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	glfwSetWindowUserPointer(winHandle, thisWindow);
+	//set so the window object that holds the context is visible in callbacks
+	glfwSetWindowUserPointer(context, this);
 
 	//all window related callbacks
-	glfwSetWindowSizeCallback(winHandle, [](GLFWwindow* w, int x, int y)
+	glfwSetWindowSizeCallback(context, [](GLFWwindow* w, int x, int y)
 	{
-		auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
+		const auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
 		thisWindow->Resize(x, y);
 	});
 
-	glfwSetWindowPosCallback(winHandle, [](GLFWwindow* w, int x, int y)
+	glfwSetWindowPosCallback(context, [](GLFWwindow* w, int x, int y)
 	{
-		auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
+		const auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
 		thisWindow->PositionUpdate(x, y);
 	});
 
-	glfwSetWindowRefreshCallback(winHandle, [](GLFWwindow* w)
+	glfwSetWindowRefreshCallback(context, [](GLFWwindow* w)
 	{
-		auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
+		const auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
 		thisWindow->Refresh();
 	});
 
-	glfwSetWindowCloseCallback(winHandle, [](GLFWwindow* w)
+	glfwSetWindowCloseCallback(context, [](GLFWwindow* w)
 	{
-		auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
+		const auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
 		thisWindow->Close();
 	});
 
-	glfwShowWindow(winHandle);
-
-	InputManager::AttachWindow(winHandle);
+	//only show the window once all proper callbacks and settings are in place
+	glfwShowWindow(context);
 
 }
 
-/* Destructor. */
 DesktopWindow::~DesktopWindow()
 {
 	if (context_.has_value()) {
@@ -115,12 +107,12 @@ DesktopWindow::~DesktopWindow()
 
 void DesktopWindow::Draw()
 {
-	layout_->Draw();
+	//layout_->Draw();
 }
 
 
 void DesktopWindow::Refresh() {
-	
+
 }
 
 void DesktopWindow::Close() {
@@ -136,8 +128,12 @@ void DesktopWindow::PositionUpdate(int, int) {
 }
 
 void DesktopWindow::SetLayout(Layout* layout) {
-	layout_.reset(layout);
-	//layout_->UpdateWindow(static_cast<GLFWwindow*>(windows.back().get()->windowHandle));
+	/*layout_.reset(layout);
+	layout_->UpdateWindow(static_cast<GLFWwindow*>(windows.back().get()->windowHandle));
 	layout_->UpdatePositioning(glm::uvec2(windowParams_.pixelPosX, windowParams_.pixelPosY), glm::uvec2(windowParams_.pixelWidth, windowParams_.pixelHeight));
-	layout_->RecreateData();
+	layout_->RecreateData();*/
+}
+
+DesktopInputManager& DesktopWindow::GetInputSet() const{
+	return *inputManager_;
 }

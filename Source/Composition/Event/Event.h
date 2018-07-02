@@ -4,99 +4,73 @@
 
 #include "Core/Utility/Types.h"
 
-#include <list>
 #include <functional>
-#include <memory>
-#include <mutex>
-#include <vector>
 #include <unordered_map>
 
-/* A base event. */
+using EventID = uint64;
+
 class BaseEvent
 {
+
 public:
-	/* Default constructor. */
-	BaseEvent() {};
-	/* Destructor. */
-	virtual ~BaseEvent() {}
 
-	/*
-	 *    Removes the given parameter1.
-	 *    @param	parameter1	The parameter 1 to remove.
-	 */
+	BaseEvent() = default;
+	virtual ~BaseEvent() = default;
 
-	virtual void Remove(uint) {}
+	virtual void Remove(EventID) {}
+
 };
 
-template<typename... Args>
-/* An event. */
-class Event : public BaseEvent
+template<typename>
+class Event;
+
+template<typename R, typename... Types>
+class Event<R(Types...)> : public BaseEvent
 {
 
 public:
 
-	/* The signature */
-	using signature = std::function<void(Args...)>;
+	using signature = std::function<R(Types...)>;
 
-	/* Default constructor. */
-	Event() {}
-	/* Destructor. */
-	~Event() {}
+	Event() = default;
+	~Event() = default;
 
-	/*
-	 *    Listens.
-	 *    @param	ID	The identifier.
-	 *    @param	fn	The function.
-	 */
+	//stores the callable with quick lookup enabled by the ID
+	void Listen(EventID ID, signature&& fn);
+	void Remove(EventID ID) override;
+	void RemoveAll() const;
 
-	void Listen(int ID, const signature& fn) {
-		listeners.insert(std::make_pair(ID, fn));
-	}
-
-	/*
-	 *    Listens.
-	 *    @param 		 	ID	The identifier.
-	 *    @param [in,out]	fn	The function.
-	 */
-
-	void Listen(int ID, signature&& fn) {
-		listeners.insert(std::make_pair(ID, fn));
-	}
-
-	/*
-	 *    Removal functions.
-	 *    @param	ID	The Identifier to remove.
-	 */
-
-	virtual void Remove(int ID) {
-		listeners.erase(ID);
-	}
-
-	/* Removes all. */
-	void RemoveAll() {
-		listeners.clear();
-	}
-
-	/*
-	 *    Emits the given arguments.
-	 *    @param	args	Variable arguments providing the arguments.
-	 */
-
-	void Emit(Args... args) {
-		for (auto itr : listeners) {
-			itr.second(args...);
-		}
-	}
-
-protected:
+	//calls all stored callables
+	template<typename... Args>
+	void Emit(Args&&... args);
 
 private:
 
-	/*
-	 *    Gets the listeners.
-	 *    @return	The listeners.
-	 */
-
-	mutable std::unordered_map<int, signature> listeners;
+	//the hashmap of 
+	mutable std::unordered_map<EventID, signature> listeners;
 
 };
+
+
+template<typename R, typename ... Types>
+void Event<R(Types...)>::Listen(EventID id, signature&& fn) {
+	listeners.insert(std::make_pair(id, fn));
+}
+
+template<typename R, typename ... Types>
+void Event<R(Types...)>::Remove(EventID id) {
+	listeners.erase(id);
+}
+
+template<typename R, typename ... Types>
+void Event<R(Types...)>::RemoveAll() const {
+	listeners.clear();
+}
+
+template<typename R, typename ... Types>
+template<typename... Args>
+void Event<R(Types...)>::Emit(Args&&... args) {
+	for (const auto&[key, value] : listeners) {
+		std::invoke(value, std::forward<Args>(args)...);
+	}
+}

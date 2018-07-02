@@ -1,53 +1,18 @@
 #include "EventManager.h"
 
-namespace EventManager {
+EventManager::EventManager() :
+	id_(0)
+{
+}
 
-	namespace detail {
+void EventManager::Remove(HashString::HashType channel, HashString::HashType name, uint64 id) {
+	eventMap_[channel][name]->Remove(id);
+}
 
-		/* Defines an alias representing the event pointer. */
-		typedef std::shared_ptr<BaseEvent> EventPtr;
-		/* Defines an alias representing the map. */
-		typedef std::unordered_map<std::string, EventPtr> EMap;
+void EventManager::Remove(HashString::HashType channel, HashString::HashType name) {
+	eventMap_[channel].erase(name);
+}
 
-		/* The event map */
-		EMap eventMap;
-		/* The identifier */
-		uint id = 0;
-
-		/*
-		 *    Joins.
-		 *    @param	a	A std::string to process.
-		 *    @param	b	A std::string to process.
-		 *    @return	A std::string.
-		 */
-
-		std::string Join(std::string a, std::string b) {
-			return a + ":" + b;
-		}
-	}
-
-	/*
-	 *    Removes this object.
-	 *    @param	channel	The channel.
-	 *    @param	name   	The name.
-	 *    @param	ID	   	The identifier.
-	 */
-
-	void Remove(std::string channel, std::string name, int ID) {
-		detail::EMap::const_iterator itr = detail::eventMap.find(detail::Join(channel, name));
-		if (itr != detail::eventMap.end())
-		{
-			itr->second.get()->Remove(ID);
-		}
-	}
-
-	/*
-	 *    Removes this object.
-	 *    @param	channel	The channel.
-	 *    @param	name   	The name.
-	 */
-
-	void Remove(std::string channel, std::string name) {
-		detail::eventMap.erase(detail::Join(channel, name));
-	}
+void EventManager::Remove(HashString::HashType channel) {
+	eventMap_.erase(channel);
 }
