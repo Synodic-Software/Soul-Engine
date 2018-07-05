@@ -20,12 +20,12 @@ public:
 	~EventManager() = default;
 
 	template<typename Fn>
-	uint64 Listen(HashString::HashType, HashString::HashType, Fn&&);
+	eventID Listen(HashString::HashType, HashString::HashType, Fn&&);
 
 	template <typename... Args>
 	void Emit(HashString::HashType, HashString::HashType, Args&&...);
 
-	void Remove(HashString::HashType, HashString::HashType, uint64);
+	void Remove(HashString::HashType, HashString::HashType, eventID);
 	void Remove(HashString::HashType, HashString::HashType);
 	void Remove(HashString::HashType);
 
@@ -40,12 +40,12 @@ private:
 
 	//maps a hashedstring (as an int type) to an event
 	EventHashMap eventMap_;
-	uint64 id_;
+	eventID idCounter_;
 
 };
 
 template<typename Fn>
-uint64 EventManager::Listen(HashString::HashType channel, HashString::HashType name, Fn&& func)
+eventID EventManager::Listen(HashString::HashType channel, HashString::HashType name, Fn&& func)
 {
 	using type = boost::callable_traits::function_type_t<Fn>;
 
@@ -56,9 +56,9 @@ uint64 EventManager::Listen(HashString::HashType channel, HashString::HashType n
 
 	auto event = static_cast<Event<type>*>(baseEventPtr.get());
 
-	event->Listen(id_, std::forward<Fn>(func));
+	event->Listen(idCounter_, std::forward<Fn>(func));
 
-	return id_++;
+	return idCounter_++;
 }
 
 template <typename... Args>
@@ -66,8 +66,7 @@ void EventManager::Emit(HashString::HashType channel, HashString::HashType name,
 {
 
 	//TODO cast return type
-	auto event = static_cast<Event<void(decltype(args)...)>*>(eventMap_[channel][name].get());
-	if (event)
+	if (auto event = static_cast<Event<void(decltype(args)...)>*>(eventMap_[channel][name].get()); event)
 	{
 		event->Emit(std::forward<Args>(args)...);
 	}

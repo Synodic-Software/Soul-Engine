@@ -10,9 +10,9 @@ public:
 	virtual ~InputManager() = default;
 
 	InputManager(InputManager const&) = delete;
-	void operator=(InputManager const&) = delete;
-
 	InputManager(InputManager&& o) = delete;
+
+	InputManager& operator=(InputManager const&) = delete;
 	InputManager& operator=(InputManager&& other) = delete;
 
 	/*

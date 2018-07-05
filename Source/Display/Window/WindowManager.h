@@ -11,9 +11,9 @@ public:
 	virtual ~WindowManager() = default;
 
 	WindowManager(WindowManager const&) = delete;
-	void operator=(WindowManager const&) = delete;
-
 	WindowManager(WindowManager&& o) = delete;
+
+	WindowManager& operator=(WindowManager const&) = delete;
 	WindowManager& operator=(WindowManager&& other) = delete;
 
 	/* Close operations. */

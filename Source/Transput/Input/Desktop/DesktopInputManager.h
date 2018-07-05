@@ -14,9 +14,9 @@ public:
 	~DesktopInputManager() override = default;
 
 	DesktopInputManager(DesktopInputManager const&) = delete;
-	void operator=(DesktopInputManager const&) = delete;
-
 	DesktopInputManager(DesktopInputManager&& o) = delete;
+
+	DesktopInputManager& operator=(DesktopInputManager const&) = delete;
 	DesktopInputManager& operator=(DesktopInputManager&& other) = delete;
 
 	//void AttachWindow(DesktopWindow* window);

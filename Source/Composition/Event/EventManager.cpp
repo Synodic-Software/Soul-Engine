@@ -1,11 +1,11 @@
 #include "EventManager.h"
 
 EventManager::EventManager() :
-	id_(0)
+	idCounter_(0)
 {
 }
 
-void EventManager::Remove(HashString::HashType channel, HashString::HashType name, uint64 id) {
+void EventManager::Remove(HashString::HashType channel, HashString::HashType name, eventID id) {
 	eventMap_[channel][name]->Remove(id);
 }
 

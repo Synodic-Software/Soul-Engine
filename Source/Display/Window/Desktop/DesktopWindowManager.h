@@ -11,15 +11,16 @@ public:
 	DesktopWindowManager(DesktopInputManager&);
 	~DesktopWindowManager() override;
 
-	DesktopWindowManager(DesktopWindowManager const&) = delete;
-	void operator=(DesktopWindowManager const&) = delete;
-
+	DesktopWindowManager(DesktopWindowManager const&) = delete;	
 	DesktopWindowManager(DesktopWindowManager&& o) = delete;
+
+	DesktopWindowManager& operator=(DesktopWindowManager const&) = delete;
 	DesktopWindowManager& operator=(DesktopWindowManager&& other) = delete;
+	
 
 	/* Close operations. */
 	bool ShouldClose() const override;
-	void SignalClose() override;
+	void SignalClose() override; 
 
 	//Process. to create a window.
 	Window* CreateWindow(WindowParameters&) override;

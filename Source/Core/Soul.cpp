@@ -11,6 +11,7 @@
 #include "Transput/Input/InputManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Core/Utility/HashString/HashString.h"
+#include "Composition/Entity/EntityRegistry.h"
 
 class Soul::Implementation
 {
@@ -31,6 +32,7 @@ public:
 	InputManager* inputManager_;
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
+	EntityRegistry<> registry_;
 
 };
 
@@ -40,7 +42,8 @@ Soul::Implementation::Implementation(const Soul& soul) :
 	inputManagerVariant_(),
 	inputManager_(nullptr),
 	windowManagerVariant_(),
-	windowManager_(nullptr)
+	windowManager_(nullptr),
+	registry_()
 {
 	if constexpr (Platform::IsDesktop()) {
 		inputManagerVariant_.emplace<DesktopInputManager>(eventManager_);
@@ -104,11 +107,6 @@ void Soul::Raster() {
 
 /* Warmups this object. */
 void Soul::Warmup() {
-
-	detail->eventManager_.Listen("Update"_hashed, "Late"_hashed,[]()
-	{
-		std::cout << "hi" << std::endl;
-	});
 
 	//TODO abstract
 	detail->inputManager_->Poll();

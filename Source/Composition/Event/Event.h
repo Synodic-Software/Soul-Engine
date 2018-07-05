@@ -7,7 +7,7 @@
 #include <functional>
 #include <unordered_map>
 
-using EventID = uint64;
+using eventID = uint64;
 
 class BaseEvent
 {
@@ -17,10 +17,11 @@ public:
 	BaseEvent() = default;
 	virtual ~BaseEvent() = default;
 
-	virtual void Remove(EventID) {}
+	virtual void Remove(eventID) {}
 
 };
 
+//force specialization
 template<typename>
 class Event;
 
@@ -36,8 +37,8 @@ public:
 	~Event() = default;
 
 	//stores the callable with quick lookup enabled by the ID
-	void Listen(EventID ID, signature&& fn);
-	void Remove(EventID ID) override;
+	void Listen(eventID, signature&&);
+	void Remove(eventID) override;
 	void RemoveAll() const;
 
 	//calls all stored callables
@@ -47,18 +48,18 @@ public:
 private:
 
 	//the hashmap of 
-	mutable std::unordered_map<EventID, signature> listeners;
+	mutable std::unordered_map<eventID, signature> listeners;
 
 };
 
 
 template<typename R, typename ... Types>
-void Event<R(Types...)>::Listen(EventID id, signature&& fn) {
+void Event<R(Types...)>::Listen(eventID id, signature&& fn) {
 	listeners.insert(std::make_pair(id, fn));
 }
 
 template<typename R, typename ... Types>
-void Event<R(Types...)>::Remove(EventID id) {
+void Event<R(Types...)>::Remove(eventID id) {
 	listeners.erase(id);
 }
 
