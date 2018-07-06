@@ -2,7 +2,6 @@
 
 #include "Event.h"
 #include "Parallelism/Fiber/Scheduler.h"
-#include "Core/Utility/Types.h"
 #include "Core/Utility/HashString/HashString.h"
 
 #include <unordered_map>
@@ -12,13 +11,21 @@
 #include <boost/callable_traits.hpp>
 
 //signal and slots system
-class EventManager {
+class EventManager final {
 
 public:
 
+	//construction and assignment
 	EventManager();
 	~EventManager() = default;
 
+	EventManager(const EventManager &) = delete;
+	EventManager(EventManager &&) = default;
+
+	EventManager & operator=(const EventManager &) = delete;
+	EventManager & operator=(EventManager &&) = default;
+
+	//event functions
 	template<typename Fn>
 	eventID Listen(HashString::HashType, HashString::HashType, Fn&&);
 

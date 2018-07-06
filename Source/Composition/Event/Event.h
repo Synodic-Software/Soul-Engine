@@ -36,6 +36,12 @@ public:
 	Event() = default;
 	~Event() = default;
 
+	Event(const Event &) = delete;
+	Event(Event &&) = default;
+
+	Event & operator=(const Event &) = delete;
+	Event & operator=(Event &&) = default;
+
 	//stores the callable with quick lookup enabled by the ID
 	void Listen(eventID, signature&&);
 	void Remove(eventID) override;

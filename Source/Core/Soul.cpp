@@ -11,7 +11,7 @@
 #include "Transput/Input/InputManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Core/Utility/HashString/HashString.h"
-#include "Composition/Entity/EntityRegistry.h"
+#include "Composition/Entity/EntityManager.h"
 
 class Soul::Implementation
 {
@@ -24,26 +24,26 @@ public:
 
 	Implementation(const Soul&);
 
-
 	//services and modules
+	EntityManager registry_;
 	Scheduler scheduler_;
 	EventManager eventManager_;
 	inputManagerVariantType inputManagerVariant_;
 	InputManager* inputManager_;
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
-	EntityRegistry<> registry_;
 
 };
 
 Soul::Implementation::Implementation(const Soul& soul) :
+	registry_(),
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
 	inputManagerVariant_(),
 	inputManager_(nullptr),
 	windowManagerVariant_(),
-	windowManager_(nullptr),
-	registry_()
+	windowManager_(nullptr)
+
 {
 	if constexpr (Platform::IsDesktop()) {
 		inputManagerVariant_.emplace<DesktopInputManager>(eventManager_);
