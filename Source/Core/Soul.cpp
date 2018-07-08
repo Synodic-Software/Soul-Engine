@@ -13,6 +13,8 @@
 #include "Core/Utility/HashString/HashString.h"
 #include "Composition/Entity/EntityManager.h"
 
+#include <variant>
+
 class Soul::Implementation
 {
 

@@ -1,29 +1,29 @@
 #pragma once
 
-#include "Rasterer\RasterJob.h"
+#include "Composition/Entity/Entity.h"
+#include "glm/glm.hpp"
 
-/* A widget. */
 class Widget
 {
+
 public:
 
 	Widget() = default;
 	virtual ~Widget() = default;
 
-	virtual void Draw();
+	Widget(const Widget&) = delete;
+	Widget(Widget&&) noexcept = default;
 
-	virtual void UpdatePositioning(glm::uvec2, glm::uvec2);
-
-	virtual void RecreateData();
+	Widget& operator=(const Widget&) = delete;
+	Widget& operator=(Widget&&) noexcept = default;
 
 protected:
 
-	RasterJob* widgetJob;
+	Entity widgetJob_;
 
-	glm::uvec2 size;
-	glm::uvec2 position;
+	glm::dvec2 size_;
+	glm::dvec2 position_; //upper left position
 
-private:
 
 };
 

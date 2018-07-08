@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Display\Widget\Widget.h"
-#include <list>
+#include "Display/Widget/Widget.h"
 
-/* A layout. */
+
 class Layout : public Widget
 {
 
@@ -12,18 +11,12 @@ public:
 	Layout() = default;
 	virtual ~Layout() = default;
 
+	Layout(const Layout&) = delete;
+	Layout(Layout&&) noexcept = default;
 
-	void Draw() override;
-
-	void UpdatePositioning(glm::uvec2, glm::uvec2) override;
-
-	void RecreateData() override;
-
-protected:
+	Layout& operator=(const Layout&) = delete;
+	Layout& operator=(Layout&&) noexcept = default;
 
 
-	std::list<Widget*> widgets;
-
-private:
 };
 

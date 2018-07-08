@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Display/Layout/Layout.h"
 #include "Display/Window/Window.h"
 #include "Composition/Entity/EntityManager.h"
+
+#include <list>
 
 class WindowManager
 {
