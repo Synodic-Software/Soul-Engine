@@ -2,26 +2,27 @@
 
 #include "Display/Layout/Layout.h"
 #include "Display/Window/Window.h"
+#include "Composition/Entity/EntityManager.h"
 
 class WindowManager
 {
 public:
 
-	WindowManager();
+	WindowManager(EntityManager&);
 	virtual ~WindowManager() = default;
 
-	WindowManager(WindowManager const&) = delete;
-	WindowManager(WindowManager&& o) = delete;
+	WindowManager(const WindowManager&) = delete;
+	WindowManager(WindowManager&& o) noexcept = delete;
 
-	WindowManager& operator=(WindowManager const&) = delete;
-	WindowManager& operator=(WindowManager&& other) = delete;
+	WindowManager& operator=(const WindowManager&) = delete;
+	WindowManager& operator=(WindowManager&& other) noexcept = delete;
 
 	/* Close operations. */
 	virtual bool ShouldClose() const = 0;
 	virtual void SignalClose() = 0;
 
 	//Process. to create a window.
-	virtual Window* CreateWindow(WindowParameters&) = 0;
+	virtual Window& CreateWindow(WindowParameters&) = 0;
 
 	//Modifier operations.
 	void Draw();
@@ -33,9 +34,9 @@ public:
 protected:
 
 	//List of all windows handled by the DesktopWindowManager.
-	std::list<std::unique_ptr<Window>> windows_;
+	std::list<Entity> windows_;
 
-	Window* masterWindow_;
+	EntityManager* entityManager_;
 
 	int monitorCount_;
 	bool runningFlag_;

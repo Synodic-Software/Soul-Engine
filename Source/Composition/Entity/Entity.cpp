@@ -1,5 +1,10 @@
 #include "Entity.h"
 
+Entity::Entity() :
+	entity_(nullState)
+{
+}
+
 Entity::Entity(value_type entity) :
 	entity_(entity)
 {
@@ -14,6 +19,9 @@ Entity::Entity(id_type id, version_type version) :
 
 }
 
+bool Entity::IsNull() const{
+	return entity_ == nullState;
+}
 
 Entity::operator value_type() const {
 	return entity_;

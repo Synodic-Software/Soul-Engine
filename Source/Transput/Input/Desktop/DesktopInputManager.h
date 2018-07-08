@@ -13,11 +13,11 @@ public:
 	DesktopInputManager(EventManager&);
 	~DesktopInputManager() override = default;
 
-	DesktopInputManager(DesktopInputManager const&) = delete;
-	DesktopInputManager(DesktopInputManager&& o) = delete;
+	DesktopInputManager(const DesktopInputManager&) = delete;
+	DesktopInputManager(DesktopInputManager&& o) noexcept = delete;
 
-	DesktopInputManager& operator=(DesktopInputManager const&) = delete;
-	DesktopInputManager& operator=(DesktopInputManager&& other) = delete;
+	DesktopInputManager& operator=(const DesktopInputManager&) = delete;
+	DesktopInputManager& operator=(DesktopInputManager&& other) noexcept = delete;
 
 	//void AttachWindow(DesktopWindow* window);
 	void Poll() override;

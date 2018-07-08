@@ -2,10 +2,11 @@
 
 #include "Entity.h"
 #include "Composition/Component/Component.h"
-#include "Core/Structures/SparseSet.h"
-
+#include "SparseEntitySet/AbstractSparseEntitySet.h"
+#include "SparseEntitySet/SparseEntitySet.h"
 #include <vector>
 #include <memory>
+#include <cassert>
 
 class EntityManager
 {
@@ -19,29 +20,75 @@ public:
 	EntityManager();
 	~EntityManager() = default;
 
-	EntityManager(EntityManager const&) = delete;
+	EntityManager(const EntityManager &) = delete;
 	EntityManager(EntityManager&& o) = delete;
 
-	EntityManager& operator=(EntityManager const&) = delete;
+	EntityManager& operator=(const EntityManager&) = delete;
 	EntityManager& operator=(EntityManager&& other) = delete;
 
 	//entity operations
 	Entity CreateEntity();
 	void RemoveEntity(Entity);
 
-	bool IsValid(Entity);
+	template<typename Comp>
+	Comp& GetComponent(Entity) const noexcept;
+
+	template<typename... Comp>
+	std::enable_if_t< bool(sizeof...(Comp) > 1), std::tuple<Comp&...>>
+		GetComponent(Entity) const noexcept;
+
+	bool IsValid(Entity) const noexcept;
 
 	//component operations
 	template<typename Comp, typename ... Args>
-	void Attach(Args&& ...);
+	void AttachComponent(Entity, Args&& ...);
 
 
 private:
 
-	std::vector<std::unique_ptr<AbstractSparseSet>> componentPools_;
+	std::vector<std::unique_ptr<AbstractSparseEntitySet>> componentPools_;
 	std::vector<Entity> entities_;
 
 	size_t availableEntities_;
 	Entity::id_type nextAvailable_;
 
 };
+
+template<typename Comp>
+Comp& EntityManager::GetComponent(Entity entity) const noexcept {
+
+	assert(IsValid(entity));
+
+	const auto componentId = Component::Id<Comp>();
+	SparseEntitySet<Comp>& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
+
+	return pool[entity.GetId()];
+}
+
+template<typename... Comp>
+std::enable_if_t< bool(sizeof...(Comp) > 1), std::tuple<Comp&...>>
+EntityManager::GetComponent(Entity entity) const noexcept {
+
+	return std::tuple<Comp&...>{
+		GetComponent<Comp>(entity)...
+	};
+
+}
+
+template<typename Comp, typename ... Args>
+void EntityManager::AttachComponent(Entity entity, Args&& ... args) {
+
+	assert(IsValid(entity));
+
+	const auto componentId = Component::Id<Comp>();
+
+	//componentId is always incrmenting.
+	if (componentId >= componentPools_.size() ) {
+		componentPools_.push_back(std::make_unique<SparseEntitySet<Comp>>());
+	}
+
+	auto& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
+
+	pool.Insert(entity, std::forward<Args>(args)...);
+
+}

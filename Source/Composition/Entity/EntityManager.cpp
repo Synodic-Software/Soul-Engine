@@ -1,5 +1,4 @@
 #include "EntityManager.h"
-#include <cassert>
 
 EntityManager::EntityManager() :
 	availableEntities_(0),
@@ -8,7 +7,7 @@ EntityManager::EntityManager() :
 }
 
 Entity EntityManager::CreateEntity() {
-	
+
 	Entity entityID;
 
 	//if no entities are available for reuse, create a new one
@@ -17,8 +16,8 @@ Entity EntityManager::CreateEntity() {
 		const auto id = nextAvailable_;
 		nextAvailable_ = entities_[id].GetId();
 		const auto version = entities_[id].GetVersion();
-		
-		entityID = Entity(id, version);	
+
+		entityID = Entity(id, version);
 		entities_[id] = entityID;
 		--availableEntities_;
 
@@ -39,25 +38,22 @@ void EntityManager::RemoveEntity(Entity entity) {
 
 	assert(IsValid(entity));
 
+	for(auto& pool : componentPools_) {
+		pool->Remove(entity.GetId());
+	}
+
 	//grab entity data
 	const auto id = availableEntities_ ? nextAvailable_ : entity.GetId() + 1;
-	const auto version = entity.GetVersion() + 1;	
+	const auto version = entity.GetVersion() + 1;
 
 	//set the incremented version
-	entities_[id] = Entity(id,version);
+	entities_[id] = Entity(id, version);
 	nextAvailable_ = id;
 	++availableEntities_;
 
 }
 
-//TODO implement
-bool EntityManager::IsValid(Entity) {
-	return true;
-}
-
-
-template<typename Comp, typename ... Args>
-void EntityManager::Attach(Args&& ... args) {
-	//Component component(Comp);
-
+bool EntityManager::IsValid(Entity entity) const noexcept {
+	const auto id = entity.GetId();
+	return id < entities_.size() && entities_[id].entity_ == entity.entity_;
 }

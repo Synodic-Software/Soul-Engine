@@ -9,11 +9,11 @@ public:
 	InputManager(EventManager&);
 	virtual ~InputManager() = default;
 
-	InputManager(InputManager const&) = delete;
-	InputManager(InputManager&& o) = delete;
+	InputManager(const InputManager &) = delete;
+	InputManager(InputManager&& o) noexcept = delete;
 
-	InputManager& operator=(InputManager const&) = delete;
-	InputManager& operator=(InputManager&& other) = delete;
+	InputManager& operator=(const InputManager&) = delete;
+	InputManager& operator=(InputManager&& other) noexcept = delete;
 
 	/*
 	 * Window specific callbacks are registered within the function

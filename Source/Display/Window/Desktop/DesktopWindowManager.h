@@ -8,22 +8,22 @@ class DesktopWindowManager : public WindowManager
 {
 public:
 
-	DesktopWindowManager(DesktopInputManager&);
+	DesktopWindowManager(EntityManager&, DesktopInputManager&);
 	~DesktopWindowManager() override;
 
-	DesktopWindowManager(DesktopWindowManager const&) = delete;	
-	DesktopWindowManager(DesktopWindowManager&& o) = delete;
+	DesktopWindowManager(const DesktopWindowManager&) = delete;
+	DesktopWindowManager(DesktopWindowManager&& o) noexcept = delete;
 
-	DesktopWindowManager& operator=(DesktopWindowManager const&) = delete;
-	DesktopWindowManager& operator=(DesktopWindowManager&& other) = delete;
-	
+	DesktopWindowManager& operator=(const DesktopWindowManager&) = delete;
+	DesktopWindowManager& operator=(DesktopWindowManager&& other) noexcept = delete;
+
 
 	/* Close operations. */
 	bool ShouldClose() const override;
-	void SignalClose() override; 
+	void SignalClose() override;
 
 	//Process. to create a window.
-	Window* CreateWindow(WindowParameters&) override;
+	Window& CreateWindow(WindowParameters&) override;
 
 	//Modifier operations.
 	void Draw();
@@ -33,7 +33,9 @@ public:
 
 private:
 
-	DesktopInputManager* inputManager_;
+	Entity masterWindow_;
+
+	DesktopInputManager * inputManager_;
 	GLFWmonitor** monitors_;
 
 };

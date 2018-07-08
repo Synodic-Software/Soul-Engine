@@ -10,6 +10,11 @@ public:
 	DesktopWindow(WindowParameters&, GLFWmonitor*, GLFWwindow*, DesktopInputManager&);
 	~DesktopWindow() override;
 
+	DesktopWindow(const DesktopWindow &) = delete;
+	DesktopWindow(DesktopWindow &&) noexcept = default;
+
+	DesktopWindow& operator=(const DesktopWindow &) = delete;
+	DesktopWindow& operator=(DesktopWindow &&) noexcept = default;
 
 	void Draw() override;
 

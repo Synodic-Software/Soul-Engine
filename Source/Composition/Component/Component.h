@@ -2,24 +2,31 @@
 
 #include <atomic>
 
-
 class Component
 {
 
 public:
 
-	Component() = default;
+	Component() = delete;
+
+	template<typename... Type>
+	static size_t Id() noexcept;
 
 private:
 
 	static std::atomic<size_t> counter_;
 
-	size_t id_;
-
-
+	template<typename...>
+	static size_t GenerateID() noexcept;
 };
 
-//Component::Component() :
-//	id_(counter_.fetch_add(1)) {
-//
-//}
+template<typename... Type>
+size_t Component::Id() noexcept {
+	return GenerateID<std::decay_t<Type>...>();
+}
+
+template<typename...>
+size_t Component::GenerateID() noexcept {
+	static const size_t value = counter_.fetch_add(1);
+	return value;
+}

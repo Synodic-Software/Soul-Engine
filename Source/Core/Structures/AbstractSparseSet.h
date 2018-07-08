@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Utility/Types.h"
+
 #include <vector>
 
 //empty type base implementation
@@ -11,15 +13,22 @@ public:
 	virtual  ~AbstractSparseSet() = default;
 
 	AbstractSparseSet(const AbstractSparseSet &) = delete;
-	AbstractSparseSet(AbstractSparseSet &&) = default;
+	AbstractSparseSet(AbstractSparseSet &&) noexcept = default;
 
 	AbstractSparseSet & operator=(const AbstractSparseSet &) = delete;
-	AbstractSparseSet & operator=(AbstractSparseSet &&) = default;
+	AbstractSparseSet & operator=(AbstractSparseSet &&) noexcept = default;
 
+	//operators
+
+	//get/set
+	virtual void Remove(uint) = 0;
+
+	bool Find(size_t);
 
 protected:
 
-	std::vector<size_t> dense_;
-	std::vector<size_t> sparse_;
+	static constexpr uint emptyValue = uint(-1);
+
+	std::vector<uint> sparse_;
 
 };

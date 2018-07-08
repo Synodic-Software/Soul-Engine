@@ -15,7 +15,7 @@ public:
 	Soul& operator=(Soul&&) noexcept = delete;
 
 	void Run();
-	Window* CreateWindow(WindowParameters&);
+	Window& CreateWindow(WindowParameters&);
 
 private:
 

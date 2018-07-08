@@ -25,7 +25,7 @@ public:
 	Implementation(const Soul&);
 
 	//services and modules
-	EntityManager registry_;
+	EntityManager entityManager_;
 	Scheduler scheduler_;
 	EventManager eventManager_;
 	inputManagerVariantType inputManagerVariant_;
@@ -36,7 +36,7 @@ public:
 };
 
 Soul::Implementation::Implementation(const Soul& soul) :
-	registry_(),
+	entityManager_(),
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
 	inputManagerVariant_(),
@@ -49,7 +49,7 @@ Soul::Implementation::Implementation(const Soul& soul) :
 		inputManagerVariant_.emplace<DesktopInputManager>(eventManager_);
 		inputManager_ = &std::get<DesktopInputManager>(inputManagerVariant_);
 
-		windowManagerVariant_.emplace<DesktopWindowManager>(dynamic_cast<DesktopInputManager&>(*inputManager_));
+		windowManagerVariant_.emplace<DesktopWindowManager>(entityManager_, dynamic_cast<DesktopInputManager&>(*inputManager_));
 		windowManager_ = &std::get<DesktopWindowManager>(windowManagerVariant_);
 	}
 }
@@ -153,7 +153,7 @@ void Soul::LateUpdate() {
 
 }
 
-Window* Soul::CreateWindow(WindowParameters& params) {
+Window& Soul::CreateWindow(WindowParameters& params) {
 	return detail->windowManager_->CreateWindow(params);
 }
 

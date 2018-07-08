@@ -5,11 +5,17 @@
 //declare to prevent circular includes
 class EntityManager;
 
+template<typename T>
+class SparseEntitySet;
+
 class Entity
 {
 
 	//typedefs and constants
 	friend class EntityManager;
+
+	template<typename>
+	friend class SparseEntitySet;
 
 	using value_type = uint64;
 	using id_type = uint32;
@@ -18,24 +24,27 @@ class Entity
 	static constexpr auto entityMask = 0xFFFFFFFF;
 	static constexpr auto versionMask = 0xFFFFFFFF;
 	static constexpr auto entityBitCount = 32;
-	static constexpr auto null = entityMask;
+	static constexpr auto nullState = entityMask;
 
 public:
 
 	//construction and assignment
+	Entity();
 	~Entity() = default;
 
-	Entity(Entity const&) = default;
+	Entity(const Entity&) = default;
 	Entity(Entity&& o) = default;
 
-	Entity& operator=(Entity const&) = default;
+	Entity& operator=(const Entity&) = default;
 	Entity& operator=(Entity&& other) = default;
+
+	//public funcs
+	bool IsNull() const;
 
 
 private:
 
-	//Entities can only be created by the entity registry
-	Entity() = default;
+	//Valid Entities can only be created by the entity registry
 	explicit Entity(value_type);
 	explicit Entity(id_type, version_type);
 

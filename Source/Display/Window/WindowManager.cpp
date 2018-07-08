@@ -1,16 +1,16 @@
 #include "WindowManager.h"
 
-WindowManager::WindowManager() :
-	masterWindow_(nullptr),
+WindowManager::WindowManager(EntityManager& entityManager) :
+	entityManager_(&entityManager),
 	monitorCount_(0),
 	runningFlag_(true)
 {
 }
 
 void WindowManager::Draw() {
-	for (auto& itr : windows_) {
+	/*for (auto& itr : windows_) {
 		itr->Draw();
-	}
+	}*/
 }
 
 void WindowManager::Refresh() {

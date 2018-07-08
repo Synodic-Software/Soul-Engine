@@ -29,6 +29,12 @@ public:
 	Window(WindowParameters&);
 	virtual ~Window() = default;
 
+	Window(const Window &) = delete;
+	Window(Window &&) noexcept = default;
+
+	Window& operator=(const Window &) = delete;
+	Window& operator=(Window &&) noexcept = default;
+
 	virtual void Draw() = 0;
 
 	virtual void Refresh() = 0;
