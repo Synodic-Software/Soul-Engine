@@ -6,6 +6,7 @@
 
 class DesktopWindowManager : public WindowManager
 {
+
 public:
 
 	DesktopWindowManager(EntityManager&, DesktopInputManager&);
@@ -18,18 +19,13 @@ public:
 	DesktopWindowManager& operator=(DesktopWindowManager&& other) noexcept = delete;
 
 
-	/* Close operations. */
+	// Close operations. 
 	bool ShouldClose() const override;
 	void SignalClose() override;
 
 	//Process. to create a window.
 	Window& CreateWindow(WindowParameters&) override;
 
-	//Modifier operations.
-	void Draw();
-	void Refresh();
-	void Resize(int, int);
-	void WindowPos(int, int);
 
 private:
 

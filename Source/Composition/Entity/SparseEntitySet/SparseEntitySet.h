@@ -27,11 +27,36 @@ public:
 	template<typename... Args>
 	void Insert(Entity, Args&&...);
 
+	template<typename Derived, typename... Args>
+	void Insert(Entity, Args&&...);
+
 };
 
 template <typename T>
-void SparseEntitySet<T>::Remove(uint i) {
-	//TODO implement
+void SparseEntitySet<T>::Remove(uint entityID) {
+
+	if (Find(entityID)) {
+
+		//move last element to deleted position
+		auto tmp = std::move(SparseSet<T>::objects_.back());
+		SparseSet<T>::objects_.pop_back();
+
+		(*this)[entityID] = std::move(tmp);
+
+
+		//get
+		const Entity tmp2 = dense_.back();
+		auto& tmp2Ptr = sparse_[entityID];
+
+		//swap
+		dense_[tmp2Ptr] = tmp2;
+		sparse_[tmp2.GetId()] = tmp2Ptr;
+
+		//remove
+		tmp2Ptr = emptyValue;
+		dense_.pop_back();
+	}
+
 }
 
 template <typename T>

@@ -4,8 +4,8 @@
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Transput/Input/InputManager.h"
 
-DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, GLFWwindow* sharedContext, DesktopInputManager& inputManager) :
-	Window(params),
+DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager, EntityManager& entityManager) :
+	Window(params, entityManager),
 	inputManager_(&inputManager)
 {
 
@@ -50,20 +50,14 @@ DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, GLF
 
 	}
 
-	GLFWwindow* context = glfwCreateWindow(windowParams_.pixelWidth, windowParams_.pixelHeight, windowParams_.title.c_str(), fullscreenMonitor, sharedContext);
+	GLFWwindow* context = glfwCreateWindow(windowParams_.pixelWidth, windowParams_.pixelHeight, windowParams_.title.c_str(), fullscreenMonitor, nullptr);
 
-	//TODO: Proper error checking
-	if (!context)
-	{
-		S_LOG_FATAL("Could not Create GLFW Window");
-	}
-
-	//set the stored window context
+	assert(context);
 	context_ = context;
+
 
 	//context related settings
 	glfwSetInputMode(context, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
 
 	//set so the window object that holds the context is visible in callbacks
 	glfwSetWindowUserPointer(context, this);

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Core/Utility/Types.h"
-#include <Display/Layout/Layout.h>
+#include "Display/Layout/Layout.h"
+#include "Composition/Entity/EntityManager.h"
 
 #include <string>
-#include <memory>
 #include <any>
 
 enum class WindowType { WINDOWED, FULLSCREEN, BORDERLESS, EMPTY };
@@ -26,7 +26,7 @@ class Window
 
 public:
 
-	Window(WindowParameters&);
+	Window(WindowParameters&, EntityManager&);
 	virtual ~Window() = default;
 
 	Window(const Window &) = delete;
@@ -34,6 +34,7 @@ public:
 
 	Window& operator=(const Window &) = delete;
 	Window& operator=(Window &&) noexcept = default;
+
 
 	virtual void Draw() = 0;
 
