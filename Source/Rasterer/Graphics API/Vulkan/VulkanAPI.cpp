@@ -6,14 +6,12 @@ VulkanAPI::VulkanAPI():
 	GraphicsAPI(RasterAPI::VULKAN)
 {
 
-	glfwInit();
-
 	vk::ApplicationInfo applicationInfo;
 	applicationInfo.apiVersion = VK_API_VERSION_1_1;
-	applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	applicationInfo.pApplicationName = "Soul Engine";
-	applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	applicationInfo.pEngineName = "Soul Engine";
+	applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);//TODO forward the application version here
+	applicationInfo.pApplicationName = "Soul Engine"; //TODO forward the application name here
+	applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0); //TODO forward the engine version here
+	applicationInfo.pEngineName = "Soul Engine"; //TODO forward the engine name here
 
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
