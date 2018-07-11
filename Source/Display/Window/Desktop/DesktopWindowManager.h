@@ -9,14 +9,15 @@ class DesktopWindowManager : public WindowManager
 
 public:
 
-	DesktopWindowManager(EntityManager&, DesktopInputManager&);
-	~DesktopWindowManager() override;
+	DesktopWindowManager(DesktopInputManager&);
+	~DesktopWindowManager() override = default;
+	void Terminate() override;
 
 	DesktopWindowManager(const DesktopWindowManager&) = delete;
-	DesktopWindowManager(DesktopWindowManager&& o) noexcept = delete;
+	DesktopWindowManager(DesktopWindowManager&& o) noexcept = default;
 
 	DesktopWindowManager& operator=(const DesktopWindowManager&) = delete;
-	DesktopWindowManager& operator=(DesktopWindowManager&& other) noexcept = delete;
+	DesktopWindowManager& operator=(DesktopWindowManager&& other) noexcept = default;
 
 
 	// Close operations. 
@@ -29,7 +30,7 @@ public:
 
 private:
 
-	Entity masterWindow_;
+	Window* masterWindow_;
 
 	DesktopInputManager * inputManager_;
 	GLFWmonitor** monitors_;

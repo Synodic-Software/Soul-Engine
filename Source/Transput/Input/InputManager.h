@@ -10,16 +10,10 @@ public:
 	virtual ~InputManager() = default;
 
 	InputManager(const InputManager &) = delete;
-	InputManager(InputManager&& o) noexcept = delete;
+	InputManager(InputManager&& o) noexcept = default;
 
 	InputManager& operator=(const InputManager&) = delete;
-	InputManager& operator=(InputManager&& other) noexcept = delete;
-
-	/*
-	 * Window specific callbacks are registered within the function
-	 *
-	 * @param [in,out]	window	If non-null, the window.
-	 */
+	InputManager& operator=(InputManager&& other) noexcept = default;
 
 	virtual void Poll() = 0;
 

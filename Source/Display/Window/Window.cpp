@@ -3,7 +3,7 @@
 #include "Display/Layout/Default/SingleLayout.h"
 #include "Display/Widget/Default/EmptyWidget.h"
 
-Window::Window(WindowParameters& params, EntityManager& entityManager) :
+Window::Window(WindowParameters& params) :
 	context_(nullptr),
 	layout_(std::make_unique<SingleLayout>()),
 	windowParams_(params)

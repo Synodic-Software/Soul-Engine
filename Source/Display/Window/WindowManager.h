@@ -1,28 +1,28 @@
 #pragma once
 
 #include "Display/Window/Window.h"
-#include "Composition/Entity/EntityManager.h"
 
-#include <list>
+#include <vector>
 
 class WindowManager
 {
 public:
 
-	WindowManager(EntityManager&);
+	WindowManager();
 	virtual ~WindowManager() = default;
+	virtual void Terminate() = 0;
 
 	WindowManager(const WindowManager&) = delete;
-	WindowManager(WindowManager&& o) noexcept = delete;
+	WindowManager(WindowManager&& o) noexcept = default;
 
 	WindowManager& operator=(const WindowManager&) = delete;
-	WindowManager& operator=(WindowManager&& other) noexcept = delete;
+	WindowManager& operator=(WindowManager&& other) noexcept = default;
 
-	/* Close operations. */
+	//Close operations.
 	virtual bool ShouldClose() const = 0;
 	virtual void SignalClose() = 0;
 
-	//Process. to create a window.
+	//Process to create a window.
 	virtual Window& CreateWindow(WindowParameters&) = 0;
 
 	//Modifier operations.
@@ -35,9 +35,7 @@ public:
 protected:
 
 	//List of all windows handled by the DesktopWindowManager.
-	std::list<Entity> windows_;
-
-	EntityManager* entityManager_;
+	std::vector<std::unique_ptr<Window>> windows_;
 
 	int monitorCount_;
 	bool runningFlag_;

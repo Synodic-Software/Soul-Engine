@@ -1,8 +1,7 @@
 #include "GraphicsAPI.h"
 
-
-GraphicsAPI::GraphicsAPI(): backendType(NoAPI)
+GraphicsAPI::GraphicsAPI(RasterAPI rasterAPI = RasterAPI::NOAPI) :
+	rasterAPI_(rasterAPI)
 {
-
 }
 

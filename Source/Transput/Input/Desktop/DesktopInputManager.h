@@ -4,7 +4,7 @@
 #include "Transput/Input/Key.h"
 #include "Transput/Input/InputManager.h"
 
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 class DesktopInputManager : public InputManager {
 
@@ -14,10 +14,10 @@ public:
 	~DesktopInputManager() override = default;
 
 	DesktopInputManager(const DesktopInputManager&) = delete;
-	DesktopInputManager(DesktopInputManager&& o) noexcept = delete;
+	DesktopInputManager(DesktopInputManager&& o) = default;
 
 	DesktopInputManager& operator=(const DesktopInputManager&) = delete;
-	DesktopInputManager& operator=(DesktopInputManager&& other) noexcept = delete;
+	DesktopInputManager& operator=(DesktopInputManager&& other) noexcept = default;
 
 	//void AttachWindow(DesktopWindow* window);
 	void Poll() override;

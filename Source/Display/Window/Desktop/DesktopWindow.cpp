@@ -4,8 +4,8 @@
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Transput/Input/InputManager.h"
 
-DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager, EntityManager& entityManager) :
-	Window(params, entityManager),
+DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager) :
+	Window(params),
 	inputManager_(&inputManager)
 {
 

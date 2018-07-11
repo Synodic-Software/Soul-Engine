@@ -1,33 +1,32 @@
 #pragma once
 
 #include "Graphics API/GraphicsAPI.h"
-#include <memory>
+#include "Graphics API/Vulkan/VulkanAPI.h"
 
-//#include "glm/glm.hpp"
+#include <variant>
 
 class RasterManager {
 
-
 public:
 
-	static RasterManager& Instance() {
-		static RasterManager instance;
-		return instance;
-	}
+	RasterManager();
+	~RasterManager() = default;
 
-	RasterManager(RasterManager const&) = delete;
-	void operator=(RasterManager const&) = delete;
+	RasterManager(const RasterManager&) = delete;
+	RasterManager(RasterManager&& o) noexcept = delete;
+
+	RasterManager& operator=(const RasterManager&) = delete;
+	RasterManager& operator=(RasterManager&& other) noexcept = delete;
 
 	//Draw and Update steps called from the main loop
 	void PreRaster();
 	void Raster();
 	void PostRaster();
 
+
 private:
 
-	RasterManager();
-	~RasterManager() = default;
-
-	std::unique_ptr<GraphicsAPI> rasterAPI;
+	std::variant<std::monostate, VulkanAPI> rasterAPIVariant_;
+	GraphicsAPI* rasterAPI_;
 
 };

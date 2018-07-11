@@ -1,7 +1,6 @@
 #include "WindowManager.h"
 
-WindowManager::WindowManager(EntityManager& entityManager) :
-	entityManager_(&entityManager),
+WindowManager::WindowManager() :
 	monitorCount_(0),
 	runningFlag_(true)
 {

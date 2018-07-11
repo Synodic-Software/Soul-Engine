@@ -2,7 +2,6 @@
 
 #include "Core/Utility/Types.h"
 #include "Display/Layout/Layout.h"
-#include "Composition/Entity/EntityManager.h"
 
 #include <string>
 #include <any>
@@ -26,7 +25,7 @@ class Window
 
 public:
 
-	Window(WindowParameters&, EntityManager&);
+	Window(WindowParameters&);
 	virtual ~Window() = default;
 
 	Window(const Window &) = delete;

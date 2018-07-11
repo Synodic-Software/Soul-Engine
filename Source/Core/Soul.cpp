@@ -12,6 +12,7 @@
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Core/Utility/HashString/HashString.h"
 #include "Composition/Entity/EntityManager.h"
+#include "Rasterer/RasterManager.h"
 
 #include <variant>
 
@@ -25,36 +26,80 @@ public:
 	using windowManagerVariantType = std::variant<std::monostate, DesktopWindowManager>;
 
 	Implementation(const Soul&);
+	~Implementation();
 
-	//services and modules
-	EntityManager entityManager_;
+	//services and modules	
 	Scheduler scheduler_;
 	EventManager eventManager_;
 	inputManagerVariantType inputManagerVariant_;
 	InputManager* inputManager_;
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
+	RasterManager rasterManager_;
+	EntityManager entityManager_;
 
+private:
+
+	inputManagerVariantType ConstructInputManager();
+	InputManager* ConstructInputPtr();
+
+	windowManagerVariantType ConstructWindowManager();
+	WindowManager* ConstructWindowPtr();
 };
 
-Soul::Implementation::Implementation(const Soul& soul) :
-	entityManager_(),
+Soul::Implementation::Implementation(const Soul& soul) :	
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
-	inputManagerVariant_(),
-	inputManager_(nullptr),
-	windowManagerVariant_(),
-	windowManager_(nullptr)
-
+	inputManagerVariant_(ConstructInputManager()),
+	inputManager_(ConstructInputPtr()),
+	windowManagerVariant_(ConstructWindowManager()),
+	windowManager_(ConstructWindowPtr()),
+	rasterManager_(),
+	entityManager_()
 {
-	if constexpr (Platform::IsDesktop()) {
-		inputManagerVariant_.emplace<DesktopInputManager>(eventManager_);
-		inputManager_ = &std::get<DesktopInputManager>(inputManagerVariant_);
+}
 
-		windowManagerVariant_.emplace<DesktopWindowManager>(entityManager_, dynamic_cast<DesktopInputManager&>(*inputManager_));
-		windowManager_ = &std::get<DesktopWindowManager>(windowManagerVariant_);
+Soul::Implementation::~Implementation() {
+	windowManager_->Terminate();
+}
+
+Soul::Implementation::inputManagerVariantType Soul::Implementation::ConstructInputManager() {
+
+	inputManagerVariantType tmp;
+
+	if constexpr (Platform::IsDesktop()) {
+		tmp.emplace<DesktopInputManager>(eventManager_);
+		return tmp;
+	}
+
+}
+
+InputManager* Soul::Implementation::ConstructInputPtr() {
+
+	if constexpr (Platform::IsDesktop()) {
+		return &std::get<DesktopInputManager>(inputManagerVariant_);
+	}
+
+}
+
+Soul::Implementation::windowManagerVariantType Soul::Implementation::ConstructWindowManager() {
+
+	windowManagerVariantType tmp;
+
+	if constexpr (Platform::IsDesktop()) {
+		tmp.emplace<DesktopWindowManager>(std::get<DesktopInputManager>(inputManagerVariant_));
+		return tmp;
+	}
+
+}
+
+WindowManager* Soul::Implementation::ConstructWindowPtr() {
+
+	if constexpr (Platform::IsDesktop()) {
+		return &std::get<DesktopWindowManager>(windowManagerVariant_);
 	}
 }
+
 
 Soul::Soul(SoulParameters& params) :
 	parameters(params),

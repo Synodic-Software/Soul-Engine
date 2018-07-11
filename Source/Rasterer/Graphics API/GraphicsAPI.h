@@ -1,17 +1,23 @@
 #pragma once
 
-enum RasterAPI { Vulkan, NoAPI }; // Backend types.
+enum class RasterAPI { NOAPI, VULKAN }; // Backend types.
 
 //Rendering Hardware Interface
 class GraphicsAPI {
 
 public:
-    
-	GraphicsAPI();
 
+	GraphicsAPI(RasterAPI);
+	~GraphicsAPI() = default;
+
+	GraphicsAPI(const GraphicsAPI &) = delete;
+	GraphicsAPI(GraphicsAPI &&) noexcept = default;
+
+	GraphicsAPI& operator=(const GraphicsAPI &) = delete;
+	GraphicsAPI& operator=(GraphicsAPI &&) noexcept = default;
 
 protected:
 
-	RasterAPI backendType;
+	RasterAPI rasterAPI_;
 
 };

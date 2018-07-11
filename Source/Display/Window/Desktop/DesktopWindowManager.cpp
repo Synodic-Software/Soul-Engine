@@ -3,11 +3,11 @@
 #include "Core/Utility/Log/Logger.h"
 #include "Display/Window/Desktop/DesktopWindow.h"
 
-#include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
-DesktopWindowManager::DesktopWindowManager(EntityManager& entityManager, DesktopInputManager& inputManager) :
-	WindowManager(entityManager),
+
+DesktopWindowManager::DesktopWindowManager(DesktopInputManager& inputManager) :
+	masterWindow_(nullptr),
 	inputManager_(&inputManager)
 {
 
@@ -15,13 +15,14 @@ DesktopWindowManager::DesktopWindowManager(EntityManager& entityManager, Desktop
 	// TODO: Proper error handling
 	glfwSetErrorCallback([](int error, const char* description) {
 		S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
+		assert(false);
 	});
 
 	//Initialize glfw context for Window handling
 	// TODO: proper error handling
-	if (!glfwInit()) {
-		S_LOG_FATAL("GLFW did not initialize");
-	}
+	const auto didInit = glfwInit();
+
+	assert(didInit);
 
 	//TODO: abstract monitors
 	monitors_ = glfwGetMonitors(&monitorCount_);
@@ -32,16 +33,17 @@ DesktopWindowManager::DesktopWindowManager(EntityManager& entityManager, Desktop
 
 }
 
-DesktopWindowManager::~DesktopWindowManager() {
+void DesktopWindowManager::Terminate() {
 
+	windows_.clear();
 	glfwTerminate();
 
 }
 
 bool DesktopWindowManager::ShouldClose() const {
 
-	auto& win = entityManager_->GetComponent<DesktopWindow>(masterWindow_);
-	const auto mainWindow = std::any_cast<GLFWwindow*>(win.GetContext());
+	const auto mainWindow = std::any_cast<GLFWwindow*>(masterWindow_->GetContext());
+
 	if (mainWindow != nullptr) {
 		return glfwWindowShouldClose(mainWindow);
 	}
@@ -53,10 +55,9 @@ bool DesktopWindowManager::ShouldClose() const {
 
 void DesktopWindowManager::SignalClose() {
 
-	for (auto& windowEntity : windows_) {
+	for (auto& win : windows_) {
 
-		auto& win = entityManager_->GetComponent<DesktopWindow>(windowEntity);
-		glfwSetWindowShouldClose(std::any_cast<GLFWwindow*>(win.GetContext()), GLFW_TRUE);
+		glfwSetWindowShouldClose(std::any_cast<GLFWwindow*>(win->GetContext()), GLFW_TRUE);
 
 	}
 
@@ -69,15 +70,13 @@ Window& DesktopWindowManager::CreateWindow(WindowParameters& params) {
 	assert(params.monitor < monitorCount_);
 
 	GLFWmonitor* monitor = monitors_[params.monitor];
-	const Entity windowEntity = entityManager_->CreateEntity();
 
-	if (masterWindow_.IsNull()) {
-		masterWindow_ = windowEntity;
+	windows_.push_back(std::make_unique<DesktopWindow>(params, monitor, *inputManager_));
+
+	if (!masterWindow_) {
+		masterWindow_ = windows_.back().get();
 	}
 
-	entityManager_->AttachComponent<DesktopWindow>(windowEntity, params, monitor, *inputManager_, *entityManager_);
-	windows_.push_back(windowEntity);
-
-	return entityManager_->GetComponent<DesktopWindow>(windowEntity);
+	return *windows_.back().get();
 
 }

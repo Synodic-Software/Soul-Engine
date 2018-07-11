@@ -7,7 +7,7 @@ class DesktopWindow : public Window
 {
 public:
 
-	DesktopWindow(WindowParameters&, GLFWmonitor*, DesktopInputManager&, EntityManager&);
+	DesktopWindow(WindowParameters&, GLFWmonitor*, DesktopInputManager&);
 	~DesktopWindow() override;
 
 	DesktopWindow(const DesktopWindow &) = delete;

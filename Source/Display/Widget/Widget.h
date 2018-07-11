@@ -9,7 +9,7 @@ class Widget
 
 public:
 
-	Widget() = default;
+	Widget();
 	virtual ~Widget() = default;
 
 	Widget(const Widget&) = delete;

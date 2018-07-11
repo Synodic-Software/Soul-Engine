@@ -1,16 +1,24 @@
 #pragma once
 
-//#include "Display\Window\Window.h"
 #include "Rasterer/Graphics API/GraphicsAPI.h"
-#include <vulkan/vulkan.h>
+
+#include "vulkan/vulkan.hpp"
 
 class VulkanAPI : public GraphicsAPI {
+
 public:
 
 	VulkanAPI();
-	~VulkanAPI();
+	~VulkanAPI() = default;
+
+	VulkanAPI(const VulkanAPI&) = delete;
+	VulkanAPI(VulkanAPI&&) noexcept = delete;
+
+	VulkanAPI& operator=(const VulkanAPI&) = delete;
+	VulkanAPI& operator=(VulkanAPI&&) noexcept = delete;
+
 private:
-	void InitInstance();
-	void DeInstance();
-	VkInstance       _instance = nullptr;
- }; 
+
+	vk::UniqueInstance vulkanInstance_;
+
+};
