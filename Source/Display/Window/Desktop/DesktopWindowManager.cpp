@@ -6,9 +6,10 @@
 #include "GLFW/glfw3.h"
 
 
-DesktopWindowManager::DesktopWindowManager(DesktopInputManager& inputManager) :
+DesktopWindowManager::DesktopWindowManager(DesktopInputManager& inputManager, RasterManager& rasterManager) :
 	masterWindow_(nullptr),
-	inputManager_(&inputManager)
+	inputManager_(&inputManager),
+	rasterManager_(&rasterManager)
 {
 
 	//set the error callback
@@ -71,12 +72,12 @@ Window& DesktopWindowManager::CreateWindow(WindowParameters& params) {
 
 	GLFWmonitor* monitor = monitors_[params.monitor];
 
-	windows_.push_back(std::make_unique<DesktopWindow>(params, monitor, *inputManager_));
+	windows_.push_back(std::make_unique<DesktopWindow>(params, monitor, *inputManager_, *rasterManager_));
 
 	if (!masterWindow_) {
 		masterWindow_ = windows_.back().get();
 	}
 
-	return *windows_.back().get();
+	return *windows_.back();
 
 }

@@ -2,12 +2,13 @@
 
 #include "Display/Window/Window.h"
 #include "Transput/Input/Desktop/DesktopInputManager.h"
+#include "Rasterer/RasterManager.h"
 
 class DesktopWindow : public Window 
 {
 public:
 
-	DesktopWindow(WindowParameters&, GLFWmonitor*, DesktopInputManager&);
+	DesktopWindow(WindowParameters&, GLFWmonitor*, DesktopInputManager&, RasterManager&);
 	~DesktopWindow() override;
 
 	DesktopWindow(const DesktopWindow &) = delete;

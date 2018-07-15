@@ -4,12 +4,12 @@
 
 #include "vulkan/vulkan.hpp"
 
-class VulkanAPI : public GraphicsAPI {
+class VulkanAPI final: public GraphicsAPI {
 
 public:
 
 	VulkanAPI();
-	~VulkanAPI() = default;
+	~VulkanAPI() override;
 
 	VulkanAPI(const VulkanAPI&) = delete;
 	VulkanAPI(VulkanAPI&&) noexcept = delete;
@@ -17,8 +17,17 @@ public:
 	VulkanAPI& operator=(const VulkanAPI&) = delete;
 	VulkanAPI& operator=(VulkanAPI&&) noexcept = delete;
 
+	std::unique_ptr<SwapChain> CreateSwapChain(std::any&, glm::uvec2&) override;
+
 private:
 
-	vk::UniqueInstance vulkanInstance_;
+	std::shared_ptr<vk::Instance> vulkanInstance_;
+
+	//TODO alternate storage
+	std::vector<char const*> requiredExtensions_;
+
+
+	std::vector<vk::PhysicalDevice> physicalDevices_;
+	std::vector<vk::Device> logicalDevices_;
 
 };

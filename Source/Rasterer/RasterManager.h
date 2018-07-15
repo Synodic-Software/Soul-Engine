@@ -2,8 +2,11 @@
 
 #include "Graphics API/GraphicsAPI.h"
 #include "Graphics API/Vulkan/VulkanAPI.h"
+#include "Graphics API/SwapChain.h"
 
+#include <memory>
 #include <variant>
+#include <any>
 
 class RasterManager {
 
@@ -22,6 +25,8 @@ public:
 	void PreRaster();
 	void Raster();
 	void PostRaster();
+
+	std::unique_ptr<SwapChain> CreateSwapChain(std::any&, glm::uvec2&) const;
 
 
 private:

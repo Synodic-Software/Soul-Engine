@@ -4,7 +4,7 @@
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Transput/Input/InputManager.h"
 
-DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager) :
+DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager, RasterManager& rasterManager) :
 	Window(params),
 	inputManager_(&inputManager)
 {
@@ -50,7 +50,7 @@ DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, Des
 
 	}
 
-	GLFWwindow* context = glfwCreateWindow(windowParams_.pixelWidth, windowParams_.pixelHeight, windowParams_.title.c_str(), fullscreenMonitor, nullptr);
+	GLFWwindow* context = glfwCreateWindow(windowParams_.pixelSize.x, windowParams_.pixelSize.y, windowParams_.title.c_str(), fullscreenMonitor, nullptr);
 
 	assert(context);
 	context_ = context;
@@ -86,6 +86,10 @@ DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, Des
 		const auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
 		thisWindow->Close();
 	});
+
+	//create swapchain
+	swapChain_ = rasterManager.CreateSwapChain(context_, windowParams_.pixelSize);
+
 
 	//only show the window once all proper callbacks and settings are in place
 	glfwShowWindow(context);

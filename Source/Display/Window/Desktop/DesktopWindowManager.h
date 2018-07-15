@@ -3,13 +3,14 @@
 #include "Display/Window/WindowManager.h"
 #include "Display/Window/Window.h"
 #include "Transput/Input/Desktop/DesktopInputManager.h"
+#include "Rasterer/RasterManager.h"
 
 class DesktopWindowManager : public WindowManager
 {
 
 public:
 
-	DesktopWindowManager(DesktopInputManager&);
+	DesktopWindowManager(DesktopInputManager&, RasterManager&);
 	~DesktopWindowManager() override = default;
 	void Terminate() override;
 
@@ -24,7 +25,7 @@ public:
 	bool ShouldClose() const override;
 	void SignalClose() override;
 
-	//Process. to create a window.
+	//Process to create a window.
 	Window& CreateWindow(WindowParameters&) override;
 
 
@@ -32,7 +33,9 @@ private:
 
 	Window* masterWindow_;
 
-	DesktopInputManager * inputManager_;
+	DesktopInputManager* inputManager_;
+	RasterManager* rasterManager_;
+
 	GLFWmonitor** monitors_;
 
 };

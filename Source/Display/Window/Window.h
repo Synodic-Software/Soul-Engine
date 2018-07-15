@@ -2,6 +2,7 @@
 
 #include "Core/Utility/Types.h"
 #include "Display/Layout/Layout.h"
+#include "Rasterer/Graphics API/SwapChain.h"
 
 #include <string>
 #include <any>
@@ -12,10 +13,8 @@ struct WindowParameters {
 
 	WindowType type;
 	std::string title;
-	uint pixelPosX;
-	uint pixelPosY;
-	uint pixelWidth;
-	uint pixelHeight;
+	glm::uvec2 pixelPosition;
+	glm::uvec2 pixelSize;
 	int monitor;
 
 };
@@ -48,7 +47,10 @@ public:
 
 protected:
 
+	//todo abstract instead of std::any
 	std::any context_;
+
+	std::unique_ptr<SwapChain> swapChain_;
 	std::unique_ptr<Layout> layout_;
 
 	WindowParameters windowParams_;

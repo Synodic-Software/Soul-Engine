@@ -87,7 +87,7 @@ Soul::Implementation::windowManagerVariantType Soul::Implementation::ConstructWi
 	windowManagerVariantType tmp;
 
 	if constexpr (Platform::IsDesktop()) {
-		tmp.emplace<DesktopWindowManager>(std::get<DesktopInputManager>(inputManagerVariant_));
+		tmp.emplace<DesktopWindowManager>(std::get<DesktopInputManager>(inputManagerVariant_), rasterManager_);
 		return tmp;
 	}
 
@@ -201,7 +201,8 @@ void Soul::LateUpdate() {
 }
 
 Window& Soul::CreateWindow(WindowParameters& params) {
-	return detail->windowManager_->CreateWindow(params);
+	Window& window = detail->windowManager_->CreateWindow(params);
+	return window;
 }
 
 
