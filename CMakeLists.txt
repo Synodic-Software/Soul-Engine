@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12.0 FATAL_ERROR)
 
 
 ##############################################
@@ -22,8 +22,8 @@ mark_as_advanced(HUNTER_TLS_VERIFY)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/Hunter/HunterGate.cmake)
 
 HunterGate(
-    URL "https://github.com/ruslo/hunter/archive/v0.22.0.tar.gz"
-    SHA1 "f91a01c6e0eb53b1dc55a6442cd93580db91da07"
+    URL "https://github.com/ruslo/hunter/archive/v0.22.34.tar.gz"
+    SHA1 "a590b3e0fd1d9fd4c9f3dffb425d25df8e1863cb"
     FILEPATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Hunter/config.cmake
 )
 
