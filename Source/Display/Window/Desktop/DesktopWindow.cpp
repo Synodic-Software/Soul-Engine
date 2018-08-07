@@ -87,8 +87,14 @@ DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, Des
 		thisWindow->Close();
 	});
 
+	//create surface
+	surface_ = rasterManager.CreateSurface(context_);
+
+	//create device //TODO: move deviceManager
+	device_ = rasterManager.CreateDevice(surface_);
+
 	//create swapchain
-	swapChain_ = rasterManager.CreateSwapChain(context_, windowParams_.pixelSize);
+	swapChain_ = rasterManager.CreateSwapChain(device_, surface_, windowParams_.pixelSize);
 
 
 	//only show the window once all proper callbacks and settings are in place
@@ -132,6 +138,6 @@ void DesktopWindow::SetLayout(Layout* layout) {
 	layout_->RecreateData();*/
 }
 
-DesktopInputManager& DesktopWindow::GetInputSet() const{
+DesktopInputManager& DesktopWindow::GetInputSet() const {
 	return *inputManager_;
 }

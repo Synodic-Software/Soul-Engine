@@ -6,8 +6,9 @@ class CRTP
 
 public:
 
-	CRTP() = delete;
+	CRTP() = default;
 
+	//return the derived class
 	T& Type();
 	T const& Type() const;
 

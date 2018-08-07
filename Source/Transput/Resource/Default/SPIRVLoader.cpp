@@ -1,7 +1,5 @@
 #include "SPIRVLoader.h"
 
-SPIRVLoader::SPIRVLoader(const Project& project):
-	AbstractResourceLoader(project)
-{	
-	extension_ = "spv";
+void SPIRVLoader::Load(const std::string_view& fileName) {
+	
 }

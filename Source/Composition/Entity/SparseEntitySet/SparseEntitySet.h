@@ -11,7 +11,7 @@ class SparseEntitySet : public AbstractSparseEntitySet, public SparseSet<T> {
 public:
 
 	SparseEntitySet() = default;
-	~SparseEntitySet() override = default;
+	~SparseEntitySet() override;
 
 	SparseEntitySet(const SparseEntitySet &) = delete;
 	SparseEntitySet(SparseEntitySet &&) = default;
@@ -30,7 +30,18 @@ public:
 	template<typename Derived, typename... Args>
 	void Insert(Entity, Args&&...);
 
+	void Clear();
+
 };
+
+template <typename T>
+SparseEntitySet<T>::~SparseEntitySet() {
+
+	for (auto& object : SparseSet<T>::objects_) {
+		object.Terminate();
+	}
+
+}
 
 template <typename T>
 void SparseEntitySet<T>::Remove(uint entityID) {
@@ -75,5 +86,21 @@ void SparseEntitySet<T>::Insert(Entity entity, Args&&... args) {
 	dense_.push_back(entity);
 
 	SparseSet<T>::objects_.emplace_back(std::forward<Args>(args)...);
+
+}
+
+template <typename T>
+void SparseEntitySet<T>::Clear() {
+
+	//TODO: abstract into parent templates
+
+	sparse_.clear();
+	dense_.clear();
+
+	for (auto& object: SparseSet<T>::objects_) {
+		object.Terminate();
+	}
+
+	SparseSet<T>::objects_.clear();
 
 }

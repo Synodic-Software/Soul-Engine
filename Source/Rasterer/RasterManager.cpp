@@ -1,14 +1,13 @@
 #include "RasterManager.h"
 
 #include "Platform/Platform.h"
-#include "Graphics API/Vulkan/VulkanAPI.h"
 #include "Graphics API/Vulkan/VulkanSwapChain.h"
 
-RasterManager::RasterManager() {
+RasterManager::RasterManager(EntityManager& entityManager) {
 
 	if constexpr (Platform::IsDesktop()) {
-		rasterAPIVariant_.emplace<VulkanAPI>();
-		rasterAPI_ = &std::get<VulkanAPI>(rasterAPIVariant_);
+		rasterContextVariant_.emplace<VulkanContext>(entityManager);
+		rasterContext_ = &std::get<VulkanContext>(rasterContextVariant_);
 	}
 
 }
@@ -25,8 +24,21 @@ void RasterManager::PostRaster() {
 	
 }
 
-std::unique_ptr<SwapChain> RasterManager::CreateSwapChain(std::any& windowContext, glm::uvec2& size) const{
+Entity RasterManager::CreateSurface(std::any& windowContext) const {
 	if constexpr (Platform::IsDesktop()) {
-		return rasterAPI_->CreateSwapChain(windowContext, size);
+		return rasterContext_->CreateSurface(windowContext);
+	}
+}
+
+
+std::unique_ptr<SwapChain> RasterManager::CreateSwapChain(Entity device, Entity surface, glm::uvec2& size) const{
+	if constexpr (Platform::IsDesktop()) {
+		return rasterContext_->CreateSwapChain(device, surface, size);
+	}
+}
+
+Entity RasterManager::CreateDevice(Entity surface) const{
+	if constexpr (Platform::IsDesktop()) {
+		return rasterContext_->CreateDevice(surface);
 	}
 }

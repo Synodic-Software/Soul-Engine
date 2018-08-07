@@ -1,10 +1,14 @@
 #pragma once
 
 #include "Rasterer/Graphics API/SwapChain.h"
+#include "VulkanDevice.h"
+#include "Composition/Entity/EntityManager.h"
+#include "VulkanPipeline.h"
 
 #include <vulkan/vulkan.hpp>
 
-#include <any>
+class VulkanSurface;
+class VulkanContext;
 
 struct SwapChainImage {
 	vk::Image image;
@@ -16,7 +20,7 @@ class VulkanSwapChain : public SwapChain {
 
 public:
 
-	VulkanSwapChain(std::shared_ptr<vk::Instance>&, std::vector<vk::PhysicalDevice>&, std::vector<char const*>&, std::any&, glm::uvec2&);
+	VulkanSwapChain(EntityManager&, Entity, Entity, VulkanContext&, glm::uvec2&);
 	~VulkanSwapChain() override;
 
 	VulkanSwapChain(const VulkanSwapChain&) = delete;
@@ -30,15 +34,15 @@ public:
 
 private:
 
-	std::shared_ptr<vk::Instance> vulkanInstance_;
+	EntityManager& entityManager_;
+	VulkanContext& context_;
 
-	//TODO remove hardcoded device creation
-	vk::Device logicalDevice_;
+	Entity device_;
+
+	std::unique_ptr<VulkanPipeline> pipeline_;
 	std::vector<SwapChainImage> images_;
 
-	vk::SurfaceKHR surface_;
 	vk::SwapchainKHR swapChain_;
-
 	vk::ColorSpaceKHR colorSpace_;
 
 	bool vSync;

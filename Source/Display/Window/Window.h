@@ -1,13 +1,15 @@
 #pragma once
 
-#include "Core/Utility/Types.h"
 #include "Display/Layout/Layout.h"
 #include "Rasterer/Graphics API/SwapChain.h"
+#include "Composition/Entity/Entity.h"
 
 #include <string>
 #include <any>
 
 enum class WindowType { WINDOWED, FULLSCREEN, BORDERLESS, EMPTY };
+
+class Surface;
 
 struct WindowParameters {
 
@@ -52,6 +54,8 @@ protected:
 
 	std::unique_ptr<SwapChain> swapChain_;
 	std::unique_ptr<Layout> layout_;
+	Entity surface_;
+	Entity device_;
 
 	WindowParameters windowParams_;
 

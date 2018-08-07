@@ -1,32 +1,22 @@
 #pragma once
 
-#include <atomic>
+#include "Core/Utility/CRTP/CRTP.h"
 
-class Component
+
+//The component class should hold no per-instance state
+template<typename T>
+class Component : CRTP<T, Component>
 {
 
 public:
 
-	Component() = delete;
+	Component() = default;
 
-	template<typename... Type>
-	static size_t Id() noexcept;
+	virtual void Terminate() = 0;
 
-private:
-
-	static std::atomic<size_t> counter_;
-
-	template<typename...>
-	static size_t GenerateID() noexcept;
 };
 
-template<typename... Type>
-size_t Component::Id() noexcept {
-	return GenerateID<std::decay_t<Type>...>();
-}
-
-template<typename...>
-size_t Component::GenerateID() noexcept {
-	static const size_t value = counter_.fetch_add(1);
-	return value;
+template<typename T>
+void Component<T>::Terminate() {
+	this->Type().Terminate();
 }

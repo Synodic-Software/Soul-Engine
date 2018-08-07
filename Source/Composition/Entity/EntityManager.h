@@ -2,11 +2,14 @@
 
 #include "Entity.h"
 #include "Composition/Component/Component.h"
+#include "Core/Utility/ClassID/ClassID.h"
 #include "SparseEntitySet/AbstractSparseEntitySet.h"
 #include "SparseEntitySet/SparseEntitySet.h"
+
 #include <vector>
 #include <memory>
 #include <cassert>
+
 
 class EntityManager
 {
@@ -40,9 +43,14 @@ public:
 	bool IsValid(Entity) const noexcept;
 
 	//component operations
+	
+	//A component can only be attached if it is derived from the Component class
 	template<typename Comp, typename ... Args>
-	void AttachComponent(Entity, Args&& ...);
+	std::enable_if_t<std::is_base_of_v<Component<Comp>, Comp>, void>
+	AttachComponent(Entity, Args&& ...);
 
+	template<typename Comp>
+	void RemoveComponent();
 
 private:
 
@@ -59,7 +67,7 @@ Comp& EntityManager::GetComponent(Entity entity) const noexcept {
 
 	assert(IsValid(entity));
 
-	const auto componentId = Component::Id<Comp>();
+	const auto componentId = ClassID::Id<Comp>();
 	SparseEntitySet<Comp>& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
 
 	return pool[entity.GetId()];
@@ -76,11 +84,12 @@ EntityManager::GetComponent(Entity entity) const noexcept {
 }
 
 template<typename Comp, typename ... Args>
-void EntityManager::AttachComponent(Entity entity, Args&& ... args) {
+std::enable_if_t<std::is_base_of_v<Component<Comp>, Comp>, void>
+EntityManager::AttachComponent(Entity entity, Args&& ... args) {
 
 	assert(IsValid(entity));
 
-	const auto componentId = Component::Id<Comp>();
+	const auto componentId = ClassID::Id<Comp>();
 
 	//componentId is always incrmenting.
 	if (componentId >= componentPools_.size() ) {
@@ -90,5 +99,15 @@ void EntityManager::AttachComponent(Entity entity, Args&& ... args) {
 	auto& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
 
 	pool.Insert(entity, std::forward<Args>(args)...);
+
+}
+
+template<typename Comp>
+void EntityManager::RemoveComponent() {
+
+	const auto componentId = ClassID::Id<Comp>();
+	auto& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
+
+	pool.Clear();
 
 }

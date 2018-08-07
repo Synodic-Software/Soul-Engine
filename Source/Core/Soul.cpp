@@ -35,8 +35,9 @@ public:
 	InputManager* inputManager_;
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
-	RasterManager rasterManager_;
 	EntityManager entityManager_;
+	RasterManager rasterManager_;
+	
 
 private:
 
@@ -54,8 +55,8 @@ Soul::Implementation::Implementation(const Soul& soul) :
 	inputManager_(ConstructInputPtr()),
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
-	rasterManager_(),
-	entityManager_()
+	entityManager_(),
+	rasterManager_(entityManager_)
 {
 }
 

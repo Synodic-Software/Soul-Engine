@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Graphics API/GraphicsAPI.h"
-#include "Graphics API/Vulkan/VulkanAPI.h"
+#include "Graphics API/RasterContext.h"
+#include "Graphics API/Vulkan/VulkanContext.h"
 #include "Graphics API/SwapChain.h"
 
 #include <memory>
@@ -12,7 +12,7 @@ class RasterManager {
 
 public:
 
-	RasterManager();
+	RasterManager(EntityManager&);
 	~RasterManager() = default;
 
 	RasterManager(const RasterManager&) = delete;
@@ -26,12 +26,14 @@ public:
 	void Raster();
 	void PostRaster();
 
-	std::unique_ptr<SwapChain> CreateSwapChain(std::any&, glm::uvec2&) const;
+	Entity CreateSurface(std::any& windowContext) const;
+	std::unique_ptr<SwapChain> CreateSwapChain(Entity, Entity, glm::uvec2&) const;
+	Entity CreateDevice(Entity) const;
 
 
 private:
 
-	std::variant<std::monostate, VulkanAPI> rasterAPIVariant_;
-	GraphicsAPI* rasterAPI_;
+	std::variant<std::monostate, VulkanContext> rasterContextVariant_;
+	RasterContext* rasterContext_;
 
 };

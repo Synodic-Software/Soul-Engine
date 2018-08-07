@@ -2,21 +2,31 @@
 
 #include "Core/Interface/Project/Project.h"
 
-#include <filesystem>
+#include "Core/Utility/CRTP/CRTP.h"
 
-class AbstractResourceLoader {
-	
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <cassert>
+
+template <typename T>
+class AbstractResourceLoader : CRTP<T, AbstractResourceLoader> {
+
 public:
 
-	AbstractResourceLoader(const Project&);
+	AbstractResourceLoader();
 
+	virtual ~AbstractResourceLoader() = default;
+
+	virtual void Load(const std::string_view&) = 0;
 
 protected:
 
-	std::filesystem::path resourcePath_;
-	std::filesystem::path engineResourcePath_;
-
-	//TODO: allow multiple extensions registered per loader
-	std::string_view extension_;
+	static std::string_view extensions_[];
 
 };
+
+template <typename T>
+AbstractResourceLoader<T>::AbstractResourceLoader()
+{
+}
