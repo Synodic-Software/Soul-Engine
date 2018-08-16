@@ -10,7 +10,7 @@ class DesktopWindowManager : public WindowManager
 
 public:
 
-	DesktopWindowManager(DesktopInputManager&, RasterManager&);
+	DesktopWindowManager(EntityManager&, DesktopInputManager&, RasterManager&);
 	~DesktopWindowManager() override = default;
 	void Terminate() override;
 
@@ -31,8 +31,9 @@ public:
 
 private:
 
-	Window* masterWindow_;
+	Entity masterWindow_;
 
+	EntityManager* entityManager_;
 	DesktopInputManager* inputManager_;
 	RasterManager* rasterManager_;
 

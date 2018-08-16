@@ -7,13 +7,14 @@
 
 #include <vector>
 
+class Scheduler;
 class RasterDevice;
 
 class VulkanContext final: public RasterContext {
 
 public:
 
-	VulkanContext(EntityManager&);
+	VulkanContext(Scheduler&,EntityManager&);
 	~VulkanContext() override;
 
 	VulkanContext(const VulkanContext&) = delete;
@@ -36,7 +37,9 @@ private:
 
 	static VkBool32 DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, const VkDebugUtilsMessengerCallbackDataEXT*, void*);
 
+	Scheduler& scheduler_;
 	EntityManager& entityManager_;
+
 	vk::Instance instance_;
 
 	//TODO alternate storage

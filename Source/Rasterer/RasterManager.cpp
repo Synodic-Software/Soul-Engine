@@ -2,11 +2,12 @@
 
 #include "Platform/Platform.h"
 #include "Graphics API/Vulkan/VulkanSwapChain.h"
+#include "Parallelism/Fiber/Scheduler.h"
 
-RasterManager::RasterManager(EntityManager& entityManager) {
+RasterManager::RasterManager(Scheduler& scheduler, EntityManager& entityManager) {
 
 	if constexpr (Platform::IsDesktop()) {
-		rasterContextVariant_.emplace<VulkanContext>(entityManager);
+		rasterContextVariant_.emplace<VulkanContext>(scheduler,entityManager);
 		rasterContext_ = &std::get<VulkanContext>(rasterContextVariant_);
 	}
 

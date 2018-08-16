@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Rasterer/Graphics API/SwapChain.h"
-#include "VulkanDevice.h"
 #include "Composition/Entity/EntityManager.h"
 #include "VulkanPipeline.h"
+#include "VulkanFramebuffer.h"
 
 #include <vulkan/vulkan.hpp>
 
 class VulkanSurface;
-class VulkanContext;
 
 struct SwapChainImage {
 	vk::Image image;
@@ -20,7 +19,7 @@ class VulkanSwapChain : public SwapChain {
 
 public:
 
-	VulkanSwapChain(EntityManager&, Entity, Entity, VulkanContext&, glm::uvec2&);
+	VulkanSwapChain(EntityManager&, Entity, Entity, glm::uvec2&);
 	~VulkanSwapChain() override;
 
 	VulkanSwapChain(const VulkanSwapChain&) = delete;
@@ -31,16 +30,15 @@ public:
 
 	void Resize(glm::uvec2) override;
 
-
 private:
 
 	EntityManager& entityManager_;
-	VulkanContext& context_;
 
 	Entity device_;
 
 	std::unique_ptr<VulkanPipeline> pipeline_;
 	std::vector<SwapChainImage> images_;
+	std::vector<VulkanFramebuffer> framebuffers_;
 
 	vk::SwapchainKHR swapChain_;
 	vk::ColorSpaceKHR colorSpace_;

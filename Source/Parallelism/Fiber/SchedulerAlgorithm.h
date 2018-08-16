@@ -6,21 +6,23 @@
 #include <boost/fiber/algo/algorithm.hpp>
 #include <boost/fiber/scheduler.hpp>
 #include <boost/fiber/detail/context_spinlock_queue.hpp>
-#include <boost/fiber/detail/context_spmc_queue.hpp>
 
-#include <queue>
-
+#include <vector>
 
 class SchedulerAlgorithm :
 	public boost::fibers::algo::algorithm_with_properties<FiberProperties> {
 
 public:
 
-	typedef boost::fibers::detail::context_spinlock_queue queueType;
+	typedef boost::fibers::scheduler::ready_queue_type localQueueType;  
+	typedef boost::fibers::detail::context_spinlock_queue queueType;	//TODO: replace with custom spinlock queue variety
+
 
 	//Construction
 
-	SchedulerAlgorithm(uint, bool, bool = false);
+	SchedulerAlgorithm(uint, bool = false);
+	~SchedulerAlgorithm() = default;
+
 	SchedulerAlgorithm(SchedulerAlgorithm const&) = delete;
 	SchedulerAlgorithm(SchedulerAlgorithm &&) = delete;
 
@@ -29,11 +31,10 @@ public:
 
 
 	//Implementation
-
 	void								awakened(boost::fibers::context*, FiberProperties&)			noexcept override;
-	inline boost::fibers::context*		PickFromQueue(queueType&, uint)								noexcept;
+	inline boost::fibers::context*		PickShared(uint)											noexcept;
+	inline boost::fibers::context*		PickLocal(uint)												noexcept;
 	boost::fibers::context*				pick_next()													noexcept override;
-	boost::fibers::context*				Steal(uint)													noexcept;
 	bool								has_ready_fibers()											const noexcept override;
 	void								property_change(boost::fibers::context*, FiberProperties&)  noexcept override;
 	void								suspend_until(std::chrono::steady_clock::time_point const&) noexcept override;
@@ -42,22 +43,25 @@ public:
 
 private:
 
-	static void InitializeSchedulers(uint, std::vector<boost::intrusive_ptr<SchedulerAlgorithm>>&);
+	static void InitializeSchedulers(uint);
 
 	static std::atomic<uint>										counter_;
 	static std::vector<boost::intrusive_ptr<SchedulerAlgorithm>>    schedulers_;
 
-	uint                                           id_;
-	uint                                           threadCount_;
+	static thread_local std::minstd_rand generator_;
+	static std::uniform_int_distribution<uint> distribution_;
 
-	queueType readyQueues[6];
+	uint                                        id_;
+	uint                                        threadCount_;
 
-	//std::mutex              mainMutex;
-	std::mutex              mtx_;
-	std::condition_variable cnd_;
+	boost::fibers::detail::spinlock				localLocks_[3]; //TODO: replace with a custom spinlock varient
+	localQueueType								localQueues_[3];
+	queueType									sharedQueues_[3];
 
-	bool                    flag_;
-	bool                    suspend_;
-	bool					isMain_;
+	std::mutex              sleepMutex_;
+	std::condition_variable sleepCondition_;
+	bool                    sleepFlag_;
+
+	bool                    suspend_; //scheduler will sleep when no work is found. Needs an externel wakeup if so
 
 };

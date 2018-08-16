@@ -102,8 +102,7 @@ DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, Des
 
 }
 
-DesktopWindow::~DesktopWindow()
-{
+void DesktopWindow::Terminate() {
 	if (context_.has_value()) {
 		glfwDestroyWindow(std::any_cast<GLFWwindow*>(context_));
 	}

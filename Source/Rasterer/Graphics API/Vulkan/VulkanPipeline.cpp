@@ -122,3 +122,6 @@ VulkanPipeline::~VulkanPipeline() {
 
 }
 
+VulkanRenderPass& VulkanPipeline::GetRenderPass() {
+	return renderPass_;
+}

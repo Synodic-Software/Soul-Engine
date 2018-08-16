@@ -7,6 +7,7 @@ class CRTP
 public:
 
 	CRTP() = default;
+	virtual ~CRTP() = default;
 
 	//return the derived class
 	T& Type();

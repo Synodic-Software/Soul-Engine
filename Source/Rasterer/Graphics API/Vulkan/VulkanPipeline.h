@@ -24,9 +24,11 @@ public:
 	VulkanPipeline& operator=(const VulkanPipeline&) = delete;
 	VulkanPipeline& operator=(VulkanPipeline&& other) noexcept = delete;
 
+	VulkanRenderPass& GetRenderPass();
+
 private:
 
-	EntityManager & entityManager_;
+	EntityManager& entityManager_;
 	Entity device_;
 	VulkanRenderPass renderPass_;
 

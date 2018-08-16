@@ -1,11 +1,11 @@
 #include "VulkanSwapChain.h"
 #include "VulkanContext.h"
 #include "VulkanSurface.h"
+#include "VulkanDevice.h"
 
-VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, Entity surface, VulkanContext& context, glm::uvec2& size) :
+VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, Entity surface, glm::uvec2& size) :
 	entityManager_(entityManager),
 	device_(device),
-	context_(context),
 	vSync(false)
 {
 
@@ -98,7 +98,7 @@ VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, En
 	auto swapChainImages = logicalDevice.getSwapchainImagesKHR(swapChain_);
 
 	images_.resize(swapChainImages.size());
-	for (uint32_t i = 0; i < swapChainImages.size(); i++) {
+	for (uint32_t i = 0; i < swapChainImages.size(); ++i) {
 		images_[i].image = swapChainImages[i];
 		colorAttachmentCreateInfo.image = swapChainImages[i];
 		images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
@@ -106,7 +106,14 @@ VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, En
 	}
 
 	//TODO: Remove hardcoded pipeline + Hardcoded paths
-	pipeline_ = std::make_unique<VulkanPipeline>(entityManager_,device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
+	//TODO: Associate paths to Project/Executable
+	pipeline_ = std::make_unique<VulkanPipeline>(entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
+
+
+	//TODO: framebuffers dont get deleted, transfer to ECS and manually terminate
+	for (SwapChainImage& image: images_) {
+		framebuffers_.emplace_back(entityManager_, device_, image.view, pipeline_->GetRenderPass(), size);
+	}
 
 }
 
@@ -116,6 +123,10 @@ VulkanSwapChain::~VulkanSwapChain() {
 
 	for (const auto& image : images_) {
 		logicalDevice.destroyImageView(image.view);
+	}
+
+	for (auto& framebuffer : framebuffers_) {
+		framebuffer.Terminate();
 	}
 
 	logicalDevice.destroySwapchainKHR(swapChain_);

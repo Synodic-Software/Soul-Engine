@@ -6,8 +6,8 @@
 #include "GLFW/glfw3.h"
 
 
-DesktopWindowManager::DesktopWindowManager(DesktopInputManager& inputManager, RasterManager& rasterManager) :
-	masterWindow_(nullptr),
+DesktopWindowManager::DesktopWindowManager(EntityManager& entityManager, DesktopInputManager& inputManager, RasterManager& rasterManager) :
+	entityManager_(&entityManager),
 	inputManager_(&inputManager),
 	rasterManager_(&rasterManager)
 {
@@ -36,6 +36,7 @@ DesktopWindowManager::DesktopWindowManager(DesktopInputManager& inputManager, Ra
 
 void DesktopWindowManager::Terminate() {
 
+	entityManager_->RemoveComponent<DesktopWindow>();
 	windows_.clear();
 	glfwTerminate();
 
@@ -43,7 +44,9 @@ void DesktopWindowManager::Terminate() {
 
 bool DesktopWindowManager::ShouldClose() const {
 
-	const auto mainWindow = std::any_cast<GLFWwindow*>(masterWindow_->GetContext());
+	auto& win = entityManager_->GetComponent<DesktopWindow>(masterWindow_);
+
+	const auto mainWindow = std::any_cast<GLFWwindow*>(win.GetContext());
 
 	if (mainWindow != nullptr) {
 		return glfwWindowShouldClose(mainWindow);
@@ -56,9 +59,11 @@ bool DesktopWindowManager::ShouldClose() const {
 
 void DesktopWindowManager::SignalClose() {
 
-	for (auto& win : windows_) {
+	for (auto& winEntity : windows_) {
 
-		glfwSetWindowShouldClose(std::any_cast<GLFWwindow*>(win->GetContext()), GLFW_TRUE);
+		auto& win = entityManager_->GetComponent<DesktopWindow>(winEntity);
+
+		glfwSetWindowShouldClose(std::any_cast<GLFWwindow*>(win.GetContext()), GLFW_TRUE);
 
 	}
 
@@ -72,12 +77,15 @@ Window& DesktopWindowManager::CreateWindow(WindowParameters& params) {
 
 	GLFWmonitor* monitor = monitors_[params.monitor];
 
-	windows_.push_back(std::make_unique<DesktopWindow>(params, monitor, *inputManager_, *rasterManager_));
+	const Entity newEntity = entityManager_->CreateEntity();
+	windows_.push_back(newEntity);
 
-	if (!masterWindow_) {
-		masterWindow_ = windows_.back().get();
+	entityManager_->AttachComponent<DesktopWindow>(newEntity,params, monitor, *inputManager_, *rasterManager_);
+
+	if (masterWindow_.IsNull()) {
+		masterWindow_ = newEntity;
 	}
 
-	return *windows_.back();
+	return entityManager_->GetComponent<DesktopWindow>(newEntity);
 
 }

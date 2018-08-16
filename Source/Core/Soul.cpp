@@ -33,9 +33,9 @@ public:
 	EventManager eventManager_;
 	inputManagerVariantType inputManagerVariant_;
 	InputManager* inputManager_;
+	EntityManager entityManager_;
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
-	EntityManager entityManager_;
 	RasterManager rasterManager_;
 	
 
@@ -53,10 +53,10 @@ Soul::Implementation::Implementation(const Soul& soul) :
 	eventManager_(),
 	inputManagerVariant_(ConstructInputManager()),
 	inputManager_(ConstructInputPtr()),
+	entityManager_(),
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
-	entityManager_(),
-	rasterManager_(entityManager_)
+	rasterManager_(scheduler_, entityManager_)
 {
 }
 
@@ -88,7 +88,7 @@ Soul::Implementation::windowManagerVariantType Soul::Implementation::ConstructWi
 	windowManagerVariantType tmp;
 
 	if constexpr (Platform::IsDesktop()) {
-		tmp.emplace<DesktopWindowManager>(std::get<DesktopInputManager>(inputManagerVariant_), rasterManager_);
+		tmp.emplace<DesktopWindowManager>(entityManager_,std::get<DesktopInputManager>(inputManagerVariant_), rasterManager_);
 		return tmp;
 	}
 

@@ -8,11 +8,13 @@
 #include <variant>
 #include <any>
 
+class Scheduler;
+
 class RasterManager {
 
 public:
 
-	RasterManager(EntityManager&);
+	RasterManager(Scheduler&, EntityManager&);
 	~RasterManager() = default;
 
 	RasterManager(const RasterManager&) = delete;

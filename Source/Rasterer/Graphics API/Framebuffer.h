@@ -8,9 +8,9 @@ public:
 	virtual ~Framebuffer() = default;
 
 	Framebuffer(const Framebuffer&) = delete;
-	Framebuffer(Framebuffer&& o) noexcept = delete;
+	Framebuffer(Framebuffer&& o) noexcept = default;
 
 	Framebuffer& operator=(const Framebuffer&) = delete;
-	Framebuffer& operator=(Framebuffer&& other) noexcept = delete;
+	Framebuffer& operator=(Framebuffer&& other) noexcept = default;
 
 };

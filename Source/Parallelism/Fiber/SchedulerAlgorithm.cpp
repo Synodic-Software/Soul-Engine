@@ -6,95 +6,102 @@
 std::atomic<uint> SchedulerAlgorithm::counter_(0);
 std::vector<boost::intrusive_ptr<SchedulerAlgorithm>> SchedulerAlgorithm::schedulers_;
 
-SchedulerAlgorithm::SchedulerAlgorithm(uint threadCount, bool isMain, bool suspend) :
+thread_local std::minstd_rand SchedulerAlgorithm::generator_;
+std::uniform_int_distribution<uint> SchedulerAlgorithm::distribution_;
+
+SchedulerAlgorithm::SchedulerAlgorithm(uint threadCount, bool suspend) :
 	id_(counter_++),
 	threadCount_(threadCount),
-	flag_(false),
-	suspend_(suspend),
-	isMain_(isMain)
+	sleepFlag_(false),
+	suspend_(suspend)
 {
 
 	//only initialize schedulers once
 	static std::once_flag flag;
-	std::call_once(flag, &SchedulerAlgorithm::InitializeSchedulers, threadCount_, std::ref(schedulers_));
+	std::call_once(flag, &SchedulerAlgorithm::InitializeSchedulers, threadCount_);
 
 	// register this scheduler
 	schedulers_[id_] = this;
 
 }
 
-void SchedulerAlgorithm::InitializeSchedulers(uint thread_count,
-	std::vector<boost::intrusive_ptr<SchedulerAlgorithm>>& schedulers) {
+void SchedulerAlgorithm::InitializeSchedulers(uint thread_count) {
 
 	schedulers_.resize(thread_count, nullptr);
+	std::random_device r;
+	generator_ = std::minstd_rand(r());
+	distribution_ = std::uniform_int_distribution<uint>(0, static_cast<uint>(thread_count - 1));
 
 }
 
-//called when a newly launched, blocked, or yielded fiber wakes up. Because the readyQueue is work stealing, 
-//we cant push to it as it may be stolen before properties are set
-void SchedulerAlgorithm::awakened(boost::fibers::context * ctx, FiberProperties& props) noexcept {
+//called when a newly `posted` launched, blocked, or yielded fiber wakes up.
+void SchedulerAlgorithm::awakened(boost::fibers::context* ctx, FiberProperties& props) noexcept {
 
+	//if the fiber is a worker, open the posibility it may be moved in between threads, so detach it from its current
 	if (!ctx->is_context(boost::fibers::type::pinned_context)) {
 		ctx->detach();
 	}
 
-	if (props.RunOnMain()) {
+	//a pinned context can only run on its thread of origin, so push the fiber to the thread only queue, no properties set
+	//a dispatched fiber will only apear if it has yeilded, and will not have any user set properties
+	//a posted fiber will join the sharedQueues_ only when properties are set, and are pushed to the local in the meantime
 
-		switch (props.GetPriority()) {
-		case FiberPriority::LOW:
-			readyQueues[5].push(ctx);
-			break;
-		case FiberPriority::HIGH:
-			readyQueues[4].push(ctx);
-			break;
-		case FiberPriority::UX:
-			readyQueues[3].push(ctx);
-			break;
-		}
 
+	switch (props.GetPriority()) {
+	case FiberPriority::LOW:
+	{
+		boost::fibers::detail::spinlock_lock spinLock(localLocks_[2]);
+		localQueues_[2].push_back(*ctx);
 	}
-	else {
-
-		switch (props.GetPriority()) {
-		case FiberPriority::LOW:
-			readyQueues[2].push(ctx);
-			break;
-		case FiberPriority::HIGH:
-			readyQueues[1].push(ctx);
-			break;
-		case FiberPriority::UX:
-			readyQueues[0].push(ctx);
-			break;
-		}
-
+	break;
+	case FiberPriority::HIGH:
+	{
+		boost::fibers::detail::spinlock_lock spinLock(localLocks_[1]);
+		localQueues_[1].push_back(*ctx);
+	}
+	break;
+	case FiberPriority::UX:
+	{
+		boost::fibers::detail::spinlock_lock spinLock(localLocks_[0]);
+		localQueues_[0].push_back(*ctx);
+	}
+	break;
 	}
 
+	//TODO:: if execution asserts, write/investigate this edgecase
+	assert(!ctx->is_context(boost::fibers::type::none));
 
 }
 
-boost::fibers::context* SchedulerAlgorithm::PickFromQueue(queueType& queue, uint index) noexcept {
+//pick a fiber from the local queue
+boost::fibers::context* SchedulerAlgorithm::PickLocal(uint index) noexcept {
 
-	boost::fibers::context* victim = queue.pop();
+	boost::fibers::context* victim;
 
-	if (victim != nullptr) {
-		boost::context::detail::prefetch_range(victim, sizeof(boost::fibers::context));
-		if (!victim->is_context(boost::fibers::type::pinned_context)) {
-			boost::fibers::context::active()->attach(victim);
+	{
+		boost::fibers::detail::spinlock_lock spinLock(localLocks_[index]);
+
+		if (localQueues_[index].empty()) {
+			victim = nullptr;
+		}
+		else {
+			victim = &localQueues_[index].front();
+			localQueues_[index].pop_front();
 		}
 	}
-	else {
+
+	return victim;
+}
+
+//pick a fiber from the shared queue
+boost::fibers::context* SchedulerAlgorithm::PickShared(uint index) noexcept {
+
+	boost::fibers::context* victim = sharedQueues_[index].pop();
+
+	if (!victim && threadCount_ > 1) {
 
 		uint id;
 		uint count = 0;
-		const uint size = schedulers_.size();
-
-		static thread_local std::minstd_rand generator{
-			std::random_device{}()
-		};
-
-		const std::uniform_int_distribution<uint> distribution{
-			0, static_cast<uint>(threadCount_ - 1)
-		};
 
 		do {
 
@@ -102,23 +109,17 @@ boost::fibers::context* SchedulerAlgorithm::PickFromQueue(queueType& queue, uint
 				++count;
 
 				// random selection of one logical cpu
-				id = distribution(generator);
+				id = distribution_(generator_);
 
-				// prevent stealing from own scheduler
+				// prevent stealing from own scheduler unless it is the only scheduler
 			} while (id == id_);
 
 			//steal context from other scheduler
 			if (schedulers_[id]) {
-				victim = schedulers_[id]->Steal(index);
+				victim = schedulers_[id]->sharedQueues_[index].steal();
 			}
 
-		} while (nullptr == victim && count < size);
-
-		if (nullptr != victim) {
-			boost::context::detail::prefetch_range(victim, sizeof(boost::fibers::context));
-			BOOST_ASSERT(!victim->is_context(boost::fibers::type::pinned_context));
-			boost::fibers::context::active()->attach(victim);
-		}
+		} while (nullptr == victim && count < schedulers_.size());
 
 	}
 
@@ -131,62 +132,163 @@ boost::fibers::context* SchedulerAlgorithm::pick_next() noexcept {
 
 	boost::fibers::context* victim = nullptr;
 
-	if (isMain_) {
-		for (auto i = 3; i < 6 && !victim; ++i) {
-			victim = PickFromQueue(readyQueues[i], i);
+	//interleave local and shared queues. Local are picked first as not to starve them
+	for (auto i = 0; i < 3 && !victim; ++i) {
+
+		victim = PickLocal(i);
+
+		if (victim) {
+			break;
 		}
+
+		victim = PickShared(i);
+
 	}
 
-	for (auto i = 0; i < 3 && !victim; ++i) {
-		victim = PickFromQueue(readyQueues[i], i);
+	if (victim) {
+
+		boost::context::detail::prefetch_range(victim, sizeof(boost::fibers::context));
+
+		//associate the fiber to this thread if it is a worker thread
+		if (!victim->is_context(boost::fibers::type::pinned_context)) {
+			boost::fibers::context::active()->attach(victim);
+		}
+
 	}
 
 	return victim;
 
 }
 
-boost::fibers::context* SchedulerAlgorithm::Steal(uint index) noexcept {
-	return readyQueues[index].steal();
-}
-
 bool SchedulerAlgorithm::has_ready_fibers() const noexcept {
 
-	if (isMain_) {
-		return !readyQueues[0].empty() && !readyQueues[1].empty() && !readyQueues[2].empty() &&
-			!readyQueues[3].empty() && !readyQueues[4].empty() && !readyQueues[5].empty();
-	}
+	return
+		!sharedQueues_[0].empty() &&
+		!sharedQueues_[1].empty() &&
+		!sharedQueues_[2].empty() &&
+		!localQueues_[0].empty() &&
+		!localQueues_[1].empty() &&
+		!localQueues_[2].empty();
 
-	return !readyQueues[0].empty() && !readyQueues[1].empty() && !readyQueues[2].empty();
 }
 
-//on a property change that requires the fiber to migrate queues or reorder itself...
+//all post fibers appear here, ready to be delegated to sharedQueues_
 void SchedulerAlgorithm::property_change(boost::fibers::context* ctx, FiberProperties& props) noexcept {
+
+	//possibly changed when not in the local queue, no update needed
 	if (!ctx->ready_is_linked()) {
 		return;
 	}
+
+	//unlinking the context from the local queues, no lock needed as it exists per thread (fiber garunteed to not switch until properties are set)
 	ctx->ready_unlink();
-	awakened(ctx, props);
+
+	//ready, push fiber to shared queues
+	if (const auto requiredThread = props.RequiredThread(); requiredThread >= 0) {
+
+		switch (props.GetPriority()) {
+		case FiberPriority::LOW:
+		{
+			boost::fibers::detail::spinlock_lock spinLock(schedulers_[requiredThread]->localLocks_[2]);
+			schedulers_[requiredThread]->localQueues_[2].push_back(*ctx);
+		}
+		break;
+		case FiberPriority::HIGH:
+		{
+			boost::fibers::detail::spinlock_lock spinLock(schedulers_[requiredThread]->localLocks_[1]);
+			schedulers_[requiredThread]->localQueues_[1].push_back(*ctx);
+		}
+		break;
+		case FiberPriority::UX:
+		{
+			boost::fibers::detail::spinlock_lock spinLock(schedulers_[requiredThread]->localLocks_[0]);
+			schedulers_[requiredThread]->localQueues_[0].push_back(*ctx);
+		}
+		break;
+		}
+
+		//because the fiber may be pushed to a different scheduler, notify the target scheduler
+		schedulers_[requiredThread]->notify();
+
+	}
+	else {
+
+		switch (props.GetPriority()) {
+		case FiberPriority::LOW:
+			sharedQueues_[2].push(ctx);
+			break;
+		case FiberPriority::HIGH:
+			sharedQueues_[1].push(ctx);
+			break;
+		case FiberPriority::UX:
+			sharedQueues_[0].push(ctx);
+			break;
+		}
+
+
+		//hueristic for enabling another scheduler
+		//pick one scheduler at random to wake up and try to find work
+		if (threadCount_ > 1) {
+
+			uint id;
+			do {
+				// random selection of one logical cpu
+				id = distribution_(generator_);
+
+				// prevent stealing from own scheduler unless it is the only scheduler
+			} while (id == id_);
+
+			schedulers_[id]->notify();
+
+		}
+	}
+
 }
 
-void SchedulerAlgorithm::suspend_until(std::chrono::steady_clock::time_point const& time_point) noexcept {
+void SchedulerAlgorithm::suspend_until(std::chrono::steady_clock::time_point const& targetTime) noexcept {
+
 	if (suspend_) {
-		if ((std::chrono::steady_clock::time_point::max)() == time_point) {
-			std::unique_lock< std::mutex > lk(mtx_);
-			cnd_.wait(lk, [this]() { return flag_; });
-			flag_ = false;
+
+		if ((std::chrono::steady_clock::time_point::max)() == targetTime) {
+
+			//indefinite sleep
+			std::unique_lock< std::mutex > lk(sleepMutex_);
+			sleepCondition_.wait(lk, [this]()
+			{
+				return sleepFlag_;
+			});
+
+			sleepFlag_ = false;
+
 		}
 		else {
-			std::unique_lock< std::mutex > lk(mtx_);
-			cnd_.wait_until(lk, time_point, [this]() { return flag_; });
-			flag_ = false;
+
+			//timed sleep
+			std::unique_lock< std::mutex > lk(sleepMutex_);
+			sleepCondition_.wait_until(lk, targetTime, [this]()
+			{
+				return sleepFlag_;
+			});
+
+			sleepFlag_ = false;
+
 		}
+
 	}
+
 }
+
 void SchedulerAlgorithm::notify() noexcept {
+
 	if (suspend_) {
-		std::unique_lock< std::mutex > lk(mtx_);
-		flag_ = true;
-		lk.unlock();
-		cnd_.notify_all();
+
+		{
+			std::scoped_lock< std::mutex > lk(sleepMutex_);
+			sleepFlag_ = true;
+		}
+
+		sleepCondition_.notify_all();
+
 	}
+
 }

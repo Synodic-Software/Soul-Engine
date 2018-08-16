@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Display/Window/Window.h"
+#include "Composition/Entity/Entity.h"
 
 #include <vector>
 
@@ -35,7 +36,7 @@ public:
 protected:
 
 	//List of all windows handled by the DesktopWindowManager.
-	std::vector<std::unique_ptr<Window>> windows_;
+	std::vector<Entity> windows_;
 
 	int monitorCount_;
 	bool runningFlag_;

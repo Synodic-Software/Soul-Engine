@@ -2,23 +2,23 @@
 
 FiberProperties::FiberProperties(boost::fibers::context* context) :
 	fiber_properties(context),
-	priority(FiberPriority::LOW),
-	runOnMain(false)
+	priority_(FiberPriority::HIGH),
+	requiredThread_(-1)
 {
 }
 
 FiberPriority FiberProperties::GetPriority() const {
-	return priority;
+	return priority_;
 }
 
-bool FiberProperties::RunOnMain() const {
-	return runOnMain;
+int FiberProperties::RequiredThread() const {
+	return requiredThread_;
 }
 
-void FiberProperties::SetProperties(FiberPriority p, bool m) {
-	if (p != priority || m != runOnMain) {
-		priority = p;
-		runOnMain = m;
+void FiberProperties::SetProperties(FiberPriority p, int m) {
+	if (p != priority_ || m != requiredThread_) {
+		priority_ = p;
+		requiredThread_ = m;
 		notify();
 	}
 }

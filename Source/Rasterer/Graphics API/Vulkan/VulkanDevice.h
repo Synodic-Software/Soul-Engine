@@ -2,14 +2,17 @@
 
 #include "Rasterer/Graphics API/RasterDevice.h"
 #include "Composition/Component/Component.h"
+#include "Parallelism/Thread/ThreadLocal.h"
 
 #include <vulkan/vulkan.hpp>
+
+class Scheduler;
 
 class VulkanDevice : public RasterDevice, Component<VulkanDevice> {
 
 public:
 
-	VulkanDevice(vk::PhysicalDevice*, vk::Device);
+	VulkanDevice(Scheduler&, vk::PhysicalDevice*, vk::Device);
 	~VulkanDevice() override = default;
 
 	VulkanDevice(const VulkanDevice&) = delete;
@@ -28,8 +31,12 @@ public:
 
 private:
 
+	Scheduler* scheduler_;
+
 	vk::Device device_;
 	vk::PhysicalDevice* physicalDevice_;
 	vk::PipelineCache pipelineCache_;
+
+	ThreadLocal<vk::CommandPool> commandPool_;
 
 };

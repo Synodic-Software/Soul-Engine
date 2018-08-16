@@ -10,11 +10,15 @@ class FiberParameters {
 
 public:
 
-	FiberParameters();
+	FiberParameters(bool = true, FiberPriority = FiberPriority::HIGH, bool = true, int = -1);
 
-	bool attach; //attaches the fiber to its parent
-	bool swap; // the fiber will be immediatly executed and the current fiber put onto queue
-	bool needsMainThread; //forces the fiber to run on the main thread
-	FiberPriority priority;
-	
+private:
+
+	friend class Scheduler;
+
+	bool post_; // the fiber will not execute immediatly and instead run when a scheduler picks it up. If not true, the fiber is required to remain on this thread and other parameters dont matter.	
+	FiberPriority priority_;
+	bool shouldBlock_; //attaches the fiber to its parent. Garunteed to complete before the parent does and can synchronize with `Block()`
+	int requiredThread_; //forces the fiber to run on a pecified thread, any negative number runs on any thread
+
 };

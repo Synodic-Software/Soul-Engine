@@ -12,13 +12,13 @@ public:
 
 	//Implementation
 	FiberPriority GetPriority() const;
-	bool RunOnMain() const;
+	int RequiredThread() const;
 
-	void SetProperties(FiberPriority, bool);
-	
+	void SetProperties(FiberPriority, int);
 
 private:
 
-	FiberPriority priority;
-	bool runOnMain;
+	FiberPriority priority_;
+	int requiredThread_;
+
 };

@@ -11,6 +11,7 @@ class Component : CRTP<T, Component>
 public:
 
 	Component() = default;
+	~Component() override = default;
 
 	virtual void Terminate() = 0;
 

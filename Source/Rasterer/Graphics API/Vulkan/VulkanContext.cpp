@@ -4,6 +4,7 @@
 
 #include "VulkanSwapChain.h"
 #include "VulkanSurface.h"
+#include "Parallelism/Fiber/Scheduler.h"
 
 #include <set>
 
@@ -13,8 +14,9 @@ const std::vector<const char*> validationLayers = {
 	"VK_LAYER_LUNARG_standard_validation"
 };
 
-VulkanContext::VulkanContext(EntityManager& entityManger) :
+VulkanContext::VulkanContext(Scheduler& scheduler, EntityManager& entityManger) :
 	RasterContext(RasterAPI::VULKAN),
+	scheduler_(scheduler),
 	entityManager_(entityManger)
 {
 
@@ -93,7 +95,7 @@ VulkanContext::~VulkanContext() {
 
 	if constexpr (validationEnabled_) {
 
-		instance_.destroyDebugUtilsMessengerEXT(debugMessenger_,nullptr, dispatcher_);
+		instance_.destroyDebugUtilsMessengerEXT(debugMessenger_, nullptr, dispatcher_);
 
 	}
 
@@ -122,7 +124,7 @@ Entity VulkanContext::CreateSurface(std::any& windowContext) {
 }
 
 std::unique_ptr<SwapChain> VulkanContext::CreateSwapChain(Entity device, Entity surface, glm::uvec2& size) {
-	return std::make_unique<VulkanSwapChain>(entityManager_, device, surface, *this, size);
+	return std::make_unique<VulkanSwapChain>(entityManager_, device, surface, size);
 }
 
 Entity VulkanContext::CreateDevice(Entity surface) {
@@ -238,7 +240,7 @@ Entity VulkanContext::CreateDevice(Entity surface) {
 		deviceCreateInfo.enabledLayerCount = 0;
 	}
 
-	entityManager_.AttachComponent<VulkanDevice>(device, &physicalDevice, physicalDevice.createDevice(
+	entityManager_.AttachComponent<VulkanDevice>(device, scheduler_, &physicalDevice, physicalDevice.createDevice(
 		deviceCreateInfo
 	));
 
@@ -252,6 +254,5 @@ VkBool32 VulkanContext::DebugCallback(
 	void* pUserData) {
 
 	//TODO: some true down to earth messaging
-	assert(false);
 	return true;
 }

@@ -3,13 +3,14 @@
 #include "Display/Window/Window.h"
 #include "Transput/Input/Desktop/DesktopInputManager.h"
 #include "Rasterer/RasterManager.h"
+#include "Composition/Component/Component.h"
 
-class DesktopWindow : public Window 
+class DesktopWindow : public Window, Component<DesktopWindow>
 {
 public:
 
 	DesktopWindow(WindowParameters&, GLFWmonitor*, DesktopInputManager&, RasterManager&);
-	~DesktopWindow() override;
+	~DesktopWindow() = default;
 
 	DesktopWindow(const DesktopWindow &) = delete;
 	DesktopWindow(DesktopWindow &&) noexcept = default;
@@ -17,12 +18,14 @@ public:
 	DesktopWindow& operator=(const DesktopWindow &) = delete;
 	DesktopWindow& operator=(DesktopWindow &&) noexcept = default;
 
+	void Terminate() override;
+
 	void Draw() override;
 
 	void Refresh() override;
 	void Close() override;
 	void Resize(int, int) override;
-	void PositionUpdate(int,int) override;
+	void PositionUpdate(int, int) override;
 	void SetLayout(Layout*) override;
 
 	DesktopInputManager& GetInputSet() const;
@@ -30,6 +33,6 @@ public:
 private:
 
 	//the stored input manager will always be desktop, as this class is a the desktop version
-	DesktopInputManager* inputManager_;
+	DesktopInputManager * inputManager_;
 
 };
