@@ -30,6 +30,8 @@ public:
 	virtual std::unique_ptr<SwapChain> CreateSwapChain(Entity, Entity, glm::uvec2&) = 0;
 	virtual Entity CreateDevice(Entity) = 0;
 
+	virtual void Synchronize() = 0;
+
 protected:
 
 	RasterAPI rasterAPI_;

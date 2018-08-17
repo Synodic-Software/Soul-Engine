@@ -29,6 +29,7 @@ public:
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = delete;
 
 	void Resize(glm::uvec2) override;
+	void Draw() override;
 
 private:
 
@@ -38,10 +39,17 @@ private:
 
 	std::unique_ptr<VulkanPipeline> pipeline_;
 	std::vector<SwapChainImage> images_;
-	std::vector<VulkanFramebuffer> framebuffers_;
+	std::vector<VulkanFramebuffer> frameBuffers_;
+	std::vector<vk::CommandBuffer> commandBuffers_;
 
 	vk::SwapchainKHR swapChain_;
 	vk::ColorSpaceKHR colorSpace_;
+
+	std::vector<vk::Semaphore> imageAvailableSemaphores;
+	std::vector<vk::Semaphore> renderFinishedSemaphores;
+	std::vector<vk::Fence> inFlightFences;
+	size_t currentFrame;
+	uint flightFramesCount;
 
 	bool vSync;
 

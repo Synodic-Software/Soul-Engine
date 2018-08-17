@@ -89,3 +89,14 @@ Window& DesktopWindowManager::CreateWindow(WindowParameters& params) {
 	return entityManager_->GetComponent<DesktopWindow>(newEntity);
 
 }
+
+void DesktopWindowManager::Draw() {
+
+	for (auto& windowEntity : windows_) {
+
+		auto& window = entityManager_->GetComponent<DesktopWindow>(windowEntity);
+		window.Draw();
+
+	}
+
+}

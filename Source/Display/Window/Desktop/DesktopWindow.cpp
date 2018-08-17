@@ -103,18 +103,24 @@ DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, Des
 }
 
 void DesktopWindow::Terminate() {
+
 	if (context_.has_value()) {
 		glfwDestroyWindow(std::any_cast<GLFWwindow*>(context_));
 	}
+
 }
 
 void DesktopWindow::Draw()
 {
-	//layout_->Draw();
+
+	swapChain_->Draw();
+
 }
 
 
 void DesktopWindow::Refresh() {
+
+
 
 }
 

@@ -43,3 +43,9 @@ Entity RasterManager::CreateDevice(Entity surface) const{
 		return rasterContext_->CreateDevice(surface);
 	}
 }
+
+void RasterManager::Synchronize() {
+
+	rasterContext_->Synchronize();
+
+}

@@ -202,8 +202,10 @@ void Soul::LateUpdate() {
 }
 
 Window& Soul::CreateWindow(WindowParameters& params) {
+
 	Window& window = detail->windowManager_->CreateWindow(params);
 	return window;
+
 }
 
 
@@ -265,4 +267,8 @@ void Soul::Run()
 		Raster();
 
 	}
+
+	//done running, synchronize rastering
+	detail->rasterManager_.Synchronize();
+
 }

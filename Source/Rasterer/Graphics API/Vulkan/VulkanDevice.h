@@ -12,7 +12,7 @@ class VulkanDevice : public RasterDevice, Component<VulkanDevice> {
 
 public:
 
-	VulkanDevice(Scheduler&, vk::PhysicalDevice*, vk::Device);
+	VulkanDevice(Scheduler&, int,int,vk::PhysicalDevice*, vk::Device);
 	~VulkanDevice() override = default;
 
 	VulkanDevice(const VulkanDevice&) = delete;
@@ -27,7 +27,9 @@ public:
 	const vk::Device& GetLogicalDevice() const;
 	const vk::PipelineCache& GetPipelineCache() const;
 	const vk::PhysicalDevice& GetPhysicalDevice() const;
-
+	const vk::CommandPool& GetCommandPool() const;
+	const vk::Queue& GetGraphicsQueue() const;
+	const vk::Queue& GetPresentQueue() const;
 
 private:
 
@@ -36,6 +38,9 @@ private:
 	vk::Device device_;
 	vk::PhysicalDevice* physicalDevice_;
 	vk::PipelineCache pipelineCache_;
+
+	vk::Queue graphicsQueue_;
+	vk::Queue presentQueue_;
 
 	ThreadLocal<vk::CommandPool> commandPool_;
 

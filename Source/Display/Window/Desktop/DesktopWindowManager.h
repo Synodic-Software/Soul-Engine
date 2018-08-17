@@ -28,6 +28,7 @@ public:
 	//Process to create a window.
 	Window& CreateWindow(WindowParameters&) override;
 
+	void Draw() override;
 
 private:
 

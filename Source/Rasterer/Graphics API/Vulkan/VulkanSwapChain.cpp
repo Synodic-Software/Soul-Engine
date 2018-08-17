@@ -6,6 +6,8 @@
 VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, Entity surface, glm::uvec2& size) :
 	entityManager_(entityManager),
 	device_(device),
+	currentFrame(0),
+	flightFramesCount(2),
 	vSync(false)
 {
 
@@ -109,10 +111,64 @@ VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, En
 	//TODO: Associate paths to Project/Executable
 	pipeline_ = std::make_unique<VulkanPipeline>(entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
 
+	for (SwapChainImage& image : images_) {
+		frameBuffers_.emplace_back(entityManager_, device_, image.view, pipeline_->GetRenderPass(), size);
+	}
 
-	//TODO: framebuffers dont get deleted, transfer to ECS and manually terminate
-	for (SwapChainImage& image: images_) {
-		framebuffers_.emplace_back(entityManager_, device_, image.view, pipeline_->GetRenderPass(), size);
+	vk::CommandBufferAllocateInfo allocInfo;
+	allocInfo.commandPool = vkDevice.GetCommandPool();
+	allocInfo.level = vk::CommandBufferLevel::ePrimary;
+	allocInfo.commandBufferCount = static_cast<uint32_t>(swapChainImages.size());
+
+	commandBuffers_ = logicalDevice.allocateCommandBuffers(allocInfo);
+
+	vk::ClearValue clearColor(
+		vk::ClearColorValue(std::array<float, 4>{ 0.0f, 0.0f, 0.0f, 1.0f })
+	);
+
+	for (size_t i = 0; i < commandBuffers_.size(); i++) {
+
+		vk::CommandBufferBeginInfo beginInfo;
+		beginInfo.flags = vk::CommandBufferUsageFlagBits::eSimultaneousUse;
+		beginInfo.pInheritanceInfo = nullptr;
+
+		vk::RenderPassBeginInfo renderPassInfo;
+		renderPassInfo.renderPass = pipeline_->GetRenderPass().GetRenderPass();
+		renderPassInfo.framebuffer = frameBuffers_[i].GetFrameBuffer();
+		renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
+		renderPassInfo.renderArea.extent = swapchainSize;
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = &clearColor;
+
+		commandBuffers_[i].begin(beginInfo);
+
+		commandBuffers_[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+		commandBuffers_[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
+		commandBuffers_[i].draw(3, 1, 0, 0);
+		commandBuffers_[i].endRenderPass();
+
+		commandBuffers_[i].end();
+
+	}
+
+
+	//set up synchronization primatives
+	imageAvailableSemaphores.resize(flightFramesCount);
+	renderFinishedSemaphores.resize(flightFramesCount);
+	inFlightFences.resize(flightFramesCount);
+
+	vk::SemaphoreCreateInfo semaphoreInfo;
+
+	vk::FenceCreateInfo fenceInfo;
+	fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
+
+	for (size_t i = 0; i < flightFramesCount; i++) {
+
+		imageAvailableSemaphores[i] = logicalDevice.createSemaphore(semaphoreInfo);
+		renderFinishedSemaphores[i] = logicalDevice.createSemaphore(semaphoreInfo);
+
+		inFlightFences[i] = logicalDevice.createFence(fenceInfo);
+
 	}
 
 }
@@ -121,11 +177,19 @@ VulkanSwapChain::~VulkanSwapChain() {
 
 	const vk::Device& logicalDevice = entityManager_.GetComponent<VulkanDevice>(device_).GetLogicalDevice();
 
+	for (size_t i = 0; i < flightFramesCount; i++) {
+
+		logicalDevice.destroySemaphore(imageAvailableSemaphores[i]);
+		logicalDevice.destroySemaphore(renderFinishedSemaphores[i]);
+		logicalDevice.destroyFence(inFlightFences[i]);
+
+	}
+
 	for (const auto& image : images_) {
 		logicalDevice.destroyImageView(image.view);
 	}
 
-	for (auto& framebuffer : framebuffers_) {
+	for (auto& framebuffer : frameBuffers_) {
 		framebuffer.Terminate();
 	}
 
@@ -135,5 +199,55 @@ VulkanSwapChain::~VulkanSwapChain() {
 
 
 void VulkanSwapChain::Resize(glm::uvec2) {
+
+}
+
+void VulkanSwapChain::Draw() {
+
+	const auto& vkDevice = entityManager_.GetComponent<VulkanDevice>(device_);
+	const auto& logicalDevice = vkDevice.GetLogicalDevice();
+
+	logicalDevice.waitForFences(inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
+	logicalDevice.resetFences(inFlightFences[currentFrame]);
+
+	auto [aquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
+
+	//TODO: handle this occurance
+	/*if(aquireResult != VK_SUCCESS) {
+		
+	}*/
+
+
+	vk::SubmitInfo submitInfo;
+
+	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
+	vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.pWaitSemaphores = waitSemaphores;
+	submitInfo.pWaitDstStageMask = waitStages;
+
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &commandBuffers_[imageIndex];
+
+	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pSignalSemaphores = signalSemaphores;
+
+	vkDevice.GetGraphicsQueue().submit(submitInfo,inFlightFences[currentFrame]);
+
+	vk::PresentInfoKHR presentInfo;
+
+	presentInfo.waitSemaphoreCount = 1;
+	presentInfo.pWaitSemaphores = signalSemaphores;
+
+	vk::SwapchainKHR swapChains[] = { swapChain_ };
+	presentInfo.swapchainCount = 1;
+	presentInfo.pSwapchains = swapChains;
+
+	presentInfo.pImageIndices = &imageIndex;
+
+	vkDevice.GetPresentQueue().presentKHR(presentInfo);
+
+	currentFrame = (currentFrame + 1) % flightFramesCount;
 
 }

@@ -2,7 +2,9 @@
 
 #include "SoulParameters.h"
 #include <memory>
-#include "Display/Window/Window.h"
+
+struct WindowParameters;
+class Window;
 
 class Soul {
 

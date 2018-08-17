@@ -6,12 +6,6 @@ WindowManager::WindowManager() :
 {
 }
 
-void WindowManager::Draw() {
-	/*for (auto& itr : windows_) {
-		itr->Draw();
-	}*/
-}
-
 void WindowManager::Refresh() {
 
 }

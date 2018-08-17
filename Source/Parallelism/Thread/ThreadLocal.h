@@ -21,7 +21,7 @@ public:
 
 	ThreadLocal<T>(const T&);
 	ThreadLocal<T>& operator= (const T&);
-	operator T();
+	operator T&() const;
 
 	void Terminate() override;
 
@@ -65,7 +65,7 @@ ThreadLocal<T>& ThreadLocal<T>::operator= (const T& value) {
 }
 
 template<typename T>
-ThreadLocal<T>::operator T() {
+ThreadLocal<T>::operator T&() const {
 
 	return objectMap_[id_];
 

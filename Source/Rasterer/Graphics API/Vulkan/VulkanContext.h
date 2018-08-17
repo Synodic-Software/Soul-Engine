@@ -10,11 +10,11 @@
 class Scheduler;
 class RasterDevice;
 
-class VulkanContext final: public RasterContext {
+class VulkanContext final : public RasterContext {
 
 public:
 
-	VulkanContext(Scheduler&,EntityManager&);
+	VulkanContext(Scheduler&, EntityManager&);
 	~VulkanContext() override;
 
 	VulkanContext(const VulkanContext&) = delete;
@@ -29,6 +29,8 @@ public:
 
 	const vk::Instance& GetInstance() const;
 	const std::vector<vk::PhysicalDevice>& GetPhysicalDevices() const;
+
+	void Synchronize() override;
 
 private:
 

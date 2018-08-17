@@ -25,6 +25,7 @@ public:
 	VulkanPipeline& operator=(VulkanPipeline&& other) noexcept = delete;
 
 	VulkanRenderPass& GetRenderPass();
+	const vk::Pipeline& GetPipeline() const;
 
 private:
 
@@ -36,6 +37,6 @@ private:
 	VulkanFragmentShader fragmentShader_;
 
 	vk::PipelineLayout pipelineLayout_;
-	vk::Pipeline graphicsPipeline_;
+	vk::Pipeline pipeline_;
 
 };

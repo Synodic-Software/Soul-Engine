@@ -37,3 +37,7 @@ void VulkanFramebuffer::Terminate() {
 	logicalDevice.destroyFramebuffer(frameBuffer_);
 
 }
+
+const vk::Framebuffer& VulkanFramebuffer::GetFrameBuffer() const {
+	return frameBuffer_;
+}

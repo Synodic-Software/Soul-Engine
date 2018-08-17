@@ -25,6 +25,8 @@ public:
 
 	void Terminate() override;
 
+	const vk::Framebuffer& GetFrameBuffer() const;
+
 private:
 	
 	vk::Framebuffer frameBuffer_;

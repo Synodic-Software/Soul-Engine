@@ -27,7 +27,7 @@ public:
 	virtual Window& CreateWindow(WindowParameters&) = 0;
 
 	//Modifier operations.
-	void Draw();
+	virtual void Draw() = 0;
 	void Refresh();
 	void Resize(int, int);
 	void WindowPos(int, int);

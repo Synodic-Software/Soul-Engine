@@ -32,6 +32,7 @@ public:
 	std::unique_ptr<SwapChain> CreateSwapChain(Entity, Entity, glm::uvec2&) const;
 	Entity CreateDevice(Entity) const;
 
+	void Synchronize();
 
 private:
 

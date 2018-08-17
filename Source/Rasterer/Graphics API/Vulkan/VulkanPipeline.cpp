@@ -108,7 +108,7 @@ VulkanPipeline::VulkanPipeline(EntityManager& entityManger, Entity device, vk::E
 	pipelineInfo.renderPass = renderPass_.GetRenderPass();
 
 
-	graphicsPipeline_ = logicalDevice.createGraphicsPipeline(vkDevice.GetPipelineCache(), pipelineInfo);
+	pipeline_ = logicalDevice.createGraphicsPipeline(vkDevice.GetPipelineCache(), pipelineInfo);
 
 }
 
@@ -117,11 +117,15 @@ VulkanPipeline::~VulkanPipeline() {
 	const auto& vkDevice = entityManager_.GetComponent<VulkanDevice>(device_);
 	const vk::Device& logicalDevice = vkDevice.GetLogicalDevice();
 
-	logicalDevice.destroyPipeline(graphicsPipeline_, nullptr);
-	logicalDevice.destroyPipelineLayout(pipelineLayout_, nullptr);
+	logicalDevice.destroyPipeline(pipeline_);
+	logicalDevice.destroyPipelineLayout(pipelineLayout_);
 
 }
 
 VulkanRenderPass& VulkanPipeline::GetRenderPass() {
 	return renderPass_;
+}
+
+const vk::Pipeline& VulkanPipeline::GetPipeline() const {
+	return pipeline_;
 }

@@ -240,11 +240,23 @@ Entity VulkanContext::CreateDevice(Entity surface) {
 		deviceCreateInfo.enabledLayerCount = 0;
 	}
 
-	entityManager_.AttachComponent<VulkanDevice>(device, scheduler_, &physicalDevice, physicalDevice.createDevice(
+	entityManager_.AttachComponent<VulkanDevice>(device, scheduler_, pickedGraphicsIndex, pickedPresentIndex,&physicalDevice, physicalDevice.createDevice(
 		deviceCreateInfo
 	));
 
 	return device;
+}
+
+void VulkanContext::Synchronize() {
+
+	for (auto& logicalDevice : logicalDevices_) {
+
+		const auto& presentQueue = entityManager_.GetComponent<VulkanDevice>(logicalDevice).GetPresentQueue();
+
+		presentQueue.waitIdle();
+
+	}
+
 }
 
 VkBool32 VulkanContext::DebugCallback(

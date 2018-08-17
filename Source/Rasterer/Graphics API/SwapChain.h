@@ -16,5 +16,6 @@ public:
 	SwapChain& operator=(SwapChain&& other) noexcept = delete;
 
 	virtual void Resize(glm::uvec2) = 0;
+	virtual void Draw() = 0;
 
 };
