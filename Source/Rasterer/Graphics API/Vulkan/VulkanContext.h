@@ -24,11 +24,13 @@ public:
 	VulkanContext& operator=(VulkanContext&&) noexcept = delete;
 
 	Entity CreateSurface(std::any&) override;
-	std::unique_ptr<SwapChain> CreateSwapChain(Entity, Entity, glm::uvec2&) override;
+	Entity CreateSwapChain(Entity, Entity, glm::uvec2&) override;
 	Entity CreateDevice(Entity) override;
 
 	const vk::Instance& GetInstance() const;
 	const std::vector<vk::PhysicalDevice>& GetPhysicalDevices() const;
+
+	void Raster(Entity) override;
 
 	void Synchronize() override;
 

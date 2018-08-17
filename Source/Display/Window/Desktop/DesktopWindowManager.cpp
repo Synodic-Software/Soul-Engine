@@ -80,7 +80,7 @@ Window& DesktopWindowManager::CreateWindow(WindowParameters& params) {
 	const Entity newEntity = entityManager_->CreateEntity();
 	windows_.push_back(newEntity);
 
-	entityManager_->AttachComponent<DesktopWindow>(newEntity,params, monitor, *inputManager_, *rasterManager_);
+	entityManager_->AttachComponent<DesktopWindow>(newEntity, entityManager_, params, monitor, *inputManager_, *rasterManager_);
 
 	if (masterWindow_.IsNull()) {
 		masterWindow_ = newEntity;

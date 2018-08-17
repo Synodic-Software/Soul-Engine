@@ -99,6 +99,7 @@ VulkanContext::~VulkanContext() {
 
 	}
 
+	entityManager_.RemoveComponent<VulkanSwapChain>();
 	entityManager_.RemoveComponent<VulkanDevice>();
 	entityManager_.RemoveComponent<VulkanSurface>();
 
@@ -123,8 +124,13 @@ Entity VulkanContext::CreateSurface(std::any& windowContext) {
 
 }
 
-std::unique_ptr<SwapChain> VulkanContext::CreateSwapChain(Entity device, Entity surface, glm::uvec2& size) {
-	return std::make_unique<VulkanSwapChain>(entityManager_, device, surface, size);
+Entity VulkanContext::CreateSwapChain(Entity device, Entity surface, glm::uvec2& size) {
+
+	const Entity swapChain = entityManager_.CreateEntity();
+
+	entityManager_.AttachComponent<VulkanSwapChain>(swapChain, &entityManager_, device, surface, size);
+
+	return swapChain;
 }
 
 Entity VulkanContext::CreateDevice(Entity surface) {
@@ -245,6 +251,12 @@ Entity VulkanContext::CreateDevice(Entity surface) {
 	));
 
 	return device;
+}
+
+void VulkanContext::Raster(Entity swapChain) {
+
+	entityManager_.GetComponent<VulkanSwapChain>(swapChain).Draw();
+
 }
 
 void VulkanContext::Synchronize() {

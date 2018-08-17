@@ -3,7 +3,7 @@
 #include "VulkanSurface.h"
 #include "VulkanDevice.h"
 
-VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, Entity surface, glm::uvec2& size) :
+VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, Entity surface, glm::uvec2& size) :
 	entityManager_(entityManager),
 	device_(device),
 	currentFrame(0),
@@ -11,11 +11,11 @@ VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, En
 	vSync(false)
 {
 
-	const auto& vkDevice = entityManager_.GetComponent<VulkanDevice>(device_);
+	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	const auto& logicalDevice = vkDevice.GetLogicalDevice();
 	const auto& physicalDevice = vkDevice.GetPhysicalDevice();
 
-	const auto& vkSurface = entityManager_.GetComponent<VulkanSurface>(surface).GetSurface();
+	const auto& vkSurface = entityManager_->GetComponent<VulkanSurface>(surface).GetSurface();
 
 	//swapchain creation
 	std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevice.getSurfaceFormatsKHR(vkSurface);
@@ -109,10 +109,10 @@ VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, En
 
 	//TODO: Remove hardcoded pipeline + Hardcoded paths
 	//TODO: Associate paths to Project/Executable
-	pipeline_ = std::make_unique<VulkanPipeline>(entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
+	pipeline_ = std::make_unique<VulkanPipeline>(*entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
 
 	for (SwapChainImage& image : images_) {
-		frameBuffers_.emplace_back(entityManager_, device_, image.view, pipeline_->GetRenderPass(), size);
+		frameBuffers_.emplace_back(*entityManager_, device_, image.view, pipeline_->GetRenderPass(), size);
 	}
 
 	vk::CommandBufferAllocateInfo allocInfo;
@@ -173,9 +173,9 @@ VulkanSwapChain::VulkanSwapChain(EntityManager& entityManager, Entity device, En
 
 }
 
-VulkanSwapChain::~VulkanSwapChain() {
+void VulkanSwapChain::Terminate() {
 
-	const vk::Device& logicalDevice = entityManager_.GetComponent<VulkanDevice>(device_).GetLogicalDevice();
+	const vk::Device& logicalDevice = entityManager_->GetComponent<VulkanDevice>(device_).GetLogicalDevice();
 
 	for (size_t i = 0; i < flightFramesCount; i++) {
 
@@ -197,14 +197,13 @@ VulkanSwapChain::~VulkanSwapChain() {
 
 }
 
-
 void VulkanSwapChain::Resize(glm::uvec2) {
 
 }
 
 void VulkanSwapChain::Draw() {
 
-	const auto& vkDevice = entityManager_.GetComponent<VulkanDevice>(device_);
+	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	const auto& logicalDevice = vkDevice.GetLogicalDevice();
 
 	logicalDevice.waitForFences(inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());

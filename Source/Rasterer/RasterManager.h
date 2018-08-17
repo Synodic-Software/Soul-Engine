@@ -25,14 +25,14 @@ public:
 
 	//Draw and Update steps called from the main loop
 	void PreRaster();
-	void Raster();
+	void Raster(Entity);
 	void PostRaster();
 
 	Entity CreateSurface(std::any& windowContext) const;
-	std::unique_ptr<SwapChain> CreateSwapChain(Entity, Entity, glm::uvec2&) const;
+	Entity CreateSwapChain(Entity, Entity, glm::uvec2&) const;
 	Entity CreateDevice(Entity) const;
 
-	void Synchronize();
+	void Synchronize() const;
 
 private:
 

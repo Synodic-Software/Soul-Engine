@@ -3,10 +3,12 @@
 #include "Core/Utility/Log/Logger.h"
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Transput/Input/InputManager.h"
+#include "Rasterer/Graphics API/Vulkan/VulkanSwapChain.h"
 
-DesktopWindow::DesktopWindow(WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager, RasterManager& rasterManager) :
+DesktopWindow::DesktopWindow(EntityManager* entityManager, WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager, RasterManager& rasterManager) :
 	Window(params),
-	inputManager_(&inputManager)
+	inputManager_(&inputManager),
+	rasterManager_(&rasterManager)
 {
 
 	//TODO: Rework Monitor Pointer
@@ -112,8 +114,8 @@ void DesktopWindow::Terminate() {
 
 void DesktopWindow::Draw()
 {
-
-	swapChain_->Draw();
+	//entity
+	rasterManager_->Raster(swapChain_);
 
 }
 

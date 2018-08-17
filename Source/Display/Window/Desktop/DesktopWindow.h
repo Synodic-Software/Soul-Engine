@@ -9,7 +9,7 @@ class DesktopWindow : public Window, Component<DesktopWindow>
 {
 public:
 
-	DesktopWindow(WindowParameters&, GLFWmonitor*, DesktopInputManager&, RasterManager&);
+	DesktopWindow(EntityManager*,WindowParameters&, GLFWmonitor*, DesktopInputManager&, RasterManager&);
 	~DesktopWindow() = default;
 
 	DesktopWindow(const DesktopWindow &) = delete;
@@ -33,6 +33,7 @@ public:
 private:
 
 	//the stored input manager will always be desktop, as this class is a the desktop version
-	DesktopInputManager * inputManager_;
+	DesktopInputManager* inputManager_;
+	RasterManager* rasterManager_;
 
 };

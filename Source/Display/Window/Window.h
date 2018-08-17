@@ -52,8 +52,8 @@ protected:
 	//todo abstract instead of std::any
 	std::any context_;
 
-	std::unique_ptr<SwapChain> swapChain_;
 	std::unique_ptr<Layout> layout_;
+	Entity swapChain_;
 	Entity surface_;
 	Entity device_;
 

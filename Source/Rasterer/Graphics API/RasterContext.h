@@ -27,8 +27,10 @@ public:
 
 	//All entity creation must also be manually deleted inside the Context
 	virtual Entity CreateSurface(std::any&) = 0;
-	virtual std::unique_ptr<SwapChain> CreateSwapChain(Entity, Entity, glm::uvec2&) = 0;
+	virtual Entity CreateSwapChain(Entity, Entity, glm::uvec2&) = 0;
 	virtual Entity CreateDevice(Entity) = 0;
+
+	virtual void Raster(Entity) = 0;
 
 	virtual void Synchronize() = 0;
 
