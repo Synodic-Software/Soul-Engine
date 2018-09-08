@@ -124,6 +124,13 @@ Entity VulkanContext::CreateSurface(std::any& windowContext) {
 
 }
 
+void VulkanContext::ResizeSwapChain(Entity swapChain, int x, int y) {
+	
+	const auto& vkSwapChain = entityManager_.GetComponent<VulkanSwapChain>(swapChain);
+
+
+}
+
 Entity VulkanContext::CreateSwapChain(Entity device, Entity surface, glm::uvec2& size) {
 
 	const Entity swapChain = entityManager_.CreateEntity();

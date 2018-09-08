@@ -35,6 +35,11 @@ Entity RasterManager::CreateSurface(std::any& windowContext) const {
 
 }
 
+void RasterManager::ResizeSwapChain(Entity swapChain, int x, int y) {
+
+	return rasterContext_->ResizeSwapChain(swapChain, x, y);
+
+}
 
 Entity RasterManager::CreateSwapChain(Entity device, Entity surface, glm::uvec2& size) const {
 

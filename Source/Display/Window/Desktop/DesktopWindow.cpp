@@ -83,6 +83,12 @@ DesktopWindow::DesktopWindow(EntityManager* entityManager, WindowParameters& par
 		thisWindow->Refresh();
 	});
 
+	glfwSetFramebufferSizeCallback(context, [](GLFWwindow* w, int x, int y)
+	{
+		const auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
+		thisWindow->FrameBufferResize(x, y);
+	});
+
 	glfwSetWindowCloseCallback(context, [](GLFWwindow* w)
 	{
 		const auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
@@ -130,9 +136,16 @@ void DesktopWindow::Close() {
 
 }
 
-void DesktopWindow::Resize(int, int) {
+void DesktopWindow::Resize(int x, int y) {
 
 }
+
+void DesktopWindow::FrameBufferResize(int x, int y) {
+
+	rasterManager_->ResizeSwapChain(swapChain_, x, y);
+
+}
+
 
 void DesktopWindow::PositionUpdate(int, int) {
 

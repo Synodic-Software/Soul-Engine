@@ -23,6 +23,8 @@ public:
 	VulkanContext& operator=(const VulkanContext&) = delete;
 	VulkanContext& operator=(VulkanContext&&) noexcept = delete;
 
+	void ResizeSwapChain(Entity, int, int) override;
+
 	Entity CreateSurface(std::any&) override;
 	Entity CreateSwapChain(Entity, Entity, glm::uvec2&) override;
 	Entity CreateDevice(Entity) override;

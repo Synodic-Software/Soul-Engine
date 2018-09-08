@@ -48,6 +48,7 @@ private:
 	vk::SwapchainKHR swapChain_;
 	vk::ColorSpaceKHR colorSpace_;
 
+	//TODO place into VulkanContext
 	std::vector<vk::Semaphore> imageAvailableSemaphores;
 	std::vector<vk::Semaphore> renderFinishedSemaphores;
 	std::vector<vk::Fence> inFlightFences;

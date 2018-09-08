@@ -27,6 +27,7 @@ public:
 	void Resize(int, int) override;
 	void PositionUpdate(int, int) override;
 	void SetLayout(Layout*) override;
+	void FrameBufferResize(int, int) override;
 
 	DesktopInputManager& GetInputSet() const;
 

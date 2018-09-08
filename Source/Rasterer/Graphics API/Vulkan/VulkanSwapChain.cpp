@@ -185,12 +185,12 @@ void VulkanSwapChain::Terminate() {
 
 	}
 
-	for (const auto& image : images_) {
-		logicalDevice.destroyImageView(image.view);
-	}
-
 	for (auto& framebuffer : frameBuffers_) {
 		framebuffer.Terminate();
+	}
+
+	for (const auto& image : images_) {
+		logicalDevice.destroyImageView(image.view);
 	}
 
 	logicalDevice.destroySwapchainKHR(swapChain_);
@@ -209,11 +209,11 @@ void VulkanSwapChain::Draw() {
 	logicalDevice.waitForFences(inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
 	logicalDevice.resetFences(inFlightFences[currentFrame]);
 
-	auto [aquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
+	auto[aquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
 
 	//TODO: handle this occurance
 	/*if(aquireResult != VK_SUCCESS) {
-		
+
 	}*/
 
 
@@ -232,7 +232,7 @@ void VulkanSwapChain::Draw() {
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
-	vkDevice.GetGraphicsQueue().submit(submitInfo,inFlightFences[currentFrame]);
+	vkDevice.GetGraphicsQueue().submit(submitInfo, inFlightFences[currentFrame]);
 
 	vk::PresentInfoKHR presentInfo;
 

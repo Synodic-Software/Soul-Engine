@@ -42,7 +42,7 @@ public:
 	virtual void Close() = 0;
 	virtual void Resize(int, int) = 0;
 	virtual void PositionUpdate(int, int) = 0;
-
+	virtual void FrameBufferResize(int, int) = 0;
 	virtual void SetLayout(Layout*) = 0;
 
 	std::any& GetContext();

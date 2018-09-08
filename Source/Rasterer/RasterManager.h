@@ -28,6 +28,8 @@ public:
 	void Raster(Entity);
 	void PostRaster();
 
+	void ResizeSwapChain(Entity, int, int);
+
 	Entity CreateSurface(std::any& windowContext) const;
 	Entity CreateSwapChain(Entity, Entity, glm::uvec2&) const;
 	Entity CreateDevice(Entity) const;

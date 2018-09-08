@@ -25,6 +25,9 @@ public:
 	RasterContext& operator=(const RasterContext &) = delete;
 	RasterContext& operator=(RasterContext &&) noexcept = default;
 
+
+	virtual void ResizeSwapChain(Entity, int, int) = 0;
+
 	//All entity creation must also be manually deleted inside the Context
 	virtual Entity CreateSurface(std::any&) = 0;
 	virtual Entity CreateSwapChain(Entity, Entity, glm::uvec2&) = 0;
