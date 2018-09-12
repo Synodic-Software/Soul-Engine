@@ -44,7 +44,7 @@ private:
 	void InitPointers();
 	void ThreadRun();
 
-	bool shouldRun_; //flag to help coordniate destruction
+	bool shouldRun_; //flag to help coordinate destruction
 
 	uint fiberCount_;
 	boost::fibers::mutex fiberMutex_;
@@ -78,7 +78,7 @@ void Scheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
 		fiberCount_++;
 	}
 
-	auto executeFiber = [this, fn, params]() mutable {
+	auto executeFiber = [this, fn, params, &args...]() mutable {
 
 		//init the data associated with the fiber
 		InitPointers();
@@ -119,7 +119,7 @@ void Scheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
 
 		LaunchFiber(
 			params, 
-			[executeFiber, holdLock, holdSize, holdConditional]() mutable {
+			[executeFiber, holdLock, holdSize, holdConditional, &args...]() mutable {
 
 			executeFiber();
 
@@ -154,7 +154,7 @@ void Scheduler::ForEachThread(FiberPriority priority, Fn && fn, Args && ... args
 
 	//immediately enter to provide block scope to the perthread tasks
 	FiberParameters subParams(false);	
-	AddTask(subParams, [this, priority, fn]() {
+	AddTask(subParams, [this, priority, fn, &args...]() {
 
 		FiberParameters usedParams(true,priority);
 
@@ -182,7 +182,7 @@ void Scheduler::LaunchFiber(FiberParameters& params, Fn && func) {
 	}
 	else {
 
-		//since the fiber is not awoken like a posted fiber, and immediatly entered, its property should not be new
+		//since the fiber is not awoken like a posted fiber, and immediately entered, its property should not be new
 		boost::fibers::fiber fiber(boost::fibers::launch::dispatch, func);
 
 		//Don't let fiber fall out of scope (error). If already executed with swap, destruct the context
