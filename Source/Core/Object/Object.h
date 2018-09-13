@@ -6,6 +6,6 @@
 
 //#	else
 //
-//#include "OpenCL\CLObject.h"
+//#include "OpenCL/CLObject.h"
 //
 //#endif

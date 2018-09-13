@@ -33,7 +33,7 @@ Camera::~Camera() {
 //
 //	glm::vec3 pointOnPlaneOneUnitAwayFromEye =
 //		aperturePoint + forward + (2 * sample.x - 1) * xHelper + (2 * sample.y - 1) * yHelper;
-//	//printf("%f %f\n", xHelper.x, xHelper.y);
+//	//printf("%f %f/n", xHelper.x, xHelper.y);
 //
 //	origin = glm::vec3(aperturePoint.x, aperturePoint.y, aperturePoint.z);
 //	glm::vec3 tmp = glm::normalize(position + (pointOnPlaneOneUnitAwayFromEye - position) * focalDistance - aperturePoint);

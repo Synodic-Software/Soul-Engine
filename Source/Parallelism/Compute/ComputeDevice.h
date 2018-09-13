@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AbstractComputeDevice.h"
-//#include "CUDA/CUDADevice.cuh"
+#include "CUDA/CUDADevice.cuh"
 #include "OpenCL/OpenCLDevice.h"
 
 #include "Parallelism/Compute/GPUExecutePolicy.h"

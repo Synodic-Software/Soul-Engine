@@ -8,7 +8,7 @@ class OpenCLKernel :public GPUKernel<T> {
 public:
 
 	OpenCLKernel()
-		: GPUKernel() {
+		: GPUKernel<T>() {
 
 	}
 

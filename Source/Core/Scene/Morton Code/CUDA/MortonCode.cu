@@ -1,7 +1,7 @@
 #include "MortonCode.cuh"
-#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility/CUDA/CUDAHelper.cuh"
 #include "glm/glm.hpp"
-#include "Compute\DeviceAPI.h"
+#include "Compute/DeviceAPI.h"
 
 
 #define TwoE20 1048575 //2^20-1

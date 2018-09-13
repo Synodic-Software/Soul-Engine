@@ -40,7 +40,7 @@ namespace Logger {
 			detail::storage.pop_front();
 			detail::logMut.unlock();
 
-			return ("[" + detail::LogSeverityStrings[temp.severity] + "] " + temp.msg+"\n");
+			return ("[" + detail::LogSeverityStrings[temp.severity] + "] " + temp.msg+"/n");
 		}
 		else {
 			detail::logMut.unlock();

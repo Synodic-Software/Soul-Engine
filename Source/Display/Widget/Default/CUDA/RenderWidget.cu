@@ -1,6 +1,6 @@
 #include "RenderWidget.cuh"
-#include "Utility\CUDA\CUDAHelper.cuh"
-#include "Compute\DeviceAPI.h"
+#include "Utility/CUDA/CUDAHelper.cuh"
+#include "Compute/DeviceAPI.h"
 
 static uint allocatedSize = 0;
 static uint* deviceWeights = 0;
