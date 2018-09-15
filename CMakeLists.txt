@@ -45,8 +45,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 #Sources
 
 
-file(GLOB_RECURSE PROJECT_HEADERS Source/*.h Include/*.h)
-file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp)
+file(GLOB_RECURSE PROJECT_HEADERS Source/*.h Source/*.cuh Include/*.h)
+file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp Source/*.cu)
 set (PROJECT_FILES 
     ${PROJECT_HEADERS} 
     ${PROJECT_SOURCES} 
@@ -65,7 +65,10 @@ source_groups(${PROJECT_FILES})
 find_package(Vulkan REQUIRED)
 
 #GLFW target
-#hunter_add_package(glfw)
+# First check if glfw is already installed
+IF( LINUX )
+	hunter_add_package(glfw)
+ENDIF()
 find_package(glfw3 CONFIG REQUIRED)
 
 #GLM target
