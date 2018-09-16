@@ -66,7 +66,7 @@ find_package(Vulkan REQUIRED)
 
 #GLFW target
 # First check if glfw is already installed
-IF( LINUX )
+IF( NOT UNIX )
 	hunter_add_package(glfw)
 ENDIF()
 find_package(glfw3 CONFIG REQUIRED)
