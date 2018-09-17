@@ -13,8 +13,9 @@ public:
 
 };
 
+/*
 //set the static for this class
 template <>
 std::string_view AbstractResourceLoader<SPIRVLoader>::extensions_ [] = { 
 	"spv" 
-};
+};*/
