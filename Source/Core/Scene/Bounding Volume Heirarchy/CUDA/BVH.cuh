@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Data/Structures/Bounding Volume Heirarchy\Node.h"
+#include "Data/Structures/Bounding Volume Heirarchy/Node.h"
 #include "Ray Engine/Ray.h"
 #include "Data/Structures/Geometry/Face.h"
 #include "Data/Structures/Geometry/Vertex.h"

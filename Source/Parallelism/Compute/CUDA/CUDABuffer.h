@@ -64,7 +64,7 @@ private:
 
 template <class T>
 CUDABuffer<T>::CUDABuffer(const ComputeDevice& device):
-	DeviceBuffer(device),
+	DeviceBuffer<T>(device),
 	buffer(nullptr)
 {
 
@@ -72,7 +72,7 @@ CUDABuffer<T>::CUDABuffer(const ComputeDevice& device):
 
 template <class T>
 CUDABuffer<T>::CUDABuffer(CUDABuffer const& other) :
-	DeviceBuffer(other)
+	DeviceBuffer<T>(other)
 {
 	*this = other;
 }

@@ -45,8 +45,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 #Sources
 
 
-file(GLOB_RECURSE PROJECT_HEADERS Source/*.h Include/*.h)
-file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp)
+file(GLOB_RECURSE PROJECT_HEADERS Source/*.h Source/*.cuh Include/*.h)
+file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp Source/*.cu)
 set (PROJECT_FILES 
     ${PROJECT_HEADERS} 
     ${PROJECT_SOURCES} 
@@ -65,7 +65,10 @@ source_groups(${PROJECT_FILES})
 find_package(Vulkan REQUIRED)
 
 #GLFW target
-hunter_add_package(glfw)
+# First check if glfw is already installed
+IF( NOT UNIX )
+	hunter_add_package(glfw)
+ENDIF()
 find_package(glfw3 CONFIG REQUIRED)
 
 #GLM target
@@ -78,7 +81,7 @@ find_package(stb CONFIG REQUIRED)
 
 #flatbuffers target
 hunter_add_package(flatbuffers)
-find_package(flatbuffers CONFIG REQUIRED)
+find_package(Flatbuffers CONFIG REQUIRED)
 
 #googletest target
 hunter_add_package(GTest)
@@ -88,6 +91,8 @@ find_package(GTest CONFIG REQUIRED)
 hunter_add_package(Boost COMPONENTS context fiber)
 find_package(Boost CONFIG REQUIRED context fiber)
 
+find_package(CUDA  REQUIRED)
+include_directories("${CUDA_INCLUDE_DIRS}")
 
 ##############################################
 #Targets
@@ -118,7 +123,7 @@ target_link_libraries(${PROJECT_NAME}
         
     PRIVATE	
         GTest::main	
-        flatbuffers::flatbuffers
+		flatbuffers::flatbuffers
 		glfw
         Boost::context 
         Boost::fiber 

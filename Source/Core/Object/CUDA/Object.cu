@@ -1,5 +1,5 @@
 #include "Object.cuh"
-#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility/CUDA/CUDAHelper.cuh"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -175,32 +175,32 @@ void Object::ExtractFromFile(const char* name) {
 	//	faces[f].material = 0;
 	//}
 
-	//LOG(TRACE, "\nINDICES: " << faceAmount << std::endl;
+	//LOG(TRACE, "/nINDICES: " << faceAmount << std::endl;
 	//for (int i = 0; i < faceAmount; i++){
 	//	LOG(TRACE,("%i ", faces[i].indices.x);
 	//	LOG(TRACE,("%i ", faces[i].indices.y);
-	//	LOG(TRACE,("%i \n", faces[i].indices.z);
+	//	LOG(TRACE,("%i /n", faces[i].indices.z);
 	//}
 
-	//LOG(TRACE, "\nVERTICES: " << verticeAmount << std::endl;
+	//LOG(TRACE, "/nVERTICES: " << verticeAmount << std::endl;
 
 	//for (int i = 0; i < verticeAmount; i++){
-	//	LOG(TRACE, "\n	Positions: "  << std::endl;
+	//	LOG(TRACE, "/n	Positions: "  << std::endl;
 
 	//	LOG(TRACE,("%f ", vertices[i].position.x);
 	//	LOG(TRACE,("%f ", vertices[i].position.y);
-	//	LOG(TRACE,("%f \n", vertices[i].position.z);
+	//	LOG(TRACE,("%f /n", vertices[i].position.z);
 
-	//	LOG(TRACE,"\n	Normals: " << std::endl;
+	//	LOG(TRACE,"/n	Normals: " << std::endl;
 
 	//	LOG(TRACE,("%f ", vertices[i].normal.x);
 	//	LOG(TRACE,("%f ", vertices[i].normal.y);
-	//	LOG(TRACE,("%f \n", vertices[i].normal.z);
+	//	LOG(TRACE,("%f /n", vertices[i].normal.z);
 
-	//	LOG(TRACE, "\n	TexCoords: " << std::endl;
+	//	LOG(TRACE, "/n	TexCoords: " << std::endl;
 
 	//	LOG(TRACE,("%f ", vertices[i].textureCoord.x);
-	//	LOG(TRACE,("%f \n", vertices[i].textureCoord.y);
+	//	LOG(TRACE,("%f /n", vertices[i].textureCoord.y);
 	//}
 
 	box.max = max;

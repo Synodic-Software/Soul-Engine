@@ -94,7 +94,7 @@ private:
 
 template <class T>
 ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device) :
-	AbstractComputeBuffer(device)
+	AbstractComputeBuffer<T>(device)
 {
 
 	if (device.GetBackend() == CUDA_API) {
@@ -108,7 +108,7 @@ ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device) :
 
 template <class T>
 ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device, size_type n) :
-	AbstractComputeBuffer(device, n)
+	AbstractComputeBuffer<T>(device, n)
 {
 
 	if (device.GetBackend() == CUDA_API) {
@@ -122,7 +122,7 @@ ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device, size_type n) :
 
 template <class T>
 ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device, size_type n, const T &val) :
-	AbstractComputeBuffer(device, n, val)
+	AbstractComputeBuffer<T>(device, n, val)
 {
 	if (device.GetBackend() == CUDA_API) {
 		//deviceBuffer.reset(new CUDABuffer<T>(device, n, val));
@@ -134,15 +134,15 @@ ComputeBuffer<T>::ComputeBuffer(const ComputeDevice& device, size_type n, const 
 
 
 template <class T>
-ComputeBuffer<T>::ComputeBuffer(const ComputeBuffer& other):
-	AbstractComputeBuffer(other)
+ComputeBuffer<T>::ComputeBuffer(const ComputeBuffer& other) :
+	AbstractComputeBuffer<T>(other)
 {
 	*this = other;
 }
 
 template <class T>
 ComputeBuffer<T>::ComputeBuffer(ComputeBuffer<T>&& other) noexcept:
-	AbstractComputeBuffer(other)
+	AbstractComputeBuffer<T>(other)
 {
 	*this = std::move(other);
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility/CUDA/CUDAHelper.cuh"
 
 #include <glm/glm.hpp>
 

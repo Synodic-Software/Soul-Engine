@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <cstddef>
 
 /*This class will serve as the base class for the engine's linear allocator.
   It contains public allocate and deallocate functions which will manage the memory.
