@@ -7,15 +7,8 @@ class Platform {
 
 public:
 
-	constexpr static PlatformID GetPlatform() {
-		return platform;
-	}
-
-	constexpr static bool IsDesktop() {
-		return platform == PlatformID::Linux ||
-			platform == PlatformID::Windows ||
-			platform == PlatformID::OSX;
-	}
+	constexpr static PlatformID GetPlatform();
+	constexpr static bool IsDesktop();
 
 private:
 
@@ -46,3 +39,13 @@ private:
 #endif
 
 };
+
+constexpr PlatformID Platform::GetPlatform() {
+	return platform;
+}
+
+constexpr bool Platform::IsDesktop() {
+	return platform == PlatformID::Linux ||
+		platform == PlatformID::Windows ||
+		platform == PlatformID::OSX;
+}
