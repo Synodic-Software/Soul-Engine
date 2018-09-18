@@ -209,10 +209,10 @@ void VulkanSwapChain::Draw() {
 	logicalDevice.waitForFences(inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
 	logicalDevice.resetFences(inFlightFences[currentFrame]);
 
-	auto[aquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
+	auto[acquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
 
-	//TODO: handle this occurance
-	/*if(aquireResult != VK_SUCCESS) {
+	//TODO: handle this occurrence
+	/*if(acquireResult != VK_SUCCESS) {
 
 	}*/
 

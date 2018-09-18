@@ -37,7 +37,7 @@ public:
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
 	RasterManager rasterManager_;
-	
+
 
 private:
 
@@ -48,7 +48,7 @@ private:
 	WindowManager* ConstructWindowPtr();
 };
 
-Soul::Implementation::Implementation(const Soul& soul) :	
+Soul::Implementation::Implementation(const Soul& soul) :
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
 	inputManagerVariant_(ConstructInputManager()),
@@ -88,7 +88,7 @@ Soul::Implementation::windowManagerVariantType Soul::Implementation::ConstructWi
 	windowManagerVariantType tmp;
 
 	if constexpr (Platform::IsDesktop()) {
-		tmp.emplace<DesktopWindowManager>(entityManager_,std::get<DesktopInputManager>(inputManagerVariant_), rasterManager_);
+		tmp.emplace<DesktopWindowManager>(entityManager_, std::get<DesktopInputManager>(inputManagerVariant_), rasterManager_);
 		return tmp;
 	}
 
@@ -104,8 +104,16 @@ WindowManager* Soul::Implementation::ConstructWindowPtr() {
 
 Soul::Soul(SoulParameters& params) :
 	parameters(params),
+	frameTime(),
 	detail(std::make_unique<Implementation>(*this))
 {
+	parameters.engineRefreshRate.AddCallback([this](int value)
+	{
+		frameTime = std::chrono::duration_cast<tickType>(std::chrono::seconds(1)) / value;
+	});
+
+	//flush parameters with new callbacks
+	parameters.engineRefreshRate.Update();
 }
 
 //definition to complete PIMPL idiom
@@ -153,7 +161,6 @@ void Soul::Raster() {
 
 }
 
-/* Warmups this object. */
 void Soul::Warmup() {
 
 	//TODO abstract
@@ -165,24 +172,19 @@ void Soul::Warmup() {
 
 }
 
-/* Early frame update. */
 void Soul::EarlyFrameUpdate() {
 
 	detail->eventManager_.Emit("Update"_hashed, "EarlyFrame"_hashed);
 
 }
-/* Late frame update. */
+
 void Soul::LateFrameUpdate() {
 
 	detail->eventManager_.Emit("Update"_hashed, "LateFrame"_hashed);
 
 }
 
-/* Early update. */
 void Soul::EarlyUpdate() {
-
-	//poll events before this update, making the state as close as possible to real-time input
-	detail->inputManager_->Poll();
 
 	detail->eventManager_.Emit("Update"_hashed, "Early"_hashed);
 
@@ -194,10 +196,17 @@ void Soul::EarlyUpdate() {
 
 }
 
-/* Late update. */
 void Soul::LateUpdate() {
 
 	detail->eventManager_.Emit("Update"_hashed, "Late"_hashed);
+
+}
+
+//returns a bool that is true if the engine is dirty
+bool Soul::Poll() {
+
+	detail->inputManager_->Poll();
+	return false;
 
 }
 
@@ -214,31 +223,20 @@ void Soul::Run()
 
 	Warmup();
 
-	//setup timer info
-	double t = 0.0f;
-	double currentTime = glfwGetTime();
-	double accumulator = 0.0f;
-
-	const double refreshDT = 1.0 / parameters.engineRefreshRate;
+	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
+	auto nextTime = currentTime + frameTime;
 
 	while (!detail->windowManager_->ShouldClose()) {
 
-		//start frame timers
-		double newTime = glfwGetTime();
-		double frameTime = newTime - currentTime;
-
-		if (frameTime > 0.25) {
-			frameTime = 0.25;
-		}
-
-		currentTime = newTime;
-		accumulator += frameTime;
+		currentTime = nextTime;
+		nextTime = currentTime + frameTime;
 
 		EarlyFrameUpdate();
 
-		//consumes time created by the renderer
-		while (accumulator >= refreshDT) {
+		bool dirty;
 
+		{
+			dirty = Poll();
 			EarlyUpdate();
 
 			/*for (auto& scene : scenes) {
@@ -250,9 +248,6 @@ void Soul::Run()
 			}*/
 
 			LateUpdate();
-
-			t += refreshDT;
-			accumulator -= refreshDT;
 		}
 
 
@@ -265,6 +260,15 @@ void Soul::Run()
 		RayPostProcess();
 
 		Raster();
+
+		if (!dirty) {
+
+			detail->scheduler_.YieldUntil(nextTime, [this]()
+			{
+				return Poll();
+			});
+
+		}
 
 	}
 
