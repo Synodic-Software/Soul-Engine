@@ -8,7 +8,7 @@
 struct SoulParameters {
 
 	SoulParameters() :
-		engineRefreshRate(90),
+		engineRefreshRate(120),
 		threadCount(std::thread::hardware_concurrency())
 	{
 

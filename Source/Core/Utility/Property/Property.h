@@ -15,6 +15,7 @@ public:
 	operator T() const;
 
 	void AddCallback(const std::function<void(T)>&);
+	void Update();
 
 private:
 
@@ -33,12 +34,18 @@ template<typename T>
 Property<T>& Property<T>::operator=(const T& value){
 
 	data = value;
-
-	for(const auto& callback : callbacks) {
-		callback(data);
-	}
+	Update();
 
 	return *this;
+
+}
+
+template<typename T>
+void Property<T>::Update() {
+
+	for (const auto& callback : callbacks) {
+		callback(data);
+	}
 
 }
 
