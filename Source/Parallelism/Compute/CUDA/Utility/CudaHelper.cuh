@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "Core/Utility/Log/Logger.h"
+#include "Core/Utility/Types.h"
 
 #define WARP_SIZE 32
 
