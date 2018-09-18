@@ -30,7 +30,7 @@ private:
 	void EarlyUpdate();
 	void LateUpdate();
 
-	void Poll();
+	bool Poll();
 
 	SoulParameters& parameters;
 

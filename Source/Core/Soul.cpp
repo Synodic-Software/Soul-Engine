@@ -186,9 +186,6 @@ void Soul::LateFrameUpdate() {
 
 void Soul::EarlyUpdate() {
 
-	//poll events before this update, making the state as close as possible to real-time input
-	Poll();
-
 	detail->eventManager_.Emit("Update"_hashed, "Early"_hashed);
 
 	//Update the engine cameras
@@ -205,9 +202,11 @@ void Soul::LateUpdate() {
 
 }
 
-void Soul::Poll() {
+//returns a bool that is true if the engine is dirty
+bool Soul::Poll() {
 
 	detail->inputManager_->Poll();
+	return false;
 
 }
 
@@ -232,15 +231,15 @@ void Soul::Run()
 
 	while (!detail->windowManager_->ShouldClose()) {
 
-		bool dirty = false;
-
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime;
 
 		EarlyFrameUpdate();
 
+		bool dirty;
 
 		{
+			dirty = Poll();
 			EarlyUpdate();
 
 			/*for (auto& scene : scenes) {
@@ -265,13 +264,14 @@ void Soul::Run()
 
 		Raster();
 
-		{
+		 if(!dirty){
+
 			std::unique_lock<std::mutex> lk(dirtyMutex);
-			dirtyConditional.wait_until(lk, nextTime, [this, &dirty]
+			dirtyConditional.wait_until(lk, nextTime, [this]
 			{
-				Poll();
-				return dirty;
+				return Poll();
 			});
+
 		}
 
 	}
