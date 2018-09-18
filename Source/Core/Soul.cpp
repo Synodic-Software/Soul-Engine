@@ -102,7 +102,7 @@ WindowManager* Soul::Implementation::ConstructWindowPtr() {
 }
 
 
-Soul::Soul(SoulParameters& params):
+Soul::Soul(SoulParameters& params) :
 	parameters(params),
 	frameTime(),
 	detail(std::make_unique<Implementation>(*this))
@@ -223,10 +223,7 @@ void Soul::Run()
 
 	Warmup();
 
-	std::mutex dirtyMutex;
-	std::condition_variable dirtyConditional;
-
-	auto currentTime =  std::chrono::time_point_cast<tickType>(clockType::now());
+	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
 	auto nextTime = currentTime + frameTime;
 
 	while (!detail->windowManager_->ShouldClose()) {
@@ -252,7 +249,7 @@ void Soul::Run()
 
 			LateUpdate();
 		}
-		
+
 
 		LateFrameUpdate();
 
@@ -264,10 +261,9 @@ void Soul::Run()
 
 		Raster();
 
-		 if(!dirty){
+		if (!dirty) {
 
-			std::unique_lock<std::mutex> lk(dirtyMutex);
-			dirtyConditional.wait_until(lk, nextTime, [this]
+			detail->scheduler_.YieldUntil(nextTime, [this]()
 			{
 				return Poll();
 			});

@@ -36,6 +36,9 @@ public:
 	void Block() const;
 	static void Yield();
 
+	template< typename Clock, typename Duration, typename Pred >
+	static void YieldUntil(std::chrono::time_point< Clock, Duration > const&, Pred);
+
 private:
 
 	template< typename Fn >
@@ -118,7 +121,7 @@ void Scheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
 		}
 
 		LaunchFiber(
-			params, 
+			params,
 			[executeFiber, holdLock, holdSize, holdConditional, &args...]() mutable {
 
 			executeFiber();
@@ -141,7 +144,7 @@ void Scheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
 	else {
 
 		LaunchFiber(
-			params, 
+			params,
 			executeFiber
 		);
 
@@ -153,10 +156,10 @@ template<typename Fn, typename ... Args>
 void Scheduler::ForEachThread(FiberPriority priority, Fn && fn, Args && ... args) {
 
 	//immediately enter to provide block scope to the perthread tasks
-	FiberParameters subParams(false);	
+	FiberParameters subParams(false);
 	AddTask(subParams, [this, priority, fn, &args...]() {
 
-		FiberParameters usedParams(true,priority);
+		FiberParameters usedParams(true, priority);
 
 		for (uint threadIndex = 0; threadIndex < threadCount_; ++threadIndex) {
 
@@ -189,5 +192,16 @@ void Scheduler::LaunchFiber(FiberParameters& params, Fn && func) {
 		fiber.join();
 
 	}
+
+}
+
+template< typename Clock, typename Duration, typename Pred >
+void Scheduler::YieldUntil(std::chrono::time_point< Clock, Duration > const& timePoint, Pred predicate) {
+
+	boost::fibers::mutex mutex;
+	boost::fibers::condition_variable conditional;
+
+	std::unique_lock<boost::fibers::mutex> lock(mutex);
+	conditional.wait_until(lock, timePoint, predicate);
 
 }
