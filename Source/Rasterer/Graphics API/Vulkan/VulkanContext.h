@@ -55,16 +55,16 @@ private:
 	std::vector<vk::PhysicalDevice> physicalDevices_;
 	std::vector<Entity> logicalDevices_;
 
-//#ifdef NDEBUG
+#ifdef NDEBUG
 
 	static constexpr bool validationEnabled_ = false;
 
-/*#else
+#else
 
 	static constexpr bool validationEnabled_ = true;
 
 	vk::DebugReportCallbackEXT callback_;
 
-#endif*/
+#endif
 
 };
