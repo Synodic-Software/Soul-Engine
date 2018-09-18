@@ -1,7 +1,7 @@
 #include "Core/Camera/Camera.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include "glm\gtx\rotate_vector.hpp"
+#include "glm/gtx/rotate_vector.hpp"
 
 Camera::Camera() :
 	aspectRatio(0),
@@ -33,7 +33,7 @@ Camera::~Camera() {
 //
 //	glm::vec3 pointOnPlaneOneUnitAwayFromEye =
 //		aperturePoint + forward + (2 * sample.x - 1) * xHelper + (2 * sample.y - 1) * yHelper;
-//	//printf("%f %f\n", xHelper.x, xHelper.y);
+//	//printf("%f %f/n", xHelper.x, xHelper.y);
 //
 //	origin = glm::vec3(aperturePoint.x, aperturePoint.y, aperturePoint.z);
 //	glm::vec3 tmp = glm::normalize(position + (pointOnPlaneOneUnitAwayFromEye - position) * focalDistance - aperturePoint);
@@ -43,8 +43,8 @@ Camera::~Camera() {
 void Camera::UpdateVariables() {
 	verticalAxis = normalize(cross(right, forward));
 
-	yHelper = verticalAxis * tan((glm::radians(-fieldOfView.y * 0.5f)));
-	xHelper = right * tan(glm::radians(fieldOfView.x * 0.5f));
+	yHelper = verticalAxis * static_cast<float>( tan((glm::radians(-fieldOfView.y * 0.5f))));
+	xHelper = right * static_cast<float>( tan(glm::radians(fieldOfView.x * 0.5f)));
 }
 
 void Camera::OffsetOrientation(float x, float y) {

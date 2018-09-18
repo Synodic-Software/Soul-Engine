@@ -1,6 +1,6 @@
 #include "Filter.cuh"
 
-#include "Compute\DeviceAPI.h"
+#include "Compute/DeviceAPI.h"
 
 inline __device__ __host__ uint PowTwoDivider(uint n)
 {

@@ -6,6 +6,6 @@
 
 //#	else
 //
-//#include "OpenCL\Sort.h"
+//#include "OpenCL/Sort.h"
 //
 //#endif

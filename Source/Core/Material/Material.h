@@ -8,7 +8,7 @@
 class Material {
 public:
 
-	Material(std::string texName = "Resources\\Textures\\SoulDefault.png");
+	Material(std::string texName = "Resources//Textures//SoulDefault.png");
 
 	glm::vec4 diffuse;
 	glm::vec4 emit;

@@ -2,7 +2,7 @@
 
 
 #include "Parallelism/Compute/DeviceRasterBuffer.h"
-#include "Parallelism/Compute/CUDA\CUDABuffer.h"
+#include "Parallelism/Compute/CUDA/CUDABuffer.h"
 
 #include "Parallelism/Compute/ComputeDevice.h"
 
@@ -40,9 +40,9 @@ private:
 
 template <class T>
 CUDARasterBuffer<T>::CUDARasterBuffer(const ComputeDevice& device) :
-	DeviceRasterBuffer(device),
-	CUDABuffer(device),
-	DeviceBuffer(device)
+	DeviceRasterBuffer<T>(device),
+	CUDABuffer<T>(device),
+	DeviceBuffer<T>(device)
 {
 
 }

@@ -2,10 +2,10 @@
 
 //#   if defined(__CUDACC__)
 
-#include "CUDA\Lens.cuh"
+#include "CUDA/Lens.cuh"
 
 //#	else
 //
-//#include "OpenCL\CLCamera.h"
+//#include "OpenCL/CLCamera.h"
 //
 //#endif

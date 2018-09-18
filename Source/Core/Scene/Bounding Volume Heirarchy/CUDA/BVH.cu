@@ -1,6 +1,6 @@
 #include "BVH.cuh"
 
-#include "Compute\DeviceAPI.h"
+#include "Compute/DeviceAPI.h"
 #include <glm/glm.hpp>
 
 #define eps 0.00000000000000000000000082718061

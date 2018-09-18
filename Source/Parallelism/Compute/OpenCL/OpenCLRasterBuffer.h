@@ -30,9 +30,9 @@ private:
 
 template<class T>
 OpenCLRasterBuffer<T>::OpenCLRasterBuffer(const ComputeDevice& device) :
-	OpenCLBuffer(device),
-	DeviceRasterBuffer(device),
-	DeviceBuffer(device)
+	OpenCLBuffer<T>(device),
+	DeviceRasterBuffer<T>(device),
+	DeviceBuffer<T>(device)
 {
 
 }

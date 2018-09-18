@@ -10,7 +10,7 @@ class CUDAKernel :public GPUKernel<T> {
 public:
 
 	CUDAKernel()
-		: GPUKernel() {
+		: GPUKernel<T>() {
 
 	}
 

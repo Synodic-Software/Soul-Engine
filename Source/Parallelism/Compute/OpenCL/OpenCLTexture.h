@@ -16,8 +16,8 @@ public:
 	 *    @param 		 	parameter2	The second parameter.
 	 */
 
-	OpenCLTexture(const ComputeDevice& _device, uint _byteCount)
-		: GPUTextureBase(_device, _byteCount) {
+	OpenCLTexture(const ComputeDevice& _device, uint _byteCount) {
+//		: GPUTextureBase(_device, _byteCount) {
 
 	}
 

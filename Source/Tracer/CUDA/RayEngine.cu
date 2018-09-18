@@ -2,8 +2,8 @@
 
 #include <cuda_runtime.h>
 #include <curand_kernel.h>
-#include "Utility\CUDA\CUDAHelper.cuh"
-#include "Compute\DeviceAPI.h"
+#include "Utility/CUDA/CUDAHelper.cuh"
+#include "Compute/DeviceAPI.h"
 
 #define RAY_BIAS_DISTANCE 0.0002f 
 

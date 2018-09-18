@@ -1,3 +1,3 @@
 #pragma once
 
-#include "CUDA\ShaderNode.cuh"
+#include "CUDA/ShaderNode.cuh"
