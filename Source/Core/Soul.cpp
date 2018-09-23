@@ -225,15 +225,21 @@ void Soul::Run()
 	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
 	auto nextTime = currentTime + frameTime;
 
+	bool nextDirty = true;
+
 	while (!detail->windowManager_->ShouldClose()) {
 
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime;
 
-		if (Poll()) {
+		const bool dirty = nextDirty;
+		nextDirty = Poll();
+
+		if (dirty) {
 
 			EarlyFrameUpdate();
 
+			nextDirty = Poll();
 
 			EarlyUpdate();
 
