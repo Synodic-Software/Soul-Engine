@@ -15,7 +15,7 @@ public:
 	InputManager& operator=(const InputManager&) = delete;
 	InputManager& operator=(InputManager&& other) noexcept = default;
 
-	virtual void Poll() = 0;
+	virtual bool Poll() = 0;
 
 
 protected:

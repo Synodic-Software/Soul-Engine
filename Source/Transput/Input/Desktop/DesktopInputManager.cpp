@@ -124,7 +124,7 @@ void DesktopInputManager::ScrollCallback(GLFWwindow* window, double xoffset, dou
 //
 //}
 
-void DesktopInputManager::Poll() {
+bool DesktopInputManager::Poll() {
 
 	//process all events (includes Window events)
 	glfwPollEvents();
@@ -144,8 +144,8 @@ void DesktopInputManager::Poll() {
 			}
 
 			//TODO implement inputsets
-			const auto inputSetoffset = 0 * 350; //350+ are not defined in GLFW keystates
-			eventManager_->Emit("Input"_hashed, keyID + inputSetoffset, key.state);
+			const auto inputSetOffset = 0 * 350; //350+ are not defined in GLFW keystates
+			eventManager_->Emit("Input"_hashed, keyID + inputSetOffset, key.state);
 
 			//handle reset case after emitting a release event
 			if (key.state == KeyState::RELEASE) {
@@ -162,6 +162,7 @@ void DesktopInputManager::Poll() {
 	mouseXOffset_ = 0.0;
 	mouseYOffset_ = 0.0;
 
+	return false;
 }
 
 

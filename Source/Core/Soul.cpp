@@ -205,8 +205,7 @@ void Soul::LateUpdate() {
 //returns a bool that is true if the engine is dirty
 bool Soul::Poll() {
 
-	detail->inputManager_->Poll();
-	return false;
+	return detail->inputManager_->Poll();
 
 }
 
@@ -231,12 +230,11 @@ void Soul::Run()
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime;
 
-		EarlyFrameUpdate();
+		if (Poll()) {
 
-		bool dirty;
+			EarlyFrameUpdate();
 
-		{
-			dirty = Poll();
+
 			EarlyUpdate();
 
 			/*for (auto& scene : scenes) {
@@ -248,27 +246,20 @@ void Soul::Run()
 			}*/
 
 			LateUpdate();
-		}
 
+			LateFrameUpdate();
 
-		LateFrameUpdate();
+			RayPreProcess();
 
-		RayPreProcess();
+			//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
 
-		//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
+			RayPostProcess();
 
-		RayPostProcess();
-
-		Raster();
-
-		if (!dirty) {
-
-			detail->scheduler_.YieldUntil(nextTime, [this]()
-			{
-				return Poll();
-			});
+			Raster();
 
 		}
+
+		detail->scheduler_.YieldUntil(nextTime);
 
 	}
 
