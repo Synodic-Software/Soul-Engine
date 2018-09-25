@@ -1,14 +1,19 @@
 #pragma once
 
 #include "Frame.h"
+#include "Core/Structures/RingBuffer.h"
 
-namespace FrameManager {
+class FrameManager {
 
-	namespace detail {
-		Frame currentframe;
-	}
+public:
 
-	void Step(Frame currentFrame) {
-		currentFrame.frameCount += 1;
-	}
-}
+	FrameManager() = default;
+	~FrameManager() = default;
+
+	const Frame& Next();
+
+private:
+
+	RingBuffer<Frame, 3> frames_;
+
+};

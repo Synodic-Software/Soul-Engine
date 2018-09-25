@@ -13,6 +13,7 @@
 #include "Core/Utility/HashString/HashString.h"
 #include "Composition/Entity/EntityManager.h"
 #include "Rasterer/RasterManager.h"
+#include "Frame/FrameManager.h"
 
 #include <variant>
 
@@ -38,6 +39,7 @@ public:
 	WindowManager* windowManager_;
 	RasterManager rasterManager_;
 
+	FrameManager frameManager;
 
 private:
 
@@ -56,7 +58,8 @@ Soul::Implementation::Implementation(const Soul& soul) :
 	entityManager_(),
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
-	rasterManager_(scheduler_, entityManager_)
+	rasterManager_(scheduler_, entityManager_),
+	frameManager()
 {
 }
 
@@ -236,6 +239,8 @@ void Soul::Run()
 		nextDirty = Poll();
 
 		if (dirty) {
+
+			const auto& frame = detail->frameManager.Next();
 
 			EarlyFrameUpdate();
 
