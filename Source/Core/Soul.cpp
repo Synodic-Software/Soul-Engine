@@ -14,6 +14,7 @@
 #include "Composition/Entity/EntityManager.h"
 #include "Rasterer/RasterManager.h"
 #include "Frame/FrameManager.h"
+#include "Parallelism/Graph/Graph.h"
 
 #include <variant>
 
@@ -224,6 +225,9 @@ void Soul::Run()
 {
 
 	Warmup();
+
+	//Create the small graph of the mainloop
+	Graph graph;
 
 	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
 	auto nextTime = currentTime + frameTime;
