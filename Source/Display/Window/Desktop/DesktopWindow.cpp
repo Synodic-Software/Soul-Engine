@@ -142,7 +142,7 @@ void DesktopWindow::Resize(int x, int y) {
 
 void DesktopWindow::FrameBufferResize(int x, int y) {
 
-	rasterManager_->ResizeSwapChain(swapChain_, x, y);
+	rasterManager_->ResizeSwapChain(swapChain_, surface_, x, y);
 
 }
 

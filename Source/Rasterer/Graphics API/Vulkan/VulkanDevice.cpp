@@ -1,14 +1,22 @@
 #include "VulkanDevice.h"
 #include "Parallelism/Fiber/Scheduler.h"
 
-VulkanDevice::VulkanDevice(Scheduler& scheduler, int graphicsIndex, int presentIndex, vk::PhysicalDevice* physicalDevice, vk::Device device) :
+VulkanDevice::VulkanDevice(Scheduler& scheduler, int gIndex, int pIndex, vk::PhysicalDevice* physicalDevice, vk::Device device) :
 	scheduler_(&scheduler),
 	device_(device),
-	physicalDevice_(physicalDevice)
+	physicalDevice_(physicalDevice),
+	graphicsIndex(gIndex),
+	presentIndex(pIndex)
 {
 
-	graphicsQueue_ = device.getQueue(graphicsIndex,0);
-	presentQueue_ = device.getQueue(presentIndex,0);
+	Generate();
+
+}
+
+void VulkanDevice::Generate() {
+
+	graphicsQueue_ = device_.getQueue(graphicsIndex,0);
+	presentQueue_ = device_.getQueue(presentIndex,0);
 
 	vk::PipelineCacheCreateInfo pipelineCreateInfo;
 	//TODO: pipeline serialization n' such
@@ -26,10 +34,16 @@ VulkanDevice::VulkanDevice(Scheduler& scheduler, int graphicsIndex, int presentI
 
 	});
 
-
 }
 
 void VulkanDevice::Terminate() {
+
+	Cleanup();
+	device_.destroy();
+
+}
+
+void VulkanDevice::Cleanup() {
 
 	device_.destroyPipelineCache(pipelineCache_);
 
@@ -40,7 +54,12 @@ void VulkanDevice::Terminate() {
 
 	});
 
-	device_.destroy();
+}
+
+void VulkanDevice::Rebuild() {
+
+	Cleanup();
+	Generate();
 
 }
 
