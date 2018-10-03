@@ -226,8 +226,8 @@ void Soul::Run()
 
 	Warmup();
 
-	//Create the small graph of the mainloop
-	Graph graph;
+	//Create the mail loop graph of the mainloop
+	Graph graph(detail->scheduler_);
 
 	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
 	auto nextTime = currentTime + frameTime;

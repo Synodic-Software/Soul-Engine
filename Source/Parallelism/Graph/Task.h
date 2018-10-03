@@ -1,14 +1,20 @@
 #pragma once
 
-template <template<typename, typename...> class Fn>
-class Task{
+#include "AbstractNode.h"
+#include "Parallelism/Fiber/FiberParameters.h"
+
+#include <functional>
+
+class Task : public AbstractNode {
+
+	//type-erased, no parameter, callable
+	using FuncType = std::function<void()>;
 
 public:
 
-	Task() = default;
+	Task(FuncType&&);
 
-	template <typename Callable>
-	Task(Callable&&);
+	~Task() = default;
 
 	Task(const Task&) = delete;
 	Task(Task&& o) noexcept = delete;
@@ -16,13 +22,11 @@ public:
 	Task& operator=(const Task&) = delete;
 	Task& operator=(Task&& other) noexcept = delete;
 
+	void Execute(Scheduler&) const;
+
 private:
 
+	FiberParameters parameters_;
+	FuncType callable_;
 
 };
-
-template <template<typename, typename...> class Fn>
-template <typename Callable>
-Task<Fn>::Task(Callable&&) {
-	
-}
