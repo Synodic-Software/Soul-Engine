@@ -162,7 +162,7 @@ bool DesktopInputManager::Poll() {
 	mouseXOffset_ = 0.0;
 	mouseYOffset_ = 0.0;
 
-	return false;
+	return true;
 }
 
 
