@@ -1,5 +1,4 @@
 # Soul Engine
-[![Build status](https://travis-ci.org/Synodic-Software/Soul-Engine.svg?branch=master)](https://travis-ci.org/Synodic-Software/Soul-Engine)
 [![Build status](https://ci.appveyor.com/api/projects/status/ryye37u8hw4ofd5l?svg=true)](https://ci.appveyor.com/project/Synodic-Software/soul-engine)
 
 Soul Engine is a real-time visualization engine built on the back of CUDA and Vulkan. With a focus on lightweight parallelism that can be leveraged for expensive techniques, Soul Engine provides a platform for path tracing, finite element physics, and general simulation.

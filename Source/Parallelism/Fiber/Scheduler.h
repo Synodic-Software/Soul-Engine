@@ -36,8 +36,8 @@ public:
 	void Block() const;
 	static void Yield();
 
-	template< typename Clock, typename Duration, typename Pred >
-	static void YieldUntil(std::chrono::time_point< Clock, Duration > const&, Pred);
+	template< typename Clock, typename Duration>
+	static void YieldUntil(std::chrono::time_point< Clock, Duration > const&);
 
 private:
 
@@ -195,13 +195,13 @@ void Scheduler::LaunchFiber(FiberParameters& params, Fn && func) {
 
 }
 
-template< typename Clock, typename Duration, typename Pred >
-void Scheduler::YieldUntil(std::chrono::time_point< Clock, Duration > const& timePoint, Pred predicate) {
+template< typename Clock, typename Duration>
+void Scheduler::YieldUntil(std::chrono::time_point< Clock, Duration > const& timePoint) {
 
 	boost::fibers::mutex mutex;
 	boost::fibers::condition_variable conditional;
 
 	std::unique_lock<boost::fibers::mutex> lock(mutex);
-	conditional.wait_until(lock, timePoint, predicate);
+	conditional.wait_until(lock, timePoint);
 
 }

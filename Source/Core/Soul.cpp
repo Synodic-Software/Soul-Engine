@@ -13,6 +13,8 @@
 #include "Core/Utility/HashString/HashString.h"
 #include "Composition/Entity/EntityManager.h"
 #include "Rasterer/RasterManager.h"
+#include "Frame/FrameManager.h"
+#include "Parallelism/Graph/Graph.h"
 
 #include <variant>
 
@@ -38,6 +40,7 @@ public:
 	WindowManager* windowManager_;
 	RasterManager rasterManager_;
 
+	FrameManager frameManager;
 
 private:
 
@@ -56,7 +59,8 @@ Soul::Implementation::Implementation(const Soul& soul) :
 	entityManager_(),
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
-	rasterManager_(scheduler_, entityManager_)
+	rasterManager_(scheduler_, entityManager_),
+	frameManager()
 {
 }
 
@@ -205,8 +209,7 @@ void Soul::LateUpdate() {
 //returns a bool that is true if the engine is dirty
 bool Soul::Poll() {
 
-	detail->inputManager_->Poll();
-	return false;
+	return detail->inputManager_->Poll();
 
 }
 
@@ -223,20 +226,30 @@ void Soul::Run()
 
 	Warmup();
 
+	//Create the mail loop graph of the mainloop
+	Graph graph(detail->scheduler_);
+
 	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
 	auto nextTime = currentTime + frameTime;
+
+	bool nextDirty = true;
 
 	while (!detail->windowManager_->ShouldClose()) {
 
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime;
 
-		EarlyFrameUpdate();
+		const bool dirty = nextDirty;
+		nextDirty = Poll();
 
-		bool dirty;
+		if (dirty) {
 
-		{
-			dirty = Poll();
+			const auto& frame = detail->frameManager.Next();
+
+			EarlyFrameUpdate();
+
+			nextDirty = Poll();
+
 			EarlyUpdate();
 
 			/*for (auto& scene : scenes) {
@@ -248,27 +261,20 @@ void Soul::Run()
 			}*/
 
 			LateUpdate();
-		}
 
+			LateFrameUpdate();
 
-		LateFrameUpdate();
+			RayPreProcess();
 
-		RayPreProcess();
+			//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
 
-		//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
+			RayPostProcess();
 
-		RayPostProcess();
-
-		Raster();
-
-		if (!dirty) {
-
-			detail->scheduler_.YieldUntil(nextTime, [this]()
-			{
-				return Poll();
-			});
+			Raster();
 
 		}
+
+		detail->scheduler_.YieldUntil(nextTime);
 
 	}
 

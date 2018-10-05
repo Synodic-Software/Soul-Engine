@@ -20,7 +20,7 @@ public:
 	DesktopInputManager& operator=(DesktopInputManager&& other) noexcept = default;
 
 	//void AttachWindow(DesktopWindow* window);
-	void Poll() override;
+	bool Poll() override;
 
 
 private:
