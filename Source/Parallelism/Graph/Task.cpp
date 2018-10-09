@@ -2,15 +2,27 @@
 
 #include "Parallelism/Fiber/Scheduler.h"
 
-Task::Task(FuncType&& callable) :
+Task::Task(Scheduler* scheduler, FuncType&& callable) noexcept:
+	scheduler_(scheduler),
 	parameters_(),
 	callable_(std::forward<FuncType>(callable))
 {
 
 }
 
-void Task::Execute(Scheduler& scheduler) const {
+void Task::Execute() {
 	
-	scheduler.AddTask(parameters_, callable_);
+	scheduler_->AddTask(parameters_, [this]()
+	{
+		std::invoke(std::forward<FuncType>(callable_));
+
+		for (const auto& child : children_) {
+
+			child->Execute();
+
+		}
+
+		scheduler_->Block();
+	});
 
 }

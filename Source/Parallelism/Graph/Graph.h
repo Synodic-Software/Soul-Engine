@@ -1,53 +1,62 @@
 #pragma once
 
+#include "Node.h"
 #include "Task.h"
-#include "AbstractNode.h"
 
 #include "Core/Utility/Template/TypeTraits.h"
 
 #include <forward_list>
 
-
 class Scheduler;
 
-class Graph : public AbstractNode{
+class Graph : public Node {
+
+	friend class Scheduler;
+
 
 public:
 
-	Graph(Scheduler&);
-	~Graph() = default;
+	Graph(Scheduler*);
+
+	~Graph() override = default;
 
 	Graph(const Graph&) = delete;
-	Graph(Graph&& o) noexcept = delete;
+	Graph(Graph&& o) noexcept = default;
 
 	Graph& operator=(const Graph&) = delete;
-	Graph& operator=(Graph&& other) noexcept = delete;
+	Graph& operator=(Graph&& other) noexcept = default;
 
 	template <typename Callable>
-	Task& Emplace(Callable&&);
+	Task& AddTask(Callable&&);
+	Graph& AddGraph();
+	
+	void Execute() override;
 
-	void Execute();
 
 private:
 
-	std::forward_list<Task> tasks_;
+	Scheduler* scheduler_;
 
-	Scheduler& scheduler_;
+	std::forward_list<Task> tasks_;
+	std::forward_list<Graph> graphs_;
+
 
 };
 
-//Places the provided callable into the 
+//Create a tasks under this graph's control
 template <typename Callable>
-Task& Graph::Emplace(Callable&& callable) {
+Task& Graph::AddTask(Callable&& callable) {
 
-	//return GraphProxy(tasks_).Emplace(std::forward<Callable>(callable));
 	if constexpr (!std::is_invocable_v<Callable>) {
 
 		static_assert(dependent_false_v<Callable>, "The provided parameter is not callable");
 
 	}
 
-	Task& task = tasks_.emplace_front(std::forward<Callable>(callable));
+	Task& task = tasks_.emplace_front(scheduler_, std::forward<Callable>(callable));
+
+	task.DependsOn(*this);
 
 	return task;
+
 }

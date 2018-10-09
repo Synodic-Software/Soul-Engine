@@ -6,6 +6,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <forward_list>
 
 #include "Core/Utility/Property/Property.h"
 #include "FiberParameters.h"
@@ -16,6 +17,9 @@
 #undef CreateWindow
 #undef Yield
 
+
+class EntityManager;
+class Graph;
 
 class Scheduler {
 
@@ -29,6 +33,8 @@ public:
 
 	template<typename Fn, typename ... Args>
 	void AddTask(FiberParameters, Fn &&, Args && ...);
+
+	Graph& CreateGraph();
 
 	template<typename Fn, typename ... Args>
 	void ForEachThread(FiberPriority, Fn &&, Args && ...);
@@ -59,6 +65,7 @@ private:
 
 	Property<uint>& threadCount_;
 	std::vector<std::thread> childThreads_;
+	std::forward_list<Graph> graphs_;
 
 };
 

@@ -1,32 +1,38 @@
 #pragma once
 
-#include "AbstractNode.h"
+#include "Node.h"
 #include "Parallelism/Fiber/FiberParameters.h"
 
 #include <functional>
 
-class Task : public AbstractNode {
+class Scheduler;
+
+class Task : public Node{
 
 	//type-erased, no parameter, callable
 	using FuncType = std::function<void()>;
 
 public:
 
-	Task(FuncType&&);
+	Task(Scheduler*, FuncType&&) noexcept;
 
-	~Task() = default;
+	~Task() override = default;
 
 	Task(const Task&) = delete;
-	Task(Task&& o) noexcept = delete;
+	Task(Task&& o) = default;
 
 	Task& operator=(const Task&) = delete;
-	Task& operator=(Task&& other) noexcept = delete;
+	Task& operator=(Task&& other) = default;
 
-	void Execute(Scheduler&) const;
+	void Execute() override;
+
 
 private:
 
+	Scheduler* scheduler_;
+
 	FiberParameters parameters_;
 	FuncType callable_;
+
 
 };

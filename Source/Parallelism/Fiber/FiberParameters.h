@@ -11,6 +11,13 @@ class FiberParameters {
 public:
 
 	FiberParameters(bool = true, FiberPriority = FiberPriority::HIGH, bool = true, int = -1);
+	~FiberParameters() = default;
+
+	FiberParameters(const FiberParameters&) = default;
+	FiberParameters(FiberParameters&& o) noexcept = default;
+
+	FiberParameters& operator=(const FiberParameters&) = default;
+	FiberParameters& operator=(FiberParameters&& other) noexcept = default;
 
 private:
 

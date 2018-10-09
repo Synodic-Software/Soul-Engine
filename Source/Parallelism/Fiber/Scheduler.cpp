@@ -1,6 +1,7 @@
 #include "Scheduler.h"
 #include "SchedulerAlgorithm.h"
 #include "boost/fiber/barrier.hpp"
+#include "Parallelism/Graph/Graph.h"
 
 Scheduler::Scheduler(Property<uint>& threadCount) :
 	shouldRun_(true),
@@ -81,6 +82,13 @@ void Scheduler::InitPointers() {
 	}
 
 }
+
+Graph& Scheduler::CreateGraph() {
+	
+	return graphs_.emplace_front(this);
+
+}
+
 
 //block the current thread until all registered children complete
 void Scheduler::Block() const {
