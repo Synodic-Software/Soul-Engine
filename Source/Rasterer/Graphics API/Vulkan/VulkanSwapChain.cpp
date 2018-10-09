@@ -11,6 +11,11 @@ VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, En
 	vSync(false)
 {
 
+	CreateSwapChain(surface, size);
+
+}
+
+void VulkanSwapChain::CreateSwapChain(Entity surface, glm::uvec2& size) {
 	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	const auto& logicalDevice = vkDevice.GetLogicalDevice();
 	const auto& physicalDevice = vkDevice.GetPhysicalDevice();
@@ -170,7 +175,6 @@ VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, En
 		inFlightFences[i] = logicalDevice.createFence(fenceInfo);
 
 	}
-
 }
 
 void VulkanSwapChain::Terminate() {
@@ -197,7 +201,14 @@ void VulkanSwapChain::Terminate() {
 
 }
 
-void VulkanSwapChain::Resize(glm::uvec2) {
+void VulkanSwapChain::Resize(Entity surface, glm::uvec2 size) {
+
+	Terminate();
+
+	auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
+	vkDevice.Rebuild();
+	
+	CreateSwapChain(surface, size);
 
 }
 
@@ -212,10 +223,9 @@ void VulkanSwapChain::Draw() {
 	auto[acquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
 
 	//TODO: handle this occurrence
-	/*if(acquireResult != VK_SUCCESS) {
-
+	/*if((VkResult) acquireResult != VK_SUCCESS) {
+	 
 	}*/
-
 
 	vk::SubmitInfo submitInfo;
 

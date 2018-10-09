@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "Composition/Entity/Entity.h"
 
 class SwapChain {
 
@@ -15,7 +16,7 @@ public:
 	SwapChain& operator=(const SwapChain&) = delete;
 	SwapChain& operator=(SwapChain&& other) noexcept = default;
 
-	virtual void Resize(glm::uvec2) = 0;
+	virtual void Resize(Entity, glm::uvec2) = 0;
 	virtual void Draw() = 0;
 
 };

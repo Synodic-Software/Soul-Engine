@@ -31,7 +31,7 @@ public:
 
 	void Terminate() override;
 
-	void Resize(glm::uvec2) override;
+	void Resize(Entity surface, glm::uvec2 size) override;
 	void Draw() override;
 
 private:
@@ -57,4 +57,5 @@ private:
 
 	bool vSync;
 
+	void CreateSwapChain(Entity surface, glm::uvec2& size);
 };

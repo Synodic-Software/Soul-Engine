@@ -35,9 +35,9 @@ Entity RasterManager::CreateSurface(std::any& windowContext) const {
 
 }
 
-void RasterManager::ResizeSwapChain(Entity swapChain, int x, int y) {
+void RasterManager::ResizeSwapChain(Entity swapChain, Entity surface, int x, int y) {
 
-	return rasterContext_->ResizeSwapChain(swapChain, x, y);
+	return rasterContext_->ResizeSwapChain(swapChain, surface, x, y);
 
 }
 

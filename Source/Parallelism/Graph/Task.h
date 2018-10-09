@@ -2,6 +2,7 @@
 
 #include "AbstractNode.h"
 #include "Parallelism/Fiber/FiberParameters.h"
+#include "Parallelism/Fiber/Scheduler.h"
 
 #include <functional>
 
