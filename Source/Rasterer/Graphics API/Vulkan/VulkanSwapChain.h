@@ -30,7 +30,7 @@ public:
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
 	void Terminate() override;
-	void Cleanup(); // TODO: Move this up
+//	void Cleanup(); // TODO: Move this up
 
 	void Resize(Entity surface, glm::uvec2 size) override;
 	void Draw() override;

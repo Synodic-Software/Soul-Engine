@@ -183,22 +183,6 @@ void VulkanSwapChain::BuildSwapChain(Entity surface, glm::uvec2& size, bool crea
 
 void VulkanSwapChain::Terminate() {
 
-	Cleanup();
-
-	const vk::Device& logicalDevice = entityManager_->GetComponent<VulkanDevice>(device_).GetLogicalDevice();
-
-	for (size_t i = 0; i < flightFramesCount; i++) {
-
-		logicalDevice.destroySemaphore(imageAvailableSemaphores[i]);
-		logicalDevice.destroySemaphore(renderFinishedSemaphores[i]);
-		logicalDevice.destroyFence(inFlightFences[i]);
-
-	}
-
-}
-
-void VulkanSwapChain::Cleanup() {
-
 	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	const auto& logicalDevice = vkDevice.GetLogicalDevice();
 
@@ -216,15 +200,24 @@ void VulkanSwapChain::Cleanup() {
 		logicalDevice.destroyImageView(image.view);
 	}
 
+	for (size_t i = 0; i < flightFramesCount; i++) {
+
+		logicalDevice.destroySemaphore(imageAvailableSemaphores[i]);
+		logicalDevice.destroySemaphore(renderFinishedSemaphores[i]);
+		logicalDevice.destroyFence(inFlightFences[i]);
+
+	}
+
 	logicalDevice.destroySwapchainKHR(swapChain_);
 
 }
 
 void VulkanSwapChain::Resize(Entity surface, glm::uvec2 size) {
 
-	Cleanup();
+	Terminate();
 
 	pipeline_->Terminate();
+	pipeline_->GetRenderPass().Terminate();
 
 	auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	vkDevice.Rebuild();
