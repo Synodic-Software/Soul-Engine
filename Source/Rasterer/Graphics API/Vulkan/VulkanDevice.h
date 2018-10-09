@@ -49,6 +49,8 @@ private:
 	int graphicsIndex;
 	int presentIndex;
 
+	void CreateQueues();
+	void CreatePipelineCache();
 	void Cleanup();
 	void Generate();
 

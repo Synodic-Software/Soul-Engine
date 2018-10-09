@@ -5,6 +5,11 @@ VulkanRenderPass::VulkanRenderPass(EntityManager& entityManager, Entity device, 
 	device_(device)
 {
 
+	Create(swapChainImageFormat);
+
+}
+
+void VulkanRenderPass::Create(vk::Format swapChainImageFormat) {
 	vk::AttachmentDescription colorAttachment;
 	colorAttachment.format = swapChainImageFormat;
 	colorAttachment.samples = vk::SampleCountFlagBits::e1;

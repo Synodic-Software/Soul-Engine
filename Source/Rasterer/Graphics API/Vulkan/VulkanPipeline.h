@@ -16,7 +16,9 @@ class VulkanPipeline : public Pipeline {
 public:
 
 	VulkanPipeline(EntityManager&, Entity, vk::Extent2D&, const std::string&, const std::string&, vk::Format);
+	void Create(vk::Extent2D&, vk::Format, bool);
 	~VulkanPipeline() override;
+	void Terminate();
 
 	VulkanPipeline(const VulkanPipeline&) = delete;
 	VulkanPipeline(VulkanPipeline&& o) noexcept = delete;

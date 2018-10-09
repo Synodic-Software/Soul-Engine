@@ -11,11 +11,12 @@ VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, En
 	vSync(false)
 {
 
-	CreateSwapChain(surface, size);
+	BuildSwapChain(surface, size, true);
 
 }
 
-void VulkanSwapChain::CreateSwapChain(Entity surface, glm::uvec2& size) {
+void VulkanSwapChain::BuildSwapChain(Entity surface, glm::uvec2& size, bool createPipeline) {
+
 	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	const auto& logicalDevice = vkDevice.GetLogicalDevice();
 	const auto& physicalDevice = vkDevice.GetPhysicalDevice();
@@ -94,7 +95,6 @@ void VulkanSwapChain::CreateSwapChain(Entity surface, glm::uvec2& size) {
 
 	swapChain_ = logicalDevice.createSwapchainKHR(swapchainCreateInfo);
 
-
 	vk::ImageViewCreateInfo colorAttachmentCreateInfo;
 	colorAttachmentCreateInfo.format = format;
 	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
@@ -114,7 +114,11 @@ void VulkanSwapChain::CreateSwapChain(Entity surface, glm::uvec2& size) {
 
 	//TODO: Remove hardcoded pipeline + Hardcoded paths
 	//TODO: Associate paths to Project/Executable
-	pipeline_ = std::make_unique<VulkanPipeline>(*entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
+	if (createPipeline) {
+		pipeline_ = std::make_unique<VulkanPipeline>(*entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
+	} else {
+		pipeline_->Create(swapchainSize, format, true);
+	}
 
 	for (SwapChainImage& image : images_) {
 		frameBuffers_.emplace_back(*entityManager_, device_, image.view, pipeline_->GetRenderPass(), size);
@@ -179,6 +183,8 @@ void VulkanSwapChain::CreateSwapChain(Entity surface, glm::uvec2& size) {
 
 void VulkanSwapChain::Terminate() {
 
+	Cleanup();
+
 	const vk::Device& logicalDevice = entityManager_->GetComponent<VulkanDevice>(device_).GetLogicalDevice();
 
 	for (size_t i = 0; i < flightFramesCount; i++) {
@@ -189,9 +195,23 @@ void VulkanSwapChain::Terminate() {
 
 	}
 
+}
+
+void VulkanSwapChain::Cleanup() {
+
+	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
+	const auto& logicalDevice = vkDevice.GetLogicalDevice();
+
+	logicalDevice.freeCommandBuffers(vkDevice.GetCommandPool(),
+			static_cast<uint32_t>(commandBuffers_.size()), commandBuffers_.data());
+
+	pipeline_->Terminate();
+
 	for (auto& framebuffer : frameBuffers_) {
 		framebuffer.Terminate();
 	}
+
+	frameBuffers_.clear();
 
 	for (const auto& image : images_) {
 		logicalDevice.destroyImageView(image.view);
@@ -203,12 +223,12 @@ void VulkanSwapChain::Terminate() {
 
 void VulkanSwapChain::Resize(Entity surface, glm::uvec2 size) {
 
-	Terminate();
+	Cleanup();
 
 	auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	vkDevice.Rebuild();
-	
-	CreateSwapChain(surface, size);
+
+	BuildSwapChain(surface, size, false);
 
 }
 

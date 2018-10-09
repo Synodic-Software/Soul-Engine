@@ -15,13 +15,9 @@ VulkanDevice::VulkanDevice(Scheduler& scheduler, int gIndex, int pIndex, vk::Phy
 
 void VulkanDevice::Generate() {
 
-	graphicsQueue_ = device_.getQueue(graphicsIndex,0);
-	presentQueue_ = device_.getQueue(presentIndex,0);
+	CreateQueues();
 
-	vk::PipelineCacheCreateInfo pipelineCreateInfo;
-	//TODO: pipeline serialization n' such
-
-	pipelineCache_ = device_.createPipelineCache(pipelineCreateInfo);
+	CreatePipelineCache();
 
 	vk::CommandPoolCreateInfo poolInfo;
 	poolInfo.queueFamilyIndex = graphicsIndex;
@@ -36,16 +32,25 @@ void VulkanDevice::Generate() {
 
 }
 
-void VulkanDevice::Terminate() {
+void VulkanDevice::CreateQueues() {
 
-	Cleanup();
-	device_.destroy();
+	graphicsQueue_ = device_.getQueue(graphicsIndex,0);
+	presentQueue_ = device_.getQueue(presentIndex,0);
 
 }
 
-void VulkanDevice::Cleanup() {
+void VulkanDevice::CreatePipelineCache() {
 
-	device_.destroyPipelineCache(pipelineCache_);
+	vk::PipelineCacheCreateInfo pipelineCreateInfo;
+	//TODO: pipeline serialization n' such
+
+	pipelineCache_ = device_.createPipelineCache(pipelineCreateInfo);
+
+}
+
+void VulkanDevice::Terminate() {
+
+	Cleanup();
 
 	scheduler_->ForEachThread(FiberPriority::UX, [this]()
 	{
@@ -54,12 +59,22 @@ void VulkanDevice::Cleanup() {
 
 	});
 
+	device_.destroy();
+
+}
+
+void VulkanDevice::Cleanup() {
+
+	device_.destroyPipelineCache(pipelineCache_);
+
 }
 
 void VulkanDevice::Rebuild() {
 
 	Cleanup();
-	Generate();
+
+//	CreateQueues();
+	CreatePipelineCache();
 
 }
 

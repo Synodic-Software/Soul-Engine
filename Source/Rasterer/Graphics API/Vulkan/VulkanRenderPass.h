@@ -12,6 +12,7 @@ class VulkanRenderPass : public RenderPass
 public:
 
 	VulkanRenderPass(EntityManager&, Entity, vk::Format);
+	void Create(vk::Format);
 	~VulkanRenderPass() override;
 
 	VulkanRenderPass(const VulkanRenderPass&) = delete;
