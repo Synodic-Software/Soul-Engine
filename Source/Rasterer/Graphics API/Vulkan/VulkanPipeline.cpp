@@ -130,8 +130,6 @@ void VulkanPipeline::Terminate() {
 	logicalDevice.destroyPipeline(pipeline_);
 	logicalDevice.destroyPipelineLayout(pipelineLayout_);
 
-	logicalDevice.destroyRenderPass(renderPass_.GetRenderPass());
-
 }
 
 VulkanPipeline::~VulkanPipeline() {

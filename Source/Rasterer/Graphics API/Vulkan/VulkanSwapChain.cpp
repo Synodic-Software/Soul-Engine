@@ -205,7 +205,6 @@ void VulkanSwapChain::Cleanup() {
 	logicalDevice.freeCommandBuffers(vkDevice.GetCommandPool(),
 			static_cast<uint32_t>(commandBuffers_.size()), commandBuffers_.data());
 
-	pipeline_->Terminate();
 
 	for (auto& framebuffer : frameBuffers_) {
 		framebuffer.Terminate();
@@ -224,6 +223,8 @@ void VulkanSwapChain::Cleanup() {
 void VulkanSwapChain::Resize(Entity surface, glm::uvec2 size) {
 
 	Cleanup();
+
+	pipeline_->Terminate();
 
 	auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	vkDevice.Rebuild();
