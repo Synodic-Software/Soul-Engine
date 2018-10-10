@@ -10,7 +10,7 @@
 
 //TODO cleanup global
 const std::vector<const char*> validationLayers = {
-//	"VK_LAYER_LUNARG_assistant_layer",
+	"VK_LAYER_LUNARG_assistant_layer",
 	"VK_LAYER_LUNARG_standard_validation"
 };
 
@@ -124,10 +124,11 @@ Entity VulkanContext::CreateSurface(std::any& windowContext) {
 
 }
 
-void VulkanContext::ResizeSwapChain(Entity swapChain, int x, int y) {
+void VulkanContext::ResizeSwapChain(Entity swapChain, Entity surface, int x, int y) {
 	
-	const auto& vkSwapChain = entityManager_.GetComponent<VulkanSwapChain>(swapChain);
-
+	auto& vkSwapChain = entityManager_.GetComponent<VulkanSwapChain>(swapChain);
+	glm::uvec2 newSize = glm::uvec2(x, y);
+	vkSwapChain.Resize(surface, newSize);
 
 }
 

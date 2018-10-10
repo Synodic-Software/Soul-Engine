@@ -5,6 +5,11 @@ VulkanRenderPass::VulkanRenderPass(EntityManager& entityManager, Entity device, 
 	device_(device)
 {
 
+	Create(swapChainImageFormat);
+
+}
+
+void VulkanRenderPass::Create(vk::Format swapChainImageFormat) {
 	vk::AttachmentDescription colorAttachment;
 	colorAttachment.format = swapChainImageFormat;
 	colorAttachment.samples = vk::SampleCountFlagBits::e1;
@@ -37,12 +42,18 @@ VulkanRenderPass::VulkanRenderPass(EntityManager& entityManager, Entity device, 
 
 }
 
-VulkanRenderPass::~VulkanRenderPass() {
+void VulkanRenderPass::Terminate() {
 
 	const auto& vkDevice = entityManager_.GetComponent<VulkanDevice>(device_);
 	const vk::Device& logicalDevice = vkDevice.GetLogicalDevice();
 
 	logicalDevice.destroyRenderPass(renderPass_, nullptr);
+
+}
+
+VulkanRenderPass::~VulkanRenderPass() {
+
+	Terminate();
 
 }
 

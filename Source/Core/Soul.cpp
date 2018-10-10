@@ -14,6 +14,7 @@
 #include "Composition/Entity/EntityManager.h"
 #include "Rasterer/RasterManager.h"
 #include "Frame/FrameManager.h"
+#include "Parallelism/Graph/Graph.h"
 
 #include <variant>
 
@@ -30,11 +31,11 @@ public:
 	~Implementation();
 
 	//services and modules	
+	EntityManager entityManager_;
 	Scheduler scheduler_;
 	EventManager eventManager_;
 	inputManagerVariantType inputManagerVariant_;
 	InputManager* inputManager_;
-	EntityManager entityManager_;
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
 	RasterManager rasterManager_;
@@ -51,11 +52,11 @@ private:
 };
 
 Soul::Implementation::Implementation(const Soul& soul) :
+	entityManager_(),
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
 	inputManagerVariant_(ConstructInputManager()),
 	inputManager_(ConstructInputPtr()),
-	entityManager_(),
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
 	rasterManager_(scheduler_, entityManager_),
@@ -224,6 +225,17 @@ void Soul::Run()
 {
 
 	Warmup();
+
+	//Create the mail loop graph of the mainloop
+	//Graph& graph = detail->scheduler_.CreateGraph();
+
+	//Task& taskA = graph.AddTask([]()
+	//{
+	//	std::cout << "Hello";
+	//});
+
+	//graph.Execute();
+	//detail->scheduler_.Block();
 
 	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
 	auto nextTime = currentTime + frameTime;
