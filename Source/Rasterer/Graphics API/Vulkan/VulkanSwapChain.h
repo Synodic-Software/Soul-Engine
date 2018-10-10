@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Rasterer/Graphics API/SwapChain.h"
-#include "Composition/Entity/EntityManager.h"
+class EntityManager;
 #include "VulkanPipeline.h"
 #include "VulkanFramebuffer.h"
 #include "Composition/Component/Component.h"

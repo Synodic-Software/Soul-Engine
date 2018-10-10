@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics API/RasterContext.h"
+class RasterContext;
 #include "Graphics API/Vulkan/VulkanContext.h"
 #include "Graphics API/SwapChain.h"
 

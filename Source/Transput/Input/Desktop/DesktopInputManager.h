@@ -5,7 +5,7 @@
 #include "Transput/Input/InputManager.h"
 
 #include "GLFW/glfw3.h"
-
+class GLFWindow;
 class DesktopInputManager : public InputManager {
 
 public:

@@ -2,6 +2,7 @@
 #include "VulkanContext.h"
 #include "VulkanSurface.h"
 #include "VulkanDevice.h"
+#include "Composition/Entity/EntityManager.h"
 
 VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, Entity surface, glm::uvec2& size) :
 	entityManager_(entityManager),

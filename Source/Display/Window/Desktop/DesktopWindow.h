@@ -4,7 +4,7 @@
 #include "Transput/Input/Desktop/DesktopInputManager.h"
 #include "Rasterer/RasterManager.h"
 #include "Composition/Component/Component.h"
-
+#include "GLFW/glfw3.h"
 class DesktopWindow : public Window, Component<DesktopWindow>
 {
 public:

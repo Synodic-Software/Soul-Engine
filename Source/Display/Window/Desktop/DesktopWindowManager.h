@@ -3,8 +3,9 @@
 #include "Display/Window/WindowManager.h"
 #include "Display/Window/Window.h"
 #include "Transput/Input/Desktop/DesktopInputManager.h"
-#include "Rasterer/RasterManager.h"
-
+//#include "Rasterer/RasterManager.h"
+class RasterManager;
+struct GLFWmonitor;
 class DesktopWindowManager : public WindowManager
 {
 
