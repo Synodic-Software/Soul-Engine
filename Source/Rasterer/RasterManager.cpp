@@ -3,6 +3,7 @@
 #include "Platform/Platform.h"
 #include "Graphics API/Vulkan/VulkanSwapChain.h"
 #include "Parallelism/Fiber/Scheduler.h"
+#include "Graphics API/RasterContext.h"
 
 RasterManager::RasterManager(Scheduler& scheduler, EntityManager& entityManager) {
 

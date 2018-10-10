@@ -2,7 +2,7 @@
 
 #include "Core/Utility/Log/Logger.h"
 #include "Display/Window/Desktop/DesktopWindow.h"
-
+#include "Rasterer/RasterManager.h"
 #include "GLFW/glfw3.h"
 
 

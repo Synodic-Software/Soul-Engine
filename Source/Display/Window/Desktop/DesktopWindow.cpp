@@ -4,7 +4,8 @@
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Transput/Input/InputManager.h"
 #include "Rasterer/Graphics API/Vulkan/VulkanSwapChain.h"
-
+//#include "GLFW/glfw3.h"
+class GLFWmonitor;
 DesktopWindow::DesktopWindow(EntityManager* entityManager, WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager, RasterManager& rasterManager) :
 	Window(params),
 	inputManager_(&inputManager),
