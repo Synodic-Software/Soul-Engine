@@ -118,7 +118,7 @@ void VulkanSwapChain::BuildSwapChain(Entity surface, glm::uvec2& size, bool crea
 	if (createPipeline) {
 		pipeline_ = std::make_unique<VulkanPipeline>(*entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
 	} else {
-		pipeline_->Create(swapchainSize, format, true);
+		pipeline_->Create(swapchainSize, format);
 	}
 
 	for (SwapChainImage& image : images_) {
