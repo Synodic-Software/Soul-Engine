@@ -10,15 +10,13 @@ VulkanPipeline::VulkanPipeline(EntityManager& entityManger, Entity device, vk::E
 	fragmentShader_(entityManger, device, fragmentFilename)
 {
 
-	Create(extent, swapChainFormat, false);
+	Create(extent, swapChainFormat);
 
 }
 
-void VulkanPipeline::Create(vk::Extent2D& extent, vk::Format swapChainFormat, bool createRenderPass) {
+void VulkanPipeline::Create(vk::Extent2D& extent, vk::Format swapChainFormat) {
 
-	if (createRenderPass) {
-		renderPass_.Create(swapChainFormat);
-	}
+	renderPass_.Create(swapChainFormat);
 
 	//SETUP LAYOUT
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
