@@ -236,6 +236,8 @@ void Soul::Run()
 
 	//graph.Execute();
 	//detail->scheduler_.Block();
+	
+	Poll();
 
 	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
 	auto nextTime = currentTime + frameTime;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SoulParameters.h"
+#include "Transput/Input/Console/ConsoleManager.h"
 #include <memory>
 #include <chrono>
 
@@ -42,4 +43,5 @@ private:
 	class Implementation;
 	std::unique_ptr<Implementation> detail;
 
+	std::unique_ptr<ConsoleManager> console;
 };

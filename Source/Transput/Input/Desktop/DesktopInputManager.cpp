@@ -2,15 +2,35 @@
 #include "Composition/Event/EventManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Core/Utility/Log/Logger.h"
+#include "Platform/Platform.h"
 
 DesktopInputManager::DesktopInputManager(EventManager& eventManager) :
 	InputManager(eventManager),
+	consoleManagerVariant_(ConstructConsoleManager()),
+	consoleManager_(ConstructConsolePtr()),
 	mouseXOffset_(0),
 	mouseYOffset_(0),
 	firstMouse_(true)
 {
+}
+
+DesktopInputManager::consoleManagerVariantType DesktopInputManager::ConstructConsoleManager() {
+
+	if constexpr (Platform::WithCLI()) {
+		consoleManagerVariantType tmp;
+		tmp.emplace<CLIConsoleManager>(eventManager_);
+		return tmp;
+	}
 
 }
+
+ConsoleManager* DesktopInputManager::ConstructConsolePtr() {
+
+	if constexpr (Platform::WithCLI()) {
+		return &std::get<CLIConsoleManager>(consoleManagerVariant_);
+	}
+
+};
 
 void DesktopInputManager::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
@@ -128,6 +148,8 @@ bool DesktopInputManager::Poll() {
 
 	//process all events (includes Window events)
 	glfwPollEvents();
+
+	consoleManager_->Poll();
 
 	//TODO break into tasks 
 	//fire off all key events and their logic
