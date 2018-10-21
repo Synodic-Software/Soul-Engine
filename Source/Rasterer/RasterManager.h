@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics API/RasterContext.h"
+class RasterContext;
 #include "Graphics API/Vulkan/VulkanContext.h"
 #include "Graphics API/SwapChain.h"
 
@@ -28,7 +28,7 @@ public:
 	void Raster(Entity);
 	void PostRaster();
 
-	void ResizeSwapChain(Entity, int, int);
+	void ResizeSwapChain(Entity, Entity, int, int);
 
 	Entity CreateSurface(std::any& windowContext) const;
 	Entity CreateSwapChain(Entity, Entity, glm::uvec2&) const;

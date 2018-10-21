@@ -2,6 +2,7 @@
 #include "VulkanContext.h"
 #include "VulkanSurface.h"
 #include "VulkanDevice.h"
+#include "Composition/Entity/EntityManager.h"
 
 VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, Entity surface, glm::uvec2& size) :
 	entityManager_(entityManager),
@@ -10,6 +11,12 @@ VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, En
 	flightFramesCount(2),
 	vSync(false)
 {
+
+	BuildSwapChain(surface, size, true);
+
+}
+
+void VulkanSwapChain::BuildSwapChain(Entity surface, glm::uvec2& size, bool createPipeline) {
 
 	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	const auto& logicalDevice = vkDevice.GetLogicalDevice();
@@ -89,7 +96,6 @@ VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, En
 
 	swapChain_ = logicalDevice.createSwapchainKHR(swapchainCreateInfo);
 
-
 	vk::ImageViewCreateInfo colorAttachmentCreateInfo;
 	colorAttachmentCreateInfo.format = format;
 	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
@@ -109,7 +115,11 @@ VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, En
 
 	//TODO: Remove hardcoded pipeline + Hardcoded paths
 	//TODO: Associate paths to Project/Executable
-	pipeline_ = std::make_unique<VulkanPipeline>(*entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
+	if (createPipeline) {
+		pipeline_ = std::make_unique<VulkanPipeline>(*entityManager_, device_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", format);
+	} else {
+		pipeline_->Create(swapchainSize, format);
+	}
 
 	for (SwapChainImage& image : images_) {
 		frameBuffers_.emplace_back(*entityManager_, device_, image.view, pipeline_->GetRenderPass(), size);
@@ -170,12 +180,26 @@ VulkanSwapChain::VulkanSwapChain(EntityManager* entityManager, Entity device, En
 		inFlightFences[i] = logicalDevice.createFence(fenceInfo);
 
 	}
-
 }
 
 void VulkanSwapChain::Terminate() {
 
-	const vk::Device& logicalDevice = entityManager_->GetComponent<VulkanDevice>(device_).GetLogicalDevice();
+	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
+	const auto& logicalDevice = vkDevice.GetLogicalDevice();
+
+	logicalDevice.freeCommandBuffers(vkDevice.GetCommandPool(),
+			static_cast<uint32_t>(commandBuffers_.size()), commandBuffers_.data());
+
+
+	for (auto& framebuffer : frameBuffers_) {
+		framebuffer.Terminate();
+	}
+
+	frameBuffers_.clear();
+
+	for (const auto& image : images_) {
+		logicalDevice.destroyImageView(image.view);
+	}
 
 	for (size_t i = 0; i < flightFramesCount; i++) {
 
@@ -185,19 +209,21 @@ void VulkanSwapChain::Terminate() {
 
 	}
 
-	for (auto& framebuffer : frameBuffers_) {
-		framebuffer.Terminate();
-	}
-
-	for (const auto& image : images_) {
-		logicalDevice.destroyImageView(image.view);
-	}
-
 	logicalDevice.destroySwapchainKHR(swapChain_);
 
 }
 
-void VulkanSwapChain::Resize(glm::uvec2) {
+void VulkanSwapChain::Resize(Entity surface, glm::uvec2 size) {
+
+	Terminate();
+
+	pipeline_->Terminate();
+	pipeline_->GetRenderPass().Terminate();
+
+	auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
+	vkDevice.Rebuild();
+
+	BuildSwapChain(surface, size, false);
 
 }
 
@@ -209,13 +235,12 @@ void VulkanSwapChain::Draw() {
 	logicalDevice.waitForFences(inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
 	logicalDevice.resetFences(inFlightFences[currentFrame]);
 
-	auto[aquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
+	auto[acquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
 
-	//TODO: handle this occurance
-	/*if(aquireResult != VK_SUCCESS) {
-
+	//TODO: handle this occurrence
+	/*if((VkResult) acquireResult != VK_SUCCESS) {
+	 
 	}*/
-
 
 	vk::SubmitInfo submitInfo;
 

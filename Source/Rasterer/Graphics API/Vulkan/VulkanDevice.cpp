@@ -1,19 +1,23 @@
 #include "VulkanDevice.h"
 #include "Parallelism/Fiber/Scheduler.h"
 
-VulkanDevice::VulkanDevice(Scheduler& scheduler, int graphicsIndex, int presentIndex, vk::PhysicalDevice* physicalDevice, vk::Device device) :
+VulkanDevice::VulkanDevice(Scheduler& scheduler, int gIndex, int pIndex, vk::PhysicalDevice* physicalDevice, vk::Device device) :
 	scheduler_(&scheduler),
 	device_(device),
-	physicalDevice_(physicalDevice)
+	physicalDevice_(physicalDevice),
+	graphicsIndex(gIndex),
+	presentIndex(pIndex)
 {
 
-	graphicsQueue_ = device.getQueue(graphicsIndex,0);
-	presentQueue_ = device.getQueue(presentIndex,0);
+	Generate();
 
-	vk::PipelineCacheCreateInfo pipelineCreateInfo;
-	//TODO: pipeline serialization n' such
+}
 
-	pipelineCache_ = device_.createPipelineCache(pipelineCreateInfo);
+void VulkanDevice::Generate() {
+
+	CreateQueues();
+
+	CreatePipelineCache();
 
 	vk::CommandPoolCreateInfo poolInfo;
 	poolInfo.queueFamilyIndex = graphicsIndex;
@@ -26,12 +30,27 @@ VulkanDevice::VulkanDevice(Scheduler& scheduler, int graphicsIndex, int presentI
 
 	});
 
+}
+
+void VulkanDevice::CreateQueues() {
+
+	graphicsQueue_ = device_.getQueue(graphicsIndex,0);
+	presentQueue_ = device_.getQueue(presentIndex,0);
+
+}
+
+void VulkanDevice::CreatePipelineCache() {
+
+	vk::PipelineCacheCreateInfo pipelineCreateInfo;
+	//TODO: pipeline serialization n' such
+
+	pipelineCache_ = device_.createPipelineCache(pipelineCreateInfo);
 
 }
 
 void VulkanDevice::Terminate() {
 
-	device_.destroyPipelineCache(pipelineCache_);
+	Cleanup();
 
 	scheduler_->ForEachThread(FiberPriority::UX, [this]()
 	{
@@ -41,6 +60,21 @@ void VulkanDevice::Terminate() {
 	});
 
 	device_.destroy();
+
+}
+
+void VulkanDevice::Cleanup() {
+
+	device_.destroyPipelineCache(pipelineCache_);
+
+}
+
+void VulkanDevice::Rebuild() {
+
+	Cleanup();
+
+//	CreateQueues();
+	CreatePipelineCache();
 
 }
 

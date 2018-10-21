@@ -16,7 +16,7 @@ private:
 
 	constexpr static PlatformID platform = PlatformID::Linux;
 
-#elif __GNU__
+#elif __linux__
 
 	constexpr static PlatformID platform = PlatformID::Linux;
 

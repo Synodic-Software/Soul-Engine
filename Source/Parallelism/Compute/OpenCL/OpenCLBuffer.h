@@ -57,7 +57,7 @@ private:
 
 template <class T>
 OpenCLBuffer<T>::OpenCLBuffer(const ComputeDevice& device) :
-	DeviceBuffer(device)
+	DeviceBuffer<T>(device)
 {
 
 }

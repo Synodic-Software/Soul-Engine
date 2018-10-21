@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Rasterer/Graphics API/SwapChain.h"
-#include "Composition/Entity/EntityManager.h"
+class EntityManager;
 #include "VulkanPipeline.h"
 #include "VulkanFramebuffer.h"
 #include "Composition/Component/Component.h"
@@ -30,8 +30,9 @@ public:
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
 	void Terminate() override;
+//	void Cleanup(); // TODO: Move this up
 
-	void Resize(glm::uvec2) override;
+	void Resize(Entity surface, glm::uvec2 size) override;
 	void Draw() override;
 
 private:
@@ -57,4 +58,5 @@ private:
 
 	bool vSync;
 
+	void BuildSwapChain(Entity surface, glm::uvec2& size, bool createPipeline);
 };

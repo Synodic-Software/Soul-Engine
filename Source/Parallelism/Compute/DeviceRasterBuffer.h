@@ -32,7 +32,7 @@ public:
 
 template <class T>
 DeviceRasterBuffer<T>::DeviceRasterBuffer(const ComputeDevice& deviceIn):
-	DeviceBuffer(deviceIn) 
+	DeviceBuffer<T>(deviceIn) 
 {
 
 }

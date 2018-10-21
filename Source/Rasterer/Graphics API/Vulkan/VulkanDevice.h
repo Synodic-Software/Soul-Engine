@@ -24,6 +24,8 @@ public:
 	//manually free resources as vulkan Instance terminates before entityManager
 	void Terminate() override;
 
+	void Rebuild();
+
 	const vk::Device& GetLogicalDevice() const;
 	const vk::PipelineCache& GetPipelineCache() const;
 	const vk::PhysicalDevice& GetPhysicalDevice() const;
@@ -43,5 +45,13 @@ private:
 	vk::Queue presentQueue_;
 
 	ThreadLocal<vk::CommandPool> commandPool_;
+
+	int graphicsIndex;
+	int presentIndex;
+
+	void CreateQueues();
+	void CreatePipelineCache();
+	void Cleanup();
+	void Generate();
 
 };

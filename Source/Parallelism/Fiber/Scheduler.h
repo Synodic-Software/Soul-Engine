@@ -6,6 +6,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <forward_list>
 
 #include "Core/Utility/Property/Property.h"
 #include "FiberParameters.h"
@@ -16,6 +17,9 @@
 #undef CreateWindow
 #undef Yield
 
+
+class EntityManager;
+class Graph;
 
 class Scheduler {
 
@@ -30,11 +34,16 @@ public:
 	template<typename Fn, typename ... Args>
 	void AddTask(FiberParameters, Fn &&, Args && ...);
 
+	Graph& CreateGraph();
+
 	template<typename Fn, typename ... Args>
 	void ForEachThread(FiberPriority, Fn &&, Args && ...);
 
 	void Block() const;
 	static void Yield();
+
+	template< typename Clock, typename Duration>
+	static void YieldUntil(std::chrono::time_point< Clock, Duration > const&);
 
 private:
 
@@ -56,6 +65,7 @@ private:
 
 	Property<uint>& threadCount_;
 	std::vector<std::thread> childThreads_;
+	std::forward_list<Graph> graphs_;
 
 };
 
@@ -118,7 +128,7 @@ void Scheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
 		}
 
 		LaunchFiber(
-			params, 
+			params,
 			[executeFiber, holdLock, holdSize, holdConditional, &args...]() mutable {
 
 			executeFiber();
@@ -141,7 +151,7 @@ void Scheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
 	else {
 
 		LaunchFiber(
-			params, 
+			params,
 			executeFiber
 		);
 
@@ -153,10 +163,10 @@ template<typename Fn, typename ... Args>
 void Scheduler::ForEachThread(FiberPriority priority, Fn && fn, Args && ... args) {
 
 	//immediately enter to provide block scope to the perthread tasks
-	FiberParameters subParams(false);	
+	FiberParameters subParams(false);
 	AddTask(subParams, [this, priority, fn, &args...]() {
 
-		FiberParameters usedParams(true,priority);
+		FiberParameters usedParams(true, priority);
 
 		for (uint threadIndex = 0; threadIndex < threadCount_; ++threadIndex) {
 
@@ -189,5 +199,16 @@ void Scheduler::LaunchFiber(FiberParameters& params, Fn && func) {
 		fiber.join();
 
 	}
+
+}
+
+template< typename Clock, typename Duration>
+void Scheduler::YieldUntil(std::chrono::time_point< Clock, Duration > const& timePoint) {
+
+	boost::fibers::mutex mutex;
+	boost::fibers::condition_variable conditional;
+
+	std::unique_lock<boost::fibers::mutex> lock(mutex);
+	conditional.wait_until(lock, timePoint);
 
 }

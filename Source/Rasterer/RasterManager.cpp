@@ -3,6 +3,7 @@
 #include "Platform/Platform.h"
 #include "Graphics API/Vulkan/VulkanSwapChain.h"
 #include "Parallelism/Fiber/Scheduler.h"
+#include "Graphics API/RasterContext.h"
 
 RasterManager::RasterManager(Scheduler& scheduler, EntityManager& entityManager) {
 
@@ -35,9 +36,9 @@ Entity RasterManager::CreateSurface(std::any& windowContext) const {
 
 }
 
-void RasterManager::ResizeSwapChain(Entity swapChain, int x, int y) {
+void RasterManager::ResizeSwapChain(Entity swapChain, Entity surface, int x, int y) {
 
-	return rasterContext_->ResizeSwapChain(swapChain, x, y);
+	return rasterContext_->ResizeSwapChain(swapChain, surface, x, y);
 
 }
 

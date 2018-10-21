@@ -2,6 +2,7 @@
 
 #include "SoulParameters.h"
 #include <memory>
+#include <chrono>
 
 struct WindowParameters;
 class Window;
@@ -29,7 +30,13 @@ private:
 	void EarlyUpdate();
 	void LateUpdate();
 
+	bool Poll();
+
 	SoulParameters& parameters;
+
+	using tickType = std::chrono::nanoseconds;
+	using clockType = std::chrono::high_resolution_clock;
+	tickType frameTime;
 
 	//hidden Soul services and modules
 	class Implementation;

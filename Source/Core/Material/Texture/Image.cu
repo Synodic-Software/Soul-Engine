@@ -7,8 +7,8 @@
 
 
 #include "Metrics.h"
-#include "Utility\CUDA\CUDAMath.h"
-#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility/CUDA/CUDAMath.h"
+#include "Utility/CUDA/CUDAHelper.cuh"
 #include <device_launch_parameters.h>
 #include <vector_types.h>
 
@@ -64,7 +64,7 @@ inline void _checkHost(bool test, const char *condition, const char *file, int l
 {
 	if (!test)
 	{
-		fprintf(stderr, "HOST error at %s:%d (%s) \"%s\" \n",
+		fprintf(stderr, "HOST error at %s:%d (%s) /"%s/" /n",
 			file, line, condition, func);
 		exit(EXIT_FAILURE);
 	}

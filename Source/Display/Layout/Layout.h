@@ -3,6 +3,7 @@
 #include "Display/Widget/Widget.h"
 
 #include <vector>
+#include <memory>
 
 class Layout : public Widget
 {

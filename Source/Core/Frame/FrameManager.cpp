@@ -1,5 +1,9 @@
 #include "FrameManager.h"
 
-namespace FrameManager {
+const Frame& FrameManager::Next() {
+
+	frames_.Push(Frame());
+
+	return frames_[2];
 
 }

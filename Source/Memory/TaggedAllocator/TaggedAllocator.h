@@ -1,6 +1,6 @@
 #pragma once
-#include "..\Allocator.h"
-#include "TaggedHeap.h"
+#include "../Allocator.h"
+class TaggedHeap;
 #include <list>
 #include <mutex>
 /*Tagged Allocator is an allocator class that utilizes the tagged heap for per-module memory management.

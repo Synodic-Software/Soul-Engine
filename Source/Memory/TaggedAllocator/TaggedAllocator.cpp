@@ -1,5 +1,5 @@
 #include "TaggedAllocator.h"
-
+#include "TaggedHeap.h"
 TaggedAllocator::TaggedAllocator(TaggedHeap* heap, const std::string &tag, uint8_t align) : Allocator(heap->getSize(tag), heap->getNextFree(tag)) {
 	_heap = heap;
 	_tag = tag;

@@ -1,5 +1,5 @@
 #include "Material.h"
-#include "Parallelism/Compute/CUDA/Utility/CUDAHelper.cuh"
+#include "Parallelism/Compute/CUDA/Utility/CudaHelper.cuh"
 
 Material::Material( std::string texName){
 

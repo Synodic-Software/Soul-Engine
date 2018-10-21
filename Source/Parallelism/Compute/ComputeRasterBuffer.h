@@ -3,8 +3,8 @@
 #include "AbstractComputeBuffer.h"
 #include "Parallelism/Compute/ComputeDevice.h"
 
-#include "Parallelism/Compute/CUDA\CUDARasterBuffer.h"
-#include "Parallelism/Compute/OpenCL\OpenCLRasterBuffer.h"
+#include "Parallelism/Compute/CUDA/CUDARasterBuffer.h"
+#include "Parallelism/Compute/OpenCL/OpenCLRasterBuffer.h"
 
 /* Buffer for GPU raster. */
 template <class T>
@@ -89,13 +89,13 @@ private:
 
 template <class T>
 ComputeRasterBuffer<T>::ComputeRasterBuffer() :
-	AbstractComputeBuffer()
+	AbstractComputeBuffer<T>()
 {
 }
 
 template <class T>
 ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device) :
-	AbstractComputeBuffer(device)
+	AbstractComputeBuffer<T>(device)
 {
 
 	if (device.GetBackend() == CUDA_API) {
@@ -109,7 +109,7 @@ ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device) :
 
 template <class T>
 ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device, size_type n) :
-	AbstractComputeBuffer(device, n)
+	AbstractComputeBuffer<T>(device, n)
 {
 
 	if (device.GetBackend() == CUDA_API) {
@@ -123,7 +123,7 @@ ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device, size_ty
 
 template <class T>
 ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device, size_type n, const T &val) :
-	AbstractComputeBuffer(device, n, val)
+	AbstractComputeBuffer<T>(device, n, val)
 {
 	if (device.GetBackend() == CUDA_API) {
 		buffer.reset(new CUDARasterBuffer<T>(device, n, val));
@@ -136,14 +136,14 @@ ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeDevice& device, size_ty
 
 template <class T>
 ComputeRasterBuffer<T>::ComputeRasterBuffer(const ComputeRasterBuffer& other) :
-	AbstractComputeBuffer(other)
+	AbstractComputeBuffer<T>(other)
 {
 	*this = other;
 }
 
 template <class T>
 ComputeRasterBuffer<T>::ComputeRasterBuffer(ComputeRasterBuffer<T>&& other) noexcept :
-	AbstractComputeBuffer(other)
+	AbstractComputeBuffer<T>(other)
 {
 	*this = std::move(other);
 }

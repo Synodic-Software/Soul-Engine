@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Cuda\Colour.cuh"
+#include "Cuda/Colour.cuh"
 
 //class Image{
 //public:

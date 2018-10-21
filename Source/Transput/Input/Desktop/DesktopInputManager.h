@@ -5,7 +5,7 @@
 #include "Transput/Input/InputManager.h"
 
 #include "GLFW/glfw3.h"
-
+class GLFWindow;
 class DesktopInputManager : public InputManager {
 
 public:
@@ -20,7 +20,7 @@ public:
 	DesktopInputManager& operator=(DesktopInputManager&& other) noexcept = default;
 
 	//void AttachWindow(DesktopWindow* window);
-	void Poll() override;
+	bool Poll() override;
 
 
 private:

@@ -10,6 +10,14 @@ VulkanPipeline::VulkanPipeline(EntityManager& entityManger, Entity device, vk::E
 	fragmentShader_(entityManger, device, fragmentFilename)
 {
 
+	Create(extent, swapChainFormat);
+
+}
+
+void VulkanPipeline::Create(vk::Extent2D& extent, vk::Format swapChainFormat) {
+
+	renderPass_.Create(swapChainFormat);
+
 	//SETUP LAYOUT
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
 	pipelineLayoutInfo.setLayoutCount = 0;
@@ -112,13 +120,19 @@ VulkanPipeline::VulkanPipeline(EntityManager& entityManger, Entity device, vk::E
 
 }
 
-VulkanPipeline::~VulkanPipeline() {
+void VulkanPipeline::Terminate() {
 
 	const auto& vkDevice = entityManager_.GetComponent<VulkanDevice>(device_);
 	const vk::Device& logicalDevice = vkDevice.GetLogicalDevice();
 
 	logicalDevice.destroyPipeline(pipeline_);
 	logicalDevice.destroyPipelineLayout(pipelineLayout_);
+
+}
+
+VulkanPipeline::~VulkanPipeline() {
+
+	Terminate();
 
 }
 

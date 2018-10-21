@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Compute/GPUExecutePolicy.h"
-#include "Compute/AbstractComputeDevice.h"
-//#include <cuda_runtime.h>
-#include "Utility/CUDA/CUDAHelper.cuh"
+#include "Parallelism/Compute/GPUExecutePolicy.h"
+#include "Parallelism/Compute/AbstractComputeDevice.h"
+#include <cuda_runtime.h>
+#include "Parallelism/Compute/CUDA/Utility/CudaHelper.cuh"
 
 /* A cuda device. */
 class CUDADevice :public AbstractComputeDevice {

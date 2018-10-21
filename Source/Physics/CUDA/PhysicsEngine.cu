@@ -1,5 +1,5 @@
 #include "PhysicsEngine.cuh"
-#include "Utility\CUDA\CUDAHelper.cuh"
+#include "Utility/CUDA/CUDAHelper.cuh"
 #include "Compute/ComputeManager.h"
 
 //typedef struct {
