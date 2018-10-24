@@ -11,13 +11,15 @@ Graph::Graph(Scheduler* scheduler) :
 
 //Returns after dispatching the graph.
 //Call scheduler_->Block() to guarantee completion
-void Graph::Execute() {
-
-	assert(!children_.empty());
+void Graph::Execute(std::chrono::nanoseconds targetDuration) {
 
 	for (const auto& child : children_) {
 
-		child->Execute();
+		if (child->Root()) {
+
+			child->Execute();
+
+		}
 
 	}
 

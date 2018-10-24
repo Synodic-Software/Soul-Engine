@@ -13,13 +13,14 @@
 #include "Core/Utility/HashString/HashString.h"
 #include "Composition/Entity/EntityManager.h"
 #include "Rasterer/RasterManager.h"
-#include "Frame/FrameManager.h"
-#include "Parallelism/Graph/Graph.h"
+#include "Frame/FramePipeline.h"
 
 #include <variant>
 
 class Soul::Implementation
 {
+
+	friend class Soul;
 
 public:
 
@@ -27,7 +28,7 @@ public:
 	using inputManagerVariantType = std::variant<std::monostate, DesktopInputManager>;
 	using windowManagerVariantType = std::variant<std::monostate, DesktopWindowManager>;
 
-	Implementation(const Soul&);
+	Implementation(Soul&);
 	~Implementation();
 
 	//services and modules	
@@ -39,8 +40,7 @@ public:
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
 	RasterManager rasterManager_;
-
-	FrameManager frameManager;
+	FramePipeline<3> framePipeline_;
 
 private:
 
@@ -51,7 +51,7 @@ private:
 	WindowManager* ConstructWindowPtr();
 };
 
-Soul::Implementation::Implementation(const Soul& soul) :
+Soul::Implementation::Implementation(Soul& soul) :
 	entityManager_(),
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
@@ -60,8 +60,23 @@ Soul::Implementation::Implementation(const Soul& soul) :
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
 	rasterManager_(scheduler_, entityManager_),
-	frameManager()
+	framePipeline_(scheduler_, {
+	[&soul](Frame& oldFrame, Frame& newFrame)
+	{
+		soul.Process(oldFrame, newFrame);
+	},
+	[&soul](Frame& oldFrame, Frame& newFrame)
+	{
+		soul.Update(oldFrame, newFrame);
+	},
+	[&soul](Frame& oldFrame, Frame& newFrame)
+	{
+		soul.Render(oldFrame, newFrame);
+	}})
+
 {
+
+
 }
 
 Soul::Implementation::~Implementation() {
@@ -113,7 +128,7 @@ Soul::Soul(SoulParameters& params) :
 {
 	parameters.engineRefreshRate.AddCallback([this](int value)
 	{
-		frameTime = std::chrono::duration_cast<tickType>(std::chrono::seconds(1)) / value;
+		frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1)) / value;
 	});
 
 	//flush parameters with new callbacks
@@ -142,26 +157,45 @@ void SynchSystem() {
 
 /////////////////////////Core/////////////////////////////////
 
+void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 
-/* Ray pre process */
-void RayPreProcess() {
+	EarlyFrameUpdate();
 
-	//RayEngine::Instance().PreProcess();
-
-}
-
-/* Ray post process */
-void RayPostProcess() {
-
-	//RayEngine::Instance().PostProcess();
+	newFrame.Dirty(Poll());
 
 }
 
-/* Rasters this object. */
-void Soul::Raster() {
+void Soul::Update(Frame& oldFrame, Frame& newFrame) {
 
-	//Backends should handle multithreading
-	detail->windowManager_->Draw();
+	EarlyUpdate();
+
+	if (newFrame.Dirty()) {
+
+		//	for (auto& scene : scenes) {
+		//		scene->Build(engineRefreshRate);
+		//	}
+		//	
+		//	for (auto const& scene : scenes){
+		//		PhysicsEngine::Process(scene);
+		//	}
+
+	}
+
+	LateUpdate();
+
+}
+
+void Soul::Render(Frame& oldFrame, Frame& newFrame) {
+
+	LateFrameUpdate();
+
+	if (newFrame.Dirty()) {
+
+		//	//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
+
+		Raster();
+
+	}
 
 }
 
@@ -206,6 +240,14 @@ void Soul::LateUpdate() {
 
 }
 
+
+void Soul::Raster() {
+
+	//Backends should handle multithreading
+	detail->windowManager_->Draw();
+
+}
+
 //returns a bool that is true if the engine is dirty
 bool Soul::Poll() {
 
@@ -226,61 +268,15 @@ void Soul::Run()
 
 	Warmup();
 
-	//Create the mail loop graph of the mainloop
-	//Graph& graph = detail->scheduler_.CreateGraph();
-
-	//Task& taskA = graph.AddTask([]()
-	//{
-	//	std::cout << "Hello";
-	//});
-
-	//graph.Execute();
-	//detail->scheduler_.Block();
-
-	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
+	auto currentTime = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
 	auto nextTime = currentTime + frameTime;
-
-	bool nextDirty = true;
 
 	while (!detail->windowManager_->ShouldClose()) {
 
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime;
 
-		const bool dirty = nextDirty;
-		nextDirty = Poll();
-
-		if (dirty) {
-
-			const auto& frame = detail->frameManager.Next();
-
-			EarlyFrameUpdate();
-
-			nextDirty = Poll();
-
-			EarlyUpdate();
-
-			/*for (auto& scene : scenes) {
-				scene->Build(engineRefreshRate);
-			}*/
-			/*
-			for (auto const& scene : scenes){
-				PhysicsEngine::Process(scene);
-			}*/
-
-			LateUpdate();
-
-			LateFrameUpdate();
-
-			RayPreProcess();
-
-			//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
-
-			RayPostProcess();
-
-			Raster();
-
-		}
+		detail->framePipeline_.Execute(frameTime);
 
 		detail->scheduler_.YieldUntil(nextTime);
 

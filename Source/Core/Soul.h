@@ -6,6 +6,7 @@
 
 struct WindowParameters;
 class Window;
+class Frame;
 
 class Soul {
 
@@ -22,7 +23,15 @@ public:
 
 private:
 
-	void Raster();
+	//Pipeline Functions
+
+	void Process(Frame&, Frame&);
+	void Update(Frame&, Frame&);
+	void Render(Frame&, Frame&);
+
+
+	//State Functions
+
 	void Warmup();
 
 	void EarlyFrameUpdate();
@@ -30,13 +39,13 @@ private:
 	void EarlyUpdate();
 	void LateUpdate();
 
+	void Raster();
 	bool Poll();
 
 	SoulParameters& parameters;
 
-	using tickType = std::chrono::nanoseconds;
-	using clockType = std::chrono::high_resolution_clock;
-	tickType frameTime;
+
+	std::chrono::nanoseconds frameTime;
 
 	//hidden Soul services and modules
 	class Implementation;

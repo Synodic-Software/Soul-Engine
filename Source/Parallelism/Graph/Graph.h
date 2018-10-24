@@ -21,16 +21,16 @@ public:
 	~Graph() override = default;
 
 	Graph(const Graph&) = delete;
-	Graph(Graph&& o) noexcept = default;
+	Graph(Graph&&) noexcept = default;
 
 	Graph& operator=(const Graph&) = delete;
-	Graph& operator=(Graph&& other) noexcept = default;
+	Graph& operator=(Graph&&) noexcept = default;
 
 	template <typename Callable>
 	Task& AddTask(Callable&&);
 	Graph& AddGraph();
 	
-	void Execute() override;
+	void Execute(std::chrono::nanoseconds) override;
 
 
 private:
@@ -56,6 +56,7 @@ Task& Graph::AddTask(Callable&& callable) {
 	Task& task = tasks_.emplace_front(scheduler_, std::forward<Callable>(callable));
 
 	task.DependsOn(*this);
+	task.Root(true);
 
 	return task;
 

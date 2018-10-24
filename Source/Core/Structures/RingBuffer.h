@@ -26,8 +26,7 @@ public:
 
 private:
 
-	std::size_t begin_;
-	std::size_t end_;
+	std::size_t front_;
 	std::size_t size_;
 
 	std::array<T, Capacity> data_;
@@ -38,8 +37,7 @@ private:
 
 template <typename T, std::size_t Capacity>
 RingBuffer<T, Capacity>::RingBuffer() :
-	begin_(1),
-	end_(0),
+	front_(0),
 	size_(Capacity),
 	data_()
 {
@@ -50,38 +48,29 @@ RingBuffer<T, Capacity>::RingBuffer() :
 template <typename T, std::size_t Capacity>
 void RingBuffer<T, Capacity>::Push(const T& value) {
 
-	data_[end_] = value;
 	Push_();
-
+	data_[front_] = value;
+		
 }
 
 template <typename T, std::size_t Capacity>
 void RingBuffer<T, Capacity>::Push(T&& value) {
 
-	data_[end_] = std::move(value);
 	Push_();
+	data_[front_] = std::move(value);
 
 }
 
 template <typename T, std::size_t Capacity>
 typename RingBuffer<T, Capacity>::reference RingBuffer<T, Capacity>::operator[](const std::size_t i)
 {
-	const auto index = (i + begin_) % size_;
+	const auto index = (i + front_) % size_;
 	return data_[index];
 }
 
 template <typename T, std::size_t Capacity>
 void RingBuffer<T, Capacity>::Push_() {
 
-	++end_;
-	if (end_ == size_)
-	{
-		end_ = 0;
-	}
-
-	if (size_ != data_.size())
-	{
-		++size_;
-	}
+	front_ = (front_+ size_ -1) % size_;
 
 }

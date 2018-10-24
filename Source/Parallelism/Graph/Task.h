@@ -10,30 +10,25 @@ class Scheduler;
 
 class Task : public Node{
 
-	//type-erased, no parameter, callable
-	using FuncType = std::function<void()>;
-
 public:
 
-	Task(Scheduler*, FuncType&&) noexcept;
+	Task(Scheduler*, std::function<void()>&&) noexcept;
 
 	~Task() override = default;
 
 	Task(const Task&) = delete;
-	Task(Task&& o) = default;
+	Task(Task&&) = default;
 
 	Task& operator=(const Task&) = delete;
-	Task& operator=(Task&& other) = default;
+	Task& operator=(Task&&) = default;
 
-	void Execute() override;
+	void Execute(std::chrono::nanoseconds) override;
 
 
 private:
 
 	Scheduler* scheduler_;
-
-	FiberParameters parameters_;
-	FuncType callable_;
+	std::function<void()> callable_;
 
 
 };

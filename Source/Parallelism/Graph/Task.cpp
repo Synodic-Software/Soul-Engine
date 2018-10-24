@@ -2,19 +2,18 @@
 
 #include "Parallelism/Fiber/Scheduler.h"
 
-Task::Task(Scheduler* scheduler, FuncType&& callable) noexcept:
+Task::Task(Scheduler* scheduler, std::function<void()>&& callable) noexcept:
 	scheduler_(scheduler),
-	parameters_(),
-	callable_(std::forward<FuncType>(callable))
+	callable_(std::forward<std::function<void()>>(callable))
 {
 
 }
 
-void Task::Execute() {
+void Task::Execute(std::chrono::nanoseconds targetDuration) {
 	
 	scheduler_->AddTask(parameters_, [this]()
 	{
-		std::invoke(std::forward<FuncType>(callable_));
+		std::invoke(std::forward<std::function<void()>>(callable_));
 
 		for (const auto& child : children_) {
 
