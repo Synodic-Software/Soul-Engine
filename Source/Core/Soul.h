@@ -1,12 +1,12 @@
 #pragma once
 
 #include "SoulParameters.h"
-#include "Transput/Input/Console/ConsoleManager.h"
 #include <memory>
 #include <chrono>
 
 struct WindowParameters;
 class Window;
+class ConsoleManager;
 
 class Soul {
 

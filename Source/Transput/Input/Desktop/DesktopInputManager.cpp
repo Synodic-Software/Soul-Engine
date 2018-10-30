@@ -4,9 +4,9 @@
 #include "Core/Utility/Log/Logger.h"
 #include "Platform/Platform.h"
 
-DesktopInputManager::DesktopInputManager(EventManager& eventManager) :
+DesktopInputManager::DesktopInputManager(EventManager& eventManager, Soul& soul) :
 	InputManager(eventManager),
-	consoleManagerVariant_(ConstructConsoleManager()),
+	consoleManagerVariant_(ConstructConsoleManager(soul)),
 	consoleManager_(ConstructConsolePtr()),
 	mouseXOffset_(0),
 	mouseYOffset_(0),
@@ -14,11 +14,11 @@ DesktopInputManager::DesktopInputManager(EventManager& eventManager) :
 {
 }
 
-DesktopInputManager::consoleManagerVariantType DesktopInputManager::ConstructConsoleManager() {
+DesktopInputManager::consoleManagerVariantType DesktopInputManager::ConstructConsoleManager(Soul& soul) {
 
 	if constexpr (Platform::WithCLI()) {
 		consoleManagerVariantType tmp;
-		tmp.emplace<CLIConsoleManager>(eventManager_);
+		tmp.emplace<CLIConsoleManager>(eventManager_, soul);
 		return tmp;
 	}
 

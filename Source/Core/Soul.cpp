@@ -27,7 +27,7 @@ public:
 	using inputManagerVariantType = std::variant<std::monostate, DesktopInputManager>;
 	using windowManagerVariantType = std::variant<std::monostate, DesktopWindowManager>;
 
-	Implementation(const Soul&);
+	Implementation(Soul&);
 	~Implementation();
 
 	//services and modules	
@@ -44,18 +44,18 @@ public:
 
 private:
 
-	inputManagerVariantType ConstructInputManager();
+	inputManagerVariantType ConstructInputManager(Soul& soul);
 	InputManager* ConstructInputPtr();
 
 	windowManagerVariantType ConstructWindowManager();
 	WindowManager* ConstructWindowPtr();
 };
 
-Soul::Implementation::Implementation(const Soul& soul) :
+Soul::Implementation::Implementation(Soul& soul) :
 	entityManager_(),
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
-	inputManagerVariant_(ConstructInputManager()),
+	inputManagerVariant_(ConstructInputManager(soul)),
 	inputManager_(ConstructInputPtr()),
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
@@ -68,12 +68,12 @@ Soul::Implementation::~Implementation() {
 	windowManager_->Terminate();
 }
 
-Soul::Implementation::inputManagerVariantType Soul::Implementation::ConstructInputManager() {
+Soul::Implementation::inputManagerVariantType Soul::Implementation::ConstructInputManager(Soul& soul) {
 
 	inputManagerVariantType tmp;
 
 	if constexpr (Platform::IsDesktop()) {
-		tmp.emplace<DesktopInputManager>(eventManager_);
+		tmp.emplace<DesktopInputManager>(eventManager_, soul);
 		return tmp;
 	}
 
@@ -227,15 +227,15 @@ void Soul::Run()
 	Warmup();
 
 	//Create the mail loop graph of the mainloop
-	//Graph& graph = detail->scheduler_.CreateGraph();
+	Graph& graph = detail->scheduler_.CreateGraph();
 
-	//Task& taskA = graph.AddTask([]()
-	//{
-	//	std::cout << "Hello";
-	//});
+	Task& taskA = graph.AddTask([]()
+	{
+		std::cout << "Hello" << std::endl;
+	});
 
-	//graph.Execute();
-	//detail->scheduler_.Block();
+	graph.Execute();
+	detail->scheduler_.Block();
 	
 	Poll();
 

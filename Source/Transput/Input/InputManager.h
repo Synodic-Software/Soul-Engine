@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Composition/Event/EventManager.h"
+#include "Core/Soul.h"
 
 class InputManager {
 

@@ -15,7 +15,7 @@ public:
 
 	using consoleManagerVariantType = std::variant<std::monostate, CLIConsoleManager>;
 
-	DesktopInputManager(EventManager&);
+	DesktopInputManager(EventManager&, Soul&);
 	~DesktopInputManager() override = default;
 
 	DesktopInputManager(const DesktopInputManager&) = delete;
@@ -38,7 +38,7 @@ private:
 	void CursorEnterCallback(GLFWwindow*, int);
 	void ScrollCallback(GLFWwindow*, double, double);
 
-	consoleManagerVariantType ConstructConsoleManager();
+	consoleManagerVariantType ConstructConsoleManager(Soul&);
 	ConsoleManager* ConstructConsolePtr();
 
 	consoleManagerVariantType consoleManagerVariant_;

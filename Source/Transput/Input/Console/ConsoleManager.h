@@ -1,12 +1,15 @@
 #pragma once
 
 #include "Composition/Event/EventManager.h"
+#include "Core/Soul.h"
+
+class Soul;
 
 class ConsoleManager {
 
 public:
 
-	ConsoleManager(EventManager*);
+	ConsoleManager(EventManager*, Soul&);
 	virtual ~ConsoleManager() = default;
 
 	virtual bool Poll() = 0;
@@ -14,5 +17,6 @@ public:
 protected:
 
 	EventManager* eventManager_;
+	Soul& soul;
 
 };
