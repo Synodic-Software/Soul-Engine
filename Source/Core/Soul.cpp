@@ -1,7 +1,7 @@
 #include "Soul.h"
 
 #include "SoulImplementation.h"
-
+#include "Platform/Platform.h"
 
 Soul::Soul(SoulParameters& params) :
 	parameters(params),
@@ -137,6 +137,22 @@ bool Soul::Poll() {
 
 }
 
+void Soul::Init()
+{
+	
+	Warmup();
+
+	if constexpr (Platform::WithCLI()) {
+		FiberParameters fParams(false);
+		detail->scheduler_.AddTask(fParams, [this]()
+		{
+			detail->consoleManager_->Poll();
+		});
+	} else {
+		Run();
+	}
+}
+
 Window& Soul::CreateWindow(WindowParameters& params) {
 
 	Window& window = detail->windowManager_->CreateWindow(params);
@@ -160,7 +176,8 @@ void Soul::Run()
 
 		detail->framePipeline_.Execute(frameTime);
 
-		detail->scheduler_.YieldUntil(nextTime);
+		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime);
+		else detail->scheduler_.YieldUntil(nextTime);
 
 	}
 

@@ -25,7 +25,7 @@ void SoulApplication::Run() {
 	//	}
 	//});
 
-	soul.Run();
+	soul.Init();
 
 }
 

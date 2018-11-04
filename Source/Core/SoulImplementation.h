@@ -4,6 +4,7 @@
 #include "Display/Window/Desktop/DesktopWindowManager.h"
 
 #include "Transput/Input/Desktop/DesktopInputManager.h"
+#include "Transput/Input/Console/CLI/CLIConsoleManager.h"
 
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
@@ -24,6 +25,7 @@ public:
 	//monostate allows for empty construction
 	using inputManagerVariantType = std::variant<std::monostate, DesktopInputManager>;
 	using windowManagerVariantType = std::variant<std::monostate, DesktopWindowManager>;
+	using consoleManagerVariantType = std::variant<std::monostate, CLIConsoleManager>;
 
 	Implementation(Soul&);
 	~Implementation();
@@ -37,6 +39,9 @@ public:
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
 	RasterManager rasterManager_;
+	consoleManagerVariantType consoleManagerVariant_;
+	ConsoleManager* consoleManager_;
+
 	FramePipeline<3> framePipeline_;
 
 private:
@@ -46,4 +51,7 @@ private:
 
 	windowManagerVariantType ConstructWindowManager();
 	WindowManager* ConstructWindowPtr();
+
+	consoleManagerVariantType ConstructConsoleManager(Soul&);
+	ConsoleManager* ConstructConsolePtr();
 };

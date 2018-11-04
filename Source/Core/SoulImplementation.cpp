@@ -12,6 +12,8 @@ Soul::Implementation::Implementation(Soul& soul) :
 	inputManager_(ConstructInputPtr()),
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
+	consoleManagerVariant_(ConstructConsoleManager(soul)),
+	consoleManager_(ConstructConsolePtr()),
 	rasterManager_(scheduler_, entityManager_),
 	framePipeline_(scheduler_, {
 	[&soul](Frame& oldFrame, Frame& newFrame)
@@ -29,43 +31,62 @@ Soul::Implementation::Implementation(Soul& soul) :
 {
 }
 
-	Soul::Implementation::~Implementation() {
-		windowManager_->Terminate();
+Soul::Implementation::~Implementation() {
+	windowManager_->Terminate();
+}
+
+Soul::Implementation::inputManagerVariantType Soul::Implementation::ConstructInputManager() {
+
+	inputManagerVariantType tmp;
+
+	if constexpr (Platform::IsDesktop()) {
+		tmp.emplace<DesktopInputManager>(eventManager_);
+		return tmp;
 	}
 
-	Soul::Implementation::inputManagerVariantType Soul::Implementation::ConstructInputManager() {
+}
 
-		inputManagerVariantType tmp;
+InputManager* Soul::Implementation::ConstructInputPtr() {
 
-		if constexpr (Platform::IsDesktop()) {
-			tmp.emplace<DesktopInputManager>(eventManager_);
-			return tmp;
-		}
-
+	if constexpr (Platform::IsDesktop()) {
+		return &std::get<DesktopInputManager>(inputManagerVariant_);
 	}
 
-	InputManager* Soul::Implementation::ConstructInputPtr() {
+}
 
-		if constexpr (Platform::IsDesktop()) {
-			return &std::get<DesktopInputManager>(inputManagerVariant_);
-		}
+Soul::Implementation::windowManagerVariantType Soul::Implementation::ConstructWindowManager() {
 
+	windowManagerVariantType tmp;
+
+	if constexpr (Platform::IsDesktop()) {
+		tmp.emplace<DesktopWindowManager>(entityManager_, std::get<DesktopInputManager>(inputManagerVariant_), rasterManager_);
+		return tmp;
 	}
 
-	Soul::Implementation::windowManagerVariantType Soul::Implementation::ConstructWindowManager() {
+}
 
-		windowManagerVariantType tmp;
+WindowManager* Soul::Implementation::ConstructWindowPtr() {
 
-		if constexpr (Platform::IsDesktop()) {
-			tmp.emplace<DesktopWindowManager>(entityManager_, std::get<DesktopInputManager>(inputManagerVariant_), rasterManager_);
-			return tmp;
-		}
+	if constexpr (Platform::IsDesktop()) {
+		return &std::get<DesktopWindowManager>(windowManagerVariant_);
+	}
+}
 
+Soul::Implementation::consoleManagerVariantType Soul::Implementation::ConstructConsoleManager(Soul& soul) {
+
+	consoleManagerVariantType tmp;
+
+	if constexpr (Platform::WithCLI()) {
+		tmp.emplace<CLIConsoleManager>(eventManager_, soul);
+		return tmp;
 	}
 
-	WindowManager* Soul::Implementation::ConstructWindowPtr() {
+};
 
-		if constexpr (Platform::IsDesktop()) {
-			return &std::get<DesktopWindowManager>(windowManagerVariant_);
-		}
+ConsoleManager* Soul::Implementation::ConstructConsolePtr() {
+
+	if constexpr (Platform::WithCLI()) {
+		return &std::get<CLIConsoleManager>(consoleManagerVariant_);
 	}
+
+};
