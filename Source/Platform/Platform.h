@@ -9,6 +9,7 @@ public:
 
 	constexpr static PlatformID GetPlatform();
 	constexpr static bool IsDesktop();
+	constexpr static bool WithCLI();
 
 private:
 
@@ -38,6 +39,16 @@ private:
 
 #endif
 
+#ifdef WITH_CLI
+
+	constexpr static bool withCLI = true;
+
+#else
+
+	constexpr static bool withCLI = false;
+
+#endif
+
 };
 
 constexpr PlatformID Platform::GetPlatform() {
@@ -48,4 +59,8 @@ constexpr bool Platform::IsDesktop() {
 	return platform == PlatformID::Linux ||
 		platform == PlatformID::Windows ||
 		platform == PlatformID::OSX;
+}
+
+constexpr bool Platform::WithCLI() {
+	return withCLI;
 }

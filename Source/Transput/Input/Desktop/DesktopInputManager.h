@@ -4,6 +4,8 @@
 #include "Transput/Input/Key.h"
 #include "Transput/Input/InputManager.h"
 
+#include <variant>
+
 #include "GLFW/glfw3.h"
 class GLFWindow;
 class DesktopInputManager : public InputManager {
