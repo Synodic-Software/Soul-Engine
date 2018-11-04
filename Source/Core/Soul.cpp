@@ -6,6 +6,7 @@
 #include "Display/Window/Desktop/DesktopWindowManager.h"
 
 #include "Transput/Input/Desktop/DesktopInputManager.h"
+#include "Transput/Input/Console/CLI/CLIConsoleManager.h"
 
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/InputManager.h"
@@ -26,6 +27,7 @@ public:
 	//monostate allows for empty construction
 	using inputManagerVariantType = std::variant<std::monostate, DesktopInputManager>;
 	using windowManagerVariantType = std::variant<std::monostate, DesktopWindowManager>;
+	using consoleManagerVariantType = std::variant<std::monostate, CLIConsoleManager>;
 
 	Implementation(Soul&);
 	~Implementation();
@@ -39,27 +41,35 @@ public:
 	windowManagerVariantType windowManagerVariant_;
 	WindowManager* windowManager_;
 	RasterManager rasterManager_;
+	consoleManagerVariantType consoleManagerVariant_;
+	ConsoleManager* consoleManager_;
 
 	FrameManager frameManager;
 
 private:
 
-	inputManagerVariantType ConstructInputManager(Soul& soul);
+	inputManagerVariantType ConstructInputManager();
 	InputManager* ConstructInputPtr();
 
 	windowManagerVariantType ConstructWindowManager();
 	WindowManager* ConstructWindowPtr();
+
+	consoleManagerVariantType ConstructConsoleManager(Soul&);
+	ConsoleManager* ConstructConsolePtr();
+
 };
 
 Soul::Implementation::Implementation(Soul& soul) :
 	entityManager_(),
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
-	inputManagerVariant_(ConstructInputManager(soul)),
+	inputManagerVariant_(ConstructInputManager()),
 	inputManager_(ConstructInputPtr()),
 	windowManagerVariant_(ConstructWindowManager()),
 	windowManager_(ConstructWindowPtr()),
 	rasterManager_(scheduler_, entityManager_),
+	consoleManagerVariant_(ConstructConsoleManager(soul)),
+	consoleManager_(ConstructConsolePtr()),
 	frameManager()
 {
 }
@@ -68,12 +78,12 @@ Soul::Implementation::~Implementation() {
 	windowManager_->Terminate();
 }
 
-Soul::Implementation::inputManagerVariantType Soul::Implementation::ConstructInputManager(Soul& soul) {
+Soul::Implementation::inputManagerVariantType Soul::Implementation::ConstructInputManager() {
 
 	inputManagerVariantType tmp;
 
 	if constexpr (Platform::IsDesktop()) {
-		tmp.emplace<DesktopInputManager>(eventManager_, soul);
+		tmp.emplace<DesktopInputManager>(eventManager_);
 		return tmp;
 	}
 
@@ -105,6 +115,23 @@ WindowManager* Soul::Implementation::ConstructWindowPtr() {
 	}
 }
 
+Soul::Implementation::consoleManagerVariantType Soul::Implementation::ConstructConsoleManager(Soul& soul) {
+
+	consoleManagerVariantType tmp;
+
+	if constexpr (Platform::WithCLI()) {
+		tmp.emplace<CLIConsoleManager>(eventManager_, soul);
+		return tmp;
+	}
+};
+
+ConsoleManager* Soul::Implementation::ConstructConsolePtr() {
+
+	if constexpr (Platform::WithCLI()) {
+		return &std::get<CLIConsoleManager>(consoleManagerVariant_);
+	}
+
+};
 
 Soul::Soul(SoulParameters& params) :
 	parameters(params),
@@ -220,6 +247,21 @@ Window& Soul::CreateWindow(WindowParameters& params) {
 
 }
 
+void Soul::Init()
+{
+	
+	Warmup();
+
+	if constexpr (Platform::WithCLI()) {
+		FiberParameters fParams(false);
+		detail->scheduler_.AddTask(fParams, [this]()
+		{
+			detail->consoleManager_->Poll();
+		});
+	} else {
+		Run();
+	}
+}
 
 void Soul::Run()
 {
@@ -227,15 +269,15 @@ void Soul::Run()
 	Warmup();
 
 	//Create the mail loop graph of the mainloop
-	Graph& graph = detail->scheduler_.CreateGraph();
+	//Graph& graph = detail->scheduler_.CreateGraph();
 
-	Task& taskA = graph.AddTask([]()
-	{
-		std::cout << "Hello" << std::endl;
-	});
+	//Task& taskA = graph.AddTask([]()
+	//{
+	//	std::cout << "Hello" << std::endl;
+	//});
 
-	graph.Execute();
-	detail->scheduler_.Block();
+	//graph.Execute();
+	//detail->scheduler_.Block();
 	
 	Poll();
 
@@ -253,6 +295,7 @@ void Soul::Run()
 		nextDirty = Poll();
 
 		if (dirty) {
+
 
 			const auto& frame = detail->frameManager.Next();
 
@@ -284,7 +327,8 @@ void Soul::Run()
 
 		}
 
-		detail->scheduler_.YieldUntil(nextTime);
+		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime);
+		else detail->scheduler_.YieldUntil(nextTime);
 
 	}
 

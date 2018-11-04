@@ -9,14 +9,14 @@ class ConsoleManager {
 
 public:
 
-	ConsoleManager(EventManager*, Soul&);
+	ConsoleManager(EventManager&, Soul&);
 	virtual ~ConsoleManager() = default;
 
-	virtual bool Poll() = 0;
+	virtual void Poll() = 0;
 
 protected:
 
-	EventManager* eventManager_;
+	EventManager& eventManager_;
 	Soul& soul;
 
 };

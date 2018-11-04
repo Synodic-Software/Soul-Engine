@@ -4,33 +4,13 @@
 #include "Core/Utility/Log/Logger.h"
 #include "Platform/Platform.h"
 
-DesktopInputManager::DesktopInputManager(EventManager& eventManager, Soul& soul) :
+DesktopInputManager::DesktopInputManager(EventManager& eventManager) :
 	InputManager(eventManager),
-	consoleManagerVariant_(ConstructConsoleManager(soul)),
-	consoleManager_(ConstructConsolePtr()),
 	mouseXOffset_(0),
 	mouseYOffset_(0),
 	firstMouse_(true)
 {
 }
-
-DesktopInputManager::consoleManagerVariantType DesktopInputManager::ConstructConsoleManager(Soul& soul) {
-
-	if constexpr (Platform::WithCLI()) {
-		consoleManagerVariantType tmp;
-		tmp.emplace<CLIConsoleManager>(eventManager_, soul);
-		return tmp;
-	}
-
-}
-
-ConsoleManager* DesktopInputManager::ConstructConsolePtr() {
-
-	if constexpr (Platform::WithCLI()) {
-		return &std::get<CLIConsoleManager>(consoleManagerVariant_);
-	}
-
-};
 
 void DesktopInputManager::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
@@ -149,8 +129,6 @@ bool DesktopInputManager::Poll() {
 	//process all events (includes Window events)
 	glfwPollEvents();
 
-	consoleManager_->Poll();
-
 	//TODO break into tasks 
 	//fire off all key events and their logic
 	for (auto&[keyID, key] : keyStates_) {
@@ -186,5 +164,3 @@ bool DesktopInputManager::Poll() {
 
 	return true;
 }
-
-

@@ -7,10 +7,12 @@
 struct WindowParameters;
 class Window;
 class ConsoleManager;
+class CLIConsoleManager;
 
 class Soul {
 
 public:
+	friend class CLIConsoleManager;
 
 	Soul(SoulParameters&);
 	~Soul();
@@ -18,10 +20,12 @@ public:
 	Soul(Soul&&) noexcept = delete;
 	Soul& operator=(Soul&&) noexcept = delete;
 
-	void Run();
+	void Init();
 	Window& CreateWindow(WindowParameters&);
 
 private:
+
+	void Run();
 
 	void Raster();
 	void Warmup();

@@ -5,20 +5,23 @@
 #include "Core/Soul.h"
 
 #include <iostream>
+#include <string>
 
 class CLIConsoleManager : public ConsoleManager {
 
 public:
 
-	CLIConsoleManager(EventManager*, Soul&);
+	CLIConsoleManager(EventManager&, Soul&);
 	~CLIConsoleManager() override = default;
 
-	bool Poll() override;
+	void Poll() override;
 
 private:
 
 	std::istream& istr_;
 	std::ostream& ostr_;
 	std::ostream& estr_;
+
+	bool ProcessCommand(const std::string&);
 
 };
