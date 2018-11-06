@@ -1,6 +1,6 @@
 #include "PhysicsEngine.cuh"
-#include "Utility/CUDA/CUDAHelper.cuh"
-#include "Compute/ComputeManager.h"
+//#include "Parallelism/Compute/CUDA/Utility/CUDAHelper.cuh"
+//#include "Parallelism/Compute/ComputeManager.h"
 
 //typedef struct {
 //

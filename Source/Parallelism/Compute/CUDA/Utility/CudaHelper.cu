@@ -1,5 +1,4 @@
 #include "CudaHelper.cuh"
-#include "device_functions.h"
 
 __host__ __device__ uint randHash(uint a) {
 	a = (a + 0x7ed55d16) + (a << 12);

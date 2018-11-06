@@ -2,6 +2,7 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/rotate_vector.hpp"
+#include "Core/Utility/Types.h"
 
 Camera::Camera() :
 	aspectRatio(0),
@@ -41,15 +42,15 @@ Camera::~Camera() {
 //}
 
 void Camera::UpdateVariables() {
-	verticalAxis = normalize(cross(right, forward));
+	verticalAxis = glm::normalize(glm::cross(right, forward));
 
 	yHelper = verticalAxis * static_cast<float>( tan((glm::radians(-fieldOfView.y * 0.5f))));
 	xHelper = right * static_cast<float>( tan(glm::radians(fieldOfView.x * 0.5f)));
 }
 
 void Camera::OffsetOrientation(float x, float y) {
-	right = normalize(glm::rotateY(right, glm::radians(x)));
-	forward = normalize(glm::rotateY(forward, glm::radians(x)));
+	right = glm::normalize(glm::rotateY(right, glm::radians(x)));
+	forward = glm::normalize(glm::rotateY(forward, glm::radians(x)));
 
-	forward = normalize(glm::rotate(forward, glm::radians(y), right));
+	forward = glm::normalize(glm::rotate(forward, glm::radians(y), right));
 }

@@ -1,11 +1,7 @@
 #pragma once
 
 #include <cuda_runtime.h>
-#include <device_launch_parameters.h>
-//#include "Metrics.h"
 #include <iostream>
-
-#include "Core/Utility/Log/Logger.h"
 #include "Core/Utility/Types.h"
 
 #define WARP_SIZE 32
@@ -113,7 +109,7 @@ inline int _GetBlocksPerMP(int major, int minor)
 		index++;
 	}
 
-	S_LOG_ERROR("Defaulted to a previous CC version");
+	//S_LOG_ERROR("Defaulted to a previous CC version");
 	//defaulted case, go back a version
 	return nGpuArchCoresPerSM[index - 1].Cores;
 }
@@ -155,7 +151,7 @@ inline int _GetWarpsPerMP(int major, int minor)
 		index++;
 	}
 
-	S_LOG_ERROR("Defaulted to a previous CC version");
+	//S_LOG_ERROR("Defaulted to a previous CC version");
 	//defaulted case, go back a version
 	return nGpuArchCoresPerSM[index - 1].Cores;
 }

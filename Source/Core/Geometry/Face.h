@@ -7,8 +7,8 @@ class Face
 {
 
 public:
-	
-	glm::uvec3 indices;
+
+	glm::uvec3 indices={0,0,0};
 	uint material; //TODO investigate materials
 };
 

@@ -1,8 +1,8 @@
-/Build
-/Libraries
-/Resources/Objects
-/Resources/Textures
 /.vs
-*.ini
-/Resources/Objects/*
-/Resources/Textures/*
+
+Build/*
+!Build/README.md
+Libraries/*
+
+Resources/Objects/*
+Resources/Textures/*

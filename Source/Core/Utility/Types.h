@@ -1,6 +1,5 @@
 #pragma once
 
-//TODO replace with constexpr variables in metircs namespace
 constexpr int KILOMETER = 100;
 constexpr int HECTOMETER = 10;
 constexpr int DECAMETER = 1;

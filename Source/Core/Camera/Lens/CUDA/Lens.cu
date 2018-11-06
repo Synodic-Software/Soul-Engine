@@ -1,4 +1,4 @@
-#include "Photography/Lens/CUDA/Lens.cuh"
+#include "Lens.cuh"
 
 Lens::Lens()
 {	

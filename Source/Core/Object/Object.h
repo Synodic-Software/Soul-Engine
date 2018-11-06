@@ -1,11 +1,38 @@
 #pragma once
 
-//#   if defined(__CUDACC__)
+#include "Core/Utility/Types.h"
 
-#include "CUDA/Object.cuh"
+class Object {
 
-//#	else
-//
-//#include "OpenCL/CLObject.h"
-//
-//#endif
+public:
+
+	Object() = default;
+	//Object(std::string, Material);
+	//~Object();
+
+	//bool requestRemoval;
+	//bool ready;
+	//bool isStatic;
+
+	//void AddVertices(Vertex*, uint);
+	//void AddFaces(Face*, uint);
+	//void ExtractFromFile(const char*);
+
+	uint verticeAmount;
+	uint faceAmount;
+	uint tetAmount;
+	uint materialAmount;
+
+	//std::vector<Vertex> vertices;
+	//std::vector<Face> faces;
+	//std::vector<Tet> tets;
+	//std::vector<Material> materials;
+
+	//BoundingBox box; //in object space
+
+protected:
+
+private:
+
+
+};

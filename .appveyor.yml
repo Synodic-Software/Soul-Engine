@@ -15,7 +15,29 @@ branches:
 
 image: Visual Studio 2017
 
+clone_depth: 1
+
+matrix:
+  fast_finish: true
+
 install:
+
+  #Python
+  - set PATH=%PATH%;%PYTHON%/Scripts/
+
+  #Conan
+  - echo "Downloading Conan..."
+  - pip.exe install conan --upgrade
+  - conan user
+  - conan --version
+
+  #Ninja
+  - appveyor DownloadFile "https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-win.zip" -FileName ninja.zip
+  - md ninja
+  - cd ninja
+  - 7z x ..\ninja.zip > nul
+  - ninja --version
+  - cd ..
 
 ###################################
 # Build Configuration
@@ -28,7 +50,11 @@ configuration:
   - Release
 
 build_script:
-
+  - mkdir Build
+  - conan install .
+  - cd Build
+  - cmake ../ -DBUILD_TEST=TRUE  -G "Ninja"
+  - cmake --build . --config Release
 
 ###################################
 # Test Configuration
