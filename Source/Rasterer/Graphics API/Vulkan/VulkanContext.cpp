@@ -30,6 +30,8 @@ VulkanContext::VulkanContext(Scheduler& scheduler, EntityManager& entityManger) 
 
 	//set device extensions
 	requiredDeviceExtensions_.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+	requiredDeviceExtensions_.push_back(VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME);
+	requiredDeviceExtensions_.push_back(VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME);
 
 	//set instance extensions
 
