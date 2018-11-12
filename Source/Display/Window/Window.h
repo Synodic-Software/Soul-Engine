@@ -9,8 +9,6 @@
 
 enum class WindowType { WINDOWED, FULLSCREEN, BORDERLESS, EMPTY };
 
-class Surface;
-
 struct WindowParameters {
 
 	WindowType type;
