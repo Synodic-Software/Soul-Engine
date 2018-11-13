@@ -26,6 +26,11 @@ bool CLIConsoleManager::ProcessCommand(const std::string& command) {
 
 	std::map<std::string,std::string> properties = CommandParser.parse(input);
 
+	if (properties["err"] != "") {
+		estr_ << "ERROR: " << properties["err"] << std::endl;
+		return false;
+	}
+
 	if (command == "load_window") {
 		// Assign default stats for the window
 		int w_width=512, w_height=512;
@@ -49,12 +54,16 @@ bool CLIConsoleManager::ProcessCommand(const std::string& command) {
 		windowParams.pixelSize.x = w_width;
 		windowParams.pixelSize.y = w_height;
 
+		ostr_ << "Creating window of width " << w_width << " and height " << w_height
+			<< " named '" << w_name << "'" << std::endl;
+
 		soul.CreateWindow(windowParams);
 		soul.Run();
 	} else {
-		estr_ << "\"" << command << "\" is not a valid command!" << std::endl;
+		estr_ << "ERROR: \"" << command << "\" is not a valid command" << std::endl;
 		return false;
 	}
 
 	return true;
+
 }
