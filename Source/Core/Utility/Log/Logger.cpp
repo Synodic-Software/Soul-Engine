@@ -1,8 +1,5 @@
 #include "Logger.h"
 
-namespace Logger {
-
-	namespace detail {
 		std::string LogSeverityStrings[4]{
 			"TRACE",
 			"WARNING",
@@ -13,7 +10,7 @@ namespace Logger {
 		/* The log mut */
 		std::mutex logMut;
 		/* The storage */
-		std::deque<LogI> storage;
+		std::deque<Logger::LogI> storage;
 
 		/*
 		 *    Writes an information.
@@ -25,7 +22,7 @@ namespace Logger {
 		void WriteInfo(std::ostream& oss, const char* file, int line) {		
 			oss << "File: TODO" << " Line: " << line << " | ";
 		}
-	}
+	
 
 	/*
 	 *    Gets the get.
@@ -33,17 +30,17 @@ namespace Logger {
 	 */
 
 	std::string Get() {
-		detail::logMut.lock();
-		if (detail::storage.empty() > 0) {
+		logMut.lock();
+		if (storage.empty() > 0) {
 
-			detail::LogI temp = detail::storage.front();
-			detail::storage.pop_front();
-			detail::logMut.unlock();
+			Logger::LogI temp = storage.front();
+			storage.pop_front();
+			logMut.unlock();
 
-			return ("[" + detail::LogSeverityStrings[temp.severity] + "] " + temp.msg+"/n");
+			return ("[" + LogSeverityStrings[static_cast<int>(temp.severity)] + "] " + temp.msg+"/n");
 		}
 		else {
-			detail::logMut.unlock();
+			logMut.unlock();
 			return std::string();
 		}
 	}
@@ -52,4 +49,3 @@ namespace Logger {
 	{
 		//TODO
 	}
-}
