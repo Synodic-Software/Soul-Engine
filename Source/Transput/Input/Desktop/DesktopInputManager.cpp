@@ -2,6 +2,7 @@
 #include "Composition/Event/EventManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Core/Utility/Log/Logger.h"
+#include "Platform/Platform.h"
 
 DesktopInputManager::DesktopInputManager(EventManager& eventManager) :
 	InputManager(eventManager),
@@ -9,7 +10,6 @@ DesktopInputManager::DesktopInputManager(EventManager& eventManager) :
 	mouseYOffset_(0),
 	firstMouse_(true)
 {
-
 }
 
 void DesktopInputManager::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -32,7 +32,7 @@ void DesktopInputManager::KeyCallback(GLFWwindow* window, int key, int scancode,
 	else {
 		//case GLFW_UNKNOWN
 		// TODO: proper error handling
-		S_LOG_ERROR("Reached unknown key case");
+		//S_LOG_ERROR("Reached unknown key case");
 	}
 
 }
@@ -164,5 +164,3 @@ bool DesktopInputManager::Poll() {
 
 	return true;
 }
-
-

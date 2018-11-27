@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Parallelism/Fiber/FiberParameters.h"
+
 #include <vector>
+#include <chrono>
 
 class Task;
 class Graph;
@@ -10,27 +13,33 @@ class Node{
 
 public:
 
-	Node() = default;
+	Node();
 	virtual ~Node() = default;
 
 	Node(const Node&) = delete;
-	Node(Node&& o) noexcept = default;
+	Node(Node&&) noexcept = default;
 
 	Node& operator=(const Node&) = delete;
-	Node& operator=(Node&& other) noexcept = default;
+	Node& operator=(Node&&) noexcept = default;
 
-	virtual void Execute() = 0;
+	virtual void Execute(std::chrono::nanoseconds = std::chrono::nanoseconds(0)) = 0;
 
 	void DependsOn(Task&);
 	void DependsOn(Graph&);
 
+	bool Root();
+	void Root(bool);
 
 protected:
 
+	FiberParameters parameters_;
 	std::vector<Node*> children_;
+
 
 private:
 
 	void AddChild(Node*);
+
+	bool root;
 
 };

@@ -1,22 +1,7 @@
 #include "Soul.h"
+
 #include "SoulImplementation.h"
 #include "Platform/Platform.h"
-
-#include "Display/Window/WindowManager.h"
-#include "Display/Window/Desktop/DesktopWindowManager.h"
-
-#include "Transput/Input/Desktop/DesktopInputManager.h"
-
-#include "Composition/Event/EventManager.h"
-#include "Transput/Input/InputManager.h"
-#include "Parallelism/Fiber/Scheduler.h"
-#include "Core/Utility/HashString/HashString.h"
-#include "Composition/Entity/EntityManager.h"
-#include "Rasterer/RasterManager.h"
-#include "Frame/FrameManager.h"
-#include "Parallelism/Graph/Graph.h"
-
-#include <variant>
 
 Soul::Soul(SoulParameters& params) :
 	parameters(params),
@@ -25,7 +10,7 @@ Soul::Soul(SoulParameters& params) :
 {
 	parameters.engineRefreshRate.AddCallback([this](int value)
 	{
-		frameTime = std::chrono::duration_cast<tickType>(std::chrono::seconds(1)) / value;
+		frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1)) / value;
 	});
 
 	//flush parameters with new callbacks
@@ -54,26 +39,45 @@ void SynchSystem() {
 
 /////////////////////////Core/////////////////////////////////
 
+void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 
-/* Ray pre process */
-void RayPreProcess() {
+	EarlyFrameUpdate();
 
-	//RayEngine::Instance().PreProcess();
-
-}
-
-/* Ray post process */
-void RayPostProcess() {
-
-	//RayEngine::Instance().PostProcess();
+	newFrame.Dirty(Poll());
 
 }
 
-/* Rasters this object. */
-void Soul::Raster() {
+void Soul::Update(Frame& oldFrame, Frame& newFrame) {
 
-	//Backends should handle multithreading
-	detail->windowManager_->Draw();
+	EarlyUpdate();
+
+	if (newFrame.Dirty()) {
+
+		//	for (auto& scene : scenes) {
+		//		scene->Build(engineRefreshRate);
+		//	}
+		//	
+		//	for (auto const& scene : scenes){
+		//		PhysicsEngine::Process(scene);
+		//	}
+
+	}
+
+	LateUpdate();
+
+}
+
+void Soul::Render(Frame& oldFrame, Frame& newFrame) {
+
+	LateFrameUpdate();
+
+	if (newFrame.Dirty()) {
+
+		//	//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
+
+		Raster();
+
+	}
 
 }
 
@@ -118,11 +122,35 @@ void Soul::LateUpdate() {
 
 }
 
+
+void Soul::Raster() {
+
+	//Backends should handle multithreading
+	detail->windowManager_->Draw();
+
+}
+
 //returns a bool that is true if the engine is dirty
 bool Soul::Poll() {
 
 	return detail->inputManager_->Poll();
 
+}
+
+void Soul::Init()
+{
+	
+	Warmup();
+
+	if constexpr (Platform::WithCLI()) {
+		FiberParameters fParams(false);
+		detail->scheduler_.AddTask(fParams, [this]()
+		{
+			detail->consoleManager_->Poll();
+		});
+	} else {
+		Run();
+	}
 }
 
 Window& Soul::CreateWindow(WindowParameters& params) {
@@ -138,63 +166,18 @@ void Soul::Run()
 
 	Warmup();
 
-	//Create the mail loop graph of the mainloop
-	//Graph& graph = detail->scheduler_.CreateGraph();
-
-	//Task& taskA = graph.AddTask([]()
-	//{
-	//	std::cout << "Hello";
-	//});
-
-	//graph.Execute();
-	//detail->scheduler_.Block();
-
-	auto currentTime = std::chrono::time_point_cast<tickType>(clockType::now());
+	auto currentTime = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
 	auto nextTime = currentTime + frameTime;
-
-	bool nextDirty = true;
 
 	while (!detail->windowManager_->ShouldClose()) {
 
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime;
 
-		const bool dirty = nextDirty;
-		nextDirty = Poll();
+		detail->framePipeline_.Execute(frameTime);
 
-		if (dirty) {
-
-			const auto& frame = detail->frameManager.Next();
-
-			EarlyFrameUpdate();
-
-			nextDirty = Poll();
-
-			EarlyUpdate();
-
-			/*for (auto& scene : scenes) {
-				scene->Build(engineRefreshRate);
-			}*/
-			/*
-			for (auto const& scene : scenes){
-				PhysicsEngine::Process(scene);
-			}*/
-
-			LateUpdate();
-
-			LateFrameUpdate();
-
-			RayPreProcess();
-
-			//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
-
-			RayPostProcess();
-
-			Raster();
-
-		}
-
-		detail->scheduler_.YieldUntil(nextTime);
+		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime);
+		else detail->scheduler_.YieldUntil(nextTime);
 
 	}
 
