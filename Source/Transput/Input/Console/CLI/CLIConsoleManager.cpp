@@ -21,10 +21,8 @@ void CLIConsoleManager::Poll() {
 bool CLIConsoleManager::ProcessCommand(const std::string& command) {
 
 	std::list<std::string> input;
-	std::string tmp;
-	while (istr_ >> tmp) input.push_back(tmp);
 
-	std::map<std::string,std::string> properties = CommandParser.parse(input);
+	std::map<std::string,std::string> properties = CommandParser::parse(istr_);
 
 	if (properties["err"] != "") {
 		estr_ << "ERROR: " << properties["err"] << std::endl;
@@ -36,11 +34,11 @@ bool CLIConsoleManager::ProcessCommand(const std::string& command) {
 		int w_width=512, w_height=512;
 		std::string w_name = "Main";
 
-		if (properties["w"] != "") w_width = atoi(properties["w"]);
-		else if (properties["width"] != "") w_width = atoi(properties["width"]);
+		if (properties["w"] != "") w_width = stoi(properties["w"]);
+		else if (properties["width"] != "") w_width = stoi(properties["width"]);
 
-		if (properties["h"] != "") w_height = atoi(properties["h"]);
-		else if (properties["height"] != "") w_height = atoi(properties["height"]);
+		if (properties["h"] != "") w_height = stoi(properties["h"]);
+		else if (properties["height"] != "") w_height = stoi(properties["height"]);
 
 		if (properties["name"] != "") w_name = properties["name"];
 
