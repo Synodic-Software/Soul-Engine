@@ -113,7 +113,7 @@ inline int _GetBlocksPerMP(int major, int minor)
 		index++;
 	}
 
-	S_LOG_ERROR("Defaulted to a previous CC version");
+	//S_LOG_ERROR("Defaulted to a previous CC version");
 	//defaulted case, go back a version
 	return nGpuArchCoresPerSM[index - 1].Cores;
 }
@@ -155,7 +155,7 @@ inline int _GetWarpsPerMP(int major, int minor)
 		index++;
 	}
 
-	S_LOG_ERROR("Defaulted to a previous CC version");
+	//S_LOG_ERROR("Defaulted to a previous CC version");
 	//defaulted case, go back a version
 	return nGpuArchCoresPerSM[index - 1].Cores;
 }

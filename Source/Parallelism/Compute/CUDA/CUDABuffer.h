@@ -98,7 +98,7 @@ template <class T>
 void CUDABuffer<T>::Move(const ComputeDevice& device)
 {
 	//TODO implement memory transfer
-	S_LOG_FATAL("Not implemented");
+	//S_LOG_FATAL("Not implemented");
 }
 
 template <class T>
@@ -138,14 +138,14 @@ const T* CUDABuffer<T>::Data() const {
 template <class T>
 bool CUDABuffer<T>::Empty() const noexcept {
 	//TODO implement
-	S_LOG_FATAL("Not implemented");
+	//S_LOG_FATAL("Not implemented");
 	return true;
 }
 
 template <class T>
 typename CUDABuffer<T>::size_type CUDABuffer<T>::MaxSize() const noexcept {
 	//TODO implement
-	S_LOG_FATAL("Not implemented");
+	//S_LOG_FATAL("Not implemented");
 	return 0;
 }
 
@@ -163,7 +163,7 @@ void CUDABuffer<T>::Resize(size_type n) {
 template <class T>
 void CUDABuffer<T>::Resize(size_type, const T&) {
 	//TODO implement
-	S_LOG_FATAL("Not implemented");
+	//S_LOG_FATAL("Not implemented");
 }
 
 template <class T>
@@ -180,7 +180,7 @@ template <class T>
 void CUDABuffer<T>::Fit()
 {
 	//TODO implement
-	S_LOG_FATAL("Not implemented");
+	//S_LOG_FATAL("Not implemented");
 }
 
 template <typename T>
