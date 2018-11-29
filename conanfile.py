@@ -32,7 +32,8 @@ class SoulEngine(ConanFile):
 
         cmake = self.configureCMake()
         cmake.build()
-
+        cmake.install()
+        
     def package(self):
 
         cmake = self.configureCMake()

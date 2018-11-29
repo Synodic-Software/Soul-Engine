@@ -77,10 +77,10 @@ Soul::Implementation::consoleManagerVariantType Soul::Implementation::ConstructC
 	consoleManagerVariantType tmp;
 
 	if constexpr (Platform::WithCLI()) {
-		tmp.emplace<CLIConsoleManager>(eventManager_, soul);
-		return tmp;
+		tmp.emplace<CLIConsoleManager>(eventManager_, soul);	
 	}
 
+	return tmp;
 };
 
 ConsoleManager* Soul::Implementation::ConstructConsolePtr() {
@@ -89,4 +89,5 @@ ConsoleManager* Soul::Implementation::ConstructConsolePtr() {
 		return &std::get<CLIConsoleManager>(consoleManagerVariant_);
 	}
 
+	return nullptr;
 };
