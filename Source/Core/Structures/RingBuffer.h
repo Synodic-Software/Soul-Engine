@@ -22,9 +22,9 @@ public:
 	bool operator==(const RingBuffer& other);
 	bool operator==(RingBuffer& other);
 
-	const T& back() const;
+	const T& Back() const;
 
-	const T& front();
+	const T& Front();
 
 	reference operator[](std::size_t i);
 
@@ -87,14 +87,14 @@ inline bool RingBuffer<T, Capacity>::operator==(RingBuffer & other)
 }
 
 template<typename T, std::size_t Capacity>
-inline const T & RingBuffer<T, Capacity>::back() const
+inline const T & RingBuffer<T, Capacity>::Back() const
 {
 	if (this->size_ == 0) return NULL;
 	return this->data_[this->size_ - 1];
 }
 
 template<typename T, std::size_t Capacity>
-inline const T & RingBuffer<T, Capacity>::front()
+inline const T & RingBuffer<T, Capacity>::Front()
 {
 	if (this->size_ == 0) return NULL;
 	return this->data_[0];
