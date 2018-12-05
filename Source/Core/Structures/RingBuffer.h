@@ -23,10 +23,8 @@ public:
 	bool operator==(RingBuffer& other);
 
 	const T& back() const;
-	T& back();
 
-	const T% front() const;
-	T& front();
+	const T& front();
 
 	reference operator[](std::size_t i);
 
@@ -62,22 +60,7 @@ void RingBuffer<T, Capacity>::Push(const T& value) {
 		
 }
 
-template <typename T, std::size_t Capacity> 
-RingBuffer<T, Capacity>& RingBuffer<T, Capacity>::operator=(const RingBuffer& other) {
-	this.begin_ = other.begin_;
-	this.end_ = other.end_;
-	this.size_ = other.size_;
-	this.data_ = other.data_;
 
-}
-
-template <typename T, std::size_t Capacity>
-RingBuffer<T, Capacity>& RingBuffer<T, Capacity>::operator=(RingBuffer&& other) noexcept {
-	this.begin_ = other.begin_;
-	this.end_ = other.end_;
-	this.size_ = other.size_;
-	this.data_ = other.data_;
-}
 
 template<typename T, std::size_t Capacity>
 inline bool RingBuffer<T, Capacity>::operator==(const RingBuffer & other)
@@ -111,20 +94,7 @@ inline const T & RingBuffer<T, Capacity>::back() const
 }
 
 template<typename T, std::size_t Capacity>
-inline T & RingBuffer<T, Capacity>::back()
-{
-	if (this->size_ == 0) return NULL;
-	return this->data_[this - size_ - 1];
-}
-
-template<typename T, std::size_t Capacity>
-inline const T % RingBuffer<T, Capacity>::front() const
-{
-	if (this->size_ == 0) return NULL;
-	return this->data_[0];
-}
-template<typename T, std::size_t Capacity>
-inline T % RingBuffer<T, Capacity>::front() 
+inline const T & RingBuffer<T, Capacity>::front()
 {
 	if (this->size_ == 0) return NULL;
 	return this->data_[0];
