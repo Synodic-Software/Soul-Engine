@@ -1,13 +1,11 @@
 #pragma once
 
-#include "Display/Window/WindowManager.h"
 #include "Display/Window/Desktop/DesktopWindowManager.h"
 
 #include "Transput/Input/Desktop/DesktopInputManager.h"
 #include "Transput/Input/Console/CLI/CLIConsoleManager.h"
 
 #include "Composition/Event/EventManager.h"
-#include "Transput/Input/InputManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Composition/Entity/EntityManager.h"
 #include "Rasterer/RasterManager.h"
@@ -16,6 +14,9 @@
 #include <variant>
 
 class Soul;
+class InputManager;
+class WindowManager;
+class ConsoleManager;
 
 class Soul::Implementation
 {
