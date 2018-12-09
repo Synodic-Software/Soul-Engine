@@ -10,8 +10,7 @@
       "buildRoot": "${projectDir}\\Build\\${name}",
       "installRoot": "${projectDir}\\Libraries\\${name}",
       "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "buildCommandArgs": ""
     },
     {
       "name": "Release",
@@ -23,8 +22,7 @@
       "buildRoot": "${projectDir}\\Build\\${name}",
       "installRoot": "${projectDir}\\Libraries\\${name}",
       "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "buildCommandArgs": ""
     }
   ]
 }
