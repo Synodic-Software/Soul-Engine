@@ -22,7 +22,7 @@ public:
 
 private:
 	/* Defines an alias representing the clock. */
-	typedef std::chrono::steady_clock Clock;
+	typedef std::chrono::high_resolution_clock Clock;
 	/* Defines an alias representing the timestamp. */
 	typedef std::chrono::time_point<Clock> Timestamp;
 
