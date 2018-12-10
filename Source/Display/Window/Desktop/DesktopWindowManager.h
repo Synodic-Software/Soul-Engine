@@ -5,6 +5,8 @@
 #include "Transput/Input/Desktop/DesktopInputManager.h"
 //#include "Rasterer/RasterManager.h"
 class RasterManager;
+class EntityManage;
+
 struct GLFWmonitor;
 class DesktopWindowManager : public WindowManager
 {
