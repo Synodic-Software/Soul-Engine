@@ -3,6 +3,10 @@
 #include "Platform/Platform.h"
 #include "Soul.h"
 
+#include "Transput/Input/InputManager.h"
+#include "Display/Window/WindowManager.h"
+
+
 
 Soul::Implementation::Implementation(Soul& soul) :
 	entityManager_(),

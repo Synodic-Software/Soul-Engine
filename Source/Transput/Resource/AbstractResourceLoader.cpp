@@ -1,2 +1,0 @@
-#include "AbstractResourceLoader.h"
-//templated

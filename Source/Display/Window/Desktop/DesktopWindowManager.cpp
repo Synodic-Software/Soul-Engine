@@ -14,10 +14,10 @@ DesktopWindowManager::DesktopWindowManager(EntityManager& entityManager, Desktop
 
 	//set the error callback
 	// TODO: Proper error handling
-	glfwSetErrorCallback([](int error, const char* description) {
-		S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
-		assert(false);
-	});
+	//glfwSetErrorCallback([](int error, const char* description) {
+	//	S_LOG_FATAL("GLFW Error occured, Error ID:", error, " Description:", description);
+	//	assert(false);
+	//});
 
 	//Initialize glfw context for Window handling
 	// TODO: proper error handling

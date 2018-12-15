@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Frame.h"
-#include "Core/Soul.h"
 #include "Core/Structures/RingBuffer.h"
 #include "Parallelism/Graph/Graph.h"
 #include "Parallelism/Fiber/Scheduler.h"

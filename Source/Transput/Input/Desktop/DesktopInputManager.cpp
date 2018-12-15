@@ -32,7 +32,7 @@ void DesktopInputManager::KeyCallback(GLFWwindow* window, int key, int scancode,
 	else {
 		//case GLFW_UNKNOWN
 		// TODO: proper error handling
-		S_LOG_ERROR("Reached unknown key case");
+		//S_LOG_ERROR("Reached unknown key case");
 	}
 
 }

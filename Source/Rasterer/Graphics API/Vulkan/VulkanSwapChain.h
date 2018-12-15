@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Rasterer/Graphics API/SwapChain.h"
-class EntityManager;
 #include "VulkanPipeline.h"
 #include "VulkanFramebuffer.h"
 #include "Composition/Component/Component.h"
@@ -9,6 +8,7 @@ class EntityManager;
 #include <vulkan/vulkan.hpp>
 
 class VulkanSurface;
+class EntityManager;
 
 struct SwapChainImage {
 	vk::Image image;
