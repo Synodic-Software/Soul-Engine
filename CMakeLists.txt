@@ -22,8 +22,8 @@ mark_as_advanced(HUNTER_TLS_VERIFY)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/Hunter/HunterGate.cmake)
 
 HunterGate(
-    URL "https://github.com/ruslo/hunter/archive/v0.23.27.tar.gz"
-    SHA1 "70d75a25f895df3da00d8382417e8c2a08c93173"
+    URL "https://github.com/ruslo/hunter/archive/v0.23.73.tar.gz"
+    SHA1 "6f1905165d1f2dec8cd807aa005fc91308333926"
     FILEPATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Hunter/config.cmake
 )
 
