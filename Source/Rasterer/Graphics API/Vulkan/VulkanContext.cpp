@@ -35,7 +35,7 @@ VulkanContext::VulkanContext(Scheduler& scheduler, EntityManager& entityManger) 
 
 	//set instance extensions
 
-	uint32_t glfwExtensionCount = 0;
+	uint32 glfwExtensionCount = 0;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
 	for (uint i = 0; i < glfwExtensionCount; ++i) {
@@ -50,11 +50,11 @@ VulkanContext::VulkanContext(Scheduler& scheduler, EntityManager& entityManger) 
 
 	vk::InstanceCreateInfo instanceCreationInfo;
 	instanceCreationInfo.pApplicationInfo = &applicationInfo;
-	instanceCreationInfo.enabledExtensionCount = static_cast<uint32_t>(requiredInstanceExtensions_.size());
+	instanceCreationInfo.enabledExtensionCount = static_cast<uint32>(requiredInstanceExtensions_.size());
 	instanceCreationInfo.ppEnabledExtensionNames = requiredInstanceExtensions_.data();
 
 	if constexpr (validationEnabled_) {
-		instanceCreationInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+		instanceCreationInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size());
 		instanceCreationInfo.ppEnabledLayerNames = validationLayers.data();
 	}
 	else {
@@ -243,13 +243,13 @@ Entity VulkanContext::CreateDevice(Entity surface) {
 
 	vk::DeviceCreateInfo deviceCreateInfo;
 	deviceCreateInfo.flags = vk::DeviceCreateFlags();
-	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32>(queueCreateInfos.size());
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
-	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredDeviceExtensions_.size());
+	deviceCreateInfo.enabledExtensionCount = static_cast<uint32>(requiredDeviceExtensions_.size());
 	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions_.data();
 
 	if (validationEnabled_) {
-		deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+		deviceCreateInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size());
 		deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
 	}
 	else {
