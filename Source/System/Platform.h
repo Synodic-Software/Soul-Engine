@@ -1,7 +1,6 @@
 #pragma once
 
-enum class PlatformID { Windows, OSX, Linux, Unknown };
-
+enum class PlatformID { Windows, OSX, Linux, Android, Unknown };
 
 class Platform {
 
@@ -13,11 +12,7 @@ public:
 
 private:
 
-#ifdef __CYGWIN__
-
-	constexpr static PlatformID platform = PlatformID::Linux;
-
-#elif __linux__
+#ifdef __linux__ && !__ANDROID__
 
 	constexpr static PlatformID platform = PlatformID::Linux;
 
@@ -25,13 +20,13 @@ private:
 
 	constexpr static PlatformID platform = PlatformID::Windows;
 
-#elif __MACH__
-
-	constexpr static PlatformID platform = PlatformID::OSX;
-
 #elif __APPLE__
 
 	constexpr static PlatformID platform = PlatformID::OSX;
+
+#elif __ANDROID__ 
+
+	constexpr static PlatformID platform = PlatformID::Android;
 
 #else
 
@@ -39,6 +34,7 @@ private:
 
 #endif
 
+//TODO: Remove macro. CLI should not be handled by platform, but by Application
 #ifdef WITH_CLI
 
 	constexpr static bool withCLI = true;
@@ -61,6 +57,7 @@ constexpr bool Platform::IsDesktop() {
 		platform == PlatformID::OSX;
 }
 
+//TODO: Does not belong here
 constexpr bool Platform::WithCLI() {
 	return withCLI;
 }

@@ -1,7 +1,7 @@
 #include "Soul.h"
 
 #include "SoulImplementation.h"
-#include "Platform/Platform.h"
+#include "System/Platform.h"
 
 Soul::Soul(SoulParameters& params) :
 	parameters(params),
