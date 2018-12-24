@@ -6,7 +6,7 @@
 	#define EXPORT
 #endif
 
-class Plugin {
+class Module {
 public:
 
 private:
