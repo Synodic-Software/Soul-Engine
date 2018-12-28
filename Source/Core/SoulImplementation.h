@@ -18,6 +18,7 @@ class InputManager;
 class WindowManager;
 class ConsoleManager;
 
+//TODO: remove once c++20 modules are integrated
 class Soul::Implementation
 {
 
