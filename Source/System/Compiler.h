@@ -10,19 +10,19 @@ public:
 
 private:
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 
 	constexpr static CompilerID compiler = CompilerID::VisualStudio;
 
-#elif __GNUC__
+#elif defined(__GNUC__)
 
 	constexpr static CompilerID compiler = CompilerID::GCC;
 
-#elif __clang__
+#elif defined(__clang__)
 
 	constexpr static CompilerID compiler = CompilerID::Clang;
 
-#elif __EMSCRIPTEN__ 
+#elif defined(__EMSCRIPTEN__) 
 
 	constexpr static CompilerID compiler = CompilerID::Emscripten;
 

@@ -12,19 +12,19 @@ public:
 
 private:
 
-#ifdef __linux__ && !__ANDROID__
+#if defined(__linux__) && !defined(__ANDROID__)
 
 	constexpr static PlatformID platform = PlatformID::Linux;
 
-#elif  _WIN64
+#elif defined(_WIN64)
 
 	constexpr static PlatformID platform = PlatformID::Windows;
 
-#elif __APPLE__
+#elif defined(__APPLE__)
 
 	constexpr static PlatformID platform = PlatformID::OSX;
 
-#elif __ANDROID__ 
+#elif defined(__ANDROID__) 
 
 	constexpr static PlatformID platform = PlatformID::Android;
 
@@ -35,7 +35,7 @@ private:
 #endif
 
 //TODO: Remove macro. CLI should not be handled by platform, but by Application
-#ifdef WITH_CLI
+#if defined(WITH_CLI)
 
 	constexpr static bool withCLI = true;
 

@@ -55,7 +55,8 @@ private:
 	std::vector<vk::PhysicalDevice> physicalDevices_;
 	std::vector<Entity> logicalDevices_;
 
-#ifdef NDEBUG
+//TODO: refactor and remove disgusting macro
+#if defined(NDEBUG)
 
 	static constexpr bool validationEnabled_ = false;
 

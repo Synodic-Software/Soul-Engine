@@ -4,7 +4,9 @@
 
 __host__ __device__ inline
 uint ThreadIndex1D() {
-#ifdef __CUDA_ARCH__
+
+//TODO: Refactor and remove that disgusting macro
+#if defined(__CUDA_ARCH__)
 	return threadIdx.x + blockIdx.x * blockDim.x;
 #else
 	return 0;
