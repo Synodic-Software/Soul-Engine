@@ -1,6 +1,6 @@
 #pragma once
 
-class Plugin {
+class Module {
 public:
 
 private:
