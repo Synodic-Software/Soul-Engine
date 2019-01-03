@@ -42,18 +42,12 @@ void VulkanRenderPass::Create(vk::Format swapChainImageFormat) {
 
 }
 
-void VulkanRenderPass::Terminate() {
+VulkanRenderPass::~VulkanRenderPass() {
 
 	const auto& vkDevice = entityManager_.GetComponent<VulkanDevice>(device_);
 	const vk::Device& logicalDevice = vkDevice.GetLogicalDevice();
 
 	logicalDevice.destroyRenderPass(renderPass_, nullptr);
-
-}
-
-VulkanRenderPass::~VulkanRenderPass() {
-
-	Terminate();
 
 }
 

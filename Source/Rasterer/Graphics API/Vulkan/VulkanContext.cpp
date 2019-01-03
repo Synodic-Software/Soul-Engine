@@ -287,6 +287,7 @@ VkBool32 VulkanContext::DebugCallback(
 	const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 	void* pUserData) {
 
+	assert(false);
 	//TODO: some true down to earth messaging
 	return true;
 }

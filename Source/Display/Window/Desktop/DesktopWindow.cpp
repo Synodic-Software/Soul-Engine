@@ -1,11 +1,10 @@
 #include "DesktopWindow.h"
 
-#include "Core/Utility/Log/Logger.h"
 #include "Parallelism/Fiber/Scheduler.h"
-#include "Transput/Input/InputManager.h"
 #include "Rasterer/Graphics API/Vulkan/VulkanSwapChain.h"
-//#include "GLFW/glfw3.h"
-class GLFWmonitor;
+
+struct GLFWmonitor;
+
 DesktopWindow::DesktopWindow(EntityManager* entityManager, WindowParameters& params, GLFWmonitor* monitor, DesktopInputManager& inputManager, RasterManager& rasterManager) :
 	Window(params),
 	inputManager_(&inputManager),
@@ -87,7 +86,11 @@ DesktopWindow::DesktopWindow(EntityManager* entityManager, WindowParameters& par
 	glfwSetFramebufferSizeCallback(context, [](GLFWwindow* w, int x, int y)
 	{
 		const auto thisWindow = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(w));
-		thisWindow->FrameBufferResize(x, y);
+
+		//Only resize if necessary
+		if (x != thisWindow->windowParams_.pixelSize.x || y != thisWindow->windowParams_.pixelSize.y) {
+			thisWindow->FrameBufferResize(x, y);
+		}
 	});
 
 	glfwSetWindowCloseCallback(context, [](GLFWwindow* w)
@@ -111,7 +114,7 @@ DesktopWindow::DesktopWindow(EntityManager* entityManager, WindowParameters& par
 
 }
 
-void DesktopWindow::Terminate() {
+DesktopWindow::~DesktopWindow() {
 
 	if (context_.has_value()) {
 		glfwDestroyWindow(std::any_cast<GLFWwindow*>(context_));

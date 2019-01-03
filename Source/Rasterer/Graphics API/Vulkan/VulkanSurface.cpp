@@ -11,7 +11,7 @@ VulkanSurface::VulkanSurface(VulkanContext* context, std::any& windowContext):
 	//GLFW uses vulkan.h 'c version'
 	VkSurfaceKHR castSurface;
 
-	//garunteed to use GLFW if using vulkan (TODO: cross platform alternative)
+	//guaranteed to use GLFW if using Vulkan (TODO: cross platform alternative)
 	const VkResult error = glfwCreateWindowSurface(
 		static_cast<VkInstance>(context_->GetInstance()),
 		std::any_cast<GLFWwindow*>(windowContext), //TODO: abstract the context
@@ -26,7 +26,7 @@ VulkanSurface::VulkanSurface(VulkanContext* context, std::any& windowContext):
 
 }
 
-void VulkanSurface::Terminate() {
+VulkanSurface::~VulkanSurface() {
 
 	const vk::Instance& instance = context_->GetInstance();
 	instance.destroySurfaceKHR(surface_);

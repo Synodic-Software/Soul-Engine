@@ -2,11 +2,11 @@
 
 #include "Rasterer/RasterBackendAPI.h"
 
-class MockAPI : RasterBackendAPI {
+class MockRasterModule : public RasterBackendAPI {
 
 public:
 
-	~MockAPI() override = default;
+	~MockRasterModule() override = default;
 
 	void Draw() override {}
 	void DrawIndirect() override {}

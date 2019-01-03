@@ -6,9 +6,12 @@
 #include "Transput/Input/InputManager.h"
 #include "Display/Window/WindowManager.h"
 
-
+#include "Display/DisplayWindowAPI.h"
+#include "Rasterer/RasterBackendAPI.h"
 
 Soul::Implementation::Implementation(Soul& soul) :
+	displayModule(DisplayWindowAPI::CreateModule()),
+	rasterModule(RasterBackendAPI::CreateModule()),
 	entityManager_(),
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),

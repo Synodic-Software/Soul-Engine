@@ -16,15 +16,15 @@ class VulkanPipeline : public Pipeline {
 public:
 
 	VulkanPipeline(EntityManager&, Entity, vk::Extent2D&, const std::string&, const std::string&, vk::Format);
-	void Create(vk::Extent2D&, vk::Format);
 	~VulkanPipeline() override;
-	void Terminate();
 
 	VulkanPipeline(const VulkanPipeline&) = delete;
-	VulkanPipeline(VulkanPipeline&& o) noexcept = delete;
+	VulkanPipeline(VulkanPipeline&&) noexcept = delete;
 
 	VulkanPipeline& operator=(const VulkanPipeline&) = delete;
-	VulkanPipeline& operator=(VulkanPipeline&& other) noexcept = delete;
+	VulkanPipeline& operator=(VulkanPipeline&&) noexcept = delete;
+
+	void Create(vk::Extent2D&, vk::Format);
 
 	VulkanRenderPass& GetRenderPass();
 	const vk::Pipeline& GetPipeline() const;

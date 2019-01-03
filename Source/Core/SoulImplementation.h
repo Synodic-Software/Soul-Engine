@@ -18,6 +18,9 @@ class InputManager;
 class WindowManager;
 class ConsoleManager;
 
+class DisplayWindowAPI;
+class RasterBackendAPI;
+
 //TODO: remove once c++20 modules are integrated
 class Soul::Implementation
 {
@@ -29,10 +32,14 @@ public:
 	using windowManagerVariantType = std::variant<std::monostate, DesktopWindowManager>;
 	using consoleManagerVariantType = std::variant<std::monostate, CLIConsoleManager>;
 
-	Implementation(Soul&);
+	Implementation(Soul&); 
 	~Implementation();
 
 	//services and modules	
+	std::shared_ptr<DisplayWindowAPI> displayModule;
+	std::shared_ptr<RasterBackendAPI> rasterModule;
+
+	//TODO: Old managers should be transferred to `modules` (different organizational style)
 	EntityManager entityManager_;
 	Scheduler scheduler_;
 	EventManager eventManager_;

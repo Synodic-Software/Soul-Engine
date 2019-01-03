@@ -29,7 +29,7 @@ VulkanFramebuffer::VulkanFramebuffer(EntityManager& entityManager,Entity device,
 
 }
 
-void VulkanFramebuffer::Terminate() {
+VulkanFramebuffer::~VulkanFramebuffer() {
 
 	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	const vk::Device& logicalDevice = vkDevice.GetLogicalDevice();

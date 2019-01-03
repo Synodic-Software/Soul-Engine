@@ -2,11 +2,11 @@
 
 #include "Rasterer/RasterBackendAPI.h"
 
-class VulkanAPI : RasterBackendAPI {
+class VulkanRasterModule : public RasterBackendAPI {
 
 public:
 
-	~VulkanAPI() override = default;
+	~VulkanRasterModule() override = default;
 
 	void Draw() override {}
 	void DrawIndirect() override {}

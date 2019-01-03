@@ -11,7 +11,7 @@ class SparseEntitySet : public AbstractSparseEntitySet, public SparseSet<T> {
 public:
 
 	SparseEntitySet() = default;
-	~SparseEntitySet() override;
+	~SparseEntitySet() override = default;
 
 	SparseEntitySet(const SparseEntitySet &) = delete;
 	SparseEntitySet(SparseEntitySet &&) = default;
@@ -33,15 +33,6 @@ public:
 	void Clear();
 
 };
-
-template <typename T>
-SparseEntitySet<T>::~SparseEntitySet() {
-
-	for (auto& object : SparseSet<T>::objects_) {
-		object.Terminate();
-	}
-
-}
 
 template <typename T>
 void SparseEntitySet<T>::Remove(uint entityID) {
@@ -96,10 +87,6 @@ void SparseEntitySet<T>::Clear() {
 
 	sparse_.clear();
 	dense_.clear();
-
-	for (auto& object: SparseSet<T>::objects_) {
-		object.Terminate();
-	}
 
 	SparseSet<T>::objects_.clear();
 

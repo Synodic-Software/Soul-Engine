@@ -13,16 +13,13 @@ class VulkanDevice : public RasterDevice, Component<VulkanDevice> {
 public:
 
 	VulkanDevice(Scheduler&, int,int,vk::PhysicalDevice*, vk::Device);
-	~VulkanDevice() override = default;
+	~VulkanDevice() override;
 
 	VulkanDevice(const VulkanDevice&) = delete;
 	VulkanDevice(VulkanDevice&& o) noexcept = default;
 
 	VulkanDevice& operator=(const VulkanDevice&) = delete;
 	VulkanDevice& operator=(VulkanDevice&& other) noexcept = default;
-
-	//manually free resources as vulkan Instance terminates before entityManager
-	void Terminate() override;
 
 	void Rebuild();
 

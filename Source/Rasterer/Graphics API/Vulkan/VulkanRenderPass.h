@@ -12,16 +12,15 @@ class VulkanRenderPass : public RenderPass
 public:
 
 	VulkanRenderPass(EntityManager&, Entity, vk::Format);
-	void Create(vk::Format);
 	~VulkanRenderPass() override;
-	void Terminate();
 
 	VulkanRenderPass(const VulkanRenderPass&) = delete;
-	VulkanRenderPass(VulkanRenderPass&& o) noexcept = delete;
+	VulkanRenderPass(VulkanRenderPass&&) noexcept = delete;
 
 	VulkanRenderPass& operator=(const VulkanRenderPass&) = delete;
-	VulkanRenderPass& operator=(VulkanRenderPass&& other) noexcept = delete;
+	VulkanRenderPass& operator=(VulkanRenderPass&&) noexcept = delete;
 
+	void Create(vk::Format);
 	const vk::RenderPass& GetRenderPass() const;
 
 private:

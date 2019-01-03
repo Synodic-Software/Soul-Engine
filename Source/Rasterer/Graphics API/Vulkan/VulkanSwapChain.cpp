@@ -182,7 +182,7 @@ void VulkanSwapChain::BuildSwapChain(Entity surface, glm::uvec2& size, bool crea
 	}
 }
 
-void VulkanSwapChain::Terminate() {
+VulkanSwapChain::~VulkanSwapChain() {
 
 	const auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	const auto& logicalDevice = vkDevice.GetLogicalDevice();
@@ -190,10 +190,6 @@ void VulkanSwapChain::Terminate() {
 	logicalDevice.freeCommandBuffers(vkDevice.GetCommandPool(),
 			static_cast<uint32_t>(commandBuffers_.size()), commandBuffers_.data());
 
-
-	for (auto& framebuffer : frameBuffers_) {
-		framebuffer.Terminate();
-	}
 
 	frameBuffers_.clear();
 
@@ -215,10 +211,8 @@ void VulkanSwapChain::Terminate() {
 
 void VulkanSwapChain::Resize(Entity surface, glm::uvec2 size) {
 
-	Terminate();
-
-	pipeline_->Terminate();
-	pipeline_->GetRenderPass().Terminate();
+	//pipeline_->Terminate();
+	//pipeline_->GetRenderPass().Terminate();
 
 	auto& vkDevice = entityManager_->GetComponent<VulkanDevice>(device_);
 	vkDevice.Rebuild();

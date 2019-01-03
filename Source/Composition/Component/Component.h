@@ -3,7 +3,7 @@
 #include "Core/Utility/CRTP/CRTP.h"
 
 
-//The component class should hold no per-instance state
+//The component class should hold no state TODO: because?
 template<typename T>
 class Component : CRTP<T, Component>
 {
@@ -13,11 +13,4 @@ public:
 	Component() = default;
 	~Component() override = default;
 
-	virtual void Terminate() = 0;
-
 };
-
-template<typename T>
-void Component<T>::Terminate() {
-	this->Type().Terminate();
-}

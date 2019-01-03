@@ -1,14 +1,12 @@
 #pragma once
 
-#include <boost/dll/alias.hpp>
-
 //Common interface for modules. aka plugins
 class Module {
 
 public:
 
 	Module() = default;
-	virtual ~Module() = 0;
+	virtual ~Module() = default;
 
 	Module(const Module&) = delete;
 	Module(Module&&) noexcept = delete;

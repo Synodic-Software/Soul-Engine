@@ -120,19 +120,13 @@ void VulkanPipeline::Create(vk::Extent2D& extent, vk::Format swapChainFormat) {
 
 }
 
-void VulkanPipeline::Terminate() {
+VulkanPipeline::~VulkanPipeline() {
 
 	const auto& vkDevice = entityManager_.GetComponent<VulkanDevice>(device_);
 	const vk::Device& logicalDevice = vkDevice.GetLogicalDevice();
 
 	logicalDevice.destroyPipeline(pipeline_);
 	logicalDevice.destroyPipelineLayout(pipelineLayout_);
-
-}
-
-VulkanPipeline::~VulkanPipeline() {
-
-	Terminate();
 
 }
 

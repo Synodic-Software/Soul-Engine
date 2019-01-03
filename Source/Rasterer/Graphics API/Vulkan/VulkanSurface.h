@@ -13,7 +13,7 @@ class VulkanSurface : public Surface,  Component<VulkanSurface>{
 public:
 
 	VulkanSurface(VulkanContext*, std::any&);
-	~VulkanSurface() override = default;
+	~VulkanSurface() override;
 
 	VulkanSurface(const VulkanSurface&) = delete;
 	VulkanSurface(VulkanSurface&& o) noexcept = default;
@@ -22,8 +22,6 @@ public:
 	VulkanSurface& operator=(VulkanSurface&& other) noexcept = default;
 
 	vk::SurfaceKHR& GetSurface();
-
-	void Terminate() override;
 
 private:
 

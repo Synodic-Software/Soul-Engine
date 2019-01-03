@@ -15,7 +15,7 @@ class VulkanFramebuffer : public Framebuffer, Component<VulkanFramebuffer> {
 public:
 
 	VulkanFramebuffer(EntityManager&, Entity, vk::ImageView& swapChainImageView, VulkanRenderPass&, glm::uvec2&);
-	~VulkanFramebuffer() override = default;
+	~VulkanFramebuffer() override;
 
 	VulkanFramebuffer(const VulkanFramebuffer&) = delete;
 	VulkanFramebuffer(VulkanFramebuffer&& o) noexcept = default;
@@ -23,7 +23,6 @@ public:
 	VulkanFramebuffer& operator=(const VulkanFramebuffer&) = delete;
 	VulkanFramebuffer& operator=(VulkanFramebuffer&& other) noexcept = default;
 
-	void Terminate() override;
 
 	const vk::Framebuffer& GetFrameBuffer() const;
 

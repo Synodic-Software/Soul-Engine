@@ -11,7 +11,7 @@ class ThreadLocal : public Component<ThreadLocal<T>> {
 public:
 
 	ThreadLocal();
-	~ThreadLocal() override = default;
+	~ThreadLocal() override;
 
 	ThreadLocal(const ThreadLocal&) = delete;
 	ThreadLocal(ThreadLocal&& o) noexcept = default;
@@ -22,8 +22,6 @@ public:
 	ThreadLocal<T>(const T&);
 	ThreadLocal<T>& operator= (const T&);
 	operator T&() const;
-
-	void Terminate() override;
 
 private:
 
@@ -41,18 +39,19 @@ ThreadLocal<T>::ThreadLocal():
 }
 
 template<typename T>
-void ThreadLocal<T>::Terminate() {
-
-	objectMap_.erase(id_);
-
-}
-
-template<typename T>
 ThreadLocal<T>::ThreadLocal(const T& value):
 	ThreadLocal()
 {
 
 	objectMap_[id_] = value;
+
+}
+
+template<typename T>
+ThreadLocal<T>::~ThreadLocal()
+{
+
+	objectMap_.erase(id_);
 
 }
 

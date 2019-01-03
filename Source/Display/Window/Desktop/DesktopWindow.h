@@ -10,15 +10,13 @@ class DesktopWindow : public Window, Component<DesktopWindow>
 public:
 
 	DesktopWindow(EntityManager*,WindowParameters&, GLFWmonitor*, DesktopInputManager&, RasterManager&);
-	~DesktopWindow() = default;
+	~DesktopWindow();
 
 	DesktopWindow(const DesktopWindow &) = delete;
 	DesktopWindow(DesktopWindow &&) noexcept = default;
 
 	DesktopWindow& operator=(const DesktopWindow &) = delete;
 	DesktopWindow& operator=(DesktopWindow &&) noexcept = default;
-
-	void Terminate() override;
 
 	void Draw() override;
 

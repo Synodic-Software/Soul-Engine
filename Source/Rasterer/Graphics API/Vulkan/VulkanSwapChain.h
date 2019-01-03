@@ -21,16 +21,13 @@ class VulkanSwapChain : public SwapChain, Component<VulkanSwapChain> {
 public:
 
 	VulkanSwapChain(EntityManager*, Entity, Entity, glm::uvec2&);
-	~VulkanSwapChain() override = default;
+	~VulkanSwapChain() override;
 
 	VulkanSwapChain(const VulkanSwapChain&) = delete;
 	VulkanSwapChain(VulkanSwapChain&& o) noexcept = default;
 
 	VulkanSwapChain& operator=(const VulkanSwapChain&) = delete;
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
-
-	void Terminate() override;
-//	void Cleanup(); // TODO: Move this up
 
 	void Resize(Entity surface, glm::uvec2 size) override;
 	void Draw() override;

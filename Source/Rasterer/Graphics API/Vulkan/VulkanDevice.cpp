@@ -13,6 +13,21 @@ VulkanDevice::VulkanDevice(Scheduler& scheduler, int gIndex, int pIndex, vk::Phy
 
 }
 
+VulkanDevice::~VulkanDevice() {
+
+	Cleanup();
+
+	scheduler_->ForEachThread(FiberPriority::UX, [this]()
+	{
+
+		device_.destroyCommandPool(commandPool_);
+
+	});
+
+	device_.destroy();
+
+}
+
 void VulkanDevice::Generate() {
 
 	CreateQueues();
@@ -45,21 +60,6 @@ void VulkanDevice::CreatePipelineCache() {
 	//TODO: pipeline serialization n' such
 
 	pipelineCache_ = device_.createPipelineCache(pipelineCreateInfo);
-
-}
-
-void VulkanDevice::Terminate() {
-
-	Cleanup();
-
-	scheduler_->ForEachThread(FiberPriority::UX, [this]()
-	{
-
-		device_.destroyCommandPool(commandPool_);
-
-	});
-
-	device_.destroy();
 
 }
 
