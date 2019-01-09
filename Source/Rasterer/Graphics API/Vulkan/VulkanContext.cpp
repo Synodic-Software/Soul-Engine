@@ -65,7 +65,7 @@ VulkanContext::VulkanContext(Scheduler& scheduler, EntityManager& entityManger) 
 
 	//setup devices
 	//TODO: abstract physical devices
-	//TODO: garuntee size constness
+	//TODO: guarantee size constnest
 	physicalDevices_ = instance_.enumeratePhysicalDevices();
 
 	//TODO should never trigger assert

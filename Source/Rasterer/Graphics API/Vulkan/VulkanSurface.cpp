@@ -2,7 +2,7 @@
 
 #include "VulkanContext.h"
 
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 VulkanSurface::VulkanSurface(VulkanContext* context, std::any& windowContext):
 	context_(context)

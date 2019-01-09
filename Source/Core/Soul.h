@@ -9,6 +9,9 @@ class Window;
 class Frame;
 class CLIConsoleManager;
 
+class Display;
+class RasterBackendAPI;
+
 class Soul {
 
 public:
@@ -21,7 +24,7 @@ public:
 	Soul& operator=(Soul&&) noexcept = delete;
 
 	void Init();
-	Window& CreateWindow(WindowParameters&);
+	std::shared_ptr<Window> CreateWindow(WindowParameters&);
 
 private:
 
@@ -50,6 +53,10 @@ private:
 
 
 	std::chrono::nanoseconds frameTime;
+
+	//services and modules	
+	std::shared_ptr<Display> displayModule;
+	std::shared_ptr<RasterBackendAPI> rasterModule;
 
 	//hidden Soul services and modules
 	class Implementation;

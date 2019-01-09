@@ -2,10 +2,14 @@
 
 #include "SoulImplementation.h"
 #include "System/Platform.h"
+#include "Display/Display.h"
+#include "Rasterer/RasterBackendAPI.h"
 
 Soul::Soul(SoulParameters& params) :
 	parameters(params),
 	frameTime(),
+	displayModule(Display::CreateModule()),
+	rasterModule(RasterBackendAPI::CreateModule()),
 	detail(std::make_unique<Implementation>(*this))
 {
 	parameters.engineRefreshRate.AddCallback([this](int value)
@@ -126,7 +130,7 @@ void Soul::LateUpdate() {
 void Soul::Raster() {
 
 	//Backends should handle multithreading
-	detail->windowManager_->Draw();
+	displayModule->Draw();
 
 }
 
@@ -153,9 +157,9 @@ void Soul::Init()
 	}
 }
 
-Window& Soul::CreateWindow(WindowParameters& params) {
+std::shared_ptr<Window> Soul::CreateWindow(WindowParameters& params) {
 
-	Window& window = detail->windowManager_->CreateWindow(params);
+	auto window = displayModule->CreateWindow(params);
 	return window;
 
 }
@@ -169,7 +173,7 @@ void Soul::Run()
 	auto currentTime = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
 	auto nextTime = currentTime + frameTime;
 
-	while (!detail->windowManager_->ShouldClose()) {
+	while (!displayModule->ShouldClose()) {
 
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime;

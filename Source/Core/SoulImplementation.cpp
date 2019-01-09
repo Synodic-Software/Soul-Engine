@@ -4,21 +4,13 @@
 #include "Soul.h"
 
 #include "Transput/Input/InputManager.h"
-#include "Display/Window/WindowManager.h"
-
-#include "Display/DisplayWindowAPI.h"
-#include "Rasterer/RasterBackendAPI.h"
 
 Soul::Implementation::Implementation(Soul& soul) :
-	displayModule(DisplayWindowAPI::CreateModule()),
-	rasterModule(RasterBackendAPI::CreateModule()),
 	entityManager_(),
 	scheduler_(soul.parameters.threadCount),
 	eventManager_(),
 	inputManagerVariant_(ConstructInputManager()),
 	inputManager_(ConstructInputPtr()),
-	windowManagerVariant_(ConstructWindowManager()),
-	windowManager_(ConstructWindowPtr()),
 	consoleManagerVariant_(ConstructConsoleManager(soul)),
 	consoleManager_(ConstructConsolePtr()),
 	rasterManager_(scheduler_, entityManager_),
@@ -39,7 +31,7 @@ Soul::Implementation::Implementation(Soul& soul) :
 }
 
 Soul::Implementation::~Implementation() {
-	windowManager_->Terminate();
+
 }
 
 Soul::Implementation::inputManagerVariantType Soul::Implementation::ConstructInputManager() {
@@ -59,24 +51,6 @@ InputManager* Soul::Implementation::ConstructInputPtr() {
 		return &std::get<DesktopInputManager>(inputManagerVariant_);
 	}
 
-}
-
-Soul::Implementation::windowManagerVariantType Soul::Implementation::ConstructWindowManager() {
-
-	windowManagerVariantType tmp;
-
-	if constexpr (Platform::IsDesktop()) {
-		tmp.emplace<DesktopWindowManager>(entityManager_, std::get<DesktopInputManager>(inputManagerVariant_), rasterManager_);
-		return tmp;
-	}
-
-}
-
-WindowManager* Soul::Implementation::ConstructWindowPtr() {
-
-	if constexpr (Platform::IsDesktop()) {
-		return &std::get<DesktopWindowManager>(windowManagerVariant_);
-	}
 }
 
 Soul::Implementation::consoleManagerVariantType Soul::Implementation::ConstructConsoleManager(Soul& soul) {

@@ -10,7 +10,7 @@ public:
 	SoulApplication(SoulParameters = SoulParameters());
 	virtual ~SoulApplication() = default;
 
-	Window& CreateWindow(WindowParameters&);
+	std::shared_ptr<Window> CreateWindow(WindowParameters&);
 
 	void Run();
 
