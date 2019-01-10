@@ -1,6 +1,5 @@
 #include "GLFWDisplay.h"
 
-#include "Core/Utility/Exception/Exception.h"
 #include "Display/WindowParameters.h"
 #include "Display/Modules/GLFW/GLFWWindow.h"
 
@@ -41,24 +40,26 @@ GLFWDisplay::GLFWDisplay()
 GLFWDisplay::~GLFWDisplay()
 {
 
+	windows_.clear();
+	masterWindow_.reset();
+
 	glfwTerminate();
 
 }
 
 void GLFWDisplay::Draw() {
 
-	throw NotImplemented();
-
 }
 
-bool GLFWDisplay::ShouldClose() {
+bool GLFWDisplay::Active() {
 
 	if (masterWindow_) {
-		return glfwWindowShouldClose(masterWindow_->Context());
+		return !glfwWindowShouldClose(masterWindow_->Context());
 	}
 
-	return false;
-
+	//If there is no master window...
+	return true;
+	
 }
 
 std::shared_ptr<Window> GLFWDisplay::CreateWindow(WindowParameters& params) {
@@ -69,7 +70,7 @@ std::shared_ptr<Window> GLFWDisplay::CreateWindow(WindowParameters& params) {
 
 	std::shared_ptr<GLFWWindow> window = std::make_shared<GLFWWindow>(params, monitor);
 
-	if (!window) {
+	if (!masterWindow_) {
 		masterWindow_ = window;
 	}
 

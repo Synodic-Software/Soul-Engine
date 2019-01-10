@@ -7,39 +7,24 @@
 #include "Rasterer/RasterBackend.h"
 
 Soul::Soul(SoulParameters& params) :
-	parameters(params),
-	frameTime(),
-	displayModule(Display::CreateModule()),
-	rasterModule(RasterBackend::CreateModule()),
+	parameters_(params),
+	frameTime_(),
+	active_(true),
+	displayModule_(Display::CreateModule()),
+	rasterModule_(RasterBackend::CreateModule()),
 	detail(std::make_unique<Implementation>(*this))
 {
-	parameters.engineRefreshRate.AddCallback([this](int value)
+	parameters_.engineRefreshRate.AddCallback([this](int value)
 	{
-		frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1)) / value;
+		frameTime_ = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1)) / value;
 	});
 
-	//flush parameters with new callbacks
-	parameters.engineRefreshRate.Update();
+	//flush parameters_ with new callbacks
+	parameters_.engineRefreshRate.Update();
 }
 
 //definition to complete PIMPL idiom
 Soul::~Soul() = default;
-
-//////////////////////Synchronization///////////////////////////
-
-
-void SynchCPU() {
-	//Scheduler::Block(); //TODO Implement MT calls
-}
-
-void SynchGPU() {
-	//CudaCheck(cudaDeviceSynchronize());
-}
-
-void SynchSystem() {
-	SynchGPU();
-	SynchCPU();
-}
 
 
 /////////////////////////Core/////////////////////////////////
@@ -49,6 +34,12 @@ void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 	EarlyFrameUpdate();
 
 	newFrame.Dirty(Poll());
+
+
+	if(displayModule_)
+	{
+		active_ = displayModule_->Active();
+	}
 
 }
 
@@ -131,7 +122,7 @@ void Soul::LateUpdate() {
 void Soul::Raster() {
 
 	//Backends should handle multithreading
-	displayModule->Draw();
+	displayModule_->Draw();
 
 }
 
@@ -160,8 +151,7 @@ void Soul::Init()
 
 std::shared_ptr<Window> Soul::CreateWindow(WindowParameters& params) {
 
-	auto window = displayModule->CreateWindow(params);
-	return window;
+	return displayModule_->CreateWindow(params);
 
 }
 
@@ -172,21 +162,18 @@ void Soul::Run()
 	Warmup();
 
 	auto currentTime = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
-	auto nextTime = currentTime + frameTime;
+	auto nextTime = currentTime + frameTime_;
 
-	while (!displayModule->ShouldClose()) {
+	while (active_) {
 
 		currentTime = nextTime;
-		nextTime = currentTime + frameTime;
+		nextTime = currentTime + frameTime_;
 
-		detail->framePipeline_.Execute(frameTime);
+		detail->framePipeline_.Execute(frameTime_);
 
-		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime);
+		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime_);
 		else detail->scheduler_.YieldUntil(nextTime);
 
 	}
-
-	//done running, synchronize rastering
-	detail->rasterManager_.Synchronize();
 
 }

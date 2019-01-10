@@ -5,6 +5,11 @@
 
 #include <memory>
 
+Display::Display():
+	active_(true)
+{	
+}
+
 std::shared_ptr<Display> Display::CreateModule() {
 
 	if constexpr (Platform::IsDesktop()) {

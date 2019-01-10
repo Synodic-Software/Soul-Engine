@@ -23,7 +23,7 @@ public:
 	GLFWDisplay& operator=(GLFWDisplay&&) noexcept = default;
 
 	void Draw() override;
-	bool ShouldClose() override;
+	bool Active() override;
 
 	std::shared_ptr<Window> CreateWindow(WindowParameters&) override;
 

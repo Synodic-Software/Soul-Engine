@@ -11,7 +11,7 @@ class Display : public Module {
 
 public:
 
-	Display() = default;
+	Display();
 	virtual ~Display() = default;
 
 	Display(const Display&) = delete;
@@ -22,12 +22,17 @@ public:
 
 
 	virtual void Draw() = 0;
-	virtual bool ShouldClose() = 0;
+	virtual bool Active() = 0;
 
 	virtual std::shared_ptr<Window> CreateWindow(WindowParameters&) = 0;
 
 
 	//Factory
 	static std::shared_ptr<Display> CreateModule();
+
+
+protected:
+
+	bool active_;
 
 };

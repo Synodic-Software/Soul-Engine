@@ -35,7 +35,6 @@ public:
 	EventManager eventManager_;
 	inputManagerVariantType inputManagerVariant_;
 	InputManager* inputManager_;
-	RasterManager rasterManager_;
 	consoleManagerVariantType consoleManagerVariant_;
 	ConsoleManager* consoleManager_;
 

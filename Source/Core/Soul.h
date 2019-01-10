@@ -49,14 +49,14 @@ private:
 	void Raster();
 	bool Poll();
 
-	SoulParameters& parameters;
+	SoulParameters& parameters_;
 
-
-	std::chrono::nanoseconds frameTime;
+	std::chrono::nanoseconds frameTime_;
+	bool active_;
 
 	//services and modules	
-	std::shared_ptr<Display> displayModule;
-	std::shared_ptr<RasterBackend> rasterModule;
+	std::shared_ptr<Display> displayModule_;
+	std::shared_ptr<RasterBackend> rasterModule_;
 
 	//hidden Soul services and modules
 	class Implementation;

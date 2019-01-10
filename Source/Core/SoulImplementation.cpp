@@ -7,13 +7,12 @@
 
 Soul::Implementation::Implementation(Soul& soul) :
 	entityManager_(),
-	scheduler_(soul.parameters.threadCount),
+	scheduler_(soul.parameters_.threadCount),
 	eventManager_(),
 	inputManagerVariant_(ConstructInputManager()),
 	inputManager_(ConstructInputPtr()),
 	consoleManagerVariant_(ConstructConsoleManager(soul)),
 	consoleManager_(ConstructConsolePtr()),
-	rasterManager_(scheduler_, entityManager_),
 	framePipeline_(scheduler_, {
 	[&soul](Frame& oldFrame, Frame& newFrame)
 	{

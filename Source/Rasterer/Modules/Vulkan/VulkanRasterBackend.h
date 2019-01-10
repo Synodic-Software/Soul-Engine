@@ -2,7 +2,7 @@
 
 #include "Rasterer/RasterBackend.h"
 
-class VulkanRasterBackend : public RasterBackend {
+class VulkanRasterBackend final: public RasterBackend {
 
 public:
 

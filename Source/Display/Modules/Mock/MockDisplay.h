@@ -2,7 +2,7 @@
 
 #include "Display/Display.h"
 
-class MockDisplay : public Display {
+class MockDisplay final: public Display {
 
 public:
 
@@ -18,4 +18,5 @@ public:
 	bool ShouldClose() override;
 
 	std::shared_ptr<Window> CreateWindow(WindowParameters&) override;
+
 };

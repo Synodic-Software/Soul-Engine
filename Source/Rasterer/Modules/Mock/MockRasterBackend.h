@@ -2,7 +2,7 @@
 
 #include "Rasterer/RasterBackend.h"
 
-class MockRasterBackend : public RasterBackend {
+class MockRasterBackend final: public RasterBackend {
 
 public:
 
