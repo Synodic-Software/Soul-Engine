@@ -4,13 +4,13 @@
 #include <memory>
 #include <chrono>
 
-struct WindowParameters;
+class WindowParameters;
 class Window;
 class Frame;
 class CLIConsoleManager;
 
 class Display;
-class RasterBackendAPI;
+class RasterBackend;
 
 class Soul {
 
@@ -56,7 +56,7 @@ private:
 
 	//services and modules	
 	std::shared_ptr<Display> displayModule;
-	std::shared_ptr<RasterBackendAPI> rasterModule;
+	std::shared_ptr<RasterBackend> rasterModule;
 
 	//hidden Soul services and modules
 	class Implementation;

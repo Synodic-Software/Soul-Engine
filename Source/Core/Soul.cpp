@@ -3,13 +3,14 @@
 #include "SoulImplementation.h"
 #include "System/Platform.h"
 #include "Display/Display.h"
-#include "Rasterer/RasterBackendAPI.h"
+
+#include "Rasterer/RasterBackend.h"
 
 Soul::Soul(SoulParameters& params) :
 	parameters(params),
 	frameTime(),
 	displayModule(Display::CreateModule()),
-	rasterModule(RasterBackendAPI::CreateModule()),
+	rasterModule(RasterBackend::CreateModule()),
 	detail(std::make_unique<Implementation>(*this))
 {
 	parameters.engineRefreshRate.AddCallback([this](int value)

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Rasterer/Graphics API/RasterDevice.h"
 #include "Composition/Component/Component.h"
 #include "Parallelism/Thread/ThreadLocal.h"
 
@@ -8,7 +7,7 @@
 
 class Scheduler;
 
-class VulkanDevice : public RasterDevice, Component<VulkanDevice> {
+class VulkanDevice : public Component<VulkanDevice> {
 
 public:
 

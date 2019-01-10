@@ -9,10 +9,10 @@ public:
 	virtual ~Module() = default;
 
 	Module(const Module&) = delete;
-	Module(Module&&) noexcept = delete;
+	Module(Module&&) noexcept = default;
 
 	Module& operator=(const Module&) = delete;
-	Module& operator=(Module&&) noexcept = delete;
+	Module& operator=(Module&&) noexcept = default;
 
 
 };

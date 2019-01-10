@@ -1,22 +1,31 @@
 #pragma once
 
 #include "Core/Interface/Module/Module.h"
+#include "Display/WindowParameters.h"
 
 #include <memory>
-#include <variant>
 
-class WindowParameters;
 class Window;
 
 class Display : public Module {
 
 public:
 
+	Display() = default;
 	virtual ~Display() = default;
 
+	Display(const Display&) = delete;
+	Display(Display&&) noexcept = default;
+
+	Display& operator=(const Display&) = delete;
+	Display& operator=(Display&&) noexcept = default;
+
+
 	virtual void Draw() = 0;
-	virtual std::shared_ptr<Window> CreateWindow(WindowParameters&) = 0;
 	virtual bool ShouldClose() = 0;
+
+	virtual std::shared_ptr<Window> CreateWindow(WindowParameters&) = 0;
+
 
 	//Factory
 	static std::shared_ptr<Display> CreateModule();

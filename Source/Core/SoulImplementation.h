@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Display/Window/Desktop/DesktopWindowManager.h"
-
 #include "Transput/Input/Desktop/DesktopInputManager.h"
 #include "Transput/Input/Console/CLI/CLIConsoleManager.h"
 
