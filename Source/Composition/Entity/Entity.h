@@ -2,7 +2,6 @@
 
 #include "Core/Utility/Types.h"
 
-//declare to prevent circular includes
 class EntityManager;
 
 template<typename T>
