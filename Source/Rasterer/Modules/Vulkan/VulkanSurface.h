@@ -1,18 +1,16 @@
 #pragma once
 
-#include "Rasterer/Graphics API/Surface.h"
-
 #include <vulkan/vulkan.hpp>
 #include <any>
 #include "Composition/Component/Component.h"
 
-class VulkanContext;
+class VulkanRasterBackend;
 
-class VulkanSurface : public Surface,  Component<VulkanSurface>{
+class VulkanSurface : Component<VulkanSurface>{
 
 public:
 
-	VulkanSurface(VulkanContext*, std::any&);
+	VulkanSurface(VulkanRasterBackend*, std::any&);
 	~VulkanSurface() override;
 
 	VulkanSurface(const VulkanSurface&) = delete;
@@ -25,7 +23,7 @@ public:
 
 private:
 
-	VulkanContext* context_;
+	VulkanRasterBackend* context_;
 	vk::SurfaceKHR surface_;
 
 };

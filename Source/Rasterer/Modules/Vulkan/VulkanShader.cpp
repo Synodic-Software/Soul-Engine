@@ -2,7 +2,6 @@
 #include "VulkanDevice.h"
 
 VulkanShader::VulkanShader(EntityManager& entityManger, Entity device, const std::string& fileName) :
-	Shader(fileName),
 	entityManager_(entityManger),
 	device_(device)
 {

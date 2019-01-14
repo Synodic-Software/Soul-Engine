@@ -32,6 +32,7 @@ private:
 
 	std::shared_ptr<GLFWWindow> masterWindow_;
 
+	//TODO: Replace with std::span as GLFW owns and manages the monitors - C++20
 	std::vector<GLFWmonitor*> monitors_;
 	std::vector<std::shared_ptr<GLFWWindow>> windows_;
 

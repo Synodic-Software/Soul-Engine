@@ -1,9 +1,14 @@
 #pragma once
 
-#include "Rasterer/Graphics API/Shader/FragmentShader.h"
-#include "Rasterer/Graphics API/Vulkan/VulkanShader.h"
+#include "Rasterer/Modules/Vulkan/VulkanShader.h"
 
-class VulkanFragmentShader : public FragmentShader, public VulkanShader {
+#include <string>
+#include <vulkan/vulkan.hpp>
+
+class Entity;
+class EntityManager;
+
+class VulkanFragmentShader : public VulkanShader {
 
 public:
 
@@ -16,6 +21,6 @@ public:
 	VulkanFragmentShader& operator=(const VulkanFragmentShader&) = delete;
 	VulkanFragmentShader& operator=(VulkanFragmentShader&& other) noexcept = delete;
 
-	vk::PipelineShaderStageCreateInfo CreateInfo() override;
+	vk::PipelineShaderStageCreateInfo CreateInfo();
 
 };

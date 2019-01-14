@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Rasterer/Graphics API/Shader.h"
 #include "Transput/Resource/Default/SPIRVLoader.h"
 #include "Composition/Entity/EntityManager.h"
 
 #include <vulkan/vulkan.hpp>
 
-class VulkanShader : public virtual Shader {
+class VulkanShader {
 
 public:
 

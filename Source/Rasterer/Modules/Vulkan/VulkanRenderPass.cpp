@@ -1,4 +1,5 @@
 #include "VulkanRenderPass.h"
+#include "VulkanDevice.h"
 
 VulkanRenderPass::VulkanRenderPass(EntityManager& entityManager, Entity device, vk::Format swapChainImageFormat) :
 	entityManager_(entityManager),

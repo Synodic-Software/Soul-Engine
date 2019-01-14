@@ -6,7 +6,6 @@
 #include "Composition/Event/EventManager.h"
 #include "Parallelism/Fiber/Scheduler.h"
 #include "Composition/Entity/EntityManager.h"
-#include "Rasterer/RasterManager.h"
 #include "Frame/FramePipeline.h"
 
 #include <variant>

@@ -4,19 +4,18 @@
 #include "VulkanRenderPass.h"
 #include "Shader/VulkanVertexShader.h"
 #include "Shader/VulkanFragmentShader.h"
-#include "Rasterer/Graphics API/Pipeline.h"
 
 #include <vulkan/vulkan.hpp>
 
 #include <string_view>
 
 
-class VulkanPipeline : public Pipeline {
+class VulkanPipeline {
 
 public:
 
 	VulkanPipeline(EntityManager&, Entity, vk::Extent2D&, const std::string&, const std::string&, vk::Format);
-	~VulkanPipeline() override;
+	~VulkanPipeline();
 
 	VulkanPipeline(const VulkanPipeline&) = delete;
 	VulkanPipeline(VulkanPipeline&&) noexcept = delete;

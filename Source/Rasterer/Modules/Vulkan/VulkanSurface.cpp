@@ -1,10 +1,9 @@
 #include "VulkanSurface.h"
-
-#include "VulkanContext.h"
+#include "VulkanRasterBackend.h"
 
 #include <GLFW/glfw3.h>
 
-VulkanSurface::VulkanSurface(VulkanContext* context, std::any& windowContext):
+VulkanSurface::VulkanSurface(VulkanRasterBackend* context, std::any& windowContext):
 	context_(context)
 {
 

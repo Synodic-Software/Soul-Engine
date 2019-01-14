@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Utility/CRTP/CRTP.h"
+#include "Core/Utility/Template/CRTP.h"
 
 
 //The component class should hold no state TODO: because?

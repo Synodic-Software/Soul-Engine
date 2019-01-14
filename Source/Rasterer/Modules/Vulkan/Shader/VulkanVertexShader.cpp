@@ -1,8 +1,6 @@
 #include "VulkanVertexShader.h"
 
 VulkanVertexShader::VulkanVertexShader(EntityManager& entityManger, Entity device, const std::string& fileName) :
-	Shader(fileName),
-	VertexShader(fileName),
 	VulkanShader(entityManger, device, fileName)
 {
 }

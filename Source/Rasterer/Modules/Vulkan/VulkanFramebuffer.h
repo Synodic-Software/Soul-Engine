@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Rasterer/Graphics API/Framebuffer.h"
 #include "Composition/Entity/Entity.h"
 #include "Composition/Component/Component.h"
 
@@ -10,7 +9,7 @@
 class VulkanRenderPass;
 class EntityManager;
 
-class VulkanFramebuffer : public Framebuffer, Component<VulkanFramebuffer> {
+class VulkanFramebuffer : Component<VulkanFramebuffer> {
 
 public:
 

@@ -1,5 +1,4 @@
 #include "VulkanSwapChain.h"
-#include "VulkanContext.h"
 #include "VulkanSurface.h"
 #include "VulkanDevice.h"
 #include "Composition/Entity/EntityManager.h"

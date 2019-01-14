@@ -1,18 +1,16 @@
 #pragma once
 
-#include "VulkanDevice.h"
 #include "Composition/Entity/EntityManager.h"
-#include "Rasterer/Graphics API/RenderPass.h"
 
 #include <vulkan/vulkan.hpp>
 
-class VulkanRenderPass : public RenderPass
+class VulkanRenderPass
 {
 
 public:
 
 	VulkanRenderPass(EntityManager&, Entity, vk::Format);
-	~VulkanRenderPass() override;
+	~VulkanRenderPass();
 
 	VulkanRenderPass(const VulkanRenderPass&) = delete;
 	VulkanRenderPass(VulkanRenderPass&&) noexcept = delete;

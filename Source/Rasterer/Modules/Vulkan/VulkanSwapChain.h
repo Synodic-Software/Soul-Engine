@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Rasterer/Graphics API/SwapChain.h"
 #include "VulkanPipeline.h"
 #include "VulkanFramebuffer.h"
 #include "Composition/Component/Component.h"
@@ -16,7 +15,7 @@ struct SwapChainImage {
 	vk::Fence fence;
 };
 
-class VulkanSwapChain : public SwapChain, Component<VulkanSwapChain> {
+class VulkanSwapChain : Component<VulkanSwapChain> {
 
 public:
 
@@ -29,8 +28,8 @@ public:
 	VulkanSwapChain& operator=(const VulkanSwapChain&) = delete;
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
-	void Resize(Entity surface, glm::uvec2 size) override;
-	void Draw() override;
+	void Resize(Entity surface, glm::uvec2 size);
+	void Draw();
 
 private:
 
@@ -46,7 +45,7 @@ private:
 	vk::SwapchainKHR swapChain_;
 	vk::ColorSpaceKHR colorSpace_;
 
-	//TODO place into VulkanContext
+	//TODO place into VulkanRasterBackend
 	std::vector<vk::Semaphore> imageAvailableSemaphores;
 	std::vector<vk::Semaphore> renderFinishedSemaphores;
 	std::vector<vk::Fence> inFlightFences;

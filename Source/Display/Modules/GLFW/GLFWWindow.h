@@ -27,8 +27,8 @@ public:
 	GLFWwindow* Context();
 
 
-	private:
+private:
 
-		GLFWwindow* context_;
+	GLFWwindow* context_;
 
 };
