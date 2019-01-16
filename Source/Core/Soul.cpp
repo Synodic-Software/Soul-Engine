@@ -11,7 +11,7 @@ Soul::Soul(SoulParameters& params) :
 	frameTime_(),
 	active_(true),
 	displayModule_(Display::CreateModule()),
-	rasterModule_(RasterBackend::CreateModule()),
+	rasterModule_(RasterBackend::CreateModule(displayModule_)),
 	detail(std::make_unique<Implementation>(*this))
 {
 	parameters_.engineRefreshRate.AddCallback([this](int value)
@@ -151,7 +151,7 @@ void Soul::Init()
 
 std::shared_ptr<Window> Soul::CreateWindow(WindowParameters& params) {
 
-	return displayModule_->CreateWindow(params);
+	return displayModule_->CreateWindow(params, rasterModule_);
 
 }
 

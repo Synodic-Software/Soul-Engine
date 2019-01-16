@@ -15,8 +15,8 @@ public:
 	MockDisplay& operator=(MockDisplay&&) noexcept = default;
 
 	void Draw() override;
-	bool ShouldClose() override;
+	bool Active() override;
 
-	std::shared_ptr<Window> CreateWindow(WindowParameters&) override;
+	std::shared_ptr<Window> CreateWindow(WindowParameters&, std::shared_ptr<RasterBackend>) override;
 
 };

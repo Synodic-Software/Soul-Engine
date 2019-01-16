@@ -4,34 +4,30 @@
 #include "Core/Utility/Exception/Exception.h"
 #include "System/Compiler.h"
 #include "Core/Utility/Types.h"
-#include <GLFW/glfw3.h>
+#include "Display/Modules/GLFW/GLFWDisplay.h"
 
-VulkanRasterBackend::VulkanRasterBackend() :
+VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<Display> displayModule) :
 	requiredDeviceExtensions_{ VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 		VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME,
 		VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME
 	},
-	validationLayers{
+	validationLayers_{
 			"VK_LAYER_LUNARG_assistant_layer",
 			"VK_LAYER_LUNARG_standard_validation"
 	}
 {
 
 	//setup Vulkan app info
-	vk::ApplicationInfo applicationInfo;
-	applicationInfo.apiVersion = VK_API_VERSION_1_1;
-	applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);//TODO forward the application version here
-	applicationInfo.pApplicationName = "Soul Engine"; //TODO forward the application name here
-	applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0); //TODO forward the engine version here
-	applicationInfo.pEngineName = "Soul Engine"; //TODO forward the engine name here
+	appInfo_.apiVersion = VK_API_VERSION_1_1;
+	appInfo_.applicationVersion = VK_MAKE_VERSION(1, 0, 0);//TODO forward the application version here
+	appInfo_.pApplicationName = "Soul Engine"; //TODO forward the application name here
+	appInfo_.engineVersion = VK_MAKE_VERSION(1, 0, 0); //TODO forward the engine version here
+	appInfo_.pEngineName = "Soul Engine"; //TODO forward the engine name here
 
-	//set instance extensions
-
-	uint32 glfwExtensionCount = 0;
-	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-	for (uint i = 0; i < glfwExtensionCount; ++i) {
-		requiredInstanceExtensions_.push_back(glfwExtensions[i]);
+	//TODO: if displayModule is GLFW
+	for (auto& extension : std::static_pointer_cast<GLFWDisplay>(displayModule)->GetRequiredExtensions())
+	{
+		requiredInstanceExtensions_.push_back(extension);
 	}
 
 	//TODO minimize memory/runtime impact
@@ -41,16 +37,15 @@ VulkanRasterBackend::VulkanRasterBackend() :
 
 	}
 
-
 	vk::InstanceCreateInfo instanceCreationInfo;
-	instanceCreationInfo.pApplicationInfo = &applicationInfo;
+	instanceCreationInfo.pApplicationInfo = &appInfo_;
 	instanceCreationInfo.enabledExtensionCount = static_cast<uint32>(requiredInstanceExtensions_.size());
 	instanceCreationInfo.ppEnabledExtensionNames = requiredInstanceExtensions_.data();
 
 	if constexpr (Compiler::Debug()) {
 
-		instanceCreationInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size());
-		instanceCreationInfo.ppEnabledLayerNames = validationLayers.data();
+		instanceCreationInfo.enabledLayerCount = static_cast<uint32>(validationLayers_.size());
+		instanceCreationInfo.ppEnabledLayerNames = validationLayers_.data();
 
 	}
 	else {
@@ -74,19 +69,19 @@ VulkanRasterBackend::VulkanRasterBackend() :
 
 		dispatcher_ = vk::DispatchLoaderDynamic(instance_);
 
-		vk::DebugUtilsMessengerCreateInfoEXT messangerCreateInfo;
-		messangerCreateInfo.flags = vk::DebugUtilsMessengerCreateFlagBitsEXT(0);
-		messangerCreateInfo.messageSeverity =
+		vk::DebugUtilsMessengerCreateInfoEXT messengerCreateInfo;
+		messengerCreateInfo.flags = vk::DebugUtilsMessengerCreateFlagBitsEXT(0);
+		messengerCreateInfo.messageSeverity =
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eError;
-		messangerCreateInfo.messageType =
+		messengerCreateInfo.messageType =
 			vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
 			vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
 			vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance;
-		messangerCreateInfo.pfnUserCallback = DebugCallback;
-		messangerCreateInfo.pUserData = nullptr;
+		messengerCreateInfo.pfnUserCallback = DebugCallback;
+		messengerCreateInfo.pUserData = nullptr;
 
-		debugMessenger_ = instance_.createDebugUtilsMessengerEXT(messangerCreateInfo, nullptr, dispatcher_);
+		debugMessenger_ = instance_.createDebugUtilsMessengerEXT(messengerCreateInfo, nullptr, dispatcher_);
 
 	}
 

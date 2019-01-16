@@ -5,6 +5,7 @@
 #include <memory>
 
 class RasterDevice;
+class Display;
 
 class RasterBackend : public Module {
 
@@ -25,6 +26,6 @@ public:
 	virtual std::shared_ptr<RasterDevice> CreateDevice() = 0;
 
 	//Factory
-	static std::shared_ptr<RasterBackend> CreateModule();
+	static std::shared_ptr<RasterBackend> CreateModule(std::shared_ptr<Display>);
 
 };

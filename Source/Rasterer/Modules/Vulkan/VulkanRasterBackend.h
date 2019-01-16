@@ -4,12 +4,13 @@
 
 #include <vulkan/vulkan.hpp>
 
+class Display;
 
 class VulkanRasterBackend final : public RasterBackend {
 
 public:
 
-	VulkanRasterBackend();
+	VulkanRasterBackend(std::shared_ptr<Display>);
 	~VulkanRasterBackend() override = default;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
@@ -30,8 +31,9 @@ private:
 
 	std::vector<char const*> requiredDeviceExtensions_;
 	std::vector<char const*> requiredInstanceExtensions_;
-	std::vector<const char*> validationLayers;
+	std::vector<const char*> validationLayers_;
 
+	vk::ApplicationInfo appInfo_;
 	vk::Instance instance_;
 	std::vector<vk::PhysicalDevice> physicalDevices_;
 

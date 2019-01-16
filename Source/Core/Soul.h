@@ -12,7 +12,7 @@ class CLIConsoleManager;
 class Display;
 class RasterBackend;
 
-class Soul {
+class Soul final{
 
 public:
 	friend class CLIConsoleManager;

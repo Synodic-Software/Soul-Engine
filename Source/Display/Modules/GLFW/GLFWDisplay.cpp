@@ -2,6 +2,7 @@
 
 #include "Display/WindowParameters.h"
 #include "Display/Modules/GLFW/GLFWWindow.h"
+#include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
 
 #include <cassert>
 
@@ -18,8 +19,10 @@ GLFWDisplay::GLFWDisplay()
 	//Initialize GLFW context for Window handling
 	// TODO: proper error handling
 	const auto didInit = glfwInit();
-
 	assert(didInit);
+
+	//Raster API specific checks
+	assert(glfwVulkanSupported());
 
 	//TODO: abstract monitors
 	int monitorCount;
@@ -31,7 +34,7 @@ GLFWDisplay::GLFWDisplay()
 		monitors_.push_back(tempMonitors[i]);
 	}
 
-	//Initial GLFW settings
+	//Global GLFW window settings
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); //hide the created windows until they are ready after all callbacks and hints are finished. 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); //OpenGL is not used
 
@@ -62,18 +65,35 @@ bool GLFWDisplay::Active() {
 	
 }
 
-std::shared_ptr<Window> GLFWDisplay::CreateWindow(WindowParameters& params) {
+std::shared_ptr<Window> GLFWDisplay::CreateWindow(WindowParameters& params, std::shared_ptr<RasterBackend> rasterModule) {
 
-	assert(params.monitor < monitors_.size());
+	assert(params.monitor < static_cast<int>(monitors_.size()));
 
 	GLFWmonitor* monitor = monitors_[params.monitor];
 
-	std::shared_ptr<GLFWWindow> window = std::make_shared<GLFWWindow>(params, monitor);
+	std::shared_ptr<GLFWWindow> window = std::make_shared<GLFWWindow>(params, monitor, std::static_pointer_cast<VulkanRasterBackend>(rasterModule)->GetInstance());
 
 	if (!masterWindow_) {
 		masterWindow_ = window;
 	}
 
 	return window;
+
+}
+
+std::vector<char const*> GLFWDisplay::GetRequiredExtensions()
+{
+
+	uint32 glfwExtensionCount = 0;
+	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+	std::vector<const char*> requiredInstanceExtensions;
+	requiredInstanceExtensions.reserve(glfwExtensionCount);
+
+	for (uint i = 0; i < glfwExtensionCount; ++i) {
+		requiredInstanceExtensions.push_back(glfwExtensions[i]);
+	}
+
+	return requiredInstanceExtensions;
 
 }

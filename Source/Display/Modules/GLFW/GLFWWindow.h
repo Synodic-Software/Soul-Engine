@@ -2,6 +2,7 @@
 
 #include "Display/Window.h"
 
+#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
 class GLFWWindow final : public Window
@@ -9,7 +10,7 @@ class GLFWWindow final : public Window
 
 public:
 
-	GLFWWindow(WindowParameters&, GLFWmonitor*);
+	GLFWWindow(WindowParameters&, GLFWmonitor*, vk::Instance&);
 	~GLFWWindow() override;
 
 	GLFWWindow(const GLFWWindow &) = delete;
@@ -30,5 +31,6 @@ public:
 private:
 
 	GLFWwindow* context_;
+	vk::SurfaceKHR surface_;
 
 };

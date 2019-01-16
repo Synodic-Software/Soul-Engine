@@ -1,6 +1,6 @@
 #include "GLFWWindow.h"
 
-GLFWWindow::GLFWWindow(WindowParameters& params, GLFWmonitor* monitor) :
+GLFWWindow::GLFWWindow(WindowParameters& params, GLFWmonitor* monitor, vk::Instance& vulkanInstance) :
 	Window(params)
 {
 
@@ -54,13 +54,13 @@ GLFWWindow::GLFWWindow(WindowParameters& params, GLFWmonitor* monitor) :
 	glfwSetWindowUserPointer(context_, this);
 
 	//all window related callbacks
-	glfwSetWindowSizeCallback(context_, [](GLFWwindow* w, int x, int y)
+	glfwSetWindowSizeCallback(context_, [](GLFWwindow* w, const int x, const int y)
 	{
 		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
 		thisWindow->Resize(x, y);
 	});
 
-	glfwSetWindowPosCallback(context_, [](GLFWwindow* w, int x, int y)
+	glfwSetWindowPosCallback(context_, [](GLFWwindow* w, const int x, const int y)
 	{
 		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
 		thisWindow->PositionUpdate(x, y);
@@ -72,12 +72,12 @@ GLFWWindow::GLFWWindow(WindowParameters& params, GLFWmonitor* monitor) :
 		thisWindow->Refresh();
 	});
 
-	glfwSetFramebufferSizeCallback(context_, [](GLFWwindow* w, int x, int y)
+	glfwSetFramebufferSizeCallback(context_, [](GLFWwindow* w, const int x, const int y)
 	{
 		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
 
 		//Only resize if necessary
-		if (x != thisWindow->windowParams_.pixelSize.x || y != thisWindow->windowParams_.pixelSize.y) {
+		if (static_cast<uint>(x) != thisWindow->windowParams_.pixelSize.x || static_cast<uint>(y) != thisWindow->windowParams_.pixelSize.y) {
 			thisWindow->FrameBufferResize(x, y);
 		}
 	});
@@ -87,6 +87,23 @@ GLFWWindow::GLFWWindow(WindowParameters& params, GLFWmonitor* monitor) :
 		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
 		thisWindow->Close();
 	});
+
+	//GLFW guarantees Vulkan support.
+	VkSurfaceKHR castSurface;
+
+	//guaranteed to use GLFW if using Vulkan
+	const VkResult error = glfwCreateWindowSurface(
+		static_cast<VkInstance>(vulkanInstance),
+		context_,
+		nullptr,
+		&castSurface
+	);
+
+	assert(error == VK_SUCCESS);
+
+	//back to c++ land
+	surface_ = static_cast<vk::SurfaceKHR>(castSurface);
+
 
 	//only show the window once all proper callbacks and settings are in place
 	glfwShowWindow(context_);
@@ -107,15 +124,15 @@ void GLFWWindow::Close() {
 
 }
 
-void GLFWWindow::Resize(int x, int y) {
+void GLFWWindow::Resize(const int x, const int y) {
 
 }
 
-void GLFWWindow::FrameBufferResize(int x, int y) {
+void GLFWWindow::FrameBufferResize(const int x, const int y) {
 
 }
 
-void GLFWWindow::PositionUpdate(int, int) {
+void GLFWWindow::PositionUpdate(const int, const int) {
 
 }
 

@@ -2,6 +2,7 @@
 
 #include "Core/Interface/Module/Module.h"
 #include "Display/WindowParameters.h"
+#include "Rasterer/RasterBackend.h"
 
 #include <memory>
 
@@ -24,7 +25,7 @@ public:
 	virtual void Draw() = 0;
 	virtual bool Active() = 0;
 
-	virtual std::shared_ptr<Window> CreateWindow(WindowParameters&) = 0;
+	virtual std::shared_ptr<Window> CreateWindow(WindowParameters&, std::shared_ptr<RasterBackend>) = 0;
 
 
 	//Factory

@@ -8,6 +8,7 @@
 
 struct GLFWmonitor;
 class WindowParameters;
+class VulkanRasterBackend;
 
 class GLFWDisplay final : public Display {
 
@@ -25,8 +26,9 @@ public:
 	void Draw() override;
 	bool Active() override;
 
-	std::shared_ptr<Window> CreateWindow(WindowParameters&) override;
+	std::shared_ptr<Window> CreateWindow(WindowParameters&, std::shared_ptr<RasterBackend>) override;
 
+	std::vector<char const*> GetRequiredExtensions();
 
 private:
 

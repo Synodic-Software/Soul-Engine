@@ -2,9 +2,10 @@
 
 #include "Modules/Vulkan/VulkanRasterBackend.h"
 
-std::shared_ptr<RasterBackend> RasterBackend::CreateModule()
+//TODO: This needs to instead be runtime loadable from shared libraries or statically linked
+std::shared_ptr<RasterBackend> RasterBackend::CreateModule(std::shared_ptr<Display> displayModule)
 {
 
-	return std::make_shared<VulkanRasterBackend>();
+	return std::make_shared<VulkanRasterBackend>(displayModule);
 
 }
