@@ -17,6 +17,7 @@ public:
 	RasterDevice& operator=(const RasterDevice &) = delete;
 	RasterDevice& operator=(RasterDevice &&) noexcept = default;
 
+	virtual void Synchronize() = 0;
 
 	//Factory
 	static std::shared_ptr<RasterDevice> CreateModule();

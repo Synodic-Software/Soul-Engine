@@ -1,6 +1,5 @@
 #include "MockRasterBackend.h"
 
-#include "MockDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 
 void MockRasterBackend::Draw()
@@ -17,9 +16,9 @@ void MockRasterBackend::DrawIndirect()
 
 }
 
-std::shared_ptr<RasterDevice> MockRasterBackend::CreateDevice()
+void MockRasterBackend::CreateWindow(const WindowParameters& params)
 {
 
-	return std::shared_ptr<MockDevice>();
+	throw NotImplemented();
 
 }

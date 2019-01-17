@@ -9,7 +9,7 @@ class Window
 
 public:
 
-	Window(WindowParameters&);
+	Window(const WindowParameters&);
 	virtual ~Window() = default;
 
 	Window(const Window &) = delete;
@@ -18,6 +18,7 @@ public:
 	Window& operator=(const Window &) = delete;
 	Window& operator=(Window &&) noexcept = default;
 
+	WindowParameters& Parameters();
 
 protected:
 

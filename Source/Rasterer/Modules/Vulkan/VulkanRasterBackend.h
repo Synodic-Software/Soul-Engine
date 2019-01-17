@@ -5,13 +5,14 @@
 #include <vulkan/vulkan.hpp>
 
 class Display;
+class VulkanDevice;
 
 class VulkanRasterBackend final : public RasterBackend {
 
 public:
 
-	VulkanRasterBackend(std::shared_ptr<Display>);
-	~VulkanRasterBackend() override = default;
+	VulkanRasterBackend(Display&);
+	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
 	VulkanRasterBackend(VulkanRasterBackend &&) noexcept = default;
@@ -22,8 +23,11 @@ public:
 	void Draw() override;
 	void DrawIndirect() override;
 
-	std::shared_ptr<RasterDevice> CreateDevice() override;
+	void CreateWindow(const WindowParameters&) override;
 
+	void RegisterSurface(VkSurfaceKHR&);
+
+	void AddInstanceExtensions(std::vector<char const*>&);
 	vk::Instance& GetInstance();
 
 private:
@@ -33,11 +37,10 @@ private:
 	std::vector<char const*> requiredInstanceExtensions_;
 	std::vector<const char*> validationLayers_;
 
-	vk::ApplicationInfo appInfo_;
 	vk::Instance instance_;
-	std::vector<vk::PhysicalDevice> physicalDevices_;
+	std::vector<VulkanDevice> devices_;
 
-	//Debug related state 
+	//Debug state 
 	//TODO: Should be conditionally included when the class is only debug mode.
 
 	static VkBool32 DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, const VkDebugUtilsMessengerCallbackDataEXT*, void*);

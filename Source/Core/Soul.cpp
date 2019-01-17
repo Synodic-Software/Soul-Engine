@@ -5,16 +5,16 @@
 #include "Display/Display.h"
 
 #include "Rasterer/RasterBackend.h"
+#include "Composition/Entity/Entity.h"
 
 Soul::Soul(SoulParameters& params) :
 	parameters_(params),
 	frameTime_(),
 	active_(true),
-	displayModule_(Display::CreateModule()),
-	rasterModule_(RasterBackend::CreateModule(displayModule_)),
+	rasterModule_(RasterBackend::CreateModule()),
 	detail(std::make_unique<Implementation>(*this))
 {
-	parameters_.engineRefreshRate.AddCallback([this](int value)
+	parameters_.engineRefreshRate.AddCallback([this](const int value)
 	{
 		frameTime_ = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1)) / value;
 	});
@@ -34,12 +34,6 @@ void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 	EarlyFrameUpdate();
 
 	newFrame.Dirty(Poll());
-
-
-	if(displayModule_)
-	{
-		active_ = displayModule_->Active();
-	}
 
 }
 
@@ -121,9 +115,6 @@ void Soul::LateUpdate() {
 
 void Soul::Raster() {
 
-	//Backends should handle multithreading
-	displayModule_->Draw();
-
 }
 
 //returns a bool that is true if the engine is dirty
@@ -149,9 +140,9 @@ void Soul::Init()
 	}
 }
 
-std::shared_ptr<Window> Soul::CreateWindow(WindowParameters& params) {
+void Soul::CreateWindow(WindowParameters& params) {
 
-	return displayModule_->CreateWindow(params, rasterModule_);
+	rasterModule_->CreateWindow(params);
 
 }
 

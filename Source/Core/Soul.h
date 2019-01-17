@@ -8,6 +8,7 @@ class WindowParameters;
 class Window;
 class Frame;
 class CLIConsoleManager;
+class Entity;
 
 class Display;
 class RasterBackend;
@@ -24,7 +25,7 @@ public:
 	Soul& operator=(Soul&&) noexcept = delete;
 
 	void Init();
-	std::shared_ptr<Window> CreateWindow(WindowParameters&);
+	void CreateWindow(WindowParameters&);
 
 private:
 
@@ -55,8 +56,8 @@ private:
 	bool active_;
 
 	//services and modules	
-	std::shared_ptr<Display> displayModule_;
-	std::shared_ptr<RasterBackend> rasterModule_;
+	std::unique_ptr<RasterBackend> rasterModule_;
+
 
 	//hidden Soul services and modules
 	class Implementation;

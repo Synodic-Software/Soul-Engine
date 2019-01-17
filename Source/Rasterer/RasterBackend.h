@@ -4,7 +4,9 @@
 
 #include <memory>
 
+class Window;
 class RasterDevice;
+class WindowParameters;
 class Display;
 
 class RasterBackend : public Module {
@@ -22,10 +24,15 @@ public:
 
 	virtual void Draw() = 0;
 	virtual void DrawIndirect() = 0;
-
-	virtual std::shared_ptr<RasterDevice> CreateDevice() = 0;
+	virtual void CreateWindow(const WindowParameters&) = 0;
 
 	//Factory
-	static std::shared_ptr<RasterBackend> CreateModule(std::shared_ptr<Display>);
+	static std::unique_ptr<RasterBackend> CreateModule();
+
+
+protected:
+
+	static std::unique_ptr<Display> displayModule_;
+
 
 };

@@ -1,7 +1,13 @@
 #include "GLFWWindow.h"
 
-GLFWWindow::GLFWWindow(WindowParameters& params, GLFWmonitor* monitor, vk::Instance& vulkanInstance) :
-	Window(params)
+#include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
+
+#include <vulkan/vulkan.hpp>
+#include <GLFW/glfw3.h>
+
+GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, RasterBackend* rasterBackend, bool master) :
+	Window(params),
+	master_(master)
 {
 
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
@@ -50,50 +56,15 @@ GLFWWindow::GLFWWindow(WindowParameters& params, GLFWmonitor* monitor, vk::Insta
 	//context related settings
 	glfwSetInputMode(context_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-	//set so the window object that holds the context is visible in callbacks
-	glfwSetWindowUserPointer(context_, this);
-
-	//all window related callbacks
-	glfwSetWindowSizeCallback(context_, [](GLFWwindow* w, const int x, const int y)
-	{
-		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
-		thisWindow->Resize(x, y);
-	});
-
-	glfwSetWindowPosCallback(context_, [](GLFWwindow* w, const int x, const int y)
-	{
-		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
-		thisWindow->PositionUpdate(x, y);
-	});
-
-	glfwSetWindowRefreshCallback(context_, [](GLFWwindow* w)
-	{
-		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
-		thisWindow->Refresh();
-	});
-
-	glfwSetFramebufferSizeCallback(context_, [](GLFWwindow* w, const int x, const int y)
-	{
-		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
-
-		//Only resize if necessary
-		if (static_cast<uint>(x) != thisWindow->windowParams_.pixelSize.x || static_cast<uint>(y) != thisWindow->windowParams_.pixelSize.y) {
-			thisWindow->FrameBufferResize(x, y);
-		}
-	});
-
-	glfwSetWindowCloseCallback(context_, [](GLFWwindow* w)
-	{
-		const auto thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(w));
-		thisWindow->Close();
-	});
-
 	//GLFW guarantees Vulkan support.
 	VkSurfaceKHR castSurface;
 
+	//GLFW is guaranteed to use Vulkan
+	auto vulkanRasterBackend = dynamic_cast<VulkanRasterBackend*>(rasterBackend);
+
 	//guaranteed to use GLFW if using Vulkan
 	const VkResult error = glfwCreateWindowSurface(
-		static_cast<VkInstance>(vulkanInstance),
+		static_cast<VkInstance>(vulkanRasterBackend->GetInstance()),
 		context_,
 		nullptr,
 		&castSurface
@@ -101,12 +72,7 @@ GLFWWindow::GLFWWindow(WindowParameters& params, GLFWmonitor* monitor, vk::Insta
 
 	assert(error == VK_SUCCESS);
 
-	//back to c++ land
-	surface_ = static_cast<vk::SurfaceKHR>(castSurface);
-
-
-	//only show the window once all proper callbacks and settings are in place
-	glfwShowWindow(context_);
+	vulkanRasterBackend->RegisterSurface(castSurface);
 
 }
 
@@ -116,29 +82,16 @@ GLFWWindow::~GLFWWindow() {
 
 }
 
-void GLFWWindow::Refresh() {
-
-}
-
-void GLFWWindow::Close() {
-
-}
-
-void GLFWWindow::Resize(const int x, const int y) {
-
-}
-
-void GLFWWindow::FrameBufferResize(const int x, const int y) {
-
-}
-
-void GLFWWindow::PositionUpdate(const int, const int) {
-
-}
-
-GLFWwindow* GLFWWindow::Context()
+GLFWwindow* GLFWWindow::Context() const
 {
 
 	return context_;
+
+}
+
+bool GLFWWindow::Master() const
+{
+	
+	return master_;
 
 }

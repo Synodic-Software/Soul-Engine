@@ -4,9 +4,9 @@
 #include "Core/Utility/Exception/Exception.h"
 #include "System/Compiler.h"
 #include "Core/Utility/Types.h"
-#include "Display/Modules/GLFW/GLFWDisplay.h"
+#include "Display/Display.h"
 
-VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<Display> displayModule) :
+VulkanRasterBackend::VulkanRasterBackend(Display& displayModule) :
 	requiredDeviceExtensions_{ VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 		VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME,
 		VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME
@@ -18,17 +18,15 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<Display> displayModule)
 {
 
 	//setup Vulkan app info
-	appInfo_.apiVersion = VK_API_VERSION_1_1;
-	appInfo_.applicationVersion = VK_MAKE_VERSION(1, 0, 0);//TODO forward the application version here
-	appInfo_.pApplicationName = "Soul Engine"; //TODO forward the application name here
-	appInfo_.engineVersion = VK_MAKE_VERSION(1, 0, 0); //TODO forward the engine version here
-	appInfo_.pEngineName = "Soul Engine"; //TODO forward the engine name here
+	vk::ApplicationInfo appInfo;
+	appInfo.apiVersion = VK_API_VERSION_1_1;
+	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);//TODO forward the application version here
+	appInfo.pApplicationName = "Soul Engine"; //TODO forward the application name here
+	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0); //TODO forward the engine version here
+	appInfo.pEngineName = "Soul Engine"; //TODO forward the engine name here
 
-	//TODO: if displayModule is GLFW
-	for (auto& extension : std::static_pointer_cast<GLFWDisplay>(displayModule)->GetRequiredExtensions())
-	{
-		requiredInstanceExtensions_.push_back(extension);
-	}
+	// The display will forward the extensions needed for Vulkan
+	displayModule.RegisterRasterBackend(this);
 
 	//TODO minimize memory/runtime impact
 	if constexpr (Compiler::Debug()) {
@@ -38,7 +36,7 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<Display> displayModule)
 	}
 
 	vk::InstanceCreateInfo instanceCreationInfo;
-	instanceCreationInfo.pApplicationInfo = &appInfo_;
+	instanceCreationInfo.pApplicationInfo = &appInfo;
 	instanceCreationInfo.enabledExtensionCount = static_cast<uint32>(requiredInstanceExtensions_.size());
 	instanceCreationInfo.ppEnabledExtensionNames = requiredInstanceExtensions_.data();
 
@@ -56,15 +54,8 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<Display> displayModule)
 
 	instance_ = createInstance(instanceCreationInfo);
 
-	//setup devices
-	//TODO: abstract physical devices
-	//TODO: guarantee size constnest
-	physicalDevices_ = instance_.enumeratePhysicalDevices();
 
-	//TODO should never trigger assert
-	assert(!physicalDevices_.empty());
-
-	//create debugging callback
+	//Create debugging callback
 	if constexpr (Compiler::Debug()) {
 
 		dispatcher_ = vk::DispatchLoaderDynamic(instance_);
@@ -85,6 +76,39 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<Display> displayModule)
 
 	}
 
+
+
+	//setup devices
+	//TODO: abstract physical devices
+	//TODO: guarantee size constnest
+	auto physicalDevices = instance_.enumeratePhysicalDevices();
+	devices_.reserve(physicalDevices.size());
+
+	for (auto& physicalDevice : physicalDevices)
+	{
+		devices_.emplace_back(physicalDevice);
+	}
+
+}
+
+VulkanRasterBackend::~VulkanRasterBackend()
+{
+
+	for (auto& device : devices_)
+	{
+		device.Synchronize();
+	}
+
+	devices_.clear();
+
+	if constexpr (Compiler::Debug()) {
+
+		instance_.destroyDebugUtilsMessengerEXT(debugMessenger_, nullptr, dispatcher_);
+
+	}
+
+	instance_.destroy();
+
 }
 
 void VulkanRasterBackend::Draw()
@@ -101,11 +125,21 @@ void VulkanRasterBackend::DrawIndirect()
 
 }
 
-std::shared_ptr<RasterDevice> VulkanRasterBackend::CreateDevice()
+void VulkanRasterBackend::CreateWindow(const WindowParameters& params)
 {
+	displayModule_->CreateWindow(params, this);
+}
 
-	return std::shared_ptr<VulkanDevice>();
+void VulkanRasterBackend::RegisterSurface(VkSurfaceKHR& surface)
+{
+	
+	//TODO: destroy surfaces
+	//instance.destroySurfaceKHR(surface_);
+}
 
+void VulkanRasterBackend::AddInstanceExtensions(std::vector<char const*>& newExtensions)
+{
+	requiredInstanceExtensions_.insert(std::end(requiredInstanceExtensions_), std::begin(newExtensions), std::end(newExtensions));
 }
 
 vk::Instance& VulkanRasterBackend::GetInstance()

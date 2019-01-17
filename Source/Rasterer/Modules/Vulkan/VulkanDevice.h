@@ -11,7 +11,7 @@ class VulkanDevice final: public RasterDevice {
 
 public:
 
-	VulkanDevice(Scheduler&, int, int, vk::PhysicalDevice*, vk::Device);
+	VulkanDevice(vk::PhysicalDevice&);
 	~VulkanDevice() override;
 
 	VulkanDevice(const VulkanDevice &) = delete;
@@ -20,34 +20,27 @@ public:
 	VulkanDevice& operator=(const VulkanDevice &) = delete;
 	VulkanDevice& operator=(VulkanDevice &&) noexcept = default;
 
-	void Rebuild();
+	void Synchronize() override;
 
-	const vk::Device& GetLogicalDevice() const;
-	const vk::PipelineCache& GetPipelineCache() const;
-	const vk::PhysicalDevice& GetPhysicalDevice() const;
-	const vk::CommandPool& GetCommandPool() const;
-	const vk::Queue& GetGraphicsQueue() const;
-	const vk::Queue& GetPresentQueue() const;
+	void Rebuild();
 
 private:
 
-	vk::Device device_;
-	vk::PhysicalDevice* physicalDevice_;
-	vk::PipelineCache pipelineCache_;
+	std::vector<vk::Device> devices_;
+	vk::PhysicalDevice physicalDevice_;
+	//vk::PipelineCache pipelineCache_;
 
-	vk::Queue graphicsQueue_;
-	vk::Queue presentQueue_;
+	//vk::Queue graphicsQueue_;
+	//vk::Queue presentQueue_;
 
-	ThreadLocal<vk::CommandPool> commandPool_;
+	//ThreadLocal<vk::CommandPool> commandPool_;
 
-	int graphicsIndex;
-	int presentIndex;
+	//int graphicsIndex;
+	//int presentIndex;
 
 	void CreateQueues();
 	void CreatePipelineCache();
 	void Cleanup();
-	void Generate();
 
-	Scheduler* scheduler_;
 
 };

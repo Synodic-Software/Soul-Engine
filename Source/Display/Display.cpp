@@ -12,10 +12,10 @@ Display::Display():
 }
 
 //TODO: There will only ever be one display system per Soul application. This will need to be moved to the build system per platform
-std::shared_ptr<Display> Display::CreateModule() {
+std::unique_ptr<Display> Display::CreateModule() {
 
 	if constexpr (Platform::IsDesktop()) {
-		return std::make_shared<GLFWDisplay>();
+		return std::make_unique<GLFWDisplay>();
 	}
 	else {
 		return nullptr;

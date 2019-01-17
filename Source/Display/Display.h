@@ -2,11 +2,11 @@
 
 #include "Core/Interface/Module/Module.h"
 #include "Display/WindowParameters.h"
-#include "Rasterer/RasterBackend.h"
 
 #include <memory>
 
 class Window;
+class RasterBackend;
 
 class Display : public Module {
 
@@ -25,11 +25,12 @@ public:
 	virtual void Draw() = 0;
 	virtual bool Active() = 0;
 
-	virtual std::shared_ptr<Window> CreateWindow(WindowParameters&, std::shared_ptr<RasterBackend>) = 0;
+	virtual void CreateWindow(const WindowParameters&, RasterBackend*) = 0;
+	virtual void RegisterRasterBackend(RasterBackend*) = 0;
 
 
 	//Factory
-	static std::shared_ptr<Display> CreateModule();
+	static std::unique_ptr<Display> CreateModule();
 
 
 protected:

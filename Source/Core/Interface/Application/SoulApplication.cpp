@@ -8,9 +8,9 @@ SoulApplication::SoulApplication(SoulParameters params) :
 {
 }
 
-std::shared_ptr<Window> SoulApplication::CreateWindow(WindowParameters& params) {
+void SoulApplication::CreateWindow(WindowParameters& params) {
 
-	return soul.CreateWindow(params);
+	soul.CreateWindow(params);
 
 }
 

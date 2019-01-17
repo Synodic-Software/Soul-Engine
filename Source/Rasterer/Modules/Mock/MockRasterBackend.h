@@ -20,7 +20,6 @@ public:
 	void Draw() override;
 	void DrawIndirect() override;
 
-	std::shared_ptr<RasterDevice> CreateDevice() override;
-
+	void CreateWindow(const WindowParameters&) override;
 
 };

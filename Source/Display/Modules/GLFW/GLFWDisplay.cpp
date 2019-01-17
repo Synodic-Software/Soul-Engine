@@ -4,8 +4,10 @@
 #include "Display/Modules/GLFW/GLFWWindow.h"
 #include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
 
-#include <cassert>
+#include <vulkan/vulkan.hpp>
+#include <GLFW/glfw3.h>
 
+#include <cassert>
 
 GLFWDisplay::GLFWDisplay()
 {
@@ -65,23 +67,67 @@ bool GLFWDisplay::Active() {
 	
 }
 
-std::shared_ptr<Window> GLFWDisplay::CreateWindow(WindowParameters& params, std::shared_ptr<RasterBackend> rasterModule) {
+void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* rasterModule) {
 
 	assert(params.monitor < static_cast<int>(monitors_.size()));
 
 	GLFWmonitor* monitor = monitors_[params.monitor];
 
-	std::shared_ptr<GLFWWindow> window = std::make_shared<GLFWWindow>(params, monitor, std::static_pointer_cast<VulkanRasterBackend>(rasterModule)->GetInstance());
+
+	std::shared_ptr<GLFWWindow> window = std::make_shared<GLFWWindow>(params, monitor, rasterModule, !masterWindow_);
 
 	if (!masterWindow_) {
 		masterWindow_ = window;
 	}
 
-	return window;
+	const auto context = window->Context();
+	windows_[context] = window;
+
+	//set so the window object that holds the context is visible in callbacks
+	glfwSetWindowUserPointer(context, this);
+
+	//all window related callbacks
+	glfwSetWindowSizeCallback(context, [](GLFWwindow* window, const int x, const int y)
+	{
+		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		display->Resize(x, y);
+	});
+
+	glfwSetWindowPosCallback(context, [](GLFWwindow* window, const int x, const int y)
+	{
+		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		display->PositionUpdate(x, y);
+	});
+
+	glfwSetWindowRefreshCallback(context, [](GLFWwindow* window)
+	{
+		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		display->Refresh();
+	});
+
+	glfwSetFramebufferSizeCallback(context, [](GLFWwindow* window, const int x, const int y)
+	{
+		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		const auto thisWindow = display->GetWindow(window);
+
+		//Only resize if necessary
+		if (static_cast<uint>(x) != thisWindow->Parameters().pixelSize.x || static_cast<uint>(y) != thisWindow->Parameters().pixelSize.y) {
+			display->FrameBufferResize(x, y);
+		}
+	});
+
+	glfwSetWindowCloseCallback(window->Context(), [](GLFWwindow* window)
+	{
+		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		display->Close(display->GetWindow(window));
+	});
+
+	//only show the window once all proper callbacks and settings are in place
+	glfwShowWindow(context);
 
 }
 
-std::vector<char const*> GLFWDisplay::GetRequiredExtensions()
+void GLFWDisplay::RegisterRasterBackend(RasterBackend* rasterBackend)
 {
 
 	uint32 glfwExtensionCount = 0;
@@ -94,6 +140,46 @@ std::vector<char const*> GLFWDisplay::GetRequiredExtensions()
 		requiredInstanceExtensions.push_back(glfwExtensions[i]);
 	}
 
-	return requiredInstanceExtensions;
+	//TODO: pattern match better
+	dynamic_cast<VulkanRasterBackend*>(rasterBackend)->AddInstanceExtensions(requiredInstanceExtensions);
+
+}
+
+void GLFWDisplay::Refresh() {
+
+}
+
+void GLFWDisplay::Resize(const int x, const int y) {
+
+}
+
+void GLFWDisplay::FrameBufferResize(const int x, const int y) {
+
+}
+
+void GLFWDisplay::PositionUpdate(const int, const int) {
+
+}
+
+void GLFWDisplay::Close(std::shared_ptr<GLFWWindow> window) {
+
+	if (window != masterWindow_) {
+
+		windows_.erase(window->Context());
+
+	}
+	else
+	{
+
+		windows_.clear();
+		masterWindow_.reset();
+
+	}
+}
+
+std::shared_ptr<GLFWWindow> GLFWDisplay::GetWindow(GLFWwindow* context)
+{
+
+	return windows_[context];
 
 }

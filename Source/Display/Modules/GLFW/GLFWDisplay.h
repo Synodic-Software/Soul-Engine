@@ -2,11 +2,12 @@
 
 #include "Display/Display.h"
 
-#include "Display/Modules/GLFW/GLFWWindow.h"
-
 #include <vector>
+#include <unordered_map>
 
 struct GLFWmonitor;
+struct GLFWwindow;
+class GLFWWindow;
 class WindowParameters;
 class VulkanRasterBackend;
 
@@ -25,17 +26,25 @@ public:
 
 	void Draw() override;
 	bool Active() override;
+	void CreateWindow(const WindowParameters&, RasterBackend*) override;
+	void RegisterRasterBackend(RasterBackend*) override;
 
-	std::shared_ptr<Window> CreateWindow(WindowParameters&, std::shared_ptr<RasterBackend>) override;
 
-	std::vector<char const*> GetRequiredExtensions();
+	void Refresh();
+	void Resize(int, int);
+	void PositionUpdate(int, int);
+	void FrameBufferResize(int, int);
+	void Close(std::shared_ptr<GLFWWindow>);
+
 
 private:
+
+	std::shared_ptr<GLFWWindow> GetWindow(GLFWwindow*);
 
 	std::shared_ptr<GLFWWindow> masterWindow_;
 
 	//TODO: Replace with std::span as GLFW owns and manages the monitors - C++20
 	std::vector<GLFWmonitor*> monitors_;
-	std::vector<std::shared_ptr<GLFWWindow>> windows_;
+	std::unordered_map<GLFWwindow*, std::shared_ptr<GLFWWindow>> windows_;
 
 };

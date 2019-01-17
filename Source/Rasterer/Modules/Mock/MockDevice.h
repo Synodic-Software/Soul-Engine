@@ -15,4 +15,7 @@ public:
 	MockDevice& operator=(const MockDevice &) = delete;
 	MockDevice& operator=(MockDevice &&) noexcept = default;
 
+	void Synchronize() override;
+
+
 };

@@ -17,6 +17,7 @@ public:
 	void Draw() override;
 	bool Active() override;
 
-	std::shared_ptr<Window> CreateWindow(WindowParameters&, std::shared_ptr<RasterBackend>) override;
+	void CreateWindow(const WindowParameters&, RasterBackend*) override;
+	void RegisterRasterBackend(RasterBackend*) override;
 
 };
