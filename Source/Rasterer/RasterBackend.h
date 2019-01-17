@@ -26,6 +26,8 @@ public:
 	virtual void DrawIndirect() = 0;
 	virtual void CreateWindow(const WindowParameters&) = 0;
 
+	bool Active();
+
 	//Factory
 	static std::unique_ptr<RasterBackend> CreateModule();
 

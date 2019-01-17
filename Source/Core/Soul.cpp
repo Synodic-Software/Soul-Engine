@@ -35,6 +35,8 @@ void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 
 	newFrame.Dirty(Poll());
 
+	active_ = rasterModule_->Active();
+
 }
 
 void Soul::Update(Frame& oldFrame, Frame& newFrame) {

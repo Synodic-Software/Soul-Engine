@@ -58,12 +58,7 @@ void GLFWDisplay::Draw() {
 
 bool GLFWDisplay::Active() {
 
-	if (masterWindow_) {
-		return !glfwWindowShouldClose(masterWindow_->Context());
-	}
-
-	//If there is no master window...
-	return true;
+	return static_cast<bool>(masterWindow_);
 	
 }
 
