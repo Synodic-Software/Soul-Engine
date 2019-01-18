@@ -46,7 +46,6 @@ GLFWDisplay::~GLFWDisplay()
 {
 
 	windows_.clear();
-	masterWindow_.reset();
 
 	glfwTerminate();
 
@@ -58,7 +57,7 @@ void GLFWDisplay::Draw() {
 
 bool GLFWDisplay::Active() {
 
-	return static_cast<bool>(masterWindow_);
+	return windows_.size() > 0;
 	
 }
 
@@ -69,11 +68,7 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* ra
 	GLFWmonitor* monitor = monitors_[params.monitor];
 
 
-	std::shared_ptr<GLFWWindow> window = std::make_shared<GLFWWindow>(params, monitor, rasterModule, !masterWindow_);
-
-	if (!masterWindow_) {
-		masterWindow_ = window;
-	}
+	std::shared_ptr<GLFWWindow> window = std::make_shared<GLFWWindow>(params, monitor, rasterModule, windows_.size() == 0);
 
 	const auto context = window->Context();
 	windows_[context] = window;
@@ -158,7 +153,7 @@ void GLFWDisplay::PositionUpdate(const int, const int) {
 
 void GLFWDisplay::Close(std::shared_ptr<GLFWWindow> window) {
 
-	if (window != masterWindow_) {
+	if (!window->Master()) {
 
 		windows_.erase(window->Context());
 
@@ -167,7 +162,6 @@ void GLFWDisplay::Close(std::shared_ptr<GLFWWindow> window) {
 	{
 
 		windows_.clear();
-		masterWindow_.reset();
 
 	}
 }
