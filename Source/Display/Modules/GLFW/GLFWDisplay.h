@@ -34,15 +34,15 @@ public:
 	void Resize(int, int);
 	void PositionUpdate(int, int);
 	void FrameBufferResize(int, int);
-	void Close(std::shared_ptr<GLFWWindow>);
+	void Close(GLFWWindow&);
 
 
 private:
 
-	std::shared_ptr<GLFWWindow> GetWindow(GLFWwindow*);
+	GLFWWindow& GetWindow(GLFWwindow*);
 
 	//TODO: Replace with std::span as GLFW owns and manages the monitors - C++20
 	std::vector<GLFWmonitor*> monitors_;
-	std::unordered_map<GLFWwindow*, std::shared_ptr<GLFWWindow>> windows_;
+	std::unordered_map<GLFWwindow*, std::unique_ptr<GLFWWindow>> windows_;
 
 };

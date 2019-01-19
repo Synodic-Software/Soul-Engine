@@ -1,6 +1,6 @@
 #pragma once
 
-template <class T, template<typename> class type>
+template <class T, template<typename> class ClassType>
 class CRTP
 {
 
@@ -16,19 +16,19 @@ public:
 
 private:
 	
-	friend type<T>;
+	friend ClassType<T>;
 
 };
 
-template <class T, template<typename> class type>
-T& CRTP<T, type>::Type() {
+template <class T, template<typename> class ClassType>
+T& CRTP<T, ClassType>::Type() {
 
 	return static_cast<T&>(*this);
 
 }
 
-template <class T, template<typename> class type>
-T const& CRTP<T, type>::Type() const {
+template <class T, template<typename> class ClassType>
+T const& CRTP<T, ClassType>::Type() const {
 
 	return static_cast<T const&>(*this);
 

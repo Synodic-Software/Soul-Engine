@@ -68,10 +68,10 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* ra
 	GLFWmonitor* monitor = monitors_[params.monitor];
 
 
-	std::shared_ptr<GLFWWindow> window = std::make_shared<GLFWWindow>(params, monitor, rasterModule, windows_.size() == 0);
+	std::unique_ptr<GLFWWindow> window = std::make_unique<GLFWWindow>(params, monitor, rasterModule, windows_.empty());
 
 	const auto context = window->Context();
-	windows_[context] = window;
+	windows_[context] = std::move(window);
 
 	//set so the window object that holds the context is visible in callbacks
 	glfwSetWindowUserPointer(context, this);
@@ -98,15 +98,15 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* ra
 	glfwSetFramebufferSizeCallback(context, [](GLFWwindow* window, const int x, const int y)
 	{
 		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
-		const auto thisWindow = display->GetWindow(window);
+		auto& thisWindow = display->GetWindow(window);
 
 		//Only resize if necessary
-		if (static_cast<uint>(x) != thisWindow->Parameters().pixelSize.x || static_cast<uint>(y) != thisWindow->Parameters().pixelSize.y) {
+		if (static_cast<uint>(x) != thisWindow.Parameters().pixelSize.x || static_cast<uint>(y) != thisWindow.Parameters().pixelSize.y) {
 			display->FrameBufferResize(x, y);
 		}
 	});
 
-	glfwSetWindowCloseCallback(window->Context(), [](GLFWwindow* window)
+	glfwSetWindowCloseCallback(context, [](GLFWwindow* window)
 	{
 		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
 		display->Close(display->GetWindow(window));
@@ -151,11 +151,11 @@ void GLFWDisplay::PositionUpdate(const int, const int) {
 
 }
 
-void GLFWDisplay::Close(std::shared_ptr<GLFWWindow> window) {
+void GLFWDisplay::Close(GLFWWindow& window) {
 
-	if (!window->Master()) {
+	if (!window.Master()) {
 
-		windows_.erase(window->Context());
+		windows_.erase(window.Context());
 
 	}
 	else
@@ -166,9 +166,9 @@ void GLFWDisplay::Close(std::shared_ptr<GLFWWindow> window) {
 	}
 }
 
-std::shared_ptr<GLFWWindow> GLFWDisplay::GetWindow(GLFWwindow* context)
+GLFWWindow& GLFWDisplay::GetWindow(GLFWwindow* context)
 {
 
-	return windows_[context];
+	return *windows_[context];
 
 }
