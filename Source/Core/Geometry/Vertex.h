@@ -1,13 +1,24 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include "Core/Utility/Types.h"
+#include "Composition/Component/Component.h"
+
+#include <glm/glm.hpp>
 #include <functional>
 
-class  Vertex
+class  Vertex : Component<Vertex>
 {
 
 public:
+
+	Vertex() = default;
+	~Vertex() = default;
+
+	Vertex(const Vertex &) = default;
+	Vertex(Vertex &&) noexcept = default;
+
+	Vertex& operator=(const Vertex &) = default;
+	Vertex& operator=(Vertex &&) noexcept = default;
 
 	bool operator==(const Vertex& other) const;
 
