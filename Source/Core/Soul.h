@@ -10,6 +10,7 @@ class Frame;
 class CLIConsoleManager;
 class Entity;
 
+class FiberScheduler;
 class Display;
 class RasterBackend;
 
@@ -56,8 +57,8 @@ private:
 	bool active_;
 
 	//services and modules	
+	std::shared_ptr<FiberScheduler> schedulerModule_;
 	std::unique_ptr<RasterBackend> rasterModule_;
-
 
 	//hidden Soul services and modules
 	class Implementation;

@@ -6,11 +6,7 @@
 #include "Core/Utility/Types.h"
 #include "Display/Display.h"
 
-VulkanRasterBackend::VulkanRasterBackend(Display& displayModule) :
-	requiredDeviceExtensions_{ VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-		VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME,
-		VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME
-	},
+VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& scheduler, Display& displayModule) :
 	validationLayers_{
 			"VK_LAYER_LUNARG_assistant_layer",
 			"VK_LAYER_LUNARG_standard_validation"
@@ -86,7 +82,9 @@ VulkanRasterBackend::VulkanRasterBackend(Display& displayModule) :
 
 	for (auto& physicalDevice : physicalDevices)
 	{
-		devices_.emplace_back(physicalDevice);
+
+		devices_.emplace_back( scheduler, physicalDevice);
+
 	}
 
 }
@@ -137,6 +135,7 @@ void VulkanRasterBackend::RegisterSurface(VkSurfaceKHR& surface)
 	//instance.destroySurfaceKHR(surface_);
 }
 
+//TODO: Refactor. Better way for the Display module to inject extensions?
 void VulkanRasterBackend::AddInstanceExtensions(std::vector<char const*>& newExtensions)
 {
 	requiredInstanceExtensions_.insert(std::end(requiredInstanceExtensions_), std::begin(newExtensions), std::end(newExtensions));

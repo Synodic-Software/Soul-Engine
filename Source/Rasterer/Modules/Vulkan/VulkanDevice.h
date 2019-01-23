@@ -5,42 +5,44 @@
 
 #include <vulkan/vulkan.hpp>
 
-class Scheduler;
+class FiberScheduler;
 
 class VulkanDevice final: public RasterDevice {
 
 public:
 
-	VulkanDevice(vk::PhysicalDevice&);
+	VulkanDevice(std::shared_ptr<FiberScheduler>&, vk::PhysicalDevice&);
 	~VulkanDevice() override;
 
 	VulkanDevice(const VulkanDevice &) = delete;
-	VulkanDevice(VulkanDevice &&) noexcept = default;
+	VulkanDevice(VulkanDevice &&) = default;
 
 	VulkanDevice& operator=(const VulkanDevice &) = delete;
-	VulkanDevice& operator=(VulkanDevice &&) noexcept = default;
+	VulkanDevice& operator=(VulkanDevice &&) = default;
 
 	void Synchronize() override;
 
-	void Rebuild();
+	const vk::Device& GetLogical() const;
+	const vk::PhysicalDevice& GetPhysical() const;
+	const vk::CommandPool& GetCommandPool() const;
+	const vk::Queue& GetGraphicsQueue() const;
+	const vk::Queue& GetPresentQueue() const;
+
 
 private:
 
-	std::vector<vk::Device> devices_;
+	std::shared_ptr<FiberScheduler> scheduler_;
+
+	std::vector<vk::Device> logicalDevices_;
 	vk::PhysicalDevice physicalDevice_;
-	//vk::PipelineCache pipelineCache_;
 
-	//vk::Queue graphicsQueue_;
-	//vk::Queue presentQueue_;
+	ThreadLocal<vk::CommandPool> commandPool_;
 
-	//ThreadLocal<vk::CommandPool> commandPool_;
+	vk::PhysicalDeviceProperties deviceProperties_;
+	vk::PhysicalDeviceFeatures deviceFeatures_;
+	vk::PhysicalDeviceMemoryProperties memoryProperties_;
 
-	//int graphicsIndex;
-	//int presentIndex;
-
-	void CreateQueues();
-	void CreatePipelineCache();
-	void Cleanup();
-
+	//TODO: refactor queue 
+	vk::Queue graphicsQueue_;
 
 };

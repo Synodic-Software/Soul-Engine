@@ -4,10 +4,12 @@
 
 #include <memory>
 
+class Scheduler;
 class Window;
 class RasterDevice;
 class WindowParameters;
 class Display;
+class FiberScheduler;
 
 class RasterBackend : public Module {
 
@@ -29,7 +31,7 @@ public:
 	bool Active();
 
 	//Factory
-	static std::unique_ptr<RasterBackend> CreateModule();
+	static std::unique_ptr<RasterBackend> CreateModule(std::shared_ptr<FiberScheduler>&);
 
 
 protected:

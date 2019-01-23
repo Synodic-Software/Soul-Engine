@@ -9,7 +9,7 @@
 
 #include <vector>
 
-class SchedulerAlgorithm :
+class FiberSchedulerAlgorithm :
 	public boost::fibers::algo::algorithm_with_properties<FiberProperties> {
 
 public:
@@ -20,14 +20,14 @@ public:
 
 	//Construction
 
-	SchedulerAlgorithm(uint, bool = false);
-	~SchedulerAlgorithm() = default;
+	FiberSchedulerAlgorithm(uint, bool = false);
+	~FiberSchedulerAlgorithm() = default;
 
-	SchedulerAlgorithm(SchedulerAlgorithm const&) = delete;
-	SchedulerAlgorithm(SchedulerAlgorithm &&) = delete;
+	FiberSchedulerAlgorithm(FiberSchedulerAlgorithm const&) = delete;
+	FiberSchedulerAlgorithm(FiberSchedulerAlgorithm &&) = delete;
 
-	SchedulerAlgorithm& operator=(SchedulerAlgorithm const&) = delete;
-	SchedulerAlgorithm& operator=(SchedulerAlgorithm &&) = delete;
+	FiberSchedulerAlgorithm& operator=(FiberSchedulerAlgorithm const&) = delete;
+	FiberSchedulerAlgorithm& operator=(FiberSchedulerAlgorithm &&) = delete;
 
 
 	//Implementation
@@ -46,7 +46,7 @@ private:
 	static void InitializeSchedulers(uint);
 
 	static std::atomic<uint>										counter_;
-	static std::vector<boost::intrusive_ptr<SchedulerAlgorithm>>    schedulers_;
+	static std::vector<boost::intrusive_ptr<FiberSchedulerAlgorithm>>    schedulers_;
 
 	static thread_local std::minstd_rand generator_;
 	static std::uniform_int_distribution<uint> distribution_;

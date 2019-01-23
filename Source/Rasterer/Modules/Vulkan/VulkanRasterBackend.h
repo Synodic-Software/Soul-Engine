@@ -4,6 +4,7 @@
 
 #include <vulkan/vulkan.hpp>
 
+class FiberScheduler;
 class Display;
 class VulkanDevice;
 
@@ -11,7 +12,7 @@ class VulkanRasterBackend final : public RasterBackend {
 
 public:
 
-	VulkanRasterBackend(Display&);
+	VulkanRasterBackend(std::shared_ptr<FiberScheduler>&, Display&);
 	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
@@ -30,10 +31,9 @@ public:
 	void AddInstanceExtensions(std::vector<char const*>&);
 	vk::Instance& GetInstance();
 
+
 private:
 
-
-	std::vector<char const*> requiredDeviceExtensions_;
 	std::vector<char const*> requiredInstanceExtensions_;
 	std::vector<const char*> validationLayers_;
 

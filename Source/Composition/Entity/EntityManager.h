@@ -91,7 +91,7 @@ EntityManager::AttachComponent(Entity entity, Args&& ... args) {
 
 	const auto componentId = ClassID::Id<Comp>();
 
-	//componentId is always incrmenting.
+	//componentId is always incrementing.
 	if (componentId >= componentPools_.size() ) {
 		componentPools_.push_back(std::make_unique<SparseEntitySet<Comp>>());
 	}

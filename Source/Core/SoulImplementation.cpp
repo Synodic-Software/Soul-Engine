@@ -7,13 +7,12 @@
 
 Soul::Implementation::Implementation(Soul& soul) :
 	entityManager_(),
-	scheduler_(soul.parameters_.threadCount),
 	eventManager_(),
 	inputManagerVariant_(ConstructInputManager()),
 	inputManager_(ConstructInputPtr()),
 	consoleManagerVariant_(ConstructConsoleManager(soul)),
 	consoleManager_(ConstructConsolePtr()),
-	framePipeline_(scheduler_, {
+	framePipeline_(soul.schedulerModule_, {
 	[&soul](Frame& oldFrame, Frame& newFrame)
 	{
 		soul.Process(oldFrame, newFrame);

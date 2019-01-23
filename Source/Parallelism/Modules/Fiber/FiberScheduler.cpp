@@ -1,15 +1,15 @@
-#include "Scheduler.h"
-#include "SchedulerAlgorithm.h"
+#include "FiberScheduler.h"
+#include "FiberSchedulerAlgorithm.h"
 #include "boost/fiber/barrier.hpp"
 #include "Parallelism/Graph/Graph.h"
 
-Scheduler::Scheduler(Property<uint>& threadCount) :
+FiberScheduler::FiberScheduler(Property<uint>& threadCount) :
 	shouldRun_(true),
 	fiberCount_(0),
 	threadCount_(threadCount)
 {
 
-	boost::fibers::use_scheduling_algorithm<SchedulerAlgorithm>(threadCount_, true);
+	boost::fibers::use_scheduling_algorithm<FiberSchedulerAlgorithm>(threadCount_, true);
 
 	//the main thread takes up one slot
 	childThreads_.resize(threadCount_ - 1);
@@ -33,7 +33,7 @@ Scheduler::Scheduler(Property<uint>& threadCount) :
 
 }
 
-Scheduler::~Scheduler() {
+FiberScheduler::~FiberScheduler() {
 
 	int polledCount;
 	{
@@ -69,7 +69,7 @@ Scheduler::~Scheduler() {
 
 /* Initialize the fiber specific stuff. */
 //TODO use fiber specific allocator
-void Scheduler::InitPointers() {
+void FiberScheduler::InitPointers() {
 
 	if (!blockMutex_.get()) {
 		blockMutex_.reset(new boost::fibers::mutex);
@@ -83,7 +83,7 @@ void Scheduler::InitPointers() {
 
 }
 
-Graph& Scheduler::CreateGraph() {
+Graph& FiberScheduler::CreateGraph() {
 	
 	return graphs_.emplace_front(this);
 
@@ -91,7 +91,7 @@ Graph& Scheduler::CreateGraph() {
 
 
 //block the current thread until all registered children complete
-void Scheduler::Block() const {
+void FiberScheduler::Block() const {
 
 	//get the current fibers stats for blocking
 	uint* holdSize = blockCount_.get();
@@ -105,7 +105,7 @@ void Scheduler::Block() const {
 }
 
 //Yield the current fiber, allowing for another to take its place.
-void Scheduler::Yield() {
+void FiberScheduler::Yield() {
 
 	boost::this_fiber::yield();
 
@@ -116,9 +116,9 @@ void Scheduler::Yield() {
 *    while waiting for a notify release.
 */
 
-void Scheduler::ThreadRun() {
+void FiberScheduler::ThreadRun() {
 
-	boost::fibers::use_scheduling_algorithm<SchedulerAlgorithm>(threadCount_, true);
+	boost::fibers::use_scheduling_algorithm<FiberSchedulerAlgorithm>(threadCount_, true);
 	boost::this_fiber::properties<FiberProperties>().SetProperties(FiberPriority::LOW, -1);
 
 	//continue processing until exit is called

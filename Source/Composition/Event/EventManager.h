@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Event.h"
-#include "Parallelism/Fiber/Scheduler.h"
 #include "Core/Utility/HashString/HashString.h"
 
 #include <unordered_map>

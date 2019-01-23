@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Parallelism/Scheduler.h"
+
 #include <boost/fiber/fss.hpp>
 #include <boost/fiber/condition_variable.hpp>
 
@@ -21,15 +23,15 @@
 class EntityManager;
 class Graph;
 
-class Scheduler {
+class FiberScheduler : public Scheduler {
 
 public:
 
-	Scheduler(Property<uint>&);
-	~Scheduler();
+	FiberScheduler(Property<uint>&);
+	~FiberScheduler() override;
 
-	Scheduler(Scheduler const&) = delete;
-	void operator=(Scheduler const&) = delete;
+	FiberScheduler(FiberScheduler const&) = delete;
+	void operator=(FiberScheduler const&) = delete;
 
 	template<typename Fn, typename ... Args>
 	void AddTask(FiberParameters, Fn &&, Args && ...);
@@ -70,7 +72,7 @@ private:
 };
 
 /*
- * Adds a task to the scheduler to be executed on any available thread.
+ * Adds a task to the FiberScheduler to be executed on any available thread.
  *
  * @tparam	Fn  	Type of the function.
  * @tparam	Args	Type of the arguments.
@@ -80,7 +82,7 @@ private:
  */
 
 template<typename Fn, typename ... Args>
-void Scheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
+void FiberScheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
 
 	//increment the global fiber count
 	{
@@ -160,7 +162,7 @@ void Scheduler::AddTask(FiberParameters params, Fn && fn, Args && ... args) {
 }
 
 template<typename Fn, typename ... Args>
-void Scheduler::ForEachThread(FiberPriority priority, Fn && fn, Args && ... args) {
+void FiberScheduler::ForEachThread(FiberPriority priority, Fn && fn, Args && ... args) {
 
 	//immediately enter to provide block scope to the perthread tasks
 	FiberParameters subParams(false);
@@ -180,7 +182,7 @@ void Scheduler::ForEachThread(FiberPriority priority, Fn && fn, Args && ... args
 }
 
 template< typename Fn >
-void Scheduler::LaunchFiber(FiberParameters& params, Fn && func) {
+void FiberScheduler::LaunchFiber(FiberParameters& params, Fn && func) {
 
 	if (params.post_) {
 
@@ -203,7 +205,7 @@ void Scheduler::LaunchFiber(FiberParameters& params, Fn && func) {
 }
 
 template< typename Clock, typename Duration>
-void Scheduler::YieldUntil(std::chrono::time_point< Clock, Duration > const& timePoint) {
+void FiberScheduler::YieldUntil(std::chrono::time_point< Clock, Duration > const& timePoint) {
 
 	boost::fibers::mutex mutex;
 	boost::fibers::condition_variable conditional;

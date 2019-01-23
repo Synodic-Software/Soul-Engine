@@ -19,7 +19,4 @@ public:
 
 	virtual void Synchronize() = 0;
 
-	//Factory
-	static std::unique_ptr<RasterDevice> CreateModule();
-
 };

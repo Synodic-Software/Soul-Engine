@@ -2,8 +2,6 @@
 
 #include "Core/Utility/Template/CRTP.h"
 
-#include <memory>
-
 class EntityManager;
 
 template<typename T>

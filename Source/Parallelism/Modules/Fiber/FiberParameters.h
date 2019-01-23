@@ -21,7 +21,7 @@ public:
 
 private:
 
-	friend class Scheduler;
+	friend class FiberScheduler;
 
 	bool post_; // the fiber will not execute immediately and instead run when a scheduler picks it up. If not true, the fiber is required to remain on this thread and other parameters dont matter.	
 	FiberPriority priority_;

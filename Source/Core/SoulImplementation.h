@@ -4,7 +4,6 @@
 #include "Transput/Input/Console/CLI/CLIConsoleManager.h"
 
 #include "Composition/Event/EventManager.h"
-#include "Parallelism/Fiber/Scheduler.h"
 #include "Composition/Entity/EntityManager.h"
 #include "Frame/FramePipeline.h"
 
@@ -30,7 +29,6 @@ public:
 
 	//TODO: Old managers should be transferred to `modules` (different organizational style)
 	EntityManager entityManager_;
-	Scheduler scheduler_;
 	EventManager eventManager_;
 	inputManagerVariantType inputManagerVariant_;
 	InputManager* inputManager_;

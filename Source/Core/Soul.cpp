@@ -2,16 +2,17 @@
 
 #include "SoulImplementation.h"
 #include "System/Platform.h"
-#include "Display/Display.h"
 
+#include "Parallelism/Modules/Fiber/FiberScheduler.h"
+#include "Display/Display.h"
 #include "Rasterer/RasterBackend.h"
-#include "Composition/Entity/Entity.h"
 
 Soul::Soul(SoulParameters& params) :
 	parameters_(params),
 	frameTime_(),
 	active_(true),
-	rasterModule_(RasterBackend::CreateModule()),
+	schedulerModule_(Scheduler::CreateModule(parameters_.threadCount)),
+	rasterModule_(RasterBackend::CreateModule(schedulerModule_)),
 	detail(std::make_unique<Implementation>(*this))
 {
 	parameters_.engineRefreshRate.AddCallback([this](const int value)
@@ -133,7 +134,7 @@ void Soul::Init()
 
 	if constexpr (Platform::WithCLI()) {
 		FiberParameters fParams(false);
-		detail->scheduler_.AddTask(fParams, [this]()
+		schedulerModule_->AddTask(fParams, [this]()
 		{
 			detail->consoleManager_->Poll();
 		});
@@ -165,7 +166,7 @@ void Soul::Run()
 		detail->framePipeline_.Execute(frameTime_);
 
 		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime_);
-		else detail->scheduler_.YieldUntil(nextTime);
+		else schedulerModule_->YieldUntil(nextTime);
 
 	}
 

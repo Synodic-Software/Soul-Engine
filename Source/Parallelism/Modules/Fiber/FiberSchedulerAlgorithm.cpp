@@ -1,15 +1,15 @@
-#include "SchedulerAlgorithm.h"
+#include "FiberSchedulerAlgorithm.h"
 
 #include <boost/context/detail/prefetch.hpp>
 #include <boost/fiber/mutex.hpp>
 
-std::atomic<uint> SchedulerAlgorithm::counter_(0);
-std::vector<boost::intrusive_ptr<SchedulerAlgorithm>> SchedulerAlgorithm::schedulers_;
+std::atomic<uint> FiberSchedulerAlgorithm::counter_(0);
+std::vector<boost::intrusive_ptr<FiberSchedulerAlgorithm>> FiberSchedulerAlgorithm::schedulers_;
 
-thread_local std::minstd_rand SchedulerAlgorithm::generator_;
-std::uniform_int_distribution<uint> SchedulerAlgorithm::distribution_;
+thread_local std::minstd_rand FiberSchedulerAlgorithm::generator_;
+std::uniform_int_distribution<uint> FiberSchedulerAlgorithm::distribution_;
 
-SchedulerAlgorithm::SchedulerAlgorithm(uint threadCount, bool suspend) :
+FiberSchedulerAlgorithm::FiberSchedulerAlgorithm(uint threadCount, bool suspend) :
 	id_(counter_++),
 	threadCount_(threadCount),
 	sleepFlag_(false),
@@ -18,14 +18,14 @@ SchedulerAlgorithm::SchedulerAlgorithm(uint threadCount, bool suspend) :
 
 	//only initialize schedulers once
 	static std::once_flag flag;
-	std::call_once(flag, &SchedulerAlgorithm::InitializeSchedulers, threadCount_);
+	std::call_once(flag, &FiberSchedulerAlgorithm::InitializeSchedulers, threadCount_);
 
 	// register this scheduler
 	schedulers_[id_] = this;
 
 }
 
-void SchedulerAlgorithm::InitializeSchedulers(uint thread_count) {
+void FiberSchedulerAlgorithm::InitializeSchedulers(uint thread_count) {
 
 	schedulers_.resize(thread_count, nullptr);
 	std::random_device r;
@@ -35,7 +35,7 @@ void SchedulerAlgorithm::InitializeSchedulers(uint thread_count) {
 }
 
 //called when a newly `posted` launched, blocked, or yielded fiber wakes up.
-void SchedulerAlgorithm::awakened(boost::fibers::context* ctx, FiberProperties& props) noexcept {
+void FiberSchedulerAlgorithm::awakened(boost::fibers::context* ctx, FiberProperties& props) noexcept {
 
 	//if the fiber is a worker, open the posibility it may be moved in between threads, so detach it from its current
 	if (!ctx->is_context(boost::fibers::type::pinned_context)) {
@@ -74,7 +74,7 @@ void SchedulerAlgorithm::awakened(boost::fibers::context* ctx, FiberProperties& 
 }
 
 //pick a fiber from the local queue
-boost::fibers::context* SchedulerAlgorithm::PickLocal(uint index) noexcept {
+boost::fibers::context* FiberSchedulerAlgorithm::PickLocal(uint index) noexcept {
 
 	boost::fibers::context* victim;
 
@@ -94,7 +94,7 @@ boost::fibers::context* SchedulerAlgorithm::PickLocal(uint index) noexcept {
 }
 
 //pick a fiber from the shared queue
-boost::fibers::context* SchedulerAlgorithm::PickShared(uint index) noexcept {
+boost::fibers::context* FiberSchedulerAlgorithm::PickShared(uint index) noexcept {
 
 	boost::fibers::context* victim = sharedQueues_[index].pop();
 
@@ -128,7 +128,7 @@ boost::fibers::context* SchedulerAlgorithm::PickShared(uint index) noexcept {
 }
 
 //picks the fiber to run next
-boost::fibers::context* SchedulerAlgorithm::pick_next() noexcept {
+boost::fibers::context* FiberSchedulerAlgorithm::pick_next() noexcept {
 
 	boost::fibers::context* victim = nullptr;
 
@@ -160,7 +160,7 @@ boost::fibers::context* SchedulerAlgorithm::pick_next() noexcept {
 
 }
 
-bool SchedulerAlgorithm::has_ready_fibers() const noexcept {
+bool FiberSchedulerAlgorithm::has_ready_fibers() const noexcept {
 
 	return
 		!sharedQueues_[0].empty() &&
@@ -173,7 +173,7 @@ bool SchedulerAlgorithm::has_ready_fibers() const noexcept {
 }
 
 //all post fibers appear here, ready to be delegated to sharedQueues_
-void SchedulerAlgorithm::property_change(boost::fibers::context* ctx, FiberProperties& props) noexcept {
+void FiberSchedulerAlgorithm::property_change(boost::fibers::context* ctx, FiberProperties& props) noexcept {
 
 	//possibly changed when not in the local queue, no update needed
 	if (!ctx->ready_is_linked()) {
@@ -245,7 +245,7 @@ void SchedulerAlgorithm::property_change(boost::fibers::context* ctx, FiberPrope
 
 }
 
-void SchedulerAlgorithm::suspend_until(std::chrono::steady_clock::time_point const& targetTime) noexcept {
+void FiberSchedulerAlgorithm::suspend_until(std::chrono::steady_clock::time_point const& targetTime) noexcept {
 
 	if (suspend_) {
 
@@ -278,7 +278,7 @@ void SchedulerAlgorithm::suspend_until(std::chrono::steady_clock::time_point con
 
 }
 
-void SchedulerAlgorithm::notify() noexcept {
+void FiberSchedulerAlgorithm::notify() noexcept {
 
 	if (suspend_) {
 

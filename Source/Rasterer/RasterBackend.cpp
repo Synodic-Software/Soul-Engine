@@ -17,9 +17,9 @@ bool RasterBackend::Active()
 }
 
 //TODO: This needs to instead be runtime loadable from shared libraries or statically linked
-std::unique_ptr<RasterBackend> RasterBackend::CreateModule()
+std::unique_ptr<RasterBackend> RasterBackend::CreateModule(std::shared_ptr<FiberScheduler>& scheduler)
 {
 	displayModule_ = Display::CreateModule();
-	return std::make_unique<VulkanRasterBackend>(*displayModule_);
+	return std::make_unique<VulkanRasterBackend>(scheduler, *displayModule_);
 
 }
