@@ -17,9 +17,6 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent
 
 	pipelineLayout_ = logicalDevice.createPipelineLayout(pipelineLayoutInfo, nullptr);
 
-	pipelineLayout_ = logicalDevice.createPipelineLayout(pipelineLayoutInfo, nullptr);
-
-
 	vk::PipelineShaderStageCreateInfo shaderStages[] = {
 		vertexShader_.CreateInfo(),
 		fragmentShader_.CreateInfo()

@@ -111,6 +111,8 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& schedu
 VulkanRasterBackend::~VulkanRasterBackend()
 {
 
+	swapChains_.clear();
+
 	for (auto& surface : surfaces_)
 	{
 
@@ -118,8 +120,6 @@ VulkanRasterBackend::~VulkanRasterBackend()
 
 	}
 
-	surfaces_.clear();
-	swapChains_.clear();
 	devices_.clear();
 
 	if constexpr (Compiler::Debug()) {
@@ -168,7 +168,7 @@ void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 si
 	const auto format = device->GetSurfaceFormat(surface);
 
 
-	surfaces_.push_back(std::move(surface));
+	surfaces_.push_back(surface);
 	swapChains_.emplace_back(device, surface, format.colorFormat, format.colorSpace, size, false, nullptr);
 
 }

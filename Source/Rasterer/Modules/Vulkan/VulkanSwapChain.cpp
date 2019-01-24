@@ -172,8 +172,18 @@ VulkanSwapChain::~VulkanSwapChain() {
 
 	const auto& logicalDevice = vkDevice_->GetLogical();
 
+	frameBuffers_.clear();
+
 	for (const auto& image : images_) {
 		logicalDevice.destroyImageView(image.view);
+	}
+
+	for (size_t i = 0; i < flightFramesCount; i++) {
+
+		logicalDevice.destroySemaphore(imageAvailableSemaphores[i]);
+		logicalDevice.destroySemaphore(renderFinishedSemaphores[i]);
+		logicalDevice.destroyFence(inFlightFences[i]);
+
 	}
 
 	logicalDevice.destroySwapchainKHR(swapChain_);
