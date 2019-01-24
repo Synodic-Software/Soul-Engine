@@ -118,6 +118,8 @@ void Soul::LateUpdate() {
 
 void Soul::Raster() {
 
+	rasterModule_->Draw();
+
 }
 
 //returns a bool that is true if the engine is dirty

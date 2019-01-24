@@ -135,7 +135,12 @@ VulkanRasterBackend::~VulkanRasterBackend()
 void VulkanRasterBackend::Draw()
 {
 
-	throw NotImplemented();
+	for (auto& swapChain : swapChains_)
+	{
+
+		swapChain.Present();
+
+	}
 
 }
 
