@@ -7,7 +7,8 @@
 //TODO: Refactor
 VulkanDevice::VulkanDevice(std::shared_ptr<FiberScheduler>& scheduler, vk::PhysicalDevice& physicalDevice) :
 	scheduler_(scheduler),
-	physicalDevice_(physicalDevice)
+	physicalDevice_(physicalDevice),
+	graphicsIndex_(-1)
 {
 
 	//TODO: Swapchain not needed for certain embedded applications.
@@ -51,16 +52,13 @@ VulkanDevice::VulkanDevice(std::shared_ptr<FiberScheduler>& scheduler, vk::Physi
 
 	};
 
-	//TODO: refactor for index storage
-	int graphicsIndex = -1;
-
 	//Grab graphics queue
 	for (uint i = 0; i < static_cast<uint>(queueFamilyProperties.size()); ++i)
 	{
 		if (queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics)
 		{
 			addQueueInfo(i);
-			graphicsIndex = i;
+			graphicsIndex_ = i;
 			break;
 		}
 	}
@@ -84,12 +82,12 @@ VulkanDevice::VulkanDevice(std::shared_ptr<FiberScheduler>& scheduler, vk::Physi
 	logicalDevices_.push_back(physicalDevice.createDevice(deviceCreateInfo));
 
 	//TODO: refactor queue 
-	graphicsQueue_ = logicalDevices_[0].getQueue(graphicsIndex, 0);
+	graphicsQueue_ = logicalDevices_[0].getQueue(graphicsIndex_, 0);
 
 	//TODO: Refactor, should be an object instantiated by the device
 	{
 		vk::CommandPoolCreateInfo poolInfo;
-		poolInfo.queueFamilyIndex = graphicsIndex;
+		poolInfo.queueFamilyIndex = graphicsIndex_;
 
 		//TODO: move to 3 commandpools per thread as suggested by NVIDIA
 		scheduler_->ForEachThread(FiberPriority::UX, [this, poolInfo]()
@@ -169,5 +167,44 @@ const vk::Queue& VulkanDevice::GetGraphicsQueue() const {
 const vk::Queue& VulkanDevice::GetPresentQueue() const {
 
 	return graphicsQueue_;
+
+}
+
+//TODO: refactor queue 
+int VulkanDevice::GetGraphicsIndex() const
+{
+
+	return graphicsIndex_;
+
+}
+
+SurfaceFormat VulkanDevice::GetSurfaceFormat(const vk::SurfaceKHR& surface) const
+{
+
+	const auto formats = physicalDevice_.getSurfaceFormatsKHR(surface);
+
+	SurfaceFormat surfaceFormat = {
+		vk::ColorSpaceKHR::eSrgbNonlinear,
+		vk::Format::eB8G8R8A8Unorm,
+	};
+
+	//TODO: pick formats better
+	if(!formats.empty() && formats.front().format == vk::Format::eUndefined)
+	{
+		return surfaceFormat;
+	}
+	
+	for (const auto& format : formats) {
+
+		if (format.format == vk::Format::eB8G8R8A8Unorm && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
+			return surfaceFormat;
+		}
+
+	}
+
+	surfaceFormat.colorFormat = formats.front().format;
+	surfaceFormat.colorSpace = formats.front().colorSpace;
+
+	return surfaceFormat;
 
 }

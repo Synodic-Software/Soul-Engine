@@ -1,22 +1,21 @@
 #include "VulkanSwapChain.h"
 
-#include "Composition/Entity/EntityManager.h"
 #include "VulkanDevice.h"
 #include "Core/Utility/Exception/Exception.h"
-#include "VulkanFrameBuffer.h"
-#include "VulkanPipeline.h"
 
 
-VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::SurfaceKHR& vkSurface,
+VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::SurfaceKHR& surface,
 	vk::Format colorFormat, vk::ColorSpaceKHR colorSpace, glm::uvec2& size, bool vSync, VulkanSwapChain* oldSwapChain) :
 	vkDevice_(device),
-	size_(size)
+	size_(size),
+	currentFrame(0),
+	flightFramesCount(2)
 {
 	const auto& logicalDevice = vkDevice_->GetLogical();
 	const auto& physicalDevice = vkDevice_->GetPhysical();
 
-	const vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(vkSurface);
-	std::vector<vk::PresentModeKHR> presentModes = physicalDevice.getSurfacePresentModesKHR(vkSurface);
+	const vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+	std::vector<vk::PresentModeKHR> presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
 
 	assert(!presentModes.empty());
 
@@ -69,7 +68,7 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 	}
 
 	vk::SwapchainCreateInfoKHR swapchainCreateInfo;
-	swapchainCreateInfo.surface = vkSurface;
+	swapchainCreateInfo.surface = surface;
 	swapchainCreateInfo.minImageCount = imageCount;
 	swapchainCreateInfo.imageFormat = colorFormat;
 	swapchainCreateInfo.imageColorSpace = colorSpace;
@@ -88,26 +87,26 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 	auto swapChainImages = logicalDevice.getSwapchainImagesKHR(swapChain_);
 
 	vk::ImageViewCreateInfo colorAttachmentCreateInfo;
- 	colorAttachmentCreateInfo.format = colorFormat;
- 	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
- 	colorAttachmentCreateInfo.subresourceRange.levelCount = 1;
- 	colorAttachmentCreateInfo.subresourceRange.layerCount = 1;
- 	colorAttachmentCreateInfo.viewType = vk::ImageViewType::e2D;
+	colorAttachmentCreateInfo.format = colorFormat;
+	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	colorAttachmentCreateInfo.subresourceRange.levelCount = 1;
+	colorAttachmentCreateInfo.subresourceRange.layerCount = 1;
+	colorAttachmentCreateInfo.viewType = vk::ImageViewType::e2D;
 
- 	images_.resize(swapChainImages.size());
- 	for (uint32_t i = 0; i < swapChainImages.size(); ++i) {
- 		images_[i].image = swapChainImages[i];
- 		colorAttachmentCreateInfo.image = swapChainImages[i];
- 		images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
- 		images_[i].fence = vk::Fence();
- 	}
+	images_.resize(swapChainImages.size());
+	for (uint32_t i = 0; i < swapChainImages.size(); ++i) {
+		images_[i].image = swapChainImages[i];
+		colorAttachmentCreateInfo.image = swapChainImages[i];
+		images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
+		images_[i].fence = vk::Fence();
+	}
 
 
 	//TODO: Remove hardcoded pipeline + Hardcoded paths
 	//TODO: Associate paths to Project/Executable
 	pipeline_ = std::make_unique<VulkanPipeline>(vkDevice_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", colorFormat);
 
-
+	frameBuffers_.reserve(images_.size());
 	for (SwapChainImage& image : images_) {
 		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
 	}
@@ -149,7 +148,7 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 	}
 
 
-	//set up synchronization primatives
+	//set up synchronization primitives
 	imageAvailableSemaphores.resize(flightFramesCount);
 	renderFinishedSemaphores.resize(flightFramesCount);
 	inFlightFences.resize(flightFramesCount);
@@ -190,7 +189,7 @@ void VulkanSwapChain::Present() {
 
 	auto[acquireResult, imageIndex] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], nullptr);
 
-	if(static_cast<VkResult>(acquireResult) != VK_SUCCESS) {
+	if (static_cast<VkResult>(acquireResult) != VK_SUCCESS) {
 		throw NotImplemented();
 	}
 

@@ -2,11 +2,15 @@
 
 #include "Rasterer/RasterBackend.h"
 
+#include "VulkanSwapChain.h"
+
 #include <vulkan/vulkan.hpp>
+#include <glm/vec2.hpp>
 
 class FiberScheduler;
 class Display;
 class VulkanDevice;
+class VulkanSwapChain;
 
 class VulkanRasterBackend final : public RasterBackend {
 
@@ -26,7 +30,7 @@ public:
 
 	void CreateWindow(const WindowParameters&) override;
 
-	void RegisterSurface(VkSurfaceKHR&);
+	void RegisterSurface(vk::SurfaceKHR&, glm::uvec2);
 
 	void AddInstanceExtensions(std::vector<char const*>&);
 	vk::Instance& GetInstance();
@@ -38,15 +42,19 @@ private:
 	std::vector<const char*> validationLayers_;
 
 	vk::Instance instance_;
-	std::vector<VulkanDevice> devices_;
+	std::vector<std::shared_ptr<VulkanDevice>> devices_;
+	std::vector<vk::SurfaceKHR> surfaces_;
+	std::vector<VulkanSwapChain> swapChains_;
+
+	//Dynamic dispatcher for extensions
+	vk::DispatchLoaderDynamic dispatcher_;
 
 	//Debug state 
 	//TODO: Should be conditionally included when the class is only debug mode.
 
 	static VkBool32 DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, const VkDebugUtilsMessengerCallbackDataEXT*, void*);
 
-	VkDebugUtilsMessengerEXT debugMessenger_;
-	vk::DispatchLoaderDynamic dispatcher_;
+	vk::DebugUtilsMessengerEXT debugMessenger_;
 	vk::DebugReportCallbackEXT callback_;
 
 };

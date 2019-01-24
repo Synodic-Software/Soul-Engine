@@ -5,12 +5,13 @@
 #include "System/Compiler.h"
 #include "Core/Utility/Types.h"
 #include "Display/Display.h"
+#include "VulkanSwapChain.h"
 
 VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& scheduler, Display& displayModule) :
 	validationLayers_{
 			"VK_LAYER_LUNARG_assistant_layer",
 			"VK_LAYER_LUNARG_standard_validation"
-	}
+}
 {
 
 	//setup Vulkan app info
@@ -28,6 +29,27 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& schedu
 	if constexpr (Compiler::Debug()) {
 
 		requiredInstanceExtensions_.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
+		std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
+
+		for (auto layer : validationLayers_) {
+
+			bool found = false;
+			for (const auto& layerProperties : availableLayers) {
+
+				if (strcmp(layer, layerProperties.layerName) == 0) {
+					found = true;
+					break;
+				}
+
+			}
+
+			if (!found) {
+
+				throw std::runtime_error("Specified Vulkan validation layer is not available.");
+
+			}
+		}
 
 	}
 
@@ -73,17 +95,14 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& schedu
 	}
 
 
-
 	//setup devices
-	//TODO: abstract physical devices
-	//TODO: guarantee size constnest
 	auto physicalDevices = instance_.enumeratePhysicalDevices();
 	devices_.reserve(physicalDevices.size());
 
 	for (auto& physicalDevice : physicalDevices)
 	{
 
-		devices_.emplace_back( scheduler, physicalDevice);
+		devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
 
 	}
 
@@ -92,11 +111,15 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& schedu
 VulkanRasterBackend::~VulkanRasterBackend()
 {
 
-	for (auto& device : devices_)
+	for (auto& surface : surfaces_)
 	{
-		device.Synchronize();
+
+		instance_.destroySurfaceKHR(surface);
+
 	}
 
+	surfaces_.clear();
+	swapChains_.clear();
 	devices_.clear();
 
 	if constexpr (Compiler::Debug()) {
@@ -128,11 +151,26 @@ void VulkanRasterBackend::CreateWindow(const WindowParameters& params)
 	displayModule_->CreateWindow(params, this);
 }
 
-void VulkanRasterBackend::RegisterSurface(VkSurfaceKHR& surface)
+void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size)
 {
-	
-	//TODO: destroy surfaces
-	//instance.destroySurfaceKHR(surface_);
+
+	//SPtr<VulkanDevice> presentDevice = mRenderAPI._getPresentDevice();
+	auto& device = devices_[0];
+	const vk::PhysicalDevice& physicalDevice = device->GetPhysical();
+
+	if (!physicalDevice.getSurfaceSupportKHR(device->GetGraphicsIndex(), surface))
+	{
+
+		throw NotImplemented();
+
+	}
+
+	const auto format = device->GetSurfaceFormat(surface);
+
+
+	surfaces_.push_back(std::move(surface));
+	swapChains_.emplace_back(device, surface, format.colorFormat, format.colorSpace, size, false, nullptr);
+
 }
 
 //TODO: Refactor. Better way for the Display module to inject extensions?
@@ -152,7 +190,6 @@ VkBool32 VulkanRasterBackend::DebugCallback(
 	const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 	void* pUserData) {
 
-	assert(false);
-	//TODO: some true down to earth messaging
-	return true;
+	throw NotImplemented();
+
 }

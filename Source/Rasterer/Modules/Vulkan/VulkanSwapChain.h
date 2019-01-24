@@ -1,13 +1,11 @@
 #pragma once
 
+#include "VulkanPipeline.h"
+#include "VulkanFrameBuffer.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
-#include "Composition/Entity/Entity.h"
 
-class EntityManager;
-class VulkanFrameBuffer;
-class VulkanPipeline;
 class VulkanDevice;
 
 struct SwapChainImage {
@@ -30,6 +28,7 @@ public:
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
 	void Present();
+
 
 private:
 

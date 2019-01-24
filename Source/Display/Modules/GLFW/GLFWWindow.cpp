@@ -72,7 +72,8 @@ GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, Ras
 
 	assert(error == VK_SUCCESS);
 
-	vulkanRasterBackend->RegisterSurface(castSurface);
+	vk::SurfaceKHR surface = static_cast<vk::SurfaceKHR>(castSurface);
+	vulkanRasterBackend->RegisterSurface(surface, params.pixelSize);
 
 }
 

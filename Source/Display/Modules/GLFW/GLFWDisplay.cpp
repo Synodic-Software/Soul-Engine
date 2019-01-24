@@ -3,6 +3,7 @@
 #include "Display/WindowParameters.h"
 #include "Display/Modules/GLFW/GLFWWindow.h"
 #include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
+#include "Core/Utility/Exception/Exception.h"
 
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
@@ -15,18 +16,20 @@ GLFWDisplay::GLFWDisplay()
 	//set the error callback
 	// TODO: Proper error handling
 	glfwSetErrorCallback([](int error, const char* description) {
-		assert(false);
+
+		throw NotImplemented();
+
 	});
 
 	//Initialize GLFW context for Window handling
 	// TODO: proper error handling
-	const auto didInit = glfwInit();
-	assert(didInit);
+	const auto initSuccess = glfwInit();
+	assert(initSuccess);
 
 	//Raster API specific checks
 	assert(glfwVulkanSupported());
 
-	//TODO: abstract monitors
+	//TODO: std::span
 	int monitorCount;
 	GLFWmonitor** tempMonitors = glfwGetMonitors(&monitorCount);
 	monitors_.reserve(monitorCount);
