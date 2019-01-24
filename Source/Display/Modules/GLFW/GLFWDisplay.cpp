@@ -71,7 +71,7 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* ra
 	GLFWmonitor* monitor = monitors_[params.monitor];
 
 
-	std::unique_ptr<GLFWWindow> window = std::make_unique<GLFWWindow>(params, monitor, rasterModule, windows_.empty());
+	std::unique_ptr<GLFWWindow> window = std::make_unique<GLFWWindow>(params, monitor, static_cast<VulkanRasterBackend*>(rasterModule), windows_.empty());
 
 	const auto context = window->Context();
 	windows_[context] = std::move(window);

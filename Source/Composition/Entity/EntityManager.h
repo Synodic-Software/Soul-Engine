@@ -2,7 +2,7 @@
 
 #include "Entity.h"
 #include "Composition/Component/Component.h"
-#include "Core/Utility/ClassID/ClassID.h"
+#include "Core/Utility/ID/ClassID.h"
 #include "SparseEntitySet/AbstractSparseEntitySet.h"
 #include "SparseEntitySet/SparseEntitySet.h"
 

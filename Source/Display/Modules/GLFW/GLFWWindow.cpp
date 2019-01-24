@@ -5,8 +5,9 @@
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
-GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, RasterBackend* rasterBackend, bool master) :
+GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, VulkanRasterBackend* rasterModule, bool master) :
 	Window(params),
+	rasterModule_(rasterModule),
 	master_(master)
 {
 
@@ -59,12 +60,9 @@ GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, Ras
 	//GLFW guarantees Vulkan support.
 	VkSurfaceKHR castSurface;
 
-	//GLFW is guaranteed to use Vulkan
-	auto vulkanRasterBackend = dynamic_cast<VulkanRasterBackend*>(rasterBackend);
-
 	//guaranteed to use GLFW if using Vulkan
 	const VkResult error = glfwCreateWindowSurface(
-		static_cast<VkInstance>(vulkanRasterBackend->GetInstance()),
+		static_cast<VkInstance>(rasterModule_->GetInstance()),
 		context_,
 		nullptr,
 		&castSurface
@@ -72,12 +70,14 @@ GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, Ras
 
 	assert(error == VK_SUCCESS);
 
-	vk::SurfaceKHR surface = static_cast<vk::SurfaceKHR>(castSurface);
-	vulkanRasterBackend->RegisterSurface(surface, params.pixelSize);
+	auto surface = static_cast<vk::SurfaceKHR>(castSurface);
+	rasterModule_->RegisterSurface(surface, params.pixelSize, id_);
 
 }
 
 GLFWWindow::~GLFWWindow() {
+
+	rasterModule_->RemoveSurface(id_);
 
 	glfwDestroyWindow(context_);
 

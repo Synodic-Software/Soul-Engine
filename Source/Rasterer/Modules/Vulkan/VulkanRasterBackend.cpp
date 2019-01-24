@@ -111,12 +111,9 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& schedu
 VulkanRasterBackend::~VulkanRasterBackend()
 {
 
-	swapChains_.clear();
+	for (auto& device : devices_) {
 
-	for (auto& surface : surfaces_)
-	{
-
-		instance_.destroySurfaceKHR(surface);
+		device->Synchronize();
 
 	}
 
@@ -138,7 +135,7 @@ void VulkanRasterBackend::Draw()
 	for (auto& swapChain : swapChains_)
 	{
 
-		swapChain.Present();
+		swapChain.second.Present();
 
 	}
 
@@ -153,13 +150,15 @@ void VulkanRasterBackend::DrawIndirect()
 
 void VulkanRasterBackend::CreateWindow(const WindowParameters& params)
 {
+
 	displayModule_->CreateWindow(params, this);
+
 }
 
-void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size)
+void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size, uint id)
 {
 
-	//SPtr<VulkanDevice> presentDevice = mRenderAPI._getPresentDevice();
+	//TODO: multiple devices
 	auto& device = devices_[0];
 	const vk::PhysicalDevice& physicalDevice = device->GetPhysical();
 
@@ -171,10 +170,29 @@ void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 si
 	}
 
 	const auto format = device->GetSurfaceFormat(surface);
+	swapChains_.emplace(std::piecewise_construct,
+		std::forward_as_tuple(id),
+		std::forward_as_tuple(device, surface, format.colorFormat, format.colorSpace, size, false, nullptr)
+	);
 
+	surfaces_.emplace(std::piecewise_construct,
+		std::forward_as_tuple(id),
+		std::forward_as_tuple(surface)
+	);
 
-	surfaces_.push_back(surface);
-	swapChains_.emplace_back(device, surface, format.colorFormat, format.colorSpace, size, false, nullptr);
+}
+
+void VulkanRasterBackend::RemoveSurface(uint id)
+{
+	//TODO: multiple devices
+	auto& device = devices_[0];
+
+	device->Synchronize();
+
+	swapChains_.erase(id);
+
+	instance_.destroySurfaceKHR(surfaces_.at(id));
+	surfaces_.erase(id);
 
 }
 

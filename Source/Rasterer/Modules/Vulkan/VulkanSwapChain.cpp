@@ -172,6 +172,9 @@ VulkanSwapChain::~VulkanSwapChain() {
 
 	const auto& logicalDevice = vkDevice_->GetLogical();
 
+	logicalDevice.freeCommandBuffers(vkDevice_->GetCommandPool(),
+		static_cast<uint32_t>(commandBuffers_.size()), commandBuffers_.data());
+
 	frameBuffers_.clear();
 
 	for (const auto& image : images_) {

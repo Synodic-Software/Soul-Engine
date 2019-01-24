@@ -103,8 +103,6 @@ VulkanDevice::VulkanDevice(std::shared_ptr<FiberScheduler>& scheduler, vk::Physi
 
 VulkanDevice::~VulkanDevice() {
 
-	Synchronize();
-
 	scheduler_->ForEachThread(FiberPriority::UX, [this]() noexcept
 	{
 

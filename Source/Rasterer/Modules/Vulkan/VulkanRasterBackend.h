@@ -7,6 +7,8 @@
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
 
+#include <unordered_map>
+
 class FiberScheduler;
 class Display;
 class VulkanDevice;
@@ -30,7 +32,8 @@ public:
 
 	void CreateWindow(const WindowParameters&) override;
 
-	void RegisterSurface(vk::SurfaceKHR&, glm::uvec2);
+	void RegisterSurface(vk::SurfaceKHR&, glm::uvec2, uint);
+	void RemoveSurface(uint);
 
 	void AddInstanceExtensions(std::vector<char const*>&);
 	vk::Instance& GetInstance();
@@ -43,8 +46,8 @@ private:
 
 	vk::Instance instance_;
 	std::vector<std::shared_ptr<VulkanDevice>> devices_;
-	std::vector<vk::SurfaceKHR> surfaces_;
-	std::vector<VulkanSwapChain> swapChains_;
+	std::unordered_multimap<uint, VulkanSwapChain> swapChains_;
+	std::unordered_map<uint, vk::SurfaceKHR> surfaces_;
 
 	//Dynamic dispatcher for extensions
 	vk::DispatchLoaderDynamic dispatcher_;
