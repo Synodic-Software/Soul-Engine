@@ -2,7 +2,7 @@
 
 #include "Core/Interface/Project/Project.h"
 
-#include "Core/Utility/CRTP/CRTP.h"
+#include "Core/Utility/Template/CRTP.h"
 
 #include <iostream>
 #include <fstream>

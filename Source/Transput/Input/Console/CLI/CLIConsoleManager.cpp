@@ -1,5 +1,5 @@
 #include "CLIConsoleManager.h"
-#include "Display/Window/Window.h"
+#include "Display/Window.h"
 
 CLIConsoleManager::CLIConsoleManager(EventManager& eventManager, Soul& soul_ref) :
 	ConsoleManager(eventManager, soul_ref),

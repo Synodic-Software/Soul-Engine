@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Parallelism/Fiber/Scheduler.h"
-
 #include "Core/Utility/Types.h"
 
 #include <functional>

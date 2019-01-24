@@ -2,7 +2,6 @@
 
 #include "Core/Utility/Types.h"
 
-//declare to prevent circular includes
 class EntityManager;
 
 template<typename T>
@@ -32,11 +31,11 @@ public:
 	Entity();
 	~Entity() = default;
 
-	Entity(const Entity&) = default;
-	Entity(Entity&& o) = default;
+	Entity(const Entity &) = default;
+	Entity(Entity &&) noexcept = default;
 
-	Entity& operator=(const Entity&) = default;
-	Entity& operator=(Entity&& other) = default;
+	Entity& operator=(const Entity &) = default;
+	Entity& operator=(Entity &&) noexcept = default;
 
 	//public funcs
 	bool IsNull() const;

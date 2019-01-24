@@ -1,13 +1,25 @@
 #pragma once
 
+#include "Composition/Component/Component.h"
+
 #include <glm/glm.hpp>
 #include "Core/Utility/Types.h"
 
-class Face
+class Face : Component<Face>
 {
 
 public:
-	
+
+	Face() = default;
+	~Face() = default;
+
+	Face(const Face &) = default;
+	Face(Face &&) noexcept = default;
+
+	Face& operator=(const Face &) = default;
+	Face& operator=(Face &&) noexcept = default;
+
+
 	glm::uvec3 indices;
 	uint material; //TODO investigate materials
 };

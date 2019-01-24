@@ -1,8 +1,7 @@
 #include "DesktopInputManager.h"
+
 #include "Composition/Event/EventManager.h"
-#include "Parallelism/Fiber/Scheduler.h"
-#include "Core/Utility/Log/Logger.h"
-#include "Platform/Platform.h"
+#include "Parallelism/Scheduler.h"
 
 DesktopInputManager::DesktopInputManager(EventManager& eventManager) :
 	InputManager(eventManager),

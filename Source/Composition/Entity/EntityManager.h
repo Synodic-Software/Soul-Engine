@@ -2,7 +2,7 @@
 
 #include "Entity.h"
 #include "Composition/Component/Component.h"
-#include "Core/Utility/ClassID/ClassID.h"
+#include "Core/Utility/ID/ClassID.h"
 #include "SparseEntitySet/AbstractSparseEntitySet.h"
 #include "SparseEntitySet/SparseEntitySet.h"
 
@@ -91,7 +91,7 @@ EntityManager::AttachComponent(Entity entity, Args&& ... args) {
 
 	const auto componentId = ClassID::Id<Comp>();
 
-	//componentId is always incrmenting.
+	//componentId is always incrementing.
 	if (componentId >= componentPools_.size() ) {
 		componentPools_.push_back(std::make_unique<SparseEntitySet<Comp>>());
 	}

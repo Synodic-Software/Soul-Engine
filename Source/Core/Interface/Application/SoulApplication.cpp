@@ -8,9 +8,9 @@ SoulApplication::SoulApplication(SoulParameters params) :
 {
 }
 
-Window& SoulApplication::CreateWindow(WindowParameters& params) {
+void SoulApplication::CreateWindow(WindowParameters& params) {
 
-	return soul.CreateWindow(params);
+	soul.CreateWindow(params);
 
 }
 

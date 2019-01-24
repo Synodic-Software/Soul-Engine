@@ -4,12 +4,17 @@
 #include <memory>
 #include <chrono>
 
-struct WindowParameters;
+class WindowParameters;
 class Window;
 class Frame;
 class CLIConsoleManager;
+class Entity;
 
-class Soul {
+class FiberScheduler;
+class Display;
+class RasterBackend;
+
+class Soul final{
 
 public:
 	friend class CLIConsoleManager;
@@ -21,7 +26,7 @@ public:
 	Soul& operator=(Soul&&) noexcept = delete;
 
 	void Init();
-	Window& CreateWindow(WindowParameters&);
+	void CreateWindow(WindowParameters&);
 
 private:
 
@@ -46,10 +51,14 @@ private:
 	void Raster();
 	bool Poll();
 
-	SoulParameters& parameters;
+	SoulParameters& parameters_;
 
+	std::chrono::nanoseconds frameTime_;
+	bool active_;
 
-	std::chrono::nanoseconds frameTime;
+	//services and modules	
+	std::shared_ptr<FiberScheduler> schedulerModule_;
+	std::unique_ptr<RasterBackend> rasterModule_;
 
 	//hidden Soul services and modules
 	class Implementation;

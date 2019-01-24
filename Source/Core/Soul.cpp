@@ -1,40 +1,31 @@
 #include "Soul.h"
 
 #include "SoulImplementation.h"
-#include "Platform/Platform.h"
+#include "System/Platform.h"
+
+#include "Parallelism/Modules/Fiber/FiberScheduler.h"
+#include "Display/Display.h"
+#include "Rasterer/RasterBackend.h"
 
 Soul::Soul(SoulParameters& params) :
-	parameters(params),
-	frameTime(),
+	parameters_(params),
+	frameTime_(),
+	active_(true),
+	schedulerModule_(Scheduler::CreateModule(parameters_.threadCount)),
+	rasterModule_(RasterBackend::CreateModule(schedulerModule_)),
 	detail(std::make_unique<Implementation>(*this))
 {
-	parameters.engineRefreshRate.AddCallback([this](int value)
+	parameters_.engineRefreshRate.AddCallback([this](const int value)
 	{
-		frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1)) / value;
+		frameTime_ = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1)) / value;
 	});
 
-	//flush parameters with new callbacks
-	parameters.engineRefreshRate.Update();
+	//flush parameters_ with new callbacks
+	parameters_.engineRefreshRate.Update();
 }
 
 //definition to complete PIMPL idiom
 Soul::~Soul() = default;
-
-//////////////////////Synchronization///////////////////////////
-
-
-void SynchCPU() {
-	//Scheduler::Block(); //TODO Implement MT calls
-}
-
-void SynchGPU() {
-	//CudaCheck(cudaDeviceSynchronize());
-}
-
-void SynchSystem() {
-	SynchGPU();
-	SynchCPU();
-}
 
 
 /////////////////////////Core/////////////////////////////////
@@ -44,6 +35,8 @@ void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 	EarlyFrameUpdate();
 
 	newFrame.Dirty(Poll());
+
+	active_ = rasterModule_->Active();
 
 }
 
@@ -125,8 +118,7 @@ void Soul::LateUpdate() {
 
 void Soul::Raster() {
 
-	//Backends should handle multithreading
-	detail->windowManager_->Draw();
+	rasterModule_->Draw();
 
 }
 
@@ -144,7 +136,7 @@ void Soul::Init()
 
 	if constexpr (Platform::WithCLI()) {
 		FiberParameters fParams(false);
-		detail->scheduler_.AddTask(fParams, [this]()
+		schedulerModule_->AddTask(fParams, [this]()
 		{
 			detail->consoleManager_->Poll();
 		});
@@ -153,10 +145,9 @@ void Soul::Init()
 	}
 }
 
-Window& Soul::CreateWindow(WindowParameters& params) {
+void Soul::CreateWindow(WindowParameters& params) {
 
-	Window& window = detail->windowManager_->CreateWindow(params);
-	return window;
+	rasterModule_->CreateWindow(params);
 
 }
 
@@ -167,21 +158,18 @@ void Soul::Run()
 	Warmup();
 
 	auto currentTime = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
-	auto nextTime = currentTime + frameTime;
+	auto nextTime = currentTime + frameTime_;
 
-	while (!detail->windowManager_->ShouldClose()) {
+	while (active_) {
 
 		currentTime = nextTime;
-		nextTime = currentTime + frameTime;
+		nextTime = currentTime + frameTime_;
 
-		detail->framePipeline_.Execute(frameTime);
+		detail->framePipeline_.Execute(frameTime_);
 
-		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime);
-		else detail->scheduler_.YieldUntil(nextTime);
+		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime_);
+		else schedulerModule_->YieldUntil(nextTime);
 
 	}
-
-	//done running, synchronize rastering
-	detail->rasterManager_.Synchronize();
 
 }

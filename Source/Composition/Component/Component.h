@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Core/Utility/CRTP/CRTP.h"
+#include "Core/Utility/Template/CRTP.h"
 
+class EntityManager;
 
-//The component class should hold no per-instance state
 template<typename T>
 class Component : CRTP<T, Component>
 {
@@ -13,11 +13,11 @@ public:
 	Component() = default;
 	~Component() override = default;
 
-	virtual void Terminate() = 0;
+	Component(const Component &) = default;
+	Component(Component &&) noexcept = default;
+
+	Component& operator=(const Component &) = default;
+	Component& operator=(Component &&) noexcept = default;
+
 
 };
-
-template<typename T>
-void Component<T>::Terminate() {
-	this->Type().Terminate();
-}
