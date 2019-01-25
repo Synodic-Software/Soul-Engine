@@ -18,7 +18,7 @@ class VulkanRasterBackend final : public RasterBackend {
 
 public:
 
-	VulkanRasterBackend(std::shared_ptr<FiberScheduler>&, Display&);
+	VulkanRasterBackend(std::shared_ptr<FiberScheduler>&, std::shared_ptr<Display>&);
 	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
@@ -29,8 +29,6 @@ public:
 
 	void Draw() override;
 	void DrawIndirect() override;
-
-	void CreateWindow(const WindowParameters&) override;
 
 	void RegisterSurface(vk::SurfaceKHR&, glm::uvec2, uint);
 	void RemoveSurface(uint);

@@ -20,6 +20,5 @@ public:
 	void Draw() override;
 	void DrawIndirect() override;
 
-	void CreateWindow(const WindowParameters&) override;
 
 };

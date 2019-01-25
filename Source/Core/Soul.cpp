@@ -12,7 +12,8 @@ Soul::Soul(SoulParameters& params) :
 	frameTime_(),
 	active_(true),
 	schedulerModule_(Scheduler::CreateModule(parameters_.threadCount)),
-	rasterModule_(RasterBackend::CreateModule(schedulerModule_)),
+	displayModule_(Display::CreateModule()),
+	rasterModule_(RasterBackend::CreateModule(schedulerModule_, displayModule_)),
 	detail(std::make_unique<Implementation>(*this))
 {
 	parameters_.engineRefreshRate.AddCallback([this](const int value)
@@ -36,7 +37,7 @@ void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 
 	newFrame.Dirty(Poll());
 
-	active_ = rasterModule_->Active();
+	active_ = displayModule_->Active();
 
 }
 
@@ -147,7 +148,7 @@ void Soul::Init()
 
 void Soul::CreateWindow(WindowParameters& params) {
 
-	rasterModule_->CreateWindow(params);
+	displayModule_->CreateWindow(params, rasterModule_.get());
 
 }
 

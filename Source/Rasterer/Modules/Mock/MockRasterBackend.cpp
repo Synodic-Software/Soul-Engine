@@ -15,10 +15,3 @@ void MockRasterBackend::DrawIndirect()
 	throw NotImplemented();
 
 }
-
-void MockRasterBackend::CreateWindow(const WindowParameters& params)
-{
-
-	throw NotImplemented();
-
-}
