@@ -30,7 +30,7 @@ public:
 	void Draw() override;
 	void DrawIndirect() override;
 
-	std::unique_ptr<VulkanSwapChain> RegisterSurface(vk::SurfaceKHR&, glm::uvec2);
+	std::unique_ptr<VulkanSwapChain> RegisterSurface(vk::SurfaceKHR&, glm::uvec2, VulkanSwapChain* = nullptr);
 	void RemoveSurface(vk::SurfaceKHR&);
 
 	void AddInstanceExtensions(std::vector<char const*>&);

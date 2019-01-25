@@ -96,7 +96,9 @@ void GLFWWindow::FrameBufferResize(int x, int y)
 {
 
 	windowParams_.pixelSize = { x,y };
-	
+	auto newSwapChain = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize, swapChain_.get());
+	swapChain_.swap(newSwapChain);
+
 }
 
 GLFWwindow* GLFWWindow::Context() const

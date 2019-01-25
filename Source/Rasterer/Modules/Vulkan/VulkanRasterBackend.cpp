@@ -143,7 +143,7 @@ void VulkanRasterBackend::DrawIndirect()
 
 }
 
-std::unique_ptr<VulkanSwapChain> VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size)
+std::unique_ptr<VulkanSwapChain> VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size, VulkanSwapChain* oldSwapChain)
 {
 
 	//TODO: multiple devices
@@ -158,7 +158,7 @@ std::unique_ptr<VulkanSwapChain> VulkanRasterBackend::RegisterSurface(vk::Surfac
 	}
 
 	const auto format = device->GetSurfaceFormat(surface);
-	return std::make_unique<VulkanSwapChain>(device, surface, format.colorFormat, format.colorSpace, size, false, nullptr);
+	return std::make_unique<VulkanSwapChain>(device, surface, format.colorFormat, format.colorSpace, size, false, oldSwapChain);
 
 }
 
