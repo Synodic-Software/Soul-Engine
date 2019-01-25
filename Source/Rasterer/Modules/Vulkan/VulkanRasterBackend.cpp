@@ -7,7 +7,7 @@
 #include "Display/Display.h"
 #include "VulkanSwapChain.h"
 
-VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& scheduler, Display& displayModule) :
+VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& scheduler, std::shared_ptr<Display>& displayModule) :
 	validationLayers_{
 			"VK_LAYER_LUNARG_assistant_layer",
 			"VK_LAYER_LUNARG_standard_validation"
@@ -23,7 +23,7 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& schedu
 	appInfo.pEngineName = "Soul Engine"; //TODO forward the engine name here
 
 	// The display will forward the extensions needed for Vulkan
-	displayModule.RegisterRasterBackend(this);
+	displayModule->RegisterRasterBackend(this);
 
 	//TODO minimize memory/runtime impact
 	if constexpr (Compiler::Debug()) {
@@ -132,12 +132,7 @@ VulkanRasterBackend::~VulkanRasterBackend()
 void VulkanRasterBackend::Draw()
 {
 
-	for (auto& swapChain : swapChains_)
-	{
-
-		swapChain.second.Present();
-
-	}
+	throw NotImplemented();
 
 }
 
@@ -148,14 +143,7 @@ void VulkanRasterBackend::DrawIndirect()
 
 }
 
-void VulkanRasterBackend::CreateWindow(const WindowParameters& params)
-{
-
-	displayModule_->CreateWindow(params, this);
-
-}
-
-void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size, uint id)
+std::unique_ptr<VulkanSwapChain> VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size, VulkanSwapChain* oldSwapChain)
 {
 
 	//TODO: multiple devices
@@ -170,29 +158,14 @@ void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 si
 	}
 
 	const auto format = device->GetSurfaceFormat(surface);
-	swapChains_.emplace(std::piecewise_construct,
-		std::forward_as_tuple(id),
-		std::forward_as_tuple(device, surface, format.colorFormat, format.colorSpace, size, false, nullptr)
-	);
-
-	surfaces_.emplace(std::piecewise_construct,
-		std::forward_as_tuple(id),
-		std::forward_as_tuple(surface)
-	);
+	return std::make_unique<VulkanSwapChain>(device, surface, format.colorFormat, format.colorSpace, size, false, oldSwapChain);
 
 }
 
-void VulkanRasterBackend::RemoveSurface(uint id)
+void VulkanRasterBackend::RemoveSurface(vk::SurfaceKHR& surface)
 {
-	//TODO: multiple devices
-	auto& device = devices_[0];
 
-	device->Synchronize();
-
-	swapChains_.erase(id);
-
-	instance_.destroySurfaceKHR(surfaces_.at(id));
-	surfaces_.erase(id);
+	instance_.destroySurfaceKHR(surface);
 
 }
 

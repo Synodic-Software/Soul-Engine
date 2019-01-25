@@ -18,7 +18,7 @@ class VulkanRasterBackend final : public RasterBackend {
 
 public:
 
-	VulkanRasterBackend(std::shared_ptr<FiberScheduler>&, Display&);
+	VulkanRasterBackend(std::shared_ptr<FiberScheduler>&, std::shared_ptr<Display>&);
 	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
@@ -30,10 +30,8 @@ public:
 	void Draw() override;
 	void DrawIndirect() override;
 
-	void CreateWindow(const WindowParameters&) override;
-
-	void RegisterSurface(vk::SurfaceKHR&, glm::uvec2, uint);
-	void RemoveSurface(uint);
+	std::unique_ptr<VulkanSwapChain> RegisterSurface(vk::SurfaceKHR&, glm::uvec2, VulkanSwapChain* = nullptr);
+	void RemoveSurface(vk::SurfaceKHR&);
 
 	void AddInstanceExtensions(std::vector<char const*>&);
 	vk::Instance& GetInstance();
@@ -46,8 +44,6 @@ private:
 
 	vk::Instance instance_;
 	std::vector<std::shared_ptr<VulkanDevice>> devices_;
-	std::unordered_multimap<uint, VulkanSwapChain> swapChains_;
-	std::unordered_map<uint, vk::SurfaceKHR> surfaces_;
 
 	//Dynamic dispatcher for extensions
 	vk::DispatchLoaderDynamic dispatcher_;

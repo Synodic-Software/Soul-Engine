@@ -26,17 +26,9 @@ public:
 
 	virtual void Draw() = 0;
 	virtual void DrawIndirect() = 0;
-	virtual void CreateWindow(const WindowParameters&) = 0;
-
-	bool Active();
 
 	//Factory
-	static std::unique_ptr<RasterBackend> CreateModule(std::shared_ptr<FiberScheduler>&);
-
-
-protected:
-
-	static std::unique_ptr<Display> displayModule_;
+	static std::shared_ptr<RasterBackend> CreateModule(std::shared_ptr<FiberScheduler>&, std::shared_ptr<Display>&);
 
 
 };

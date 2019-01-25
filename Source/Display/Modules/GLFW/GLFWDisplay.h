@@ -33,7 +33,7 @@ public:
 	void Refresh();
 	void Resize(int, int);
 	void PositionUpdate(int, int);
-	void FrameBufferResize(int, int);
+	void FrameBufferResize(GLFWWindow&, int, int);
 	void Close(GLFWWindow&);
 
 

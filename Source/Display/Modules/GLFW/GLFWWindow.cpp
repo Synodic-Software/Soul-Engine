@@ -1,6 +1,7 @@
 #include "GLFWWindow.h"
 
 #include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
+#include "Rasterer/Modules/Vulkan/VulkanSwapChain.h"
 
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
@@ -70,16 +71,33 @@ GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, Vul
 
 	assert(error == VK_SUCCESS);
 
-	auto surface = static_cast<vk::SurfaceKHR>(castSurface);
-	rasterModule_->RegisterSurface(surface, params.pixelSize, id_);
+	surface_ = static_cast<vk::SurfaceKHR>(castSurface);
+	swapChain_ = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize);
 
 }
 
 GLFWWindow::~GLFWWindow() {
 
-	rasterModule_->RemoveSurface(id_);
+	swapChain_.reset();
+	rasterModule_->RemoveSurface(surface_);
 
 	glfwDestroyWindow(context_);
+
+}
+
+void GLFWWindow::Draw()
+{
+
+	swapChain_->Present();
+
+}
+
+void GLFWWindow::FrameBufferResize(int x, int y)
+{
+
+	windowParams_.pixelSize = { x,y };
+	auto newSwapChain = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize, swapChain_.get());
+	swapChain_.swap(newSwapChain);
 
 }
 
@@ -96,3 +114,4 @@ bool GLFWWindow::Master() const
 	return master_;
 
 }
+

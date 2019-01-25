@@ -82,6 +82,7 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 	swapchainCreateInfo.presentMode = swapchainPresentMode;
 	swapchainCreateInfo.clipped = VK_TRUE;
 	swapchainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
+	swapchainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
 
 	swapChain_ = logicalDevice.createSwapchainKHR(swapchainCreateInfo);
 	auto swapChainImages = logicalDevice.getSwapchainImagesKHR(swapChain_);
@@ -171,6 +172,8 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 VulkanSwapChain::~VulkanSwapChain() {
 
 	const auto& logicalDevice = vkDevice_->GetLogical();
+
+	vkDevice_->Synchronize();
 
 	logicalDevice.freeCommandBuffers(vkDevice_->GetCommandPool(),
 		static_cast<uint32_t>(commandBuffers_.size()), commandBuffers_.data());
