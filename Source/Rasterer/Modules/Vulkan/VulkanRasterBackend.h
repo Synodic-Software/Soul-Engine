@@ -30,8 +30,8 @@ public:
 	void Draw() override;
 	void DrawIndirect() override;
 
-	void RegisterSurface(vk::SurfaceKHR&, glm::uvec2, uint);
-	void RemoveSurface(uint);
+	std::unique_ptr<VulkanSwapChain> RegisterSurface(vk::SurfaceKHR&, glm::uvec2);
+	void RemoveSurface(vk::SurfaceKHR&);
 
 	void AddInstanceExtensions(std::vector<char const*>&);
 	vk::Instance& GetInstance();
@@ -44,8 +44,6 @@ private:
 
 	vk::Instance instance_;
 	std::vector<std::shared_ptr<VulkanDevice>> devices_;
-	std::unordered_multimap<uint, VulkanSwapChain> swapChains_;
-	std::unordered_map<uint, vk::SurfaceKHR> surfaces_;
 
 	//Dynamic dispatcher for extensions
 	vk::DispatchLoaderDynamic dispatcher_;

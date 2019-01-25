@@ -173,6 +173,8 @@ VulkanSwapChain::~VulkanSwapChain() {
 
 	const auto& logicalDevice = vkDevice_->GetLogical();
 
+	vkDevice_->Synchronize();
+
 	logicalDevice.freeCommandBuffers(vkDevice_->GetCommandPool(),
 		static_cast<uint32_t>(commandBuffers_.size()), commandBuffers_.data());
 

@@ -119,7 +119,7 @@ void Soul::LateUpdate() {
 
 void Soul::Raster() {
 
-	rasterModule_->Draw();
+	displayModule_->Draw();
 
 }
 

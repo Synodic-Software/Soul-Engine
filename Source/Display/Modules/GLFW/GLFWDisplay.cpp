@@ -56,12 +56,20 @@ GLFWDisplay::~GLFWDisplay()
 
 void GLFWDisplay::Draw() {
 
+	//TODO: selective drawing based on dirty state
+	for (auto& window : windows_)
+	{
+
+		window.second->Draw();
+
+	}
+
 }
 
 bool GLFWDisplay::Active() {
 
-	return windows_.size() > 0;
-	
+	return !windows_.empty();
+
 }
 
 void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* rasterModule) {
@@ -105,7 +113,7 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* ra
 
 		//Only resize if necessary
 		if (static_cast<uint>(x) != thisWindow.Parameters().pixelSize.x || static_cast<uint>(y) != thisWindow.Parameters().pixelSize.y) {
-			display->FrameBufferResize(x, y);
+			display->FrameBufferResize(thisWindow, x, y);
 		}
 	});
 
@@ -146,7 +154,9 @@ void GLFWDisplay::Resize(const int x, const int y) {
 
 }
 
-void GLFWDisplay::FrameBufferResize(const int x, const int y) {
+void GLFWDisplay::FrameBufferResize(GLFWWindow& window, const int x, const int y) {
+
+	window.FrameBufferResize(x, y);
 
 }
 

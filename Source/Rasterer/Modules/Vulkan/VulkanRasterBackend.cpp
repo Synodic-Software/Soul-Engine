@@ -132,12 +132,7 @@ VulkanRasterBackend::~VulkanRasterBackend()
 void VulkanRasterBackend::Draw()
 {
 
-	for (auto& swapChain : swapChains_)
-	{
-
-		swapChain.second.Present();
-
-	}
+	throw NotImplemented();
 
 }
 
@@ -148,7 +143,7 @@ void VulkanRasterBackend::DrawIndirect()
 
 }
 
-void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size, uint id)
+std::unique_ptr<VulkanSwapChain> VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size)
 {
 
 	//TODO: multiple devices
@@ -163,29 +158,14 @@ void VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 si
 	}
 
 	const auto format = device->GetSurfaceFormat(surface);
-	swapChains_.emplace(std::piecewise_construct,
-		std::forward_as_tuple(id),
-		std::forward_as_tuple(device, surface, format.colorFormat, format.colorSpace, size, false, nullptr)
-	);
-
-	surfaces_.emplace(std::piecewise_construct,
-		std::forward_as_tuple(id),
-		std::forward_as_tuple(surface)
-	);
+	return std::make_unique<VulkanSwapChain>(device, surface, format.colorFormat, format.colorSpace, size, false, nullptr);
 
 }
 
-void VulkanRasterBackend::RemoveSurface(uint id)
+void VulkanRasterBackend::RemoveSurface(vk::SurfaceKHR& surface)
 {
-	//TODO: multiple devices
-	auto& device = devices_[0];
 
-	device->Synchronize();
-
-	swapChains_.erase(id);
-
-	instance_.destroySurfaceKHR(surfaces_.at(id));
-	surfaces_.erase(id);
+	instance_.destroySurfaceKHR(surface);
 
 }
 
