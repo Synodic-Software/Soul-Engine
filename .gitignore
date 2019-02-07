@@ -1,10 +1,19 @@
+#the visual studio state
 /.vs
 
+#Everything in the `Build` directory should be ignored
+#the README signals the intended use
 Build/*
 !Build/README.md
+
+#All enviroments will be subdirectories and ignored
+#requirement files will not be ignored
+Tools/Python/Enviroments/*/*
 Libraries/*
 
+#Resources
 Resources/Objects/*
 Resources/Textures/*
 
+#CMake
 CMakeSettings.json
