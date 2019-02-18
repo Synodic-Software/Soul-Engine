@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parallelism/Fiber/FiberParameters.h"
+#include "Parallelism/Modules/Fiber/FiberParameters.h"
 
 #include <vector>
 #include <chrono>

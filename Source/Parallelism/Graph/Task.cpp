@@ -1,8 +1,8 @@
 #include "Task.h"
 
-#include "Parallelism/Fiber/Scheduler.h"
+#include "Parallelism/Modules/Fiber/FiberScheduler.h"
 
-Task::Task(Scheduler* scheduler, std::function<void()>&& callable) noexcept:
+Task::Task(FiberScheduler* scheduler, std::function<void()>&& callable) noexcept:
 	scheduler_(scheduler),
 	callable_(std::forward<std::function<void()>>(callable))
 {

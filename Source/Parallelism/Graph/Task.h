@@ -1,18 +1,15 @@
 #pragma once
 
 #include "Node.h"
-#include "Parallelism/Fiber/FiberParameters.h"
-#include "Parallelism/Fiber/Scheduler.h"
-
 #include <functional>
 
-class Scheduler;
+class FiberScheduler;
 
 class Task : public Node{
 
 public:
 
-	Task(Scheduler*, std::function<void()>&&) noexcept;
+	Task(FiberScheduler*, std::function<void()>&&) noexcept;
 
 	~Task() override = default;
 
@@ -27,7 +24,7 @@ public:
 
 private:
 
-	Scheduler* scheduler_;
+	FiberScheduler* scheduler_;
 	std::function<void()> callable_;
 
 

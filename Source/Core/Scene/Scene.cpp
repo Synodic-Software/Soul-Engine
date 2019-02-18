@@ -156,5 +156,5 @@ void Scene::AddObject(Object& obj) {
 
 void Scene::RemoveObject(Object& obj) {
 
-	S_LOG_WARNING("Removal of objects from a scene not yet implemented");
+	//S_LOG_WARNING("Removal of objects from a scene not yet implemented");
 }

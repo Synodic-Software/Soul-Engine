@@ -1,5 +1,5 @@
 #include "CLIConsoleManager.h"
-#include "Display/Window/Window.h"
+#include "Display/Window.h"
 
 CLIConsoleManager::CLIConsoleManager(EventManager& eventManager, Soul& soul_ref) :
 	ConsoleManager(eventManager, soul_ref),
@@ -20,11 +20,27 @@ void CLIConsoleManager::Poll() {
 
 bool CLIConsoleManager::ProcessCommand(const std::string& command) {
 
+	std::list<std::string> input;
+
+	std::map<std::string,std::string> properties = CommandParser::parse(istr_);
+
+	if (properties["err"] != "") {
+		estr_ << "ERROR: " << properties["err"] << std::endl;
+		return false;
+	}
+
 	if (command == "load_window") {
-		// Read in stats about the window
-		int w_width, w_height;
-		std::string w_name;
-		istr_ >> w_width >> w_height >> w_name;
+		// Assign default stats for the window
+		int w_width=512, w_height=512;
+		std::string w_name = "Main";
+
+		if (properties["w"] != "") w_width = stoi(properties["w"]);
+		else if (properties["width"] != "") w_width = stoi(properties["width"]);
+
+		if (properties["h"] != "") w_height = stoi(properties["h"]);
+		else if (properties["height"] != "") w_height = stoi(properties["height"]);
+
+		if (properties["name"] != "") w_name = properties["name"];
 
 		// Create and display the window
 		WindowParameters windowParams;
@@ -36,16 +52,16 @@ bool CLIConsoleManager::ProcessCommand(const std::string& command) {
 		windowParams.pixelSize.x = w_width;
 		windowParams.pixelSize.y = w_height;
 
+		ostr_ << "Creating window of width " << w_width << " and height " << w_height
+			<< " named '" << w_name << "'" << std::endl;
+
 		soul.CreateWindow(windowParams);
 		soul.Run();
 	} else {
-		estr_ << "\""<< command << "\" is not a valid command!" << std::endl;
+		estr_ << "ERROR: \"" << command << "\" is not a valid command" << std::endl;
 		return false;
 	}
 
-	// Clear any excess inputs to istr_
-	std::string tmp;
-	while (istr_ >> tmp);
-
 	return true;
+
 }

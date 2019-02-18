@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Frame.h"
-#include "Core/Soul.h"
 #include "Core/Structures/RingBuffer.h"
 #include "Parallelism/Graph/Graph.h"
-#include "Parallelism/Fiber/Scheduler.h"
+#include "Parallelism/Modules/Fiber/FiberScheduler.h"
 #include "Core/Utility/Function/function_ref.h"
 
 #include <chrono>
@@ -16,7 +15,7 @@ class FramePipeline {
 
 public:
 
-	FramePipeline(Scheduler&, std::array<std::function<void(Frame&, Frame&)>, N>&&);
+	FramePipeline(std::shared_ptr<FiberScheduler>&, std::array<std::function<void(Frame&, Frame&)>, N>&&);
 	~FramePipeline() = default;
 
 	FramePipeline(const FramePipeline&) = delete;
@@ -29,16 +28,16 @@ public:
 
 private:
 
-	Scheduler& scheduler_;
+	std::shared_ptr<FiberScheduler> scheduler_;
 	Graph& graph_;
 	RingBuffer<Frame, N> frames_;
 
 };
 
 template <std::size_t N>
-FramePipeline<N>::FramePipeline(Scheduler& scheduler,std::array<std::function<void(Frame&, Frame&)>, N>&& tasks) :
+FramePipeline<N>::FramePipeline(std::shared_ptr<FiberScheduler>& scheduler,std::array<std::function<void(Frame&, Frame&)>, N>&& tasks) :
 	scheduler_(scheduler),
-	graph_(scheduler.CreateGraph())
+	graph_(scheduler->CreateGraph())
 {
 
 	Task* oldTask = nullptr;
@@ -74,6 +73,6 @@ void FramePipeline<N>::Execute(std::chrono::nanoseconds frameTime) {
 
 	graph_.Execute(frameTime);
 
-	scheduler_.Block();
+	scheduler_->Block();
 
 }

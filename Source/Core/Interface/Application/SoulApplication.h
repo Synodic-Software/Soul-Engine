@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Soul.h"
 #include "Core/SoulParameters.h"
-#include "Display/Window/Window.h"
+#include "Display/Window.h"
 
 class SoulApplication {
 
@@ -10,7 +10,7 @@ public:
 	SoulApplication(SoulParameters = SoulParameters());
 	virtual ~SoulApplication() = default;
 
-	Window& CreateWindow(WindowParameters&);
+	void CreateWindow(WindowParameters&);
 
 	void Run();
 

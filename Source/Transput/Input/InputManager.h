@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Composition/Event/EventManager.h"
 #include "Core/Soul.h"
 
+class EventManager;
 class InputManager {
 
 public:
