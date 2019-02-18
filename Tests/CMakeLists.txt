@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
 
 
 ##############################################
@@ -9,6 +9,3 @@ project(SoulEngineTests
 	DESCRIPTION "Real-time simulation and rendering engine."
 	LANGUAGES CXX
 )
-
-#CUDA is optional
-enable_language(CUDA)

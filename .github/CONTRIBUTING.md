@@ -12,14 +12,6 @@
 
 - An issue should always be created before any coding begins.  
 
-**Version Flow**
-
-- Contributors should fork the Soul Engine repository and create a relevant branch to work from.  
-
 **Pull Requests**
 
-- After coding has been completed and tested, a pull request should be created to merge the branch into Soul Engine’s development branch.
-
-- Remember to reference any relevant issues when completing a pull request.  
-
-- Following a successful code review, the pull request should be merged, and any relevant issues closed.  The branch merged into development can also be deleted at this time.
+*TODO*

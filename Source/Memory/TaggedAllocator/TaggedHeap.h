@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <list>
+#include <string>
 
 /* This class allows for used memory to be tagged on a per-module basis
    Note: Currently, freeing memory for a given module can leave the heap fragmented.

@@ -105,7 +105,7 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 
 	//TODO: Remove hardcoded pipeline + Hardcoded paths
 	//TODO: Associate paths to Project/Executable
-	pipeline_ = std::make_unique<VulkanPipeline>(vkDevice_, swapchainSize, "../../Soul Engine/Resources/Shaders/vert.spv", "../../Soul Engine/Resources/Shaders/frag.spv", colorFormat);
+	pipeline_ = std::make_unique<VulkanPipeline>(vkDevice_, swapchainSize, "../Soul Engine/Resources/Shaders/vert.spv", "../Soul Engine/Resources/Shaders/frag.spv", colorFormat);
 
 	frameBuffers_.reserve(images_.size());
 	for (SwapChainImage& image : images_) {

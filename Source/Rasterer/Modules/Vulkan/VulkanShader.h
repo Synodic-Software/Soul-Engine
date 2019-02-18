@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Transput/Resource/Default/SPIRVLoader.h"
-#include "Composition/Entity/EntityManager.h"
-
 #include <vulkan/vulkan.hpp>
+
+#include <filesystem>
 
 class VulkanDevice;
 
@@ -11,7 +10,7 @@ class VulkanShader {
 
 public:
 
-	VulkanShader(std::shared_ptr<VulkanDevice>&, const std::string&);
+	VulkanShader(std::shared_ptr<VulkanDevice>&, const std::filesystem::path&);
 	virtual ~VulkanShader();
 
 	VulkanShader(const VulkanShader&) = delete;
@@ -20,7 +19,7 @@ public:
 	VulkanShader& operator=(const VulkanShader&) = delete;
 	VulkanShader& operator=(VulkanShader&& other) noexcept = delete;
 
-	vk::ShaderModule CreateModule(const vk::Device&, const std::string&);
+	vk::ShaderModule CreateModule(const vk::Device&, const std::filesystem::path&);
 
 	virtual vk::PipelineShaderStageCreateInfo CreateInfo() = 0;
 

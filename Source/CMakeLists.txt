@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
 
 
 ##############################################
@@ -11,7 +11,19 @@ project(SoulEngine
 )
 
 #CUDA is optional
-enable_language(CUDA)
+include(CheckLanguage)
+check_language(CUDA)
+
+if(CMAKE_CUDA_COMPILER)
+
+	#TODO: CUDA is not supported in VS2019 Preview
+	#enable_language(CUDA)
+
+else()
+
+	message(STATUS "CUDA is missing or a compiler with CUDA support can't be found.")
+
+endif()
 
 #Add CMake tools path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../Tools/CMake")
@@ -20,8 +32,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../Tools/CMake")
 ##############################################
 #Sources
 
-file(GLOB_RECURSE PROJECT_HEADERS *.h *.cuh)
-file(GLOB_RECURSE PROJECT_SOURCES *.cpp *.cu)
+file(GLOB_RECURSE PROJECT_HEADERS *.h)
+file(GLOB_RECURSE PROJECT_SOURCES *.cpp)
 set(PROJECT_FILES 
     ${PROJECT_HEADERS} 
     ${PROJECT_SOURCES} 
@@ -32,12 +44,17 @@ set(PROJECT_FILES
 #Dependencies
 
 #Conan via CMake
-include(${CMAKE_CURRENT_SOURCE_DIR}/../Build/conanbuildinfo.cmake)
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../Build/conanbuildinfo_multi.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../Build/conanbuildinfo_multi.cmake)
+else()
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../Build/conanbuildinfo.cmake)
+endif()
+
 conan_basic_setup(TARGETS)
 
 #non-conan dependancies
-find_package(Vulkan REQUIRED)
-find_package(CUDA)
+find_package(Vulkan)
 
 
 ##############################################
@@ -57,11 +74,12 @@ set_target_properties(SoulEngine
 target_include_directories(SoulEngine
     PUBLIC 
         $<INSTALL_INTERFACE:Include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Core/Interface/Application>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Include>
+
     PRIVATE
         ${CUDA_INCLUDE_DIRS}
-        ${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 target_link_libraries(SoulEngine
@@ -101,7 +119,7 @@ install(FILES Core/Interface/Application/SoulApplication.h
 include(CMakePackageConfigHelpers)
 
 set(ConfigPackageSource ${CMAKE_CURRENT_BINARY_DIR}/SoulEngine)
-set(ConfigPackageDestination Libraries/CMake/SoulEngine)
+set(ConfigPackageDestination "Libraries/CMake/SoulEngine")
 
 write_basic_package_version_file(
         ${ConfigPackageSource}/SoulEngine-config-version.cmake
@@ -113,7 +131,7 @@ configure_package_config_file(../Tools/CMake/package-config.cmake.in
 #Install
 install(EXPORT SoulEngineTargets
         DESTINATION ${ConfigPackageDestination}
-        FILE SoulEngine-targets.cmake
+        FILE SoulEngineTargets.cmake
         NAMESPACE synodic::
         COMPONENT Devel)
 install(FILES

@@ -1,28 +1,46 @@
-{
+﻿{
+  "environments": [
+    {
+      "BuildDir": "${projectDir}\\Build"
+    }
+  ],
+
   "configurations": [
+    {
+      "name": "Release",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${env.BuildDir}\\${name}",
+      "installRoot": "${projectDir}\\Libraries\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": []
+    },
     {
       "name": "Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
-      "inheritEnvironments": [
-        "msvc_x64_x64"
-      ],
-      "buildRoot": "${projectDir}\\Build\\${name}",
+      "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${projectDir}\\Libraries\\${name}",
       "cmakeCommandArgs": "",
-      "buildCommandArgs": ""
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": []
     },
     {
-      "name": "Release",
+      "name": "RelWithDebInfo",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
-      "inheritEnvironments": [
-        "msvc_x64_x64"
-      ],
-      "buildRoot": "${projectDir}\\Build\\${name}",
+      "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${projectDir}\\Libraries\\${name}",
       "cmakeCommandArgs": "",
-      "buildCommandArgs": ""
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": []
     }
   ]
 }

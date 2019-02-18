@@ -1,12 +1,17 @@
 #include "VulkanShader.h"
 #include "VulkanDevice.h"
+#include "Core/Utility/Exception/Exception.h"
 
-VulkanShader::VulkanShader(std::shared_ptr<VulkanDevice>& device, const std::string& fileName) :
+#include <fstream>
+#include <iostream>
+
+
+VulkanShader::VulkanShader(std::shared_ptr<VulkanDevice>& device, const std::filesystem::path& path) :
 	device_(device)
 {
 	const vk::Device& logicalDevice = device_->GetLogical();
 
-	module_ = CreateModule(logicalDevice, fileName);
+	module_ = CreateModule(logicalDevice, path);
 
 }
 
@@ -18,21 +23,22 @@ VulkanShader::~VulkanShader() {
 
 }
 
-vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std::string& fileName) {
+vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std::filesystem::path& path) {
 
-	//TODO: abstract into some sort of loader
-	std::ifstream file(fileName, std::ios::ate | std::ios::binary);
+	std::cout << std::filesystem::current_path();
 
-	if (!file.is_open()) {
-		assert(false);
+	if (!std::filesystem::exists(path)) {
+		throw NotImplemented();
 	}
 
+	//TODO: abstract into some sort of loader
+	std::ifstream file(path.c_str(), std::ios::binary);
+
 	const size_t fileSize = static_cast<size_t>(file.tellg());
-	std::vector<char> buffer(fileSize);
+	std::vector<std::byte> buffer(fileSize);
 
 	file.seekg(0);
-	file.read(buffer.data(), fileSize);
-
+	file.read(reinterpret_cast<char*>(buffer.data()), fileSize);
 	file.close();
 
 	vk::ShaderModuleCreateInfo createInfo;
