@@ -1,19 +1,13 @@
-#the visual studio state
+#Visual studio meta-data
 /.vs
 
-#Everything in the `Build` directory should be ignored
-#the README signals the intended use
+#Top level directories that should not be in git
 Build/*
-!Build/README.md
-
-#All enviroments will be subdirectories and ignored
-#requirement files will not be ignored
-Tools/Python/Enviroments/*/*
 Libraries/*
+Include/*
+Modules/*
+!Modules/README.md
 
 #Resources
 Resources/Objects/*
 Resources/Textures/*
-
-#CMake
-CMakeSettings.json

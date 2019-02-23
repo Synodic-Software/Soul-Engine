@@ -1,12 +1,15 @@
 ﻿{
-  "environments": [ { "BuildDir": "${projectDir}\\Build" } ],
+  "environments": [
+    { "BuildDir": "${projectDir}\\Build" },
+    { "InstallDir": "${projectDir}\\Libraries" }
+  ],
   "configurations": [
     {
       "name": "Release",
       "generator": "Ninja",
       "configurationType": "Release",
       "buildRoot": "${env.BuildDir}\\${name}",
-      "installRoot": "${projectDir}\\Libraries\\${name}",
+      "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
@@ -18,7 +21,7 @@
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${env.BuildDir}\\${name}",
-      "installRoot": "${projectDir}\\Libraries\\${name}",
+      "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
@@ -30,7 +33,7 @@
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${env.BuildDir}\\${name}",
-      "installRoot": "${projectDir}\\Libraries\\${name}",
+      "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
