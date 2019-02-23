@@ -11,3 +11,6 @@ Modules/*
 #Resources
 Resources/Objects/*
 Resources/Textures/*
+
+#Python
+Pipfile.lock
