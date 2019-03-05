@@ -3,7 +3,6 @@
 #include "Core/Utility/Exception/Exception.h"
 
 #include <fstream>
-#include <iostream>
 
 
 VulkanShader::VulkanShader(std::shared_ptr<VulkanDevice>& device, const std::filesystem::path& path) :
@@ -25,14 +24,12 @@ VulkanShader::~VulkanShader() {
 
 vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std::filesystem::path& path) {
 
-	std::cout << std::filesystem::current_path();
-
 	if (!std::filesystem::exists(path)) {
 		throw NotImplemented();
 	}
 
 	//TODO: abstract into some sort of loader
-	std::ifstream file(path.c_str(), std::ios::binary);
+	std::ifstream file(path.c_str(), std::ifstream::ate | std::ios::binary);
 
 	const size_t fileSize = static_cast<size_t>(file.tellg());
 	std::vector<std::byte> buffer(fileSize);

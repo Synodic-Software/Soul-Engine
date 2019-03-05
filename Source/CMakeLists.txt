@@ -44,7 +44,6 @@ set(PROJECT_FILES
 #Dependencies
 
 #Conan via CMake
-
 if(EXISTS ${CMAKE_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
     include(${CMAKE_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
 else()
@@ -70,17 +69,17 @@ set_target_properties(SoulEngine
 	   	CXX_EXTENSIONS OFF	
 		CUDA_SEPARABLE_COMPILATION ON
         CXX_STANDARD 17
+		VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Build"
 )
 
 target_include_directories(SoulEngine
     PUBLIC 
         $<INSTALL_INTERFACE:Include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Include>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Core/Interface/Application>
 
     PRIVATE
-        ${CUDA_INCLUDE_DIRS}
 		${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 target_link_libraries(SoulEngine
@@ -111,40 +110,48 @@ add_custom_command(TARGET SoulEngine POST_BUILD
                        ${CMAKE_BINARY_DIR}/Resources
                    )
 
-install(TARGETS SoulEngine EXPORT SoulEngineTargets
-    LIBRARY DESTINATION Libraries
-    ARCHIVE DESTINATION Libraries
-    RUNTIME DESTINATION Binaries
-    INCLUDES DESTINATION Include
-)
-
-install(FILES Core/Interface/Application/SoulApplication.h
-    DESTINATION Include
-    COMPONENT Development
+install(
+	TARGETS SoulEngine 
+	EXPORT SoulEngineTargets
+	LIBRARY		DESTINATION Libraries		   
+	ARCHIVE		DESTINATION Libraries		 
+	RUNTIME		DESTINATION Binaries		 
+	INCLUDES	DESTINATION Include			 
 )
 
 
-#Export Info - TODO: Verify and Refactor
-#include(CMakePackageConfigHelpers)
+#Install Info
+include(CMakePackageConfigHelpers)
 
-#set(ConfigPackageSource ${CMAKE_BINARY_DIR}/SoulEngine)
-#set(ConfigPackageDestination "Libraries/CMake/SoulEngine")
+set(ConfigPackageDestination "Libraries/CMake/Soul Engine")
 
-#write_basic_package_version_file(
-#        ${ConfigPackageSource}/SoulEngine-config-version.cmake
-#        COMPATIBILITY SameMajorVersion)
-#configure_package_config_file(../Tools/CMake/package-config.cmake.in
-#        ${ConfigPackageSource}/SoulEngine-config.cmake
-#        INSTALL_DESTINATION ${ConfigPackageDestination})
+write_basic_package_version_file(
+		${CMAKE_CURRENT_BINARY_DIR}/SoulEngineConfigVersion.cmake
+		VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion)
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/../Tools/CMake/Config.cmake.in
+		${CMAKE_CURRENT_BINARY_DIR}/SoulEngineConfig.cmake
+        INSTALL_DESTINATION ${ConfigPackageDestination})
 
 #Install
-#install(EXPORT SoulEngineTargets
-#        DESTINATION ${ConfigPackageDestination}
-#        FILE SoulEngineTargets.cmake
-#        NAMESPACE synodic::
-#        COMPONENT Development)
-#install(FILES
-#        "${ConfigPackageSource}/SoulEngine-config.cmake"
-#        "${ConfigPackageSource}/SoulEngine-config-version.cmake"
-#        DESTINATION ${ConfigPackageDestination}
-#        COMPONENT Development)
+install(EXPORT SoulEngineTargets
+        DESTINATION ${ConfigPackageDestination}
+        FILE SoulEngineTargets.cmake
+        NAMESPACE synodic::
+        COMPONENT Development)
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/SoulEngineConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/SoulEngineConfigVersion.cmake
+        DESTINATION ${ConfigPackageDestination}
+        COMPONENT Development)
+
+
+##############################################
+# Export
+
+export(EXPORT SoulEngineTargets 
+		FILE ${CMAKE_CURRENT_BINARY_DIR}/SoulEngineTargets.cmake 
+		NAMESPACE synodic::)
+
+#Register the package in the user's tree
+export(PACKAGE SoulEngine)

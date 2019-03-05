@@ -12,9 +12,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../Tools/CMake")
 ##############################################
 #Dependancies
 
-if(NOT TARGET synodic::SoulEngine)
-    find_package(SoulEngine CONFIG REQUIRED)
-endif()
+#find_package(SoulEngine CONFIG REQUIRED)
 
 
 ##############################################
@@ -38,6 +36,7 @@ set_target_properties(SoulInfo
         LINKER_LANGUAGE CXX
 	   	CXX_EXTENSIONS OFF	
         CXX_STANDARD 17
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Build"
 )
 
 target_include_directories(SoulInfo
