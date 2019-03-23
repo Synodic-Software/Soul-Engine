@@ -28,6 +28,6 @@ def main():
     #set the package to editable, allowing projects to find it globally via Conan and bypass a remote fetch
     subprocess.call(["conan", "editable", "add", conanFilePathString, "SoulEngine/0.0.1@synodic/testing"])
 
-    print("Finished setup")
+    print("Finished setup!")
 
 main()

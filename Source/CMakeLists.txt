@@ -28,6 +28,7 @@ endif()
 #TODO: Implement use of this option
 option(BUILD_SHARED_LIBS "Build shared library" OFF)
 
+
 ##############################################
 #Sources
 
@@ -43,8 +44,7 @@ set(PROJECT_FILES
 ##############################################
 #Targets
 
-#Don't explicitly declare STATIC which lets BUILD_SHARED_LIBS define the type
-add_library(${PROJECT_NAME} STATIC ${PROJECT_FILES})
+add_library(${PROJECT_NAME} ${PROJECT_FILES})
 add_library(synodic::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 set_target_properties(${PROJECT_NAME}
@@ -53,6 +53,7 @@ set_target_properties(${PROJECT_NAME}
 	   	CXX_EXTENSIONS OFF	
 		CUDA_SEPARABLE_COMPILATION ON
         CXX_STANDARD 17
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Build"
 )
 
 
@@ -83,7 +84,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-		CONAN_PKG::glm #TODO: remove public GLM dependancy
+		CONAN_PKG::glm
 
     INTERFACE
 

@@ -10,7 +10,7 @@ class SoulEngine(ConanFile):
     author = "Synodic Software"
     license = "GPLv3"
     url = "https://github.com/Synodic-Software/Soul-Engine"
-    description = "Soul Engine is a real-time visualization and simulation engine built on the back of CUDA and Vulkan."
+    description = "Soul Engine is a real-time visualization and simulation engine built on the back of CUDA, OpenCL, and Vulkan."
 
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
