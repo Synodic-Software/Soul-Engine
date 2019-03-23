@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Geometry/BoundingBox.h"
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 class Node
 {

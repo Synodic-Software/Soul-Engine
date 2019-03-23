@@ -1,7 +1,7 @@
 #pragma once
 #include "Parallelism/Compute/GPUKernel.h"
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 /* Buffer for cuda. */
 template<class T>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 #include "Parallelism/Compute/AbstractComputeDevice.h"
 
 /* An open cl device. */

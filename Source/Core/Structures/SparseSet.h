@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AbstractSparseSet.h"
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 #include <cassert>
 

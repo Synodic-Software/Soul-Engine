@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 //#include <curand_kernel.h>
 #include "Parallelism/Compute/GPUTexture.h"

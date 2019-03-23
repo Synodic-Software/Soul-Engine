@@ -6,7 +6,7 @@
 //#pragma warning(pop)
 //
 //
-//#include "Core/Utility/Types.h"
+//#include "Types.h"
 //#include "Parallelism/Compute/CUDA/Utility/CUDAMath.h"
 //#include "Parallelism/Compute/CUDA/Utility/CUDAHelper.cuh"
 //#include <device_launch_parameters.h>

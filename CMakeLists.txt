@@ -6,9 +6,6 @@ cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
 
 project(SoulEngine)
 
-#Add CMake tools path
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Tools/CMake")
-
 
 ##############################################
 #CMake delegation

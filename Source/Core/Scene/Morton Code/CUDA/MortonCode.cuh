@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "Core/Utility/Types.h"
+//#include "Types.h"
 //#include "Core/Scene/Bounding Volume Heirarchy/LBVHManager.h"
 //
 //#include "Core/Geometry/Face.h"

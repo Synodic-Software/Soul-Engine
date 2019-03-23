@@ -2,7 +2,7 @@
 
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/Console/ConsoleManager.h"
-#include "Core/Soul.h"
+#include "Soul.h"
 
 #include <iostream>
 #include <string>

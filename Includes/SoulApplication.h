@@ -1,7 +1,8 @@
 #pragma once
-#include "Core/Soul.h"
-#include "Core/SoulParameters.h"
-#include "Display/Window.h"
+
+#include "Soul.h"
+#include "SoulParameters.h"
+#include "WindowParameters.h"
 
 class SoulApplication {
 

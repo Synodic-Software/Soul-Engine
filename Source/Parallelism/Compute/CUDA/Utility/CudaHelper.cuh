@@ -2,7 +2,7 @@
 
 // #include <cuda_runtime.h>
 // #include <iostream>
-// #include "Core/Utility/Types.h"
+// #include "Types.h"
 
 // #define WARP_SIZE 32
 

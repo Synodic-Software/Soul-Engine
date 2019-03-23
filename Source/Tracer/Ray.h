@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 #include <glm/glm.hpp>
 
 class Ray

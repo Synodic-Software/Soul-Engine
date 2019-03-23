@@ -2,7 +2,6 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/rotate_vector.hpp"
-#include "Core/Utility/Types.h"
 
 Camera::Camera() :
 	aspectRatio(0),
@@ -10,8 +9,8 @@ Camera::Camera() :
 	forward(0.0f, 0.0f, 1.0f),
 	right(1.0f, 0.0f, 0.0f),
 	fieldOfView(90.0f, 65.0f),
-	aperture(2 * MILLIMETER),
-	focalDistance(17 * MILLIMETER)
+	aperture(0.02f),
+	focalDistance(0.17f)
 {
 }
 

@@ -1,5 +1,5 @@
 #include "SoulApplication.h"
-#include "Core/Soul.h"
+#include "Soul.h"
 
 SoulApplication::SoulApplication(SoulParameters params) :
 	hasControl(true),

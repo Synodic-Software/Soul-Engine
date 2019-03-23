@@ -1,7 +1,7 @@
 #pragma once
 #include "Parallelism/Compute/GPUTextureBase.h"
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 #include "Parallelism/Compute/ComputeDevice.h"
 
 /* Buffer for open cl. */

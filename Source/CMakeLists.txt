@@ -16,8 +16,7 @@ check_language(CUDA)
 
 if(CMAKE_CUDA_COMPILER)
 
-	#TODO: CUDA is not supported in VS2019 Preview, and CMAKE_CUDA_COMPILER does not catch
-	#enable_language(CUDA)
+	enable_language(CUDA)
 
 else()
 
@@ -25,13 +24,14 @@ else()
 
 endif()
 
-#Add CMake tools path
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../Tools/CMake")
 
+#TODO: Implement use of this option
+option(BUILD_SHARED_LIBS "Build shared library" OFF)
 
 ##############################################
 #Sources
 
+#TODO: Get rid of the globs. More elegant solution needed.
 file(GLOB_RECURSE PROJECT_HEADERS *.h)
 file(GLOB_RECURSE PROJECT_SOURCES *.cpp)
 set(PROJECT_FILES 
@@ -41,12 +41,30 @@ set(PROJECT_FILES
 
 
 ##############################################
+#Targets
+
+#Don't explicitly declare STATIC which lets BUILD_SHARED_LIBS define the type
+add_library(${PROJECT_NAME} STATIC ${PROJECT_FILES})
+add_library(synodic::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
+set_target_properties(${PROJECT_NAME}
+	PROPERTIES 
+        LINKER_LANGUAGE CXX
+	   	CXX_EXTENSIONS OFF	
+		CUDA_SEPARABLE_COMPILATION ON
+        CXX_STANDARD 17
+)
+
+
+##############################################
 #Dependencies
 
 #Conan via CMake
 if(EXISTS ${CMAKE_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
+    #The building case
     include(${CMAKE_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
 else()
+    #The packaging case
     include(${CMAKE_SOURCE_DIR}/Build/conanbuildinfo.cmake)
 endif()
 
@@ -55,36 +73,17 @@ conan_basic_setup(TARGETS)
 #non-conan dependancies
 find_package(Vulkan)
 
-
-##############################################
-#Targets
-
-#Don't explicitly declare STATIC which lets BUILD_SHARED_LIBS define the type
-add_library(SoulEngine STATIC ${PROJECT_FILES})
-add_library(synodic::SoulEngine ALIAS SoulEngine)
-
-set_target_properties(SoulEngine
-	PROPERTIES 
-        LINKER_LANGUAGE CXX
-	   	CXX_EXTENSIONS OFF	
-		CUDA_SEPARABLE_COMPILATION ON
-        CXX_STANDARD 17
-		VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Build"
-)
-
-target_include_directories(SoulEngine
+target_include_directories(${PROJECT_NAME}
     PUBLIC 
-        $<INSTALL_INTERFACE:Include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Include>
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Core/Interface/Application>
-
+        $<INSTALL_INTERFACE:Includes>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Includes>
     PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(SoulEngine
+target_link_libraries(${PROJECT_NAME}
     PUBLIC
-        CONAN_PKG::glm #TODO: remove public dependancy on GLM
+		CONAN_PKG::glm #TODO: remove public GLM dependancy
 
     INTERFACE
 
@@ -94,64 +93,3 @@ target_link_libraries(SoulEngine
 		CONAN_PKG::stb
 		Vulkan::Vulkan
 )
-
-
-##############################################
-# Installation 
-
-#Info
-
-#Copy the `Resources` directory into the build tree so files can be consistantly located from the working directory
-#TODO: Dedicated resource handling
-#TODO: Optimized copies (if any)
-add_custom_command(TARGET SoulEngine POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_SOURCE_DIR}/Resources
-                       ${CMAKE_BINARY_DIR}/Resources
-                   )
-
-install(
-	TARGETS SoulEngine 
-	EXPORT SoulEngineTargets
-	LIBRARY		DESTINATION Libraries		   
-	ARCHIVE		DESTINATION Libraries		 
-	RUNTIME		DESTINATION Binaries		 
-	INCLUDES	DESTINATION Include			 
-)
-
-
-#Install Info
-include(CMakePackageConfigHelpers)
-
-set(ConfigPackageDestination "Libraries/CMake/Soul Engine")
-
-write_basic_package_version_file(
-		${CMAKE_CURRENT_BINARY_DIR}/SoulEngineConfigVersion.cmake
-		VERSION ${PROJECT_VERSION}
-        COMPATIBILITY SameMajorVersion)
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/../Tools/CMake/Config.cmake.in
-		${CMAKE_CURRENT_BINARY_DIR}/SoulEngineConfig.cmake
-        INSTALL_DESTINATION ${ConfigPackageDestination})
-
-#Install
-install(EXPORT SoulEngineTargets
-        DESTINATION ${ConfigPackageDestination}
-        FILE SoulEngineTargets.cmake
-        NAMESPACE synodic::
-        COMPONENT Development)
-install(FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/SoulEngineConfig.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/SoulEngineConfigVersion.cmake
-        DESTINATION ${ConfigPackageDestination}
-        COMPONENT Development)
-
-
-##############################################
-# Export
-
-export(EXPORT SoulEngineTargets 
-		FILE ${CMAKE_CURRENT_BINARY_DIR}/SoulEngineTargets.cmake 
-		NAMESPACE synodic::)
-
-#Register the package in the user's tree
-export(PACKAGE SoulEngine)

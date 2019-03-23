@@ -4,7 +4,7 @@
 //#include "Tracer/Ray.h"
 //#include "Core/Geometry/Face.h"
 //#include "Core/Geometry/Vertex.h"
-//#include "Core/Utility/Types.h"
+//#include "Types.h"
 //
 //#include <cuda.h>
 //#include <cuda_runtime.h>

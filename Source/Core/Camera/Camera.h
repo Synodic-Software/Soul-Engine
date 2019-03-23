@@ -3,7 +3,7 @@
 #include "Core/Camera/Film/Film.h"
 //#include <curand_kernel.h>
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 #include "glm/glm.hpp"
 
 class Camera {

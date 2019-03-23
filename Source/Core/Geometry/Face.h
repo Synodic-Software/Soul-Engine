@@ -3,7 +3,7 @@
 #include "Composition/Component/Component.h"
 
 #include <glm/glm.hpp>
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 class Face : Component<Face>
 {

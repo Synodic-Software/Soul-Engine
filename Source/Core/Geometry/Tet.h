@@ -2,7 +2,7 @@
 
 #include "Composition/Component/Component.h"
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 #include <glm/glm.hpp>
 
 class Tet : Component<Tet>

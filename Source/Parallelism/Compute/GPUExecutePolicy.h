@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 class GPUExecutePolicy {
 

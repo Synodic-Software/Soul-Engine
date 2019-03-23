@@ -3,7 +3,7 @@
 #include "VulkanDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 #include "System/Compiler.h"
-#include "Core/Utility/Types.h"
+#include "Types.h"
 #include "Display/Display.h"
 #include "VulkanSwapChain.h"
 

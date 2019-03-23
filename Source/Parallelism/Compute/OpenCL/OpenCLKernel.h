@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/Utility/Types.h"
+#include "Types.h"
 #include "Parallelism/Compute/GPUKernel.h"
 
 template<class T>

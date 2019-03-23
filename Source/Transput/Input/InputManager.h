@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Soul.h"
+#include "Soul.h"
 
 class EventManager;
 class InputManager {

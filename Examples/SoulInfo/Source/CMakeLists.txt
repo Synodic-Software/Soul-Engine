@@ -5,14 +5,9 @@ cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
 
 project(SoulInfo)
 
-#Add CMake tools path
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../Tools/CMake")
-
 
 ##############################################
 #Dependancies
-
-#find_package(SoulEngine CONFIG REQUIRED)
 
 
 ##############################################

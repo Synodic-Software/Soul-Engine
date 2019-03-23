@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Interface/Module/Module.h"
-#include "Display/WindowParameters.h"
+#include "WindowParameters.h"
 
 #include <memory>
 

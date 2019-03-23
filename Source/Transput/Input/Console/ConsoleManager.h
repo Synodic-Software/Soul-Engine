@@ -2,7 +2,7 @@
 
 #include "Composition/Event/EventManager.h"
 #include "Transput/Input/Console/Parser/CommandParser.h"
-#include "Core/Soul.h"
+#include "Soul.h"
 
 class Soul;
 

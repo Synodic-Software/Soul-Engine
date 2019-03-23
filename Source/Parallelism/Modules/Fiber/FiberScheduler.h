@@ -10,10 +10,10 @@
 #include <mutex>
 #include <forward_list>
 
-#include "Core/Utility/Property/Property.h"
+#include "Property.h"
 #include "FiberParameters.h"
 #include "FiberProperties.h"
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 //TODO: unlink the windows headers from the project/cmake https://github.com/Synodic-Software/Soul-Engine/issues/62
 #undef CreateWindow

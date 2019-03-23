@@ -2,8 +2,8 @@
 
 #include "Core/Interface/Module/Module.h"
 
-#include "Core/Utility/Types.h"
-#include "Core/Utility/Property/Property.h"
+#include "Types.h"
+#include "Property.h"
 
 #include <memory>
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "Parallelism/Compute/DeviceBuffer.h"
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 #include "Parallelism/Compute/CUDA/Utility/CudaHelper.cuh"
 
 /* Buffer for cuda. */

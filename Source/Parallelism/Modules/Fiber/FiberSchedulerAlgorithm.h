@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FiberProperties.h"
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 #include <boost/fiber/algo/algorithm.hpp>
 #include <boost/fiber/scheduler.hpp>

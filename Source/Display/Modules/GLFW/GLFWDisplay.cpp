@@ -1,6 +1,6 @@
 #include "GLFWDisplay.h"
 
-#include "Display/WindowParameters.h"
+#include "WindowParameters.h"
 #include "Display/Modules/GLFW/GLFWWindow.h"
 #include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
 #include "Core/Utility/Exception/Exception.h"

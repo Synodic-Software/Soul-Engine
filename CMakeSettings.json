@@ -1,7 +1,6 @@
 ﻿{
   "environments": [
-    { "BuildDir": "${projectDir}\\Build" },
-    { "InstallDir": "${projectDir}\\Libraries" }
+    { "BuildDir": "${projectDir}\\Build" }
   ],
   "configurations": [
     {
@@ -9,7 +8,7 @@
       "generator": "Ninja",
       "configurationType": "Release",
       "buildRoot": "${env.BuildDir}\\${name}",
-      "installRoot": "${env.InstallDir}\\${name}",
+      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
@@ -21,7 +20,7 @@
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${env.BuildDir}\\${name}",
-      "installRoot": "${env.InstallDir}\\${name}",
+      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
@@ -33,7 +32,7 @@
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${env.BuildDir}\\${name}",
-      "installRoot": "${env.InstallDir}\\${name}",
+      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",

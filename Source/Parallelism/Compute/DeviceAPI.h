@@ -1,6 +1,6 @@
 #pragma once
 #include <cuda_runtime.h>
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 __host__ __device__ inline
 uint ThreadIndex1D() {

@@ -2,8 +2,8 @@
 
 #include <thread>
 
-#include "Core/Utility/Property/Property.h"
-#include "Core/Utility/Types.h"
+#include "Property.h"
+#include "Types.h"
 
 struct SoulParameters {
 
@@ -14,7 +14,7 @@ struct SoulParameters {
 
 		//may return 0; see https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency
 		if (threadCount == 0) {
-			threadCount = 1; //garunteed a single thread
+			threadCount = 1; //guaranteed a single thread
 		}
 
 	}

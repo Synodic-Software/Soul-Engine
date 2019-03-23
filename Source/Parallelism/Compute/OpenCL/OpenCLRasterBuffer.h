@@ -3,7 +3,7 @@
 #include "OpenCLBuffer.h"
 #include "Parallelism/Compute/ComputeDevice.h"
 
-#include "Core/Utility/Types.h"
+#include "Types.h"
 
 /* Buffer for open cl raster. */
 template<class T>
