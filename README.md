@@ -24,7 +24,7 @@ For more information, visit our [Wiki](https://github.com/Synodic-Software/Soul-
 
 1. Run `Setup.py`.
 
-1. Cone and open the `Soul Engine` directory in Visual Studio 2019.
+1. Clone and open the `Soul Engine` directory in Visual Studio 2019.
 
 1. Build and run `Soul Info`.
 
