@@ -1,0 +1,16 @@
+#Visual studio meta-data
+/.vs
+
+#Top level directories that should not be in git
+Build/*
+Libraries/*
+Include/*
+Modules/*
+!Modules/README.md
+
+#Resources
+Resources/Objects/*
+Resources/Textures/*
+
+#Python
+Pipfile.lock
