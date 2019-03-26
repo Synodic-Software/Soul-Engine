@@ -6,14 +6,28 @@
 
 Soul Engine is a real-time visualization engine built on the back of CUDA and Vulkan. With a focus on lightweight parallelism that can be leveraged for expensive techniques, Soul Engine provides a platform for path tracing, finite element physics, and general simulation.
 
+For more information, visit our [Wiki](https://github.com/Synodic-Software/Soul-Engine/wiki)
+
 [![Build status](https://ci.appveyor.com/api/projects/status/ryye37u8hw4ofd5l?svg=true)](https://ci.appveyor.com/project/Synodic-Software/soul-engine)
 
 
 
 ![Tree Model](Resources/Images/Tree.png)
 
-For more information, visit our [Wiki](https://github.com/Synodic-Software/Soul-Engine/wiki)
 
 # Development
 
-For a detailed process, visit our Wiki's [Getting Started](https://github.com/Synodic-Software/Soul-Engine/wiki/Getting-Started)
+
+1. Install the required dependencies.
+    * [Python 3.7.2](https://www.python.org/downloads/release/python-372/) or newer.
+    * [Conan 1.13.2](https://conan.io/downloads.html) or newer.
+
+1. Run `Setup.py`.
+
+1. Cone and open the `Soul Engine` directory in Visual Studio 2019.
+
+1. Build and run `Soul Info`.
+
+*Just like that, you can start development!*
+
+For a detailed installation process on Windows and other platforms, visit our Wiki's [Getting Started](https://github.com/Synodic-Software/Soul-Engine/wiki/Getting-Started).
