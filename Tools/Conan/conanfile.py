@@ -50,10 +50,7 @@ class SoulEngine(ConanFile):
 
     def package(self):
 
-        cmake = self.configureCMake()
-
-        #TODO: no_copy_source causes cmake to install twice see https://docs.conan.io/en/latest/howtos/cmake_install.html
-        cmake.install()
+        pass
 
 
     def package_info(self):
@@ -62,6 +59,7 @@ class SoulEngine(ConanFile):
 
         projectRoot = Path('.') / ".." / ".."
         self.cpp_info.includedirs = [str(projectRoot / "Includes")]
+        self.cpp_info.resdirs = [str(projectRoot / "Resources")]
 
         #CMAKE environment variables
-        self.user_info.ENGINE_PATH = str(Path().absolute().parents[1])
+        self.user_info.ENGINE_PATH = str(projectRoot.absolute())
