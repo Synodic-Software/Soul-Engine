@@ -60,5 +60,8 @@ class SoulEngine(ConanFile):
 
         self.cpp_info.libs = ["SoulEngine"]
 
+        projectRoot = Path('.') / ".." / ".."
+        self.cpp_info.includedirs = [str(projectRoot / "Includes")]
+
         #CMAKE environment variables
-        self.user_info.ENGINE_PATH = str(Path('.') / '..' / '..')
+        self.user_info.ENGINE_PATH = str(Path().absolute().parents[1])
