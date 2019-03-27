@@ -9,10 +9,10 @@ def main():
 
     print("Updating the C++ environment")
 
-    buildPath = Path('.') / "Build"
+    buildPath = Path().absolute() / "Build"
     buildPathString = str(buildPath)
 
-    conanFilePath = Path('.') / "Tools" / "Conan"
+    conanFilePath = Path().absolute() / "Tools" / "Conan"
     conanFilePathString = str(conanFilePath)
 
     #Set the conan remote
@@ -23,7 +23,8 @@ def main():
         os.makedirs(buildPath)
 
     #install conan dependencies
-    subprocess.call(["conan", "install", conanFilePathString, "-if", buildPathString, "-g", "cmake", "--build=missing"])
+    subprocess.call(["conan", "install", conanFilePathString, "-if", buildPathString, "-g", "cmake_multi", "-s", "build_type=Debug", "--build=missing"])
+    subprocess.call(["conan", "install", conanFilePathString, "-if", buildPathString, "-g", "cmake_multi", "-s", "build_type=Release", "--build=missing"])
 
     #set the package to editable, allowing projects to find it globally via Conan and bypass a remote fetch
     subprocess.call(["conan", "editable", "add", conanFilePathString, "SoulEngine/0.0.1@synodic/testing"])

@@ -61,15 +61,20 @@ set_target_properties(${PROJECT_NAME}
 #Dependencies
 
 #Conan via CMake
-if(EXISTS ${CMAKE_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../Build/conanbuildinfo_multi.cmake)
     #The building case
-    include(${CMAKE_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../Build/conanbuildinfo_multi.cmake)
 else()
     #The packaging case
-    include(${CMAKE_SOURCE_DIR}/Build/conanbuildinfo.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../Build/conanbuildinfo.cmake)
 endif()
 
-conan_basic_setup(TARGETS)
+#if this repository is used via `add_subdirectory` we can't double initialize Conan packages
+if(NOT TARGET CONAN_PKG::SoulEngine)
+
+    conan_basic_setup(TARGETS)
+
+endif()
 
 #non-conan dependancies
 find_package(Vulkan)
@@ -77,7 +82,7 @@ find_package(Vulkan)
 target_include_directories(${PROJECT_NAME}
     PUBLIC 
         $<INSTALL_INTERFACE:Includes>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Includes>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Includes>
     PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
