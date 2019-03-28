@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "Parallelism/Compute/AbstractComputeBackend.h"
+#include "Parallelism/ComputeOld/AbstractComputeBackend.h"
 
 class CUDABackend : public AbstractComputeBackend {
 

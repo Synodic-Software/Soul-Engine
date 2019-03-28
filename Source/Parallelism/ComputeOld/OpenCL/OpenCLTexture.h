@@ -1,8 +1,8 @@
 #pragma once
-#include "Parallelism/Compute/GPUTextureBase.h"
+#include "Parallelism/ComputeOld/GPUTextureBase.h"
 
 #include "Types.h"
-#include "Parallelism/Compute/ComputeDevice.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
 
 /* Buffer for open cl. */
 template<class T>

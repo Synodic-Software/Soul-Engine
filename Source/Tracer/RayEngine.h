@@ -2,7 +2,7 @@
 
 #include "Core/Scene/Scene.h"
 #include "RayJob.h"
-#include "Parallelism/Compute/ComputeBuffer.h"
+#include "Parallelism/ComputeOld/ComputeBuffer.h"
 #include "Core/Utility/Timer/Timer.h"
 #include "Ray.h"
 

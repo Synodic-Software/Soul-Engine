@@ -6,7 +6,7 @@
 */
 
 
-#include "Parallelism/Compute/ComputeDevice.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
 
 #include "Core/Utility/Log/Logger.h"
 #include <vector>

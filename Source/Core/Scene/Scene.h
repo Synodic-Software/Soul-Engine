@@ -4,7 +4,7 @@
 #include "Core/Scene/Sky.h"
 #include "Core/Material/Material.h"
 #include "Core/Scene/Bounding Volume Heirarchy/LBVHManager.h"
-#include "Parallelism/Compute/ComputeBuffer.h"
+#include "Parallelism/ComputeOld/ComputeBuffer.h"
 #include "Core/Geometry/Face.h"
 #include "Core/Geometry/Vertex.h"
 #include "Core/Geometry/Tet.h"

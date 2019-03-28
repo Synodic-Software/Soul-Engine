@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "Parallelism/Compute/ComputeDevice.h"
-#include "Parallelism/Compute/GPUTextureBase.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
+#include "Parallelism/ComputeOld/GPUTextureBase.h"
 
-#include "Parallelism/Compute/CUDA/CUDATexture.h"
-#include "Parallelism/Compute/OpenCL/OpenCLTexture.h"
+#include "Parallelism/ComputeOld/CUDA/CUDATexture.h"
+#include "Parallelism/ComputeOld/OpenCL/OpenCLTexture.h"
 
 /*
  *    Buffer for gpu/cpu communication and storage.

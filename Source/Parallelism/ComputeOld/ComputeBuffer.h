@@ -6,13 +6,13 @@
 */
 
 
-#include "Parallelism/Compute/AbstractComputeBuffer.h"
+#include "Parallelism/ComputeOld/AbstractComputeBuffer.h"
 
-#include "Parallelism/Compute/ComputeDevice.h"
-#include "Parallelism/Compute/DeviceBuffer.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
+#include "Parallelism/ComputeOld/DeviceBuffer.h"
 
-//#include "Parallelism/Compute/CUDA/CUDABuffer.h"
-#include "Parallelism/Compute/OpenCL/OpenCLBuffer.h"
+//#include "Parallelism/ComputeOld/CUDA/CUDABuffer.h"
+#include "Parallelism/ComputeOld/OpenCL/OpenCLBuffer.h"
 
 #include "Core/Utility/Log/Logger.h"
 

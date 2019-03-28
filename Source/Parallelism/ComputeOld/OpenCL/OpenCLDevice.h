@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-#include "Parallelism/Compute/AbstractComputeDevice.h"
+#include "Parallelism/ComputeOld/AbstractComputeDevice.h"
 
 /* An open cl device. */
 class OpenCLDevice :public AbstractComputeDevice {

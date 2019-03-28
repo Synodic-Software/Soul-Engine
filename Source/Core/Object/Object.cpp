@@ -1,5 +1,5 @@
 //#include "Object.cuh"
-//#include "Parallelism/Compute/CUDA/Utility/CUDAHelper.cuh"
+//#include "Parallelism/ComputeOld/CUDA/Utility/CUDAHelper.cuh"
 //
 ////#define TINYOBJLOADER_IMPLEMENTATION
 ////#include <tiny_obj_loader.h>

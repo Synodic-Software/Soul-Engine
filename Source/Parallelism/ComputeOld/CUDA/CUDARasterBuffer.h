@@ -1,10 +1,10 @@
 #pragma once
 
 
-#include "Parallelism/Compute/DeviceRasterBuffer.h"
-#include "Parallelism/Compute/CUDA/CUDABuffer.h"
+#include "Parallelism/ComputeOld/DeviceRasterBuffer.h"
+#include "Parallelism/ComputeOld/CUDA/CUDABuffer.h"
 
-#include "Parallelism/Compute/ComputeDevice.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
 
 
 template <class T>

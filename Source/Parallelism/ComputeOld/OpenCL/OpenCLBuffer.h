@@ -1,8 +1,8 @@
 #pragma once
-#include "Parallelism/Compute/DeviceBuffer.h"
+#include "Parallelism/ComputeOld/DeviceBuffer.h"
 
 #include "Types.h"
-#include "Parallelism/Compute/ComputeDevice.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
 
 /* Buffer for open cl. */
 template<class T>

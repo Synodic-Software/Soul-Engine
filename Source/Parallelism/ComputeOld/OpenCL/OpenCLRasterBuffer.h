@@ -1,7 +1,7 @@
 #pragma once
-#include "Parallelism/Compute/DeviceRasterBuffer.h"
+#include "Parallelism/ComputeOld/DeviceRasterBuffer.h"
 #include "OpenCLBuffer.h"
-#include "Parallelism/Compute/ComputeDevice.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
 
 #include "Types.h"
 

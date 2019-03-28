@@ -2,7 +2,7 @@
 //#include <device_launch_parameters.h>
 //#include <cuda.h>
 //#include <cuda_runtime_api.h>
-#include "Parallelism/Compute/CUDA/Utility/CudaHelper.cuh"
+#include "Parallelism/ComputeOld/CUDA/Utility/CudaHelper.cuh"
 
 
 void CUDABackend::ExtractDevices(std::vector<ComputeDevice>& devices) {

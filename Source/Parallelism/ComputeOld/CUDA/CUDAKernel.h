@@ -1,5 +1,5 @@
 #pragma once
-#include "Parallelism/Compute/GPUKernel.h"
+#include "Parallelism/ComputeOld/GPUKernel.h"
 
 #include "Types.h"
 

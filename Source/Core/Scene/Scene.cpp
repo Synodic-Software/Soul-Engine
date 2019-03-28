@@ -8,8 +8,8 @@
 
 #include "Core/Scene/Morton Code/MortonCode.h"
 
-#include "Parallelism/Compute/ComputeManager.h"
-#include "Parallelism/Compute/Algorithm/Sort/Sort.h"
+#include "Parallelism/ComputeOld/ComputeManager.h"
+#include "Parallelism/ComputeOld/Algorithm/Sort/Sort.h"
 
 Scene::Scene():
 	//BVH(S_BEST_DEVICE),

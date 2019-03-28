@@ -2,7 +2,7 @@
 #include "CUDA/RayEngine.cuh"
 
 #include "Core/Camera/Film/Filters/Filter.h"
-#include "Parallelism/Compute/ComputeManager.h"
+#include "Parallelism/ComputeOld/ComputeManager.h"
 
 RayEngine::RayEngine() :
 	jobList(S_BEST_DEVICE),

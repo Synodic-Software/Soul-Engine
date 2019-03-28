@@ -1,6 +1,6 @@
 #pragma once
 #include "Types.h"
-#include "Parallelism/Compute/GPUKernel.h"
+#include "Parallelism/ComputeOld/GPUKernel.h"
 
 template<class T>
 class OpenCLKernel :public GPUKernel<T> {

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "AbstractComputeDevice.h"
-#include "CUDA/CUDADevice.cuh"
+#include "Parallelism/ComputeOld/CUDA/CUDADevice.cuh"
 #include "OpenCL/OpenCLDevice.h"
 
-#include "Parallelism/Compute/GPUExecutePolicy.h"
+#include "Parallelism/ComputeOld/GPUExecutePolicy.h"
 #include <memory>
 
 

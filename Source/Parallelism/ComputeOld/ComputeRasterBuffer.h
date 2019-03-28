@@ -1,10 +1,10 @@
 #pragma once
 
 #include "AbstractComputeBuffer.h"
-#include "Parallelism/Compute/ComputeDevice.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
 
-#include "Parallelism/Compute/CUDA/CUDARasterBuffer.h"
-#include "Parallelism/Compute/OpenCL/OpenCLRasterBuffer.h"
+#include "Parallelism/ComputeOld/CUDA/CUDARasterBuffer.h"
+#include "Parallelism/ComputeOld/OpenCL/OpenCLRasterBuffer.h"
 
 /* Buffer for GPU raster. */
 template <class T>

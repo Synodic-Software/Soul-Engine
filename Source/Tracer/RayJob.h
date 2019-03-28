@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-#include "Parallelism/Compute/CUDA/Utility/CudaHelper.cuh"
+#include "Parallelism/ComputeOld/CUDA/Utility/CudaHelper.cuh"
 #include "Core/Camera/Camera.h"
 
 enum rayType {

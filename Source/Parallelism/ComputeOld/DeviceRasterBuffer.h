@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Parallelism/Compute/ComputeDevice.h"
+#include "Parallelism/ComputeOld/ComputeDevice.h"
 
 #include "DeviceBuffer.h"
 /*

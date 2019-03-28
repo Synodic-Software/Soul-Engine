@@ -3,7 +3,7 @@
 #include "Types.h"
 
 //#include <curand_kernel.h>
-#include "Parallelism/Compute/GPUTexture.h"
+#include "Parallelism/ComputeOld/GPUTexture.h"
 
 //#define GLM_FORCE_CUDA
 #include <glm/glm.hpp>
