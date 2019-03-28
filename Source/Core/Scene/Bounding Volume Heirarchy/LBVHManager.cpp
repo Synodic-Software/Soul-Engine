@@ -1,6 +1,6 @@
 #include "LBVHManager.h"
 //#include "CUDA/BVH.cuh"
-#include "Parallelism/ComputeOld/ComputeManager.h"
+//#include "Parallelism/ComputeOld/ComputeManager.h"
 
 //LBVHManager::LBVHManager() :
 //	nodes(S_BEST_DEVICE)

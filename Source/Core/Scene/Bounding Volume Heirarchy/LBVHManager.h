@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parallelism/ComputeOld/ComputeBuffer.h"
+//#include "Parallelism/ComputeOld/ComputeBuffer.h"
 #include "Core/Geometry/BoundingBox.h"
 
 //#include "CUDA/BVH.cuh"
