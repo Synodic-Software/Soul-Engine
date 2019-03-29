@@ -1,22 +1,20 @@
 #pragma once
 
-#include "Core/Interface/Module/Module.h"
-#include "Core/Utility/Template/CRTP.h"
+#include "Parallelism/Compute/ComputeBackend.h"
 
 
-template <typename T>
-class ComputeBackend : public Module, public CRTP<T, ComputeBackend> {
+class CUDABackend : public ComputeBackend<CUDABackend> {
 
 public:
 
-	ComputeBackend() = default;
-	virtual ~ComputeBackend() = default;
+	CUDABackend() = default;
+	virtual ~CUDABackend() = default;
 
-	ComputeBackend(const ComputeBackend&) = delete;
-	ComputeBackend(ComputeBackend&&) noexcept = default;
+	CUDABackend(const CUDABackend&) = delete;
+	CUDABackend(CUDABackend&&) noexcept = default;
 
-	ComputeBackend& operator=(const ComputeBackend&) = delete;
-	ComputeBackend& operator=(ComputeBackend&&) noexcept = default;
+	CUDABackend& operator=(const CUDABackend&) = delete;
+	CUDABackend& operator=(CUDABackend&&) noexcept = default;
 
 
 };
