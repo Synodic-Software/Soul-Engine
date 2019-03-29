@@ -1,15 +1,12 @@
 #pragma once
 
-#include "Types.h"
-
-//#include <curand_kernel.h>
-#include "Parallelism/Compute/GPUTexture.h"
-
-//#define GLM_FORCE_CUDA
 #include <glm/glm.hpp>
 
+
 class Film {
+
 public:
+
 	Film();
 	~Film();
 
@@ -27,10 +24,8 @@ public:
 
 	float resolutionRatio;
 
-	//GPUTexture<glm::vec4> results;
 	glm::vec4* results;
 	int* hits;
 
-private:
 
 };
