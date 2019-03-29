@@ -28,7 +28,7 @@ class SoulEngine(ConanFile):
     no_copy_source = True
 
     requires = (
-        "glfw/3.2.1@bincrafters/stable",    
+        "glfw/3.2.1.20180327@bincrafters/stable",    
         "boost/1.69.0@conan/stable",
         "glm/0.9.9.1@g-truc/stable",
         "stb/20180214@conan/stable",     
