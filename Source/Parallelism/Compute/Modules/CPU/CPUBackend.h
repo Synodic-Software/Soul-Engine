@@ -3,7 +3,7 @@
 #include "Parallelism/Compute/ComputeBackend.h"
 
 
-class CPUBackend : public ComputeBackend<CPUBackend> {
+class CPUBackend : public ComputeBackend {
 
 public:
 

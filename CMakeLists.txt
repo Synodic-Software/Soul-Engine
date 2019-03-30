@@ -36,7 +36,7 @@ endif()
 #Sources
 
 #TODO: Get rid of the globs. More elegant solution needed.
-file(GLOB_RECURSE PROJECT_HEADERS Source/*.h)
+file(GLOB_RECURSE PROJECT_HEADERS Source/*.h Includes/*.h)
 file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp)
 set(PROJECT_FILES 
     ${PROJECT_HEADERS} 

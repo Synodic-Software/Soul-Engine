@@ -11,7 +11,7 @@ class WindowParameters;
 class Display;
 class FiberScheduler;
 
-class RasterBackend : public Module {
+class RasterBackend : public Module<RasterBackend> {
 
 public:
 

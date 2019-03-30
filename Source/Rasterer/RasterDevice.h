@@ -4,7 +4,7 @@
 
 #include <memory>
 
-class RasterDevice : public Module {
+class RasterDevice {
 
 public:
 

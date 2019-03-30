@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Core/Interface/Module/Module.h"
-#include "Core/Utility/Template/CRTP.h"
 
+#include <memory>
 
-template <typename T>
-class ComputeBackend : public Module, public CRTP<T, ComputeBackend> {
+class ComputeBackend : public Module<ComputeBackend> {
 
 public:
 
@@ -17,6 +16,10 @@ public:
 
 	ComputeBackend& operator=(const ComputeBackend&) = delete;
 	ComputeBackend& operator=(ComputeBackend&&) noexcept = default;
+
+
+    //Factory
+	static std::shared_ptr<ComputeBackend> CreateModule();
 
 
 };

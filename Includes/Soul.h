@@ -11,6 +11,7 @@ class CLIConsoleManager;
 class Entity;
 
 class FiberScheduler;
+class ComputeBackend;
 class Display;
 class RasterBackend;
 
@@ -58,6 +59,7 @@ private:
 
 	//services and modules	
 	std::shared_ptr<FiberScheduler> schedulerModule_;
+	std::shared_ptr<ComputeBackend> computeModule_;
 	std::shared_ptr<Display> displayModule_;
 	std::shared_ptr<RasterBackend> rasterModule_;
 

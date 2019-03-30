@@ -1,6 +1,10 @@
 #pragma once
 
-//Common interface for modules. aka plugins
+#include <memory>
+#include <vector>
+
+//Common interface for modules.
+template<typename T>
 class Module {
 
 public:
@@ -13,6 +17,11 @@ public:
 
 	Module& operator=(const Module&) = delete;
 	Module& operator=(Module&&) noexcept = default;
+
+
+protected:
+
+    std::vector<std::unique_ptr<T>> modules;
 
 
 };

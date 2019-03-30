@@ -9,7 +9,7 @@
 
 class FiberScheduler;
 
-class Scheduler : public Module {
+class Scheduler : public Module<Scheduler> {
 
 public:
 

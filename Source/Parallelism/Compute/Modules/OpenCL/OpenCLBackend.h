@@ -3,7 +3,7 @@
 #include "Parallelism/Compute/ComputeBackend.h"
 
 
-class OpenCLBackend : public ComputeBackend<OpenCLBackend> {
+class OpenCLBackend : public ComputeBackend {
 
 public:
 

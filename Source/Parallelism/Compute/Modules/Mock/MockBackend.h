@@ -3,7 +3,7 @@
 #include "Parallelism/Compute/ComputeBackend.h"
 
 
-class MockBackend : public ComputeBackend<MockBackend> {
+class MockBackend : public ComputeBackend {
 
 public:
 
