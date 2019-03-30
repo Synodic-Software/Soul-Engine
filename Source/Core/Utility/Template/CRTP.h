@@ -1,12 +1,12 @@
 #pragma once
 
+
 template <class T, template<typename> class ClassType>
 class CRTP
 {
 
 public:
 
-	CRTP() = default;
 	virtual ~CRTP() = default;
 
 	//return the derived class
@@ -15,7 +15,9 @@ public:
 
 
 private:
-	
+
+	CRTP() = default;
+
 	friend ClassType<T>;
 
 };
@@ -33,3 +35,4 @@ T const& CRTP<T, ClassType>::Type() const {
 	return static_cast<T const&>(*this);
 
 }
+

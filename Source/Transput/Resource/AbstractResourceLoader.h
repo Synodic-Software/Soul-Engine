@@ -1,13 +1,9 @@
 #pragma once
 
-#include "Core/Interface/Project/Project.h"
-
 #include "Core/Utility/Template/CRTP.h"
 
-#include <iostream>
-#include <fstream>
 #include <filesystem>
-#include <cassert>
+
 
 template <typename T>
 class AbstractResourceLoader : CRTP<T, AbstractResourceLoader> {

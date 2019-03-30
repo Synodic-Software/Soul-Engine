@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Interface/Module/Module.h"
+#include "ComputePolicy.h"
 
 #include <memory>
 
@@ -17,6 +18,13 @@ public:
 	ComputeBackend& operator=(const ComputeBackend&) = delete;
 	ComputeBackend& operator=(ComputeBackend&&) noexcept = default;
 
+
+    template <typename KernelFunction, typename... Args>
+	void Launch(const ComputePolicy& policy,
+		const KernelFunction& kernel,
+		Args&&... parameters) {
+        
+    }
 
     //Factory
 	static std::shared_ptr<ComputeBackend> CreateModule();

@@ -1,11 +1,14 @@
 #pragma once
 
+#include "Core/Utility/Template/CRTP.h"
+
 #include <memory>
 #include <vector>
 
+
 //Common interface for modules.
 template<typename T>
-class Module {
+class Module : public CRTP<T, Module> {
 
 public:
 
