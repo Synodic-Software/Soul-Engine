@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Parallelism/Compute/ComputeBuffer.h"
+#include "Parallelism/Compute/DeviceBuffer.h"
 
 
 template <typename T>
-class CPUBuffer : public ComputeBuffer<T> {
+class CPUBuffer : public DeviceBuffer<T> {
 
 public:
 
