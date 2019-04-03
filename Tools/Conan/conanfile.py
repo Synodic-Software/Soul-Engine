@@ -31,7 +31,8 @@ class SoulEngine(ConanFile):
         "glfw/3.2.1.20180327@bincrafters/stable",    
         "boost/1.69.0@conan/stable",
         "glm/0.9.9.1@g-truc/stable",
-        "stb/20180214@conan/stable",     
+        "stb/20180214@conan/stable",
+	"flatbuffers/1.10.0@google/stable",     
     )
 
     def configureCMake(self):
