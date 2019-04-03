@@ -4,19 +4,18 @@
 #include "Core/Utility/Exception/Exception.h"
 
 
-class CUDABackend : public ComputeBackend<CUDABackend> {
+class MockBackend : public ComputeBackend<MockBackend> {
 
 public:
 
-	CUDABackend() = default;
-	virtual ~CUDABackend() = default;
+	MockBackend() = default;
+	virtual ~MockBackend() = default;
 
-	CUDABackend(const CUDABackend&) = delete;
-	CUDABackend(CUDABackend&&) noexcept = default;
+	MockBackend(const MockBackend&) = delete;
+	MockBackend(MockBackend&&) noexcept = default;
 
-	CUDABackend& operator=(const CUDABackend&) = delete;
-	CUDABackend& operator=(CUDABackend&&) noexcept = default;
-
+	MockBackend& operator=(const MockBackend&) = delete;
+	MockBackend& operator=(MockBackend&&) noexcept = default;
 
     template <typename KernelFunction, typename... Args>
 	void Launch(const ComputePolicy&,
@@ -27,7 +26,7 @@ public:
 };
 
 template <typename KernelFunction, typename... Args>
-void CUDABackend::Launch(const ComputePolicy& policy,
+void MockBackend::Launch(const ComputePolicy& policy,
 	const KernelFunction& kernel,
 	Args&&... parameters) {
 

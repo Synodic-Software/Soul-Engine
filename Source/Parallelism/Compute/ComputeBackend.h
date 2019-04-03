@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Core/Interface/Module/Module.h"
 #include "Core/Utility/Template/CRTP.h"
+#include "ComputePolicy.h"
 
 
-template <typename T>
-class ComputeBackend : public Module, public CRTP<T, ComputeBackend> {
+template<typename T>
+class ComputeBackend : public CRTP<T ,ComputeBackend> {
 
 public:
 
@@ -18,5 +18,14 @@ public:
 	ComputeBackend& operator=(const ComputeBackend&) = delete;
 	ComputeBackend& operator=(ComputeBackend&&) noexcept = default;
 
+
+    template <typename KernelFunction, typename... Args>
+	void Launch(const ComputePolicy& policy,
+		const KernelFunction& kernel,
+		Args&&... parameters) {
+        
+        Type()->Launch(policy, kernel, std::forward<Args>(parameters)...);
+
+    }
 
 };

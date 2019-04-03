@@ -4,18 +4,18 @@
 #include "Core/Utility/Exception/Exception.h"
 
 
-class CUDABackend : public ComputeBackend<CUDABackend> {
+class CPUBackend : public ComputeBackend<CPUBackend> {
 
 public:
 
-	CUDABackend() = default;
-	virtual ~CUDABackend() = default;
+	CPUBackend() = default;
+	virtual ~CPUBackend() = default;
 
-	CUDABackend(const CUDABackend&) = delete;
-	CUDABackend(CUDABackend&&) noexcept = default;
+	CPUBackend(const CPUBackend&) = delete;
+	CPUBackend(CPUBackend&&) noexcept = default;
 
-	CUDABackend& operator=(const CUDABackend&) = delete;
-	CUDABackend& operator=(CUDABackend&&) noexcept = default;
+	CPUBackend& operator=(const CPUBackend&) = delete;
+	CPUBackend& operator=(CPUBackend&&) noexcept = default;
 
 
     template <typename KernelFunction, typename... Args>
@@ -27,7 +27,7 @@ public:
 };
 
 template <typename KernelFunction, typename... Args>
-void CUDABackend::Launch(const ComputePolicy& policy,
+void CPUBackend::Launch(const ComputePolicy& policy,
 	const KernelFunction& kernel,
 	Args&&... parameters) {
 

@@ -20,6 +20,7 @@ public:
 
 	WindowParameters& Parameters();
 
+
 protected:
 
 	Entity layout_;

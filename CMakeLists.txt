@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
 
+#Set CMake tools location
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Tools/CMake)
+
+#set prior to target definition
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ##############################################
 #Project 
@@ -10,57 +15,11 @@ project(SoulEngine
 	LANGUAGES CXX
 )
 
-#TODO: Implement testing framework. Once that is done, this option can be defaulted to ON
-option(BUILD_TESTS "Build test projects" OFF)
-option(BUILD_EXAMPLES "Build example projects" ON)
-#TODO: Implement use of this option
-option(BUILD_SHARED_LIBS "Build shared library" OFF)
-
-
-#CUDA is optional
-include(CheckLanguage)
-check_language(CUDA)
-
-if(CMAKE_CUDA_COMPILER)
-
-	enable_language(CUDA)
-
-else()
-
-	message(STATUS "CUDA is missing or a compiler with CUDA support can't be found.")
-
-endif()
-
-
-##############################################
-#Sources
-
-#TODO: Get rid of the globs. More elegant solution needed.
-file(GLOB_RECURSE PROJECT_HEADERS Source/*.h)
-file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp)
-set(PROJECT_FILES 
-    ${PROJECT_HEADERS} 
-    ${PROJECT_SOURCES} 
-)
-
-
-##############################################
-#Targets
-
-add_library(${PROJECT_NAME} ${PROJECT_FILES})
-add_library(synodic::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-
-set_target_properties(${PROJECT_NAME}
-	PROPERTIES 
-        LINKER_LANGUAGE CXX
-	   	CXX_EXTENSIONS OFF	
-		CUDA_SEPARABLE_COMPILATION ON
-        CXX_STANDARD 17
-)
-
 
 ##############################################
 #Dependencies
+
+include(CheckLanguage)
 
 #Conan via CMake
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
@@ -78,8 +37,64 @@ if(NOT TARGET CONAN_PKG::SoulEngine)
 
 endif()
 
-#non-conan dependancies
+
+check_language(CUDA)
+find_package(OpenCL 1.2)
 find_package(Vulkan)
+
+
+##############################################
+#Options
+
+option(BUILD_TESTS "Build test projects" OFF)#TODO: Implement testing framework. Once that is done, this option can be defaulted to ON
+option(BUILD_EXAMPLES "Build example projects" ON)
+option(BUILD_SHARED_LIBS "Build shared library" OFF)#TODO: Implement use of this option
+option(BUILD_CUDA_COMPUTE "Build the CUDA Compute backend" CMAKE_CUDA_COMPILER)#TODO: Implement use of this option
+option(BUILD_OPENCL_COMPUTE "Build the OpenCL Compute backend" ${OpenCL_FOUND})#TODO: Implement use of this option
+option(BUILD_VULKAN_RASTER "Build the Vulkan Raster backend" ${Vulkan_FOUND})#TODO: Implement use of this option
+
+if(BUILD_CUDA_COMPUTE)
+
+	enable_language(CUDA)
+
+endif()
+
+
+##############################################
+#Sources
+
+#TODO: Get rid of the globs. More elegant solution needed.
+file(GLOB_RECURSE PROJECT_HEADERS Source/*.h Includes/*.h)
+file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp)
+set(PROJECT_FILES 
+    ${PROJECT_HEADERS} 
+    ${PROJECT_SOURCES} 
+)
+
+#Provides Visual Studio filter support
+include(source_groups)
+source_groups(${PROJECT_FILES})
+
+
+##############################################
+#Targets
+
+add_library(${PROJECT_NAME} ${PROJECT_FILES})
+add_library(synodic::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
+set_target_properties(${PROJECT_NAME}
+	PROPERTIES 
+        LINKER_LANGUAGE CXX
+	   	CXX_EXTENSIONS OFF	
+		CUDA_SEPARABLE_COMPILATION ON
+        CXX_STANDARD 17
+)
+
+target_compile_definitions(${PROJECT_NAME} 
+    PRIVATE
+        CUDA=BUILD_CUDA_COMPUTE
+        OPENCL=BUILD_OPENCL_COMPUTE
+)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC 

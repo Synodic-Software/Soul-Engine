@@ -8,7 +8,7 @@
 class Window;
 class RasterBackend;
 
-class Display : public Module {
+class Display : public Module<Display> {
 
 public:
 
