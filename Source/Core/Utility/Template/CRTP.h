@@ -20,6 +20,7 @@ private:
 
 	friend ClassType<T>;
 
+
 };
 
 template <class T, template<typename> class ClassType>

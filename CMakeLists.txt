@@ -15,24 +15,47 @@ project(SoulEngine
 	LANGUAGES CXX
 )
 
-#TODO: Implement testing framework. Once that is done, this option can be defaulted to ON
-option(BUILD_TESTS "Build test projects" OFF)
-option(BUILD_EXAMPLES "Build example projects" ON)
-#TODO: Implement use of this option
-option(BUILD_SHARED_LIBS "Build shared library" OFF)
 
+##############################################
+#Dependencies
 
-#CUDA is optional
 include(CheckLanguage)
-check_language(CUDA)
 
-if(CMAKE_CUDA_COMPILER)
+#Conan via CMake
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
+    #The building case
+    include(${CMAKE_CURRENT_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
+else()
+    #The packaging case
+    include(${CMAKE_CURRENT_SOURCE_DIR}/Build/conanbuildinfo.cmake)
+endif()
+
+#if this repository is used via `add_subdirectory` we can't double initialize Conan packages
+if(NOT TARGET CONAN_PKG::SoulEngine)
+
+    conan_basic_setup(TARGETS)
+
+endif()
+
+
+check_language(CUDA)
+find_package(OpenCL 1.2)
+find_package(Vulkan)
+
+
+##############################################
+#Options
+
+option(BUILD_TESTS "Build test projects" OFF)#TODO: Implement testing framework. Once that is done, this option can be defaulted to ON
+option(BUILD_EXAMPLES "Build example projects" ON)
+option(BUILD_SHARED_LIBS "Build shared library" OFF)#TODO: Implement use of this option
+option(BUILD_CUDA_COMPUTE "Build the CUDA Compute backend" CMAKE_CUDA_COMPILER)#TODO: Implement use of this option
+option(BUILD_OPENCL_COMPUTE "Build the OpenCL Compute backend" ${OpenCL_FOUND})#TODO: Implement use of this option
+option(BUILD_VULKAN_RASTER "Build the Vulkan Raster backend" ${Vulkan_FOUND})#TODO: Implement use of this option
+
+if(BUILD_CUDA_COMPUTE)
 
 	enable_language(CUDA)
-
-else()
-
-	message(STATUS "CUDA is missing or a compiler with CUDA support can't be found.")
 
 endif()
 
@@ -67,28 +90,11 @@ set_target_properties(${PROJECT_NAME}
         CXX_STANDARD 17
 )
 
-
-##############################################
-#Dependencies
-
-#Conan via CMake
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
-    #The building case
-    include(${CMAKE_CURRENT_SOURCE_DIR}/Build/conanbuildinfo_multi.cmake)
-else()
-    #The packaging case
-    include(${CMAKE_CURRENT_SOURCE_DIR}/Build/conanbuildinfo.cmake)
-endif()
-
-#if this repository is used via `add_subdirectory` we can't double initialize Conan packages
-if(NOT TARGET CONAN_PKG::SoulEngine)
-
-    conan_basic_setup(TARGETS)
-
-endif()
-
-#non-conan dependancies
-find_package(Vulkan)
+target_compile_definitions(${PROJECT_NAME} 
+    PRIVATE
+        CUDA=BUILD_CUDA_COMPUTE
+        OPENCL=BUILD_OPENCL_COMPUTE
+)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC 

@@ -4,16 +4,17 @@
 #include "System/Platform.h"
 
 #include "Parallelism/Modules/Fiber/FiberScheduler.h"
-#include "Parallelism/Compute/ComputeBackend.h"
+#include "Parallelism/Compute/ComputeModule.h"
 #include "Display/Display.h"
 #include "Rasterer/RasterBackend.h"
+
 
 Soul::Soul(SoulParameters& params) :
 	parameters_(params),
 	frameTime_(),
 	active_(true),
 	schedulerModule_(Scheduler::CreateModule(parameters_.threadCount)),
-	computeModule_(ComputeBackend::CreateModule()),
+	computeModule_(ComputeModule::CreateModule()),
 	displayModule_(Display::CreateModule()),
 	rasterModule_(RasterBackend::CreateModule(schedulerModule_, displayModule_)),
 	detail(std::make_unique<Implementation>(*this))

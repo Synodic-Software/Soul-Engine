@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Parallelism/Compute/ComputeBackend.h"
+#include "Core/Utility/Exception/Exception.h"
 
 
-class CUDABackend : public ComputeBackend {
+class CUDABackend : public ComputeBackend<CUDABackend> {
 
 public:
 
@@ -17,4 +18,19 @@ public:
 	CUDABackend& operator=(CUDABackend&&) noexcept = default;
 
 
+    template <typename KernelFunction, typename... Args>
+	void Launch(const ComputePolicy&,
+		const KernelFunction&,
+		Args&&...);
+
+
 };
+
+template <typename KernelFunction, typename... Args>
+void CUDABackend::Launch(const ComputePolicy& policy,
+	const KernelFunction& kernel,
+	Args&&... parameters) {
+
+	throw NotImplemented();
+
+}

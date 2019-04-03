@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Core/Interface/Module/Module.h"
+#include "Core/Utility/Template/CRTP.h"
 #include "ComputePolicy.h"
 
-#include <memory>
 
-class ComputeBackend : public Module<ComputeBackend> {
+template<typename T>
+class ComputeBackend : public CRTP<T ,ComputeBackend> {
 
 public:
 
@@ -24,10 +24,8 @@ public:
 		const KernelFunction& kernel,
 		Args&&... parameters) {
         
+        Type()->Launch(policy, kernel, std::forward<Args>(parameters)...);
+
     }
-
-    //Factory
-	static std::shared_ptr<ComputeBackend> CreateModule();
-
 
 };

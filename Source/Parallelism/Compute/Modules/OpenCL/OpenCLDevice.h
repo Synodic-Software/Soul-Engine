@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Parallelism/Compute/ComputeDevice.h"
 
-class OpenCLDevice {
+class OpenCLDevice: public ComputeDevice{
 
 public:
 

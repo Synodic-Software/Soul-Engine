@@ -1,7 +1,9 @@
 #pragma once
 
+#include "Parallelism/Compute/ComputeDevice.h"
 
-class MockDevice {
+
+class MockDevice : public ComputeDevice {
 
 public:
 
