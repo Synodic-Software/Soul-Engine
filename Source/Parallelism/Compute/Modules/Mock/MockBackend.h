@@ -18,9 +18,7 @@ public:
 	MockBackend& operator=(MockBackend&&) noexcept = default;
 
     template <typename KernelFunction, typename... Args>
-	void Launch(const ComputePolicy&,
-		const KernelFunction&,
-		Args&&...);
+	void Launch(const ComputePolicy&, const KernelFunction&, Args&&...);
 
 
 };

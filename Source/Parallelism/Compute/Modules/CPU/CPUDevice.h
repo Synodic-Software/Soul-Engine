@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Parallelism/Compute/ComputeDevice.h"
+#include "Core/Utility/Exception/Exception.h"
 
 
-class CPUDevice : public ComputeDevice {
+class CPUDevice : public ComputeDevice<CPUDevice> {
 
 public:
 
@@ -16,5 +17,19 @@ public:
 	CPUDevice& operator=(const CPUDevice&) = delete;
 	CPUDevice& operator=(CPUDevice&&) noexcept = default;
 
+    
+    template <typename KernelFunction, typename... Args>
+	void Launch(const ComputePolicy&, const KernelFunction&, Args&&...);
+
 
 };
+
+
+template <typename KernelFunction, typename... Args>
+void CPUDevice::Launch(const ComputePolicy& policy,
+	const KernelFunction& kernel,
+	Args&&... parameters) {
+
+	throw NotImplemented();
+
+}

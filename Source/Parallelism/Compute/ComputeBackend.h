@@ -20,12 +20,16 @@ public:
 
 
     template <typename KernelFunction, typename... Args>
-	void Launch(const ComputePolicy& policy,
-		const KernelFunction& kernel,
-		Args&&... parameters) {
-        
-        Type()->Launch(policy, kernel, std::forward<Args>(parameters)...);
-
-    }
+	void Launch(const ComputePolicy&, const KernelFunction&, Args&&...);
 
 };
+
+template <typename T>
+template <typename KernelFunction, typename... Args>
+void ComputeBackend<T>::Launch(const ComputePolicy& policy,
+	const KernelFunction& kernel,
+	Args&&... parameters) {
+
+	Type()->Launch(policy, kernel, std::forward<Args>(parameters)...);
+
+}

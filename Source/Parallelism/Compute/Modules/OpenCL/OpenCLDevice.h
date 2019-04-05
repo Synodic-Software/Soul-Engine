@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Parallelism/Compute/ComputeDevice.h"
+#include "Core/Utility/Exception/Exception.h"
 
-class OpenCLDevice: public ComputeDevice{
+
+class OpenCLDevice : public ComputeDevice<OpenCLDevice> {
 
 public:
 
@@ -16,4 +18,18 @@ public:
 	OpenCLDevice& operator=(OpenCLDevice&&) noexcept = default;
 
 
+    template <typename KernelFunction, typename... Args>
+	void Launch(const ComputePolicy&, const KernelFunction&, Args&&...);
+
+
 };
+
+
+template <typename KernelFunction, typename... Args>
+void OpenCLDevice::Launch(const ComputePolicy& policy,
+	const KernelFunction& kernel,
+	Args&&... parameters) {
+
+	throw NotImplemented();
+
+}

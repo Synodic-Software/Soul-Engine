@@ -17,9 +17,7 @@ public:
 	OpenCLBackend& operator=(OpenCLBackend&&) noexcept = default;
 
     template <typename KernelFunction, typename... Args>
-	void Launch(const ComputePolicy&,
-		const KernelFunction&,
-		Args&&...);
+	void Launch(const ComputePolicy&, const KernelFunction&, Args&&...);
 
 };
 
