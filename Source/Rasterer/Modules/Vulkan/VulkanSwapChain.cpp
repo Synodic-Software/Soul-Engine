@@ -3,6 +3,9 @@
 #include "VulkanDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 
+#include "Core/Geometry/Vertex.h"
+#include "Buffer/VulkanBuffer.h"
+
 
 VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::SurfaceKHR& surface,
 	vk::Format colorFormat, vk::ColorSpaceKHR colorSpace, glm::uvec2& size, bool vSync, VulkanSwapChain* oldSwapChain) :
@@ -141,6 +144,11 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 
 		commandBuffers_[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 		commandBuffers_[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
+
+        vk::Buffer vertexBuffers[] = { pipeline_->GetVertexBuffer().GetBuffer() };
+		vk::DeviceSize offsets[] = { 0 };
+		commandBuffers_[i].bindVertexBuffers(0, 1, vertexBuffers, offsets);
+
 		commandBuffers_[i].draw(3, 1, 0, 0);
 		commandBuffers_[i].endRenderPass();
 

@@ -1,16 +1,15 @@
 #pragma once
 
-#include "Composition/Entity/EntityManager.h"
 #include "VulkanRenderPass.h"
 #include "Shader/VulkanVertexShader.h"
 #include "Shader/VulkanFragmentShader.h"
+#include "Buffer/VulkanBuffer.h"
 
 #include <vulkan/vulkan.hpp>
 
-#include <string_view>
-
 
 class VulkanDevice;
+class Vertex;
 
 class VulkanPipeline {
 
@@ -28,6 +27,9 @@ public:
 	VulkanRenderPass& GetRenderPass();
 	const vk::Pipeline& GetPipeline() const;
 
+    //TODO: temporary
+	const VulkanBuffer<Vertex>& GetVertexBuffer() const;
+
 private:
 
 	std::shared_ptr<VulkanDevice> device_;
@@ -39,5 +41,7 @@ private:
 	vk::PipelineLayout pipelineLayout_;
 	vk::Pipeline pipeline_;
 	vk::PipelineCache pipelineCache_;
+
+    VulkanBuffer<Vertex> vertexBuffer_;
 
 };

@@ -7,7 +7,14 @@ class CRTP
 
 public:
 
-	virtual ~CRTP() = default;
+	~CRTP() = default; //No VTable
+
+    CRTP(const CRTP&) = default;
+	CRTP(CRTP&&) noexcept = default;
+
+	CRTP& operator=(const CRTP&) = default;
+	CRTP& operator=(CRTP&&) noexcept = default;
+
 
 	//return the derived class
 	T& Type();

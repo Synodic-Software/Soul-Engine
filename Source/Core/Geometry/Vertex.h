@@ -4,9 +4,9 @@
 #include "Composition/Component/Component.h"
 
 #include <glm/glm.hpp>
-#include <functional>
 
-class  Vertex : Component<Vertex>
+
+class Vertex : Component<Vertex>
 {
 
 public:
@@ -22,8 +22,8 @@ public:
 
 
 	glm::vec3 position;
-	glm::vec2 textureCoord;
 	glm::vec3 normal;
+	glm::vec2 textureCoord;
 	glm::vec3 velocity;
 
 	uint object;

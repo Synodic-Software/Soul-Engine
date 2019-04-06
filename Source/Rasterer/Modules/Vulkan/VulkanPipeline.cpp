@@ -2,11 +2,16 @@
 
 #include "VulkanDevice.h"
 
-VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent2D& extent, const std::string& vertexFilename, const std::string& fragmentFilename, vk::Format swapChainFormat) :
-	device_(device),
-	renderPass_(device_, swapChainFormat), //TODO: remove hardcoded renderpass + allow multiple renderpasses
-	vertexShader_(device, vertexFilename),
-	fragmentShader_(device, fragmentFilename)
+#include "Core/Geometry/Vertex.h"
+#include "Buffer/VulkanBuffer.h"
+#include <iostream>
+
+VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent2D& extent, const std::string& vertexFilename, const std::string& fragmentFilename, vk::Format swapChainFormat) : 
+    device_(device),																																																  
+    renderPass_(device_, swapChainFormat), //TODO: remove hardcoded renderpass + allow multiple renderpasses																																																  
+    vertexShader_(device, vertexFilename),																																																  
+    fragmentShader_(device, fragmentFilename),
+	vertexBuffer_(3, vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, device_)
 {
 
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
@@ -22,9 +27,37 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent
 		fragmentShader_.CreateInfo()
 	};
 
+
+	//TODO: Refactor and move vertex attribute and bindings.
+	vk::VertexInputBindingDescription bindingDescription;
+	bindingDescription.binding = 0;
+	bindingDescription.stride = sizeof(Vertex);
+	bindingDescription.inputRate = vk::VertexInputRate::eVertex;
+
+	std::array<vk::VertexInputAttributeDescription, 1> attributeDescriptions;
+
+	attributeDescriptions[0].binding = 0;
+	attributeDescriptions[0].location = 0;
+	attributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
+	attributeDescriptions[0].offset = offsetof(Vertex, position); //TODO: C++23 Reflection
+
+    std::vector<Vertex> vertices(3);
+	vertices[0].position = { 0.0f, -0.5f,0.0f };
+	vertices[1].position = { 0.5f, 0.5f,0.0f };
+	vertices[2].position = { -0.5f, 0.5f,0.0f };
+
+
+	Vertex* data = vertexBuffer_.Map();
+	std::memcpy(data, vertices.data(), sizeof(Vertex) * vertices.size());
+	vertexBuffer_.UnMap();
+ 
+
 	vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
-	vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
+	vertexInputInfo.vertexBindingDescriptionCount = 1;
+	vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
+	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+
 
 	vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
 	inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;
@@ -108,8 +141,6 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent
 
 	pipelineCache_ = logicalDevice.createPipelineCache(pipelineCreateInfo);
 	pipeline_ = logicalDevice.createGraphicsPipeline(pipelineCache_, pipelineInfo);
-
-
 }
 
 VulkanPipeline::~VulkanPipeline() {
@@ -119,7 +150,6 @@ VulkanPipeline::~VulkanPipeline() {
 	logicalDevice.destroyPipelineCache(pipelineCache_);
 	logicalDevice.destroyPipeline(pipeline_);
 	logicalDevice.destroyPipelineLayout(pipelineLayout_);
-
 }
 
 VulkanRenderPass& VulkanPipeline::GetRenderPass() {
@@ -128,4 +158,8 @@ VulkanRenderPass& VulkanPipeline::GetRenderPass() {
 
 const vk::Pipeline& VulkanPipeline::GetPipeline() const {
 	return pipeline_;
+}
+
+const VulkanBuffer<Vertex>& VulkanPipeline::GetVertexBuffer() const {
+	return vertexBuffer_;
 }
