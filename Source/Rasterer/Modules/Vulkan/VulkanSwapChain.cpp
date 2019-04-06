@@ -147,9 +147,11 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 
         vk::Buffer vertexBuffers[] = { pipeline_->GetVertexBuffer().GetBuffer() };
 		vk::DeviceSize offsets[] = { 0 };
-		commandBuffers_[i].bindVertexBuffers(0, 1, vertexBuffers, offsets);
 
-		commandBuffers_[i].draw(3, 1, 0, 0);
+		commandBuffers_[i].bindVertexBuffers(0, 1, vertexBuffers, offsets);
+		commandBuffers_[i].bindIndexBuffer(pipeline_->GetIndexBuffer().GetBuffer(), 0, vk::IndexType::eUint16);
+
+		commandBuffers_[i].drawIndexed(6, 1, 0, 0, 0);
 		commandBuffers_[i].endRenderPass();
 
 		commandBuffers_[i].end();

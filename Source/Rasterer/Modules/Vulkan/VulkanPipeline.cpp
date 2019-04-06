@@ -10,8 +10,10 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent
 																																																  renderPass_(device_, swapChainFormat), //TODO: remove hardcoded renderpass + allow multiple renderpasses
 																																																  vertexShader_(device, vertexFilename),
 																																																  fragmentShader_(device, fragmentFilename),
-																																																  vertexBuffer_(3, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, device_),
-																																																  vertexStagingBuffer_(3, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, device_) {
+																																																  vertexBuffer_(4, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, device_),
+																																																  vertexStagingBuffer_(4, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, device_),
+																																																  indexBuffer_(6, vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, device_),
+																																																  indexStagingBuffer_(6, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, device_) {
 
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
 	pipelineLayoutInfo.setLayoutCount = 0;
@@ -40,15 +42,23 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent
 	attributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
 	attributeDescriptions[0].offset = offsetof(Vertex, position); //TODO: C++23 Reflection
 
-	std::vector<Vertex> vertices(3);
-	vertices[0].position = { 0.0f, -0.5f, 0.0f };
-	vertices[1].position = { 0.5f, 0.5f, 0.0f };
-	vertices[2].position = { -0.5f, 0.5f, 0.0f };
+	std::vector<Vertex> vertices(4);
+	vertices[0].position = { -0.5f, -0.5f, 0.0f };
+	vertices[1].position = { 0.5f, -0.5f, 0.0f };
+	vertices[2].position = { 0.5f, 0.5f, 0.0f };
+	vertices[3].position = { -0.5f, 0.5f, 0.0f };
 
+    const std::vector<uint16> indices = {
+		0, 1, 2, 2, 3, 0
+	};
 
 	Vertex* data = vertexStagingBuffer_.Map();
 	std::memcpy(data, vertices.data(), sizeof(Vertex) * vertices.size());
 	vertexStagingBuffer_.UnMap();
+
+    uint16* data2 = indexStagingBuffer_.Map();
+	std::memcpy(data2, indices.data(), sizeof(uint16) * indices.size());
+	indexStagingBuffer_.UnMap();
 
 	//copy buffer
 	{
@@ -80,6 +90,34 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent
         logicalDevice.freeCommandBuffers(device_->GetCommandPool(), commandBuffer);
 	}
 
+    {
+		vk::CommandBufferAllocateInfo allocInfo;
+		allocInfo.level = vk::CommandBufferLevel::ePrimary;
+		allocInfo.commandPool = device_->GetCommandPool();
+		allocInfo.commandBufferCount = 1;
+
+		std::vector<vk::CommandBuffer> commandBuffer = logicalDevice.allocateCommandBuffers(allocInfo);
+
+		vk::CommandBufferBeginInfo beginInfo;
+		beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
+
+		commandBuffer[0].begin(beginInfo);
+
+		vk::BufferCopy copyRegion;
+		copyRegion.size = sizeof(Vertex) * indices.size();
+		commandBuffer[0].copyBuffer(indexStagingBuffer_.GetBuffer(), indexBuffer_.GetBuffer(), 1, &copyRegion);
+
+		commandBuffer[0].end();
+
+		vk::SubmitInfo submitInfo;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = commandBuffer.data();
+
+		device_->GetGraphicsQueue().submit(submitInfo, nullptr);
+		device_->GetGraphicsQueue().waitIdle();
+
+		logicalDevice.freeCommandBuffers(device_->GetCommandPool(), commandBuffer);
+	}
 
 
 	vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
@@ -192,4 +230,8 @@ const vk::Pipeline& VulkanPipeline::GetPipeline() const {
 
 const VulkanBuffer<Vertex>& VulkanPipeline::GetVertexBuffer() const {
 	return vertexBuffer_;
+}
+
+const VulkanBuffer<uint16>& VulkanPipeline::GetIndexBuffer() const {
+	return indexBuffer_;
 }

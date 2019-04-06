@@ -29,6 +29,8 @@ public:
 
     //TODO: temporary
 	const VulkanBuffer<Vertex>& GetVertexBuffer() const;
+	const VulkanBuffer<uint16>& GetIndexBuffer() const;
+
 
 private:
 
@@ -45,5 +47,8 @@ private:
     //TODO: temporary, refactor
     VulkanBuffer<Vertex> vertexBuffer_;
 	VulkanBuffer<Vertex> vertexStagingBuffer_;
+
+    VulkanBuffer<uint16> indexBuffer_;
+	VulkanBuffer<uint16> indexStagingBuffer_;
 
 };
