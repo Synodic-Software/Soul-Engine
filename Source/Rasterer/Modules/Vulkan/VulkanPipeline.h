@@ -42,6 +42,8 @@ private:
 	vk::Pipeline pipeline_;
 	vk::PipelineCache pipelineCache_;
 
+    //TODO: temporary, refactor
     VulkanBuffer<Vertex> vertexBuffer_;
+	VulkanBuffer<Vertex> vertexStagingBuffer_;
 
 };
