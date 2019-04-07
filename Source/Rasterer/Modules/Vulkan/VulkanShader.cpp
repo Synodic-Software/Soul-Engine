@@ -1,16 +1,21 @@
 #include "VulkanShader.h"
 #include "VulkanDevice.h"
 #include "Core/Utility/Exception/Exception.h"
+#include "Transput/Resource/Resource.h"
 
 #include <fstream>
 
 
-VulkanShader::VulkanShader(std::shared_ptr<VulkanDevice>& device, const std::filesystem::path& path) :
+VulkanShader::VulkanShader(std::shared_ptr<VulkanDevice>& device, const vk::ShaderStageFlagBits& shaderType, const Resource& resource) :
 	device_(device)
 {
 	const vk::Device& logicalDevice = device_->GetLogical();
 
-	module_ = CreateModule(logicalDevice, path);
+	module_ = CreateModule(logicalDevice, resource.Path());
+
+    info_.stage = shaderType;
+	info_.module = module_;
+	info_.pName = "main";
 
 }
 
@@ -46,3 +51,8 @@ vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std:
 
 }
 
+vk::PipelineShaderStageCreateInfo VulkanShader::GetInfo() {
+
+	return info_;
+
+}

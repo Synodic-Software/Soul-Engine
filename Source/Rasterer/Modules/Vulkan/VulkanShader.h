@@ -4,14 +4,16 @@
 
 #include <filesystem>
 
+
+class Resource;
 class VulkanDevice;
 
 class VulkanShader {
 
 public:
 
-	VulkanShader(std::shared_ptr<VulkanDevice>&, const std::filesystem::path&);
-	virtual ~VulkanShader();
+	VulkanShader(std::shared_ptr<VulkanDevice>&, const vk::ShaderStageFlagBits&, const Resource&);
+	~VulkanShader();
 
 	VulkanShader(const VulkanShader&) = delete;
 	VulkanShader(VulkanShader&& o) noexcept = delete;
@@ -21,13 +23,13 @@ public:
 
 	vk::ShaderModule CreateModule(const vk::Device&, const std::filesystem::path&);
 
-	virtual vk::PipelineShaderStageCreateInfo CreateInfo() = 0;
+	vk::PipelineShaderStageCreateInfo GetInfo();
 
-protected:
-
-	vk::ShaderModule module_;
 
 private:
+
+	vk::ShaderModule module_;
+	vk::PipelineShaderStageCreateInfo info_;
 
 	std::shared_ptr<VulkanDevice>& device_;
 

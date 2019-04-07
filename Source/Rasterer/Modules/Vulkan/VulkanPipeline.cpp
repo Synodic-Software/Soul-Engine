@@ -6,10 +6,10 @@
 #include "Buffer/VulkanBuffer.h"
 
 
-VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent2D& extent, const std::string& vertexFilename, const std::string& fragmentFilename, vk::Format swapChainFormat) : device_(device),
+VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent2D& extent, const Resource& vertexResource, const Resource& fragmentResource, vk::Format swapChainFormat) : device_(device),
 																																																  renderPass_(device_, swapChainFormat), //TODO: remove hardcoded renderpass + allow multiple renderpasses
-																																																  vertexShader_(device, vertexFilename),
-																																																  fragmentShader_(device, fragmentFilename),
+																																															vertexShader_(device, vk::ShaderStageFlagBits::eVertex, vertexResource),
+																																															fragmentShader_(device, vk::ShaderStageFlagBits::eFragment, fragmentResource),
 																																																  vertexBuffer_(4, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, device_),
 																																																  vertexStagingBuffer_(4, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, device_),
 																																																  indexBuffer_(6, vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, device_),
@@ -24,8 +24,8 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device, vk::Extent
 	pipelineLayout_ = logicalDevice.createPipelineLayout(pipelineLayoutInfo, nullptr);
 
 	vk::PipelineShaderStageCreateInfo shaderStages[] = {
-		vertexShader_.CreateInfo(),
-		fragmentShader_.CreateInfo()
+		vertexShader_.GetInfo(),
+		fragmentShader_.GetInfo()
 	};
 
 

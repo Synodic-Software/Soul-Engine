@@ -1,13 +1,12 @@
 #pragma once
 
 #include "VulkanRenderPass.h"
-#include "Shader/VulkanVertexShader.h"
-#include "Shader/VulkanFragmentShader.h"
+#include "VulkanShader.h"
 #include "Buffer/VulkanBuffer.h"
 
 #include <vulkan/vulkan.hpp>
 
-
+class Resource;
 class VulkanDevice;
 class Vertex;
 
@@ -15,7 +14,7 @@ class VulkanPipeline {
 
 public:
 
-	VulkanPipeline(std::shared_ptr<VulkanDevice>&, vk::Extent2D&, const std::string&, const std::string&, vk::Format);
+	VulkanPipeline(std::shared_ptr<VulkanDevice>&, vk::Extent2D&, const Resource&, const Resource&, vk::Format);
 	~VulkanPipeline();
 
 	VulkanPipeline(const VulkanPipeline&) = delete;
@@ -37,8 +36,8 @@ private:
 	std::shared_ptr<VulkanDevice> device_;
 	VulkanRenderPass renderPass_;
 
-	VulkanVertexShader vertexShader_;
-	VulkanFragmentShader fragmentShader_;
+	VulkanShader vertexShader_;
+	VulkanShader fragmentShader_;
 
 	vk::PipelineLayout pipelineLayout_;
 	vk::Pipeline pipeline_;
