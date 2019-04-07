@@ -1,15 +1,13 @@
 #pragma once
 
-#include "Types.h"
+#include "Core/Utility/ID/TypeID.h"
 
-class InputSet
-{
+
+class InputSet : TypeID<InputSet> {
+
 public:
-	InputSet();
 
-private:
+	InputSet() = default;
 
-	static uint64 counter;
-	uint64 id_;
 
 };
