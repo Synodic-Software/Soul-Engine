@@ -56,7 +56,8 @@ GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, Vul
 	assert(context_);
 
 	//context related settings
-	glfwSetInputMode(context_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    //TODO: enable when relevant
+	//glfwSetInputMode(context_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	//GLFW guarantees Vulkan support.
 	VkSurfaceKHR castSurface;

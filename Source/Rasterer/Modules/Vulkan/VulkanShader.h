@@ -21,9 +21,9 @@ public:
 	VulkanShader& operator=(const VulkanShader&) = delete;
 	VulkanShader& operator=(VulkanShader&& other) noexcept = delete;
 
-	vk::ShaderModule CreateModule(const vk::Device&, const std::filesystem::path&);
+	vk::ShaderModule CreateModule(const vk::Device&, const std::filesystem::path&) const;
 
-	vk::PipelineShaderStageCreateInfo GetInfo();
+	vk::PipelineShaderStageCreateInfo GetInfo() const;
 
 
 private:

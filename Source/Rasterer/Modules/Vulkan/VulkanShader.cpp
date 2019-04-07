@@ -27,7 +27,7 @@ VulkanShader::~VulkanShader() {
 
 }
 
-vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std::filesystem::path& path) {
+vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std::filesystem::path& path) const {
 
 	if (!std::filesystem::exists(path)) {
 		throw NotImplemented();
@@ -51,7 +51,7 @@ vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std:
 
 }
 
-vk::PipelineShaderStageCreateInfo VulkanShader::GetInfo() {
+vk::PipelineShaderStageCreateInfo VulkanShader::GetInfo() const {
 
 	return info_;
 
