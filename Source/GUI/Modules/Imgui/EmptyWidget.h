@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Display/Widget/Widget.h"
+#include "ImguiWidget.h"
 
 
-class EmptyWidget : public Widget
+class EmptyWidget : public ImguiWidget
 {
 
 public:

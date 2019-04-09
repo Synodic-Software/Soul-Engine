@@ -1,15 +1,16 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "Composition/Component/Component.h"
 
 #include <bitset>
 
-class Widget
-{
+
+class Widget : public Component<Widget> {
 
 public:
 
-	Widget();
+	Widget() = default;
 	virtual ~Widget() = default;
 
 	Widget(const Widget&) = delete;

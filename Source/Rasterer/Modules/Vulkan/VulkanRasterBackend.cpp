@@ -4,10 +4,10 @@
 #include "Core/Utility/Exception/Exception.h"
 #include "System/Compiler.h"
 #include "Types.h"
-#include "Display/Display.h"
+#include "Display/DisplayModule.h"
 #include "VulkanSwapChain.h"
 
-VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& scheduler, std::shared_ptr<Display>& displayModule) :
+VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& scheduler, std::shared_ptr<DisplayModule>& displayModule) :
 	validationLayers_{
 			"VK_LAYER_LUNARG_assistant_layer",
 			"VK_LAYER_LUNARG_standard_validation"

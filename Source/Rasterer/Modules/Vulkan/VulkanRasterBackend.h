@@ -7,10 +7,9 @@
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
 
-#include <unordered_map>
 
 class FiberScheduler;
-class Display;
+class DisplayModule;
 class VulkanDevice;
 class VulkanSwapChain;
 
@@ -18,7 +17,7 @@ class VulkanRasterBackend final : public RasterBackend {
 
 public:
 
-	VulkanRasterBackend(std::shared_ptr<FiberScheduler>&, std::shared_ptr<Display>&);
+	VulkanRasterBackend(std::shared_ptr<FiberScheduler>&, std::shared_ptr<DisplayModule>&);
 	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;

@@ -13,7 +13,7 @@ class Entity;
 
 class FiberScheduler;
 class ComputeModule;
-class Display;
+class DisplayModule;
 class RasterBackend;
 
 
@@ -65,7 +65,7 @@ private:
 	//services and modules	
 	std::shared_ptr<FiberScheduler> schedulerModule_;
 	std::shared_ptr<ComputeModule> computeModule_;
-	std::shared_ptr<Display> displayModule_;
+	std::shared_ptr<DisplayModule> displayModule_;
 	std::shared_ptr<RasterBackend> rasterModule_;
 
 	//hidden Soul services and modules

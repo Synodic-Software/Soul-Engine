@@ -5,7 +5,7 @@
 
 #include "Parallelism/Modules/Fiber/FiberScheduler.h"
 #include "Parallelism/Compute/ComputeModule.h"
-#include "Display/Display.h"
+#include "Display/DisplayModule.h"
 #include "Rasterer/RasterBackend.h"
 
 
@@ -15,7 +15,7 @@ Soul::Soul(SoulParameters& params) :
 	active_(true),
 	schedulerModule_(Scheduler::CreateModule(parameters_.threadCount)),
 	computeModule_(ComputeModule::CreateModule()),
-	displayModule_(Display::CreateModule()),
+	displayModule_(DisplayModule::CreateModule()),
 	rasterModule_(RasterBackend::CreateModule(schedulerModule_, displayModule_)),
 	detail(std::make_unique<Implementation>(*this))
 {

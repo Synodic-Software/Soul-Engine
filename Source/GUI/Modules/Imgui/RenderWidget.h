@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Display/Widget/Widget.h"
+#include "ImguiWidget.h"
 
 
-class RenderWidget : public Widget
+class RenderWidget : public ImguiWidget
 {
 
 public:
 
 	RenderWidget() = default;
-	~RenderWidget() = default;
+	~RenderWidget() override = default;
 
 	RenderWidget(const RenderWidget&) = delete;
 	RenderWidget(RenderWidget&&) noexcept = default;

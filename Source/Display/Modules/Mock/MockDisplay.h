@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Display/Display.h"
+#include "Display/DisplayModule.h"
 
-class MockDisplay final: public Display {
+class MockDisplay final : public DisplayModule {
 
 public:
 

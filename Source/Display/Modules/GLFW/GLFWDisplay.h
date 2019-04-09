@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Display/Display.h"
+#include "Display/DisplayModule.h"
 
 #include <vector>
 #include <unordered_map>
@@ -11,7 +11,7 @@ class GLFWWindow;
 class WindowParameters;
 class VulkanRasterBackend;
 
-class GLFWDisplay final : public Display {
+class GLFWDisplay final : public DisplayModule {
 
 public:
 

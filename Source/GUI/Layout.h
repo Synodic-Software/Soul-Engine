@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Display/Widget/Widget.h"
+#include "GUI/Widget.h"
 
 #include <vector>
 #include <memory>

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Display/Layout/Layout.h"
+#include "ImguiLayout.h"
+
 
 //A Layout with a single widget slot, covering its entire screenspace
-class SingleLayout : public Layout
+class SingleLayout : public ImguiLayout
 {
 
 public:
