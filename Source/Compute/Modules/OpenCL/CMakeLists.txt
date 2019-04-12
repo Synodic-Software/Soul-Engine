@@ -1,6 +1,12 @@
-cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
-
 ##############################################
-#CMake delegation
+#Compute/OpenCL
 
-add_subdirectory("Soul Info")
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        OpenCLBackend.cpp
+        OpenCLBackend.h
+        OpenCLBuffer.cpp
+        OpenCLBuffer.h
+        OpenCLDevice.cpp
+        OpenCLDevice.h
+)

@@ -1,6 +1,12 @@
-cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
-
 ##############################################
-#CMake delegation
+#Compute/CUDA
 
-add_subdirectory("Soul Info")
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        CUDABackend.cpp
+        CUDABackend.h
+        CUDABuffer.cpp
+        CUDABuffer.h
+        CUDADevice.cpp
+        CUDADevice.h
+)

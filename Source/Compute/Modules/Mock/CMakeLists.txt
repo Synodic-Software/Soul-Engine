@@ -1,6 +1,12 @@
-cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
-
 ##############################################
-#CMake delegation
+#Compute/Mock
 
-add_subdirectory("Soul Info")
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        MockBackend.cpp
+        MockBackend.h
+        MockBuffer.cpp
+        MockBuffer.h
+        MockDevice.cpp
+        MockDevice.h
+)
