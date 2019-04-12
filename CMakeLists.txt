@@ -99,13 +99,14 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-		CONAN_PKG::glm
+        CONAN_PKG::glm
 
     PRIVATE	
-		CONAN_PKG::glfw
+        CONAN_PKG::glfw
         CONAN_PKG::boost
-		CONAN_PKG::stb
-		Vulkan::Vulkan
+        CONAN_PKG::stb
+        CONAN_PKG::imgui
+        Vulkan::Vulkan
 )
 
 
