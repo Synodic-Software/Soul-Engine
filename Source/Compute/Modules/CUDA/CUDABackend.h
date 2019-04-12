@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parallelism/Compute/ComputeBackend.h"
+#include "Compute/ComputeBackend.h"
 #include "Core/Utility/Exception/Exception.h"
 
 

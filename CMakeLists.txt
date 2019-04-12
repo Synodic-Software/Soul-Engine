@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.13.1 FATAL_ERROR)
 #Set CMake tools location
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Tools/CMake)
 
-#set prior to target definition
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ##############################################
 #Project 
@@ -37,10 +35,23 @@ if(NOT TARGET CONAN_PKG::SoulEngine)
 
 endif()
 
-
-check_language(CUDA)
+#Externally managed dependancies
 find_package(OpenCL 1.2)
 find_package(Vulkan)
+
+check_language(CUDA)
+
+#`CMAKE_CUDA_COMPILER` will point to nvcc or be `NOTFOUND`
+if(CMAKE_CUDA_COMPILER)
+
+	enable_language(CUDA)
+    set(CUDA_FOUND True)
+
+else()
+
+    set(CUDA_FOUND False)
+
+endif()
 
 
 ##############################################
@@ -49,37 +60,18 @@ find_package(Vulkan)
 option(BUILD_TESTS "Build test projects" OFF)#TODO: Implement testing framework. Once that is done, this option can be defaulted to ON
 option(BUILD_EXAMPLES "Build example projects" ON)
 option(BUILD_SHARED_LIBS "Build shared library" OFF)#TODO: Implement use of this option
-option(BUILD_CUDA_COMPUTE "Build the CUDA Compute backend" CMAKE_CUDA_COMPILER)#TODO: Implement use of this option
+option(BUILD_CPU_COMPUTE "Build the OpenCL Compute backend" ON)#TODO: Implement use of this option
+option(BUILD_CUDA_COMPUTE "Build the CUDA Compute backend" ${CUDA_FOUND})#TODO: Implement use of this option
 option(BUILD_OPENCL_COMPUTE "Build the OpenCL Compute backend" ${OpenCL_FOUND})#TODO: Implement use of this option
 option(BUILD_VULKAN_RASTER "Build the Vulkan Raster backend" ${Vulkan_FOUND})#TODO: Implement use of this option
-
-if(BUILD_CUDA_COMPUTE)
-
-	enable_language(CUDA)
-
-endif()
+option(BUILD_GLFW_DISPLAY "Build the Vulkan Raster backend" ON)#TODO: Implement use of this option
+option(BUILD_IMGUI_GUI "Build the Vulkan Raster backend" ON)#TODO: Implement use of this option
 
 
 ##############################################
-#Sources
+#Project Target
 
-#TODO: Get rid of the globs. More elegant solution needed.
-file(GLOB_RECURSE PROJECT_HEADERS Source/*.h Includes/*.h)
-file(GLOB_RECURSE PROJECT_SOURCES Source/*.cpp)
-set(PROJECT_FILES 
-    ${PROJECT_HEADERS} 
-    ${PROJECT_SOURCES} 
-)
-
-#Provides Visual Studio filter support
-include(source_groups)
-source_groups(${PROJECT_FILES})
-
-
-##############################################
-#Targets
-
-add_library(${PROJECT_NAME} ${PROJECT_FILES})
+add_library(${PROJECT_NAME} "")
 add_library(synodic::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 set_target_properties(${PROJECT_NAME}
@@ -88,6 +80,7 @@ set_target_properties(${PROJECT_NAME}
 	   	CXX_EXTENSIONS OFF	
 		CUDA_SEPARABLE_COMPILATION ON
         CXX_STANDARD 17
+		USE_FOLDERS ON
 )
 
 target_compile_definitions(${PROJECT_NAME} 
@@ -108,14 +101,46 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
 		CONAN_PKG::glm
 
-    INTERFACE
-
     PRIVATE	
 		CONAN_PKG::glfw
         CONAN_PKG::boost
 		CONAN_PKG::stb
 		Vulkan::Vulkan
 )
+
+
+##############################################
+#Sources
+
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        Includes/Property.h
+        Includes/Soul.h
+        Includes/SoulApplication.h
+        Includes/SoulParameters.h
+        Includes/Types.h
+        Includes/WindowParameters.h    
+)
+
+#Each `Source` subdirectory handles its own sources and compilation choices
+add_subdirectory(Source/Audio)
+add_subdirectory(Source/Composition)
+add_subdirectory(Source/Compute)
+add_subdirectory(Source/Core)
+add_subdirectory(Source/Display)
+add_subdirectory(Source/GUI)
+add_subdirectory(Source/Memory)
+add_subdirectory(Source/Network)
+add_subdirectory(Source/Parallelism)
+add_subdirectory(Source/Physics)
+add_subdirectory(Source/Rasterer)
+add_subdirectory(Source/System)
+add_subdirectory(Source/Tracer)
+add_subdirectory(Source/Transput)
+
+#Provides Visual Studio filter support
+get_target_property(PROJECT_SOURCES ${PROJECT_NAME} SOURCES)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${PROJECT_SOURCES})
 
 
 ##############################################

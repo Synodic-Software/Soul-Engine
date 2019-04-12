@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parallelism/Compute/DeviceBuffer.h"
+#include "Compute/DeviceBuffer.h"
 
 
 template <typename T>

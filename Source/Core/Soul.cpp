@@ -4,7 +4,7 @@
 #include "System/Platform.h"
 
 #include "Parallelism/Modules/Fiber/FiberScheduler.h"
-#include "Parallelism/Compute/ComputeModule.h"
+#include "Compute/ComputeModule.h"
 #include "Display/DisplayModule.h"
 #include "Rasterer/RasterBackend.h"
 

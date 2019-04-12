@@ -1,0 +1,41 @@
+
+##############################################
+#Compute
+
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ComputeBackend.h
+        ComputeBuffer.cpp
+        ComputeBuffer.h
+        ComputeDevice.h
+        ComputeModule.cpp
+        ComputeModule.h
+        ComputePolicy.cpp
+        ComputePolicy.h
+        DeviceBuffer.cpp
+        DeviceBuffer.h
+        Modules/CPU/CPUBackend.cpp
+        Modules/CPU/CPUBackend.h
+        Modules/CPU/CPUBuffer.cpp
+        Modules/CPU/CPUBuffer.h
+        Modules/CPU/CPUDevice.cpp
+        Modules/CPU/CPUDevice.h
+        Modules/CUDA/CUDABackend.cpp
+        Modules/CUDA/CUDABackend.h
+        Modules/CUDA/CUDABuffer.cpp
+        Modules/CUDA/CUDABuffer.h
+        Modules/CUDA/CUDADevice.cpp
+        Modules/CUDA/CUDADevice.h
+        Modules/Mock/MockBackend.cpp
+        Modules/Mock/MockBackend.h
+        Modules/Mock/MockBuffer.cpp
+        Modules/Mock/MockBuffer.h
+        Modules/Mock/MockDevice.cpp
+        Modules/Mock/MockDevice.h
+        Modules/OpenCL/OpenCLBackend.cpp
+        Modules/OpenCL/OpenCLBackend.h
+        Modules/OpenCL/OpenCLBuffer.cpp
+        Modules/OpenCL/OpenCLBuffer.h
+        Modules/OpenCL/OpenCLDevice.cpp
+        Modules/OpenCL/OpenCLDevice.h
+)

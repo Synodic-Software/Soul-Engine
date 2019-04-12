@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parallelism/Compute/ComputeDevice.h"
+#include "Compute/ComputeDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 
 

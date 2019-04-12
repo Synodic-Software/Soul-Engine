@@ -1,0 +1,71 @@
+
+##############################################
+#Core
+
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        Camera/Camera.cpp
+        Camera/Camera.h
+        Camera/Film/Film.cpp
+        Camera/Film/Film.h
+        Camera/Film/Filter/Filter.cpp
+        Camera/Film/Filter/Filter.h
+        Camera/Lens/Lens.h
+        Frame/Frame.cpp
+        Frame/Frame.h
+        Frame/FramePipeline.h
+        Geometry/BoundingBox.cpp
+        Geometry/BoundingBox.h
+        Geometry/Face.cpp
+        Geometry/Face.h
+        Geometry/Tet.cpp
+        Geometry/Tet.h
+        Geometry/Vertex.cpp
+        Geometry/Vertex.h
+        Interface/Application/SoulApplication.cpp
+        Interface/Module/Module.h
+        Interface/Project/Project.cpp
+        Interface/Project/Project.h
+        Material/Colour/Colour.h
+        Material/Material.cpp
+        Material/Material.h
+        Material/ShaderNode.h
+        Object/Character/Character.cpp
+        Object/Character/Character.h
+        Object/Loader.cpp
+        Object/Loader.h
+        Object/Object.cpp
+        Object/Object.h
+        Scene/BVH/LBVHManager.cpp
+        Scene/BVH/LBVHManager.h
+        Scene/BVH/Node.cpp
+        Scene/BVH/Node.h
+        Scene/Morton/MortonCode.h
+        Scene/Scene.cpp
+        Scene/Scene.h
+        Scene/Sky.cpp
+        Scene/Sky.h
+        Soul.cpp
+        SoulImplementation.cpp
+        SoulImplementation.h
+        Structures/AbstractSparseSet.cpp
+        Structures/AbstractSparseSet.h
+        Structures/RingBuffer.h
+        Structures/SparseSet.cpp
+        Structures/SparseSet.h
+        Utility/Exception/Exception.h
+        Utility/Function/function_ref.cpp
+        Utility/Function/function_ref.h
+        Utility/HashString/HashString.h
+        Utility/ID/ClassID.cpp
+        Utility/ID/ClassID.h
+        Utility/ID/TypeID.h
+        Utility/Log/Logger.cpp
+        Utility/Log/Logger.h
+        Utility/Property/Property.cpp
+        Utility/Template/CRTP.h
+        Utility/Template/Optional.h
+        Utility/Template/TypeTraits.h
+        Utility/Timer/Timer.cpp
+        Utility/Timer/Timer.h
+)
