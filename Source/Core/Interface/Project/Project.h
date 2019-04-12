@@ -1,11 +1,20 @@
 #pragma once
-#include "AbstractProject.h"
 
-class Project: public AbstractProject {
+#include <filesystem>
+
+
+class Project {
 	
 public:
 
 	Project();
+
+    const std::filesystem::path& GetDirectory() const;
+
+
+private:
+
+	std::filesystem::path projectPath_;
 
 
 };

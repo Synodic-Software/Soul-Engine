@@ -3,6 +3,9 @@
 #include "VulkanDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 
+#include "Core/Geometry/Vertex.h"
+#include "Buffer/VulkanBuffer.h"
+#include "Transput/Resource/Resource.h"
 
 VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::SurfaceKHR& surface,
 	vk::Format colorFormat, vk::ColorSpaceKHR colorSpace, glm::uvec2& size, bool vSync, VulkanSwapChain* oldSwapChain) :
@@ -105,7 +108,7 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 
 	//TODO: Remove hardcoded pipeline + Hardcoded paths
 	//TODO: Associate paths to Project/Executable
-	pipeline_ = std::make_unique<VulkanPipeline>(vkDevice_, swapchainSize, "../Resources/Shaders/vert.spv", "../Resources/Shaders/frag.spv", colorFormat);
+	pipeline_ = std::make_unique<VulkanPipeline>(vkDevice_, swapchainSize, Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"), colorFormat);
 
 	frameBuffers_.reserve(images_.size());
 	for (SwapChainImage& image : images_) {
@@ -141,7 +144,14 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 
 		commandBuffers_[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 		commandBuffers_[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
-		commandBuffers_[i].draw(3, 1, 0, 0);
+
+        vk::Buffer vertexBuffers[] = { pipeline_->GetVertexBuffer().GetBuffer() };
+		vk::DeviceSize offsets[] = { 0 };
+
+		commandBuffers_[i].bindVertexBuffers(0, 1, vertexBuffers, offsets);
+		commandBuffers_[i].bindIndexBuffer(pipeline_->GetIndexBuffer().GetBuffer(), 0, vk::IndexType::eUint16);
+
+		commandBuffers_[i].drawIndexed(6, 1, 0, 0, 0);
 		commandBuffers_[i].endRenderPass();
 
 		commandBuffers_[i].end();

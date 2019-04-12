@@ -8,7 +8,7 @@ class Scheduler;
 class Window;
 class RasterDevice;
 class WindowParameters;
-class Display;
+class DisplayModule;
 class FiberScheduler;
 
 class RasterBackend : public Module<RasterBackend> {
@@ -28,7 +28,8 @@ public:
 	virtual void DrawIndirect() = 0;
 
 	//Factory
-	static std::shared_ptr<RasterBackend> CreateModule(std::shared_ptr<FiberScheduler>&, std::shared_ptr<Display>&);
+	static std::shared_ptr<RasterBackend> CreateModule(std::shared_ptr<FiberScheduler>&,
+		std::shared_ptr<DisplayModule>&);
 
 
 };

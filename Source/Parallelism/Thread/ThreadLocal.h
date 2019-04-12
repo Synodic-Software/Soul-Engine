@@ -1,17 +1,15 @@
 #pragma once
 
-#include "Composition/Component/Component.h"
-
 #include <unordered_map>
 
 //Convenience class masking static memory for thread local storage on a per object basis
 template<typename T>
-class ThreadLocal : public Component<ThreadLocal<T>> {
+class ThreadLocal {
 
 public:
 
 	ThreadLocal();
-	~ThreadLocal() override;
+	~ThreadLocal();
 
 	ThreadLocal(const ThreadLocal&) = delete;
 	ThreadLocal(ThreadLocal&& o) noexcept = default;

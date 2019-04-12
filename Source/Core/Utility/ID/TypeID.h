@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Types.h"
+
 #include <atomic>
 
 template<typename T>
