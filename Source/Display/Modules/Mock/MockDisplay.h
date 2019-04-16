@@ -17,7 +17,7 @@ public:
 	void Draw() override;
 	bool Active() override;
 
-	void CreateWindow(const WindowParameters&, RasterBackend*) override;
-	void RegisterRasterBackend(RasterBackend*) override;
+	void CreateWindow(const WindowParameters&, RasterModule*) override;
+	void RegisterRasterBackend(RasterModule*) override;
 
 };

@@ -48,19 +48,19 @@ void FiberSchedulerAlgorithm::awakened(boost::fibers::context* ctx, FiberPropert
 
 
 	switch (props.GetPriority()) {
-	case FiberPriority::LOW:
+	case TaskPriority::LOW:
 	{
 		boost::fibers::detail::spinlock_lock spinLock(localLocks_[2]);
 		localQueues_[2].push_back(*ctx);
 	}
 	break;
-	case FiberPriority::HIGH:
+	case TaskPriority::HIGH:
 	{
 		boost::fibers::detail::spinlock_lock spinLock(localLocks_[1]);
 		localQueues_[1].push_back(*ctx);
 	}
 	break;
-	case FiberPriority::UX:
+	case TaskPriority::UX:
 	{
 		boost::fibers::detail::spinlock_lock spinLock(localLocks_[0]);
 		localQueues_[0].push_back(*ctx);
@@ -187,19 +187,19 @@ void FiberSchedulerAlgorithm::property_change(boost::fibers::context* ctx, Fiber
 	if (const auto requiredThread = props.RequiredThread(); requiredThread >= 0) {
 
 		switch (props.GetPriority()) {
-		case FiberPriority::LOW:
+		case TaskPriority::LOW:
 		{
 			boost::fibers::detail::spinlock_lock spinLock(schedulers_[requiredThread]->localLocks_[2]);
 			schedulers_[requiredThread]->localQueues_[2].push_back(*ctx);
 		}
 		break;
-		case FiberPriority::HIGH:
+		case TaskPriority::HIGH:
 		{
 			boost::fibers::detail::spinlock_lock spinLock(schedulers_[requiredThread]->localLocks_[1]);
 			schedulers_[requiredThread]->localQueues_[1].push_back(*ctx);
 		}
 		break;
-		case FiberPriority::UX:
+		case TaskPriority::UX:
 		{
 			boost::fibers::detail::spinlock_lock spinLock(schedulers_[requiredThread]->localLocks_[0]);
 			schedulers_[requiredThread]->localQueues_[0].push_back(*ctx);
@@ -214,13 +214,13 @@ void FiberSchedulerAlgorithm::property_change(boost::fibers::context* ctx, Fiber
 	else {
 
 		switch (props.GetPriority()) {
-		case FiberPriority::LOW:
+		case TaskPriority::LOW:
 			sharedQueues_[2].push(ctx);
 			break;
-		case FiberPriority::HIGH:
+		case TaskPriority::HIGH:
 			sharedQueues_[1].push(ctx);
 			break;
-		case FiberPriority::UX:
+		case TaskPriority::UX:
 			sharedQueues_[0].push(ctx);
 			break;
 		}

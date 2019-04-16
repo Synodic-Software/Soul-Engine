@@ -5,16 +5,11 @@
 #include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
 #include "GUI/GUIModule.h"
 
-#include <memory>
 
 DisplayModule::DisplayModule(): 
 	active_(true), 
 	gui_(GUIModule::CreateModule())
 {	
-}
-
-DisplayModule::~DisplayModule()
-{
 }
 
 //TODO: There will only ever be one DisplayModule system per Soul application. This will need to be moved to the build system per platform

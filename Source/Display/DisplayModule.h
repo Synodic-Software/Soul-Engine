@@ -2,19 +2,19 @@
 
 #include "Core/Interface/Module/Module.h"
 #include "WindowParameters.h"
+#include "GUI/GUIModule.h"
 
 #include <memory>
 
 class Window;
-class RasterBackend;
-class GUIModule;
+class RasterModule;
 
 class DisplayModule : public Module<DisplayModule> {
 
 public:
 
 	DisplayModule();
-	virtual ~DisplayModule();
+	virtual ~DisplayModule() = default;
 
 	DisplayModule(const DisplayModule&) = delete;
 	DisplayModule(DisplayModule&&) noexcept = default;
@@ -26,8 +26,8 @@ public:
 	virtual void Draw() = 0;
 	virtual bool Active() = 0;
 
-	virtual void CreateWindow(const WindowParameters&, RasterBackend*) = 0;
-	virtual void RegisterRasterBackend(RasterBackend*) = 0;
+	virtual void CreateWindow(const WindowParameters&, RasterModule*) = 0;
+	virtual void RegisterRasterBackend(RasterModule*) = 0;
 
 
 	//Factory

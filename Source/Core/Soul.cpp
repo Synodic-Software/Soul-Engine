@@ -1,24 +1,31 @@
 #include "Soul.h"
 
-#include "SoulImplementation.h"
 #include "System/Platform.h"
+#include "Frame/Frame.h"
 
-#include "Parallelism/Modules/Fiber/FiberScheduler.h"
+#include "Parallelism/SchedulerModule.h"
 #include "Compute/ComputeModule.h"
 #include "Display/DisplayModule.h"
-#include "Rasterer/RasterBackend.h"
+#include "Rasterer/RasterModule.h"
 #include "GUI/GUIModule.h"
+#include "Transput/Input/InputModule.h"
+#include "Composition/Entity/EntityModule.h"
+#include "Composition/Event/EventModule.h"
+
+
 
 Soul::Soul(SoulParameters& params) :
 	parameters_(params),
 	frameTime_(),
 	active_(true),
-	schedulerModule_(Scheduler::CreateModule(parameters_.threadCount)),
+	schedulerModule_(SchedulerModule::CreateModule(parameters_.threadCount)),
 	computeModule_(ComputeModule::CreateModule()),
 	displayModule_(DisplayModule::CreateModule()),
-	rasterModule_(RasterBackend::CreateModule(schedulerModule_, displayModule_)),
-	guiModule_(GUIModule::CreateModule()),
-	detail(std::make_unique<Implementation>(*this))
+	rasterModule_(RasterModule::CreateModule(schedulerModule_, displayModule_)),
+	guiModule_(GUIModule::CreateModule()), 
+	inputModule_(InputModule::CreateModule()), 
+	entityModule_(EntityModule::CreateModule()), 
+	eventModule_(EventModule::CreateModule())
 {
 	parameters_.engineRefreshRate.AddCallback([this](const int value)
 	{
@@ -28,9 +35,6 @@ Soul::Soul(SoulParameters& params) :
 	//flush parameters_ with new callbacks
 	parameters_.engineRefreshRate.Update();
 }
-
-//definition to complete PIMPL idiom
-Soul::~Soul() = default;
 
 
 /////////////////////////Core/////////////////////////////////
@@ -81,8 +85,7 @@ void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 
 void Soul::Warmup() {
 
-	//TODO abstract
-	detail->inputManager_->Poll();
+	inputModule_->Poll();
 
 	//for (auto& scene : scenes) {
 	//	scene->Build(engineRefreshRate);
@@ -92,31 +95,31 @@ void Soul::Warmup() {
 
 void Soul::EarlyFrameUpdate() {
 
-	detail->eventManager_.Emit("Update"_hashed, "EarlyFrame"_hashed);
+	eventModule_->Emit("Update"_hashed, "EarlyFrame"_hashed);
 
 }
 
 void Soul::LateFrameUpdate() {
 
-	detail->eventManager_.Emit("Update"_hashed, "LateFrame"_hashed);
+	eventModule_->Emit("Update"_hashed, "LateFrame"_hashed);
 
 }
 
 void Soul::EarlyUpdate() {
 
-	detail->eventManager_.Emit("Update"_hashed, "Early"_hashed);
+	eventModule_->Emit("Update"_hashed, "Early"_hashed);
 
 	//Update the engine cameras
 	//RayEngine::Instance().Update();
 
 	//pull cameras into jobs
-	detail->eventManager_.Emit("Update"_hashed, "Job Cameras"_hashed);
+	eventModule_->Emit("Update"_hashed, "Job Cameras"_hashed);
 
 }
 
 void Soul::LateUpdate() {
 
-	detail->eventManager_.Emit("Update"_hashed, "Late"_hashed);
+	eventModule_->Emit("Update"_hashed, "Late"_hashed);
 
 }
 
@@ -130,7 +133,7 @@ void Soul::Raster() {
 //returns a bool that is true if the engine is dirty
 bool Soul::Poll() {
 
-	return detail->inputManager_->Poll();
+	return inputModule_->Poll();
 
 }
 
@@ -164,7 +167,7 @@ void Soul::Run()
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime_;
 
-		detail->framePipeline_.Execute(frameTime_);
+		Execute(frameTime_);
 
 		schedulerModule_->YieldUntil(nextTime);
 

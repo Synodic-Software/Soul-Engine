@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Rasterer/RasterBackend.h"
+#include "Rasterer/RasterModule.h"
 
 class MockRasterBackend;
 
-class MockRasterBackend final: public RasterBackend {
+class MockRasterBackend final : public RasterModule {
 
 public:
 

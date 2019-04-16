@@ -10,12 +10,12 @@ bool MockDisplay::Active()
 	return true;
 }
 
-void MockDisplay::CreateWindow(const WindowParameters&, RasterBackend*)
+void MockDisplay::CreateWindow(const WindowParameters&, RasterModule*)
 {
 	
 }
 
-void MockDisplay::RegisterRasterBackend(RasterBackend*)
+void MockDisplay::RegisterRasterBackend(RasterModule*)
 {
 	
 }

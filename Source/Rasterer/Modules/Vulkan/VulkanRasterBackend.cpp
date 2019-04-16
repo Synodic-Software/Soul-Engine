@@ -7,7 +7,8 @@
 #include "Display/DisplayModule.h"
 #include "VulkanSwapChain.h"
 
-VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& scheduler, std::shared_ptr<DisplayModule>& displayModule) :
+VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
+	std::shared_ptr<DisplayModule>& displayModule):
 	validationLayers_{
 			"VK_LAYER_LUNARG_assistant_layer",
 			"VK_LAYER_LUNARG_standard_validation"

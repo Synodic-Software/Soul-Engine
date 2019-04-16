@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SoulParameters.h"
+
 #include <memory>
 #include <chrono>
 
@@ -8,19 +9,22 @@
 class WindowParameters;
 class Window;
 class Frame;
-class CLIConsoleManager;
-class Entity;
 
-class FiberScheduler;
+class SchedulerModule;
 class ComputeModule;
 class DisplayModule;
-class RasterBackend;
+class RasterModule;
 class GUIModule;
+class InputModule;
+class EntityModule;
+class EventModule;
+
+class Implementation;
 
 class Soul final{
 
 public:
-	friend class CLIConsoleManager;
+
 
 	Soul(SoulParameters&);
 	~Soul();
@@ -34,12 +38,12 @@ public:
 	void Init();
 	void CreateWindow(WindowParameters&);
 
+
 private:
 
 	void Run();
 
 	//Pipeline Functions
-
 	void Process(Frame&, Frame&);
 	void Update(Frame&, Frame&);
 	void Render(Frame&, Frame&);
@@ -62,15 +66,16 @@ private:
 	std::chrono::nanoseconds frameTime_;
 	bool active_;
 
+
 	//services and modules	
-	std::shared_ptr<FiberScheduler> schedulerModule_;
+	std::shared_ptr<SchedulerModule> schedulerModule_;
 	std::shared_ptr<ComputeModule> computeModule_;
 	std::shared_ptr<DisplayModule> displayModule_;
-	std::shared_ptr<RasterBackend> rasterModule_;
+	std::shared_ptr<RasterModule> rasterModule_;
 	std::shared_ptr<GUIModule> guiModule_;
+	std::shared_ptr<InputModule> inputModule_;
+	std::shared_ptr<EntityModule> entityModule_;
+	std::shared_ptr<EventModule> eventModule_;
 
-	//hidden Soul services and modules
-	class Implementation;
-	std::unique_ptr<Implementation> detail;
 
 };

@@ -72,7 +72,8 @@ bool GLFWDisplay::Active() {
 
 }
 
-void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* rasterModule) {
+void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterModule* rasterModule)
+{
 
 	assert(params.monitor < static_cast<int>(monitors_.size()));
 
@@ -128,7 +129,7 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterBackend* ra
 
 }
 
-void GLFWDisplay::RegisterRasterBackend(RasterBackend* rasterBackend)
+void GLFWDisplay::RegisterRasterBackend(RasterModule* rasterBackend)
 {
 
 	uint32 glfwExtensionCount = 0;
