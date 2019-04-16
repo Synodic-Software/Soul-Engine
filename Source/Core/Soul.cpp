@@ -7,7 +7,7 @@
 #include "Compute/ComputeModule.h"
 #include "Display/DisplayModule.h"
 #include "Rasterer/RasterBackend.h"
-
+#include "GUI/GUIModule.h"
 
 Soul::Soul(SoulParameters& params) :
 	parameters_(params),
@@ -17,6 +17,7 @@ Soul::Soul(SoulParameters& params) :
 	computeModule_(ComputeModule::CreateModule()),
 	displayModule_(DisplayModule::CreateModule()),
 	rasterModule_(RasterBackend::CreateModule(schedulerModule_, displayModule_)),
+	guiModule_(GUIModule::CreateModule()),
 	detail(std::make_unique<Implementation>(*this))
 {
 	parameters_.engineRefreshRate.AddCallback([this](const int value)

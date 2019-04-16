@@ -15,7 +15,7 @@ class FiberScheduler;
 class ComputeModule;
 class DisplayModule;
 class RasterBackend;
-
+class GUIModule;
 
 class Soul final{
 
@@ -67,6 +67,7 @@ private:
 	std::shared_ptr<ComputeModule> computeModule_;
 	std::shared_ptr<DisplayModule> displayModule_;
 	std::shared_ptr<RasterBackend> rasterModule_;
+	std::shared_ptr<GUIModule> guiModule_;
 
 	//hidden Soul services and modules
 	class Implementation;
