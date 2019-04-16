@@ -34,17 +34,6 @@ private:
 
 #endif
 
-//TODO: Remove macro. CLI should not be handled by platform, but by Application
-#if defined(WITH_CLI)
-
-	constexpr static bool withCLI = true;
-
-#else
-
-	constexpr static bool withCLI = false;
-
-#endif
-
 };
 
 constexpr PlatformID Platform::GetPlatform() {
@@ -55,9 +44,4 @@ constexpr bool Platform::IsDesktop() {
 	return platform == PlatformID::Linux ||
 		platform == PlatformID::Windows ||
 		platform == PlatformID::OSX;
-}
-
-//TODO: Does not belong here
-constexpr bool Platform::WithCLI() {
-	return withCLI;
 }

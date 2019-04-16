@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Transput/Input/Desktop/DesktopInputManager.h"
-#include "Transput/Input/Console/CLI/CLIConsoleManager.h"
 
 #include "Composition/Event/EventManager.h"
 #include "Composition/Entity/EntityManager.h"
@@ -32,8 +31,6 @@ public:
 	EventManager eventManager_;
 	inputManagerVariantType inputManagerVariant_;
 	InputManager* inputManager_;
-	consoleManagerVariantType consoleManagerVariant_;
-	ConsoleManager* consoleManager_;
 
 	FramePipeline<3> framePipeline_;
 
@@ -42,6 +39,4 @@ private:
 	inputManagerVariantType ConstructInputManager();
 	InputManager* ConstructInputPtr();
 
-	consoleManagerVariantType ConstructConsoleManager(Soul&);
-	ConsoleManager* ConstructConsolePtr();
 };

@@ -139,15 +139,9 @@ void Soul::Init()
 	
 	Warmup();
 
-	if constexpr (Platform::WithCLI()) {
-		FiberParameters fParams(false);
-		schedulerModule_->AddTask(fParams, [this]()
-		{
-			detail->consoleManager_->Poll();
-		});
-	} else {
-		Run();
-	}
+	//TODO: Remove as it is temporary
+	Run();
+
 }
 
 void Soul::CreateWindow(WindowParameters& params) {
@@ -172,8 +166,7 @@ void Soul::Run()
 
 		detail->framePipeline_.Execute(frameTime_);
 
-		if constexpr (Platform::WithCLI()) std::this_thread::sleep_for(frameTime_);
-		else schedulerModule_->YieldUntil(nextTime);
+		schedulerModule_->YieldUntil(nextTime);
 
 	}
 

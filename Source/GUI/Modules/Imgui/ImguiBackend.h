@@ -7,8 +7,8 @@ class ImguiBackend final : public GUIModule {
 
 public:
 
-	ImguiBackend() = default;
-	~ImguiBackend() override = default;
+	ImguiBackend();
+	~ImguiBackend() override;
 
 	ImguiBackend(const ImguiBackend&) = delete;
 	ImguiBackend(ImguiBackend&&) noexcept = default;

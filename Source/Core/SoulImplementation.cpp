@@ -10,8 +10,6 @@ Soul::Implementation::Implementation(Soul& soul) :
 	eventManager_(),
 	inputManagerVariant_(ConstructInputManager()),
 	inputManager_(ConstructInputPtr()),
-	consoleManagerVariant_(ConstructConsoleManager(soul)),
-	consoleManager_(ConstructConsolePtr()),
 	framePipeline_(soul.schedulerModule_, {
 	[&soul](Frame& oldFrame, Frame& newFrame)
 	{
@@ -50,25 +48,3 @@ InputManager* Soul::Implementation::ConstructInputPtr() {
 	}
 
 }
-
-Soul::Implementation::consoleManagerVariantType Soul::Implementation::ConstructConsoleManager(Soul& soul) {
-
-	consoleManagerVariantType tmp;
-
-	if constexpr (Platform::WithCLI()) {
-		tmp.emplace<CLIConsoleManager>(eventManager_, soul);
-	}
-
-	return tmp;
-
-};
-
-ConsoleManager* Soul::Implementation::ConstructConsolePtr() {
-
-	if constexpr (Platform::WithCLI()) {
-		return &std::get<CLIConsoleManager>(consoleManagerVariant_);
-	}
-	else {
-		return nullptr;
-	}
-};
