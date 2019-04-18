@@ -162,12 +162,19 @@ void Soul::Run()
 	auto currentTime = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
 	auto nextTime = currentTime + frameTime_;
 
+	Frame oldFrame;
+	Frame newFrame;
+
 	while (active_) {
 
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime_;
 
-		//Execute(frameTime_);
+		Process(oldFrame, newFrame);
+		Update(oldFrame, newFrame);
+		Render(oldFrame, newFrame);
+
+		std::swap(oldFrame, newFrame);
 
 		schedulerModule_->YieldUntil(nextTime);
 
