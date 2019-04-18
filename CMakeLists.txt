@@ -64,8 +64,9 @@ option(BUILD_CPU_COMPUTE "Build the OpenCL Compute backend" ON)#TODO: Implement 
 option(BUILD_CUDA_COMPUTE "Build the CUDA Compute backend" ${CUDA_FOUND})#TODO: Implement use of this option
 option(BUILD_OPENCL_COMPUTE "Build the OpenCL Compute backend" ${OpenCL_FOUND})#TODO: Implement use of this option
 option(BUILD_VULKAN_RASTER "Build the Vulkan Raster backend" ${Vulkan_FOUND})#TODO: Implement use of this option
-option(BUILD_GLFW_DISPLAY "Build the Vulkan Raster backend" ON)#TODO: Implement use of this option
-option(BUILD_IMGUI_GUI "Build the Vulkan Raster backend" ON)#TODO: Implement use of this option
+option(BUILD_GLFW_DISPLAY "Build the GLFW Display backend" ON)#TODO: Implement use of this option
+option(BUILD_IMGUI_GUI "Build the Imgui GUI backend" ON)#TODO: Implement use of this option
+option(BUILD_FIBER_SCHEDULER "Build the Fiber Scheduler backend" ON)
 
 
 ##############################################
@@ -87,6 +88,7 @@ target_compile_definitions(${PROJECT_NAME}
     PRIVATE
         CUDA=BUILD_CUDA_COMPUTE
         OPENCL=BUILD_OPENCL_COMPUTE
+        FIBER=BUILD_FIBER_SCHEDULER
 )
 
 target_include_directories(${PROJECT_NAME}
