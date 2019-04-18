@@ -1,4 +1,4 @@
-# Soul Engine
+# Soul Engine [WIP]
 
 ![GitHub](https://img.shields.io/github/license/Synodic-Software/Soul-Engine.svg)
 ![Standard](https://img.shields.io/badge/C%2B%2B-20-blue.svg)
@@ -20,11 +20,11 @@ For more information, visit our [Wiki](https://github.com/Synodic-Software/Soul-
 
 1. Install the required dependencies.
     * [Python 3.7.2](https://www.python.org/downloads/release/python-372/) or newer.
-    * [Conan 1.13.2](https://conan.io/downloads.html) or newer.
+    * [Conan 1.14.0](https://conan.io/downloads.html) or newer.
 
 1. Run `Setup.py`.
 
-1. Cone and open the `Soul Engine` directory in Visual Studio 2019.
+1. Clone and open the `Soul Engine` directory in Visual Studio 2019.
 
 1. Build and run `Soul Info`.
 
