@@ -42,28 +42,13 @@ public:
 template<typename Fn>
 uint64 EventModule::Listen(HashString::HashType channel, HashString::HashType name, Fn&& func)
 {
-	using type = boost::callable_traits::function_type_t<Fn>;
 
-	auto& baseEventPtr = eventMap_[channel][name];
-	if (!baseEventPtr.get()) {
-		baseEventPtr = std::make_unique<Event<type>>();
-	}
 
-	auto event = static_cast<Event<type>*>(baseEventPtr.get());
-
-	event->Listen(idCounter_, std::forward<Fn>(func));
-
-	return idCounter_++;
 }
 
 template <typename... Args>
 void EventModule::Emit(HashString::HashType channel, HashString::HashType name, Args&&... args)
 {
 
-	//TODO cast return type
-	if (auto event = static_cast<Event<void(decltype(args)...)>*>(eventMap_[channel][name].get()); event)
-	{
-		event->Emit(std::forward<Args>(args)...);
-	}
 
 }

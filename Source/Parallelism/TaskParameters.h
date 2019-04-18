@@ -19,9 +19,6 @@ public:
 	TaskParameters& operator=(const TaskParameters&) = default;
 	TaskParameters& operator=(TaskParameters&& other) noexcept = default;
 
-private:
-
-	friend class FiberScheduler;
 
 	bool post_; // the fiber will not execute immediately and instead run when a scheduler picks it up. If not true, the fiber is required to remain on this thread and other parameters dont matter.	
 	TaskPriority priority_;

@@ -4,7 +4,7 @@
 #include "Transput/Input/InputModule.h"
 
 
-class GLFWwindow;
+struct GLFWwindow;
 
 class GLFWInputBackend : public InputModule {
 

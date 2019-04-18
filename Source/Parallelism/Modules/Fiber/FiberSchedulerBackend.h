@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Parallelism/SchedulerModule.h"
-
 #include <boost/fiber/fss.hpp>
 #include <boost/fiber/condition_variable.hpp>
 
@@ -20,15 +18,12 @@
 #undef Yield
 
 
-class EntityManager;
-class Graph;
-
-class FiberSchedulerBackend : public SchedulerModule {
+class FiberSchedulerBackend {
 
 public:
 
 	FiberSchedulerBackend(Property<uint>&);
-	~FiberSchedulerBackend() override;
+	~FiberSchedulerBackend();
 
 	FiberSchedulerBackend(FiberSchedulerBackend const&) = delete;
 	void operator=(FiberSchedulerBackend const&) = delete;
@@ -36,7 +31,6 @@ public:
 	template<typename Fn, typename ... Args>
 	void AddTask(TaskParameters, Fn &&, Args && ...);
 
-	Graph& CreateGraph();
 
 	template<typename Fn, typename ... Args>
 	void ForEachThread(TaskPriority, Fn &&, Args && ...);
@@ -67,7 +61,6 @@ private:
 
 	Property<uint>& threadCount_;
 	std::vector<std::thread> childThreads_;
-	std::forward_list<Graph> graphs_;
 
 };
 

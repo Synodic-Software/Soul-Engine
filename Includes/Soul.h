@@ -27,7 +27,7 @@ public:
 
 
 	Soul(SoulParameters&);
-	~Soul();
+	~Soul() = default;
 
 	Soul(const Soul&) = delete;
 	Soul(Soul&&) noexcept = default;

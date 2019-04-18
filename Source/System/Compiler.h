@@ -12,38 +12,38 @@ public:
 
 private:
 
-#if defined(_MSC_VER)
+	#if defined(_MSC_VER)
 
 	constexpr static CompilerID compiler_ = CompilerID::VisualStudio;
 
-#elif defined(__GNUC__)
+	#elif defined(__GNUC__)
 
 	constexpr static CompilerID compiler_ = CompilerID::GCC;
 
-#elif defined(__clang__)
+	#elif defined(__clang__)
 
 	constexpr static CompilerID compiler_ = CompilerID::Clang;
 
-#elif defined(__EMSCRIPTEN__) 
+	#elif defined(__EMSCRIPTEN__) 
 
 	constexpr static CompilerID compiler_ = CompilerID::Emscripten;
 
-#else
+	#else
 
 	constexpr static CompilerID compiler_ = CompilerID::Unknown;
 
-#endif
+	#endif
 
 	//TODO: Update debug macro
-#if defined(NDEBUG)
+	#if defined(NDEBUG)
 
 	constexpr static bool debug_ = false;
 
-#else
+	#else
 
 	constexpr static bool debug_ = true;
 
-#endif
+	#endif
 
 
 };

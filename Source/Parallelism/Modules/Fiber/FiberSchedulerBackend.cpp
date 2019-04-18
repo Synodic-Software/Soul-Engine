@@ -1,7 +1,6 @@
 #include "FiberSchedulerBackend.h"
 #include "FiberSchedulerAlgorithm.h"
 #include "boost/fiber/barrier.hpp"
-#include "Parallelism/Graph/Graph.h"
 
 FiberSchedulerBackend::FiberSchedulerBackend(Property<uint>& threadCount) :
 	shouldRun_(true),
@@ -80,12 +79,6 @@ void FiberSchedulerBackend::InitPointers() {
 	if (!blockCondition_.get()) {
 		blockCondition_.reset(new boost::fibers::condition_variable);
 	}
-
-}
-
-Graph& FiberSchedulerBackend::CreateGraph() {
-	
-	return graphs_.emplace_front(this);
 
 }
 

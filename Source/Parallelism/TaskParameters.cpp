@@ -17,4 +17,3 @@ TaskParameters::TaskParameters(bool post,
 	}
 
 }
-

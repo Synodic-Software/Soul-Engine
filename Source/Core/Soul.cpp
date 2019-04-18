@@ -167,7 +167,7 @@ void Soul::Run()
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime_;
 
-		Execute(frameTime_);
+		//Execute(frameTime_);
 
 		schedulerModule_->YieldUntil(nextTime);
 

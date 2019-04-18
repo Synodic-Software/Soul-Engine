@@ -18,8 +18,8 @@ target_sources(${PROJECT_NAME}
         Modules/Fiber/FiberSchedulerBackend.h
         Modules/Fiber/FiberSchedulerAlgorithm.cpp
         Modules/Fiber/FiberSchedulerAlgorithm.h
-        Modules/Mock/MockSchedulerBackend.cpp
-        Modules/Mock/MockSchedulerBackend.h
+        Modules/Dispatch/DispatchSchedulerBackend.cpp
+        Modules/Dispatch/DispatchSchedulerBackend.h
         SchedulerModule.cpp
         SchedulerModule.h
         Thread/ThreadLocal.cpp

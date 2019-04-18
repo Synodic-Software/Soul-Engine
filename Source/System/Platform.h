@@ -8,40 +8,39 @@ public:
 
 	constexpr static PlatformID GetPlatform();
 	constexpr static bool IsDesktop();
-	constexpr static bool WithCLI();
 
 private:
 
-#if defined(__linux__) && !defined(__ANDROID__)
+	#if defined(__linux__) && !defined(__ANDROID__)
 
-	constexpr static PlatformID platform = PlatformID::Linux;
+	constexpr static PlatformID platform_ = PlatformID::Linux;
 
-#elif defined(_WIN64)
+	#elif defined(_WIN64)
 
-	constexpr static PlatformID platform = PlatformID::Windows;
+	constexpr static PlatformID platform_ = PlatformID::Windows;
 
-#elif defined(__APPLE__)
+	#elif defined(__APPLE__)
 
-	constexpr static PlatformID platform = PlatformID::OSX;
+	constexpr static PlatformID platform_ = PlatformID::OSX;
 
-#elif defined(__ANDROID__) 
+	#elif defined(__ANDROID__) 
 
-	constexpr static PlatformID platform = PlatformID::Android;
+	constexpr static PlatformID platform_ = PlatformID::Android;
 
-#else
+	#else
 
-	constexpr static PlatformID platform = PlatformID::Unknown;
+	constexpr static PlatformID platform_ = PlatformID::Unknown;
 
-#endif
+	#endif
 
 };
 
 constexpr PlatformID Platform::GetPlatform() {
-	return platform;
+	return platform_;
 }
 
 constexpr bool Platform::IsDesktop() {
-	return platform == PlatformID::Linux ||
-		platform == PlatformID::Windows ||
-		platform == PlatformID::OSX;
+	return platform_ == PlatformID::Linux ||
+		platform_ == PlatformID::Windows ||
+		platform_ == PlatformID::OSX;
 }
