@@ -8,7 +8,7 @@ Soul Engine is a real-time visualization engine built on the back of CUDA and Vu
 
 For more information, visit our [Wiki](https://github.com/Synodic-Software/Soul-Engine/wiki)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ryye37u8hw4ofd5l?svg=true)](https://ci.appveyor.com/project/Synodic-Software/soul-engine)
+[![Build status](https://travis-ci.org/Synodic-Software/Soul-Engine.svg?branch=development)](https://travis-ci.org/Synodic-Software/Soul-Engine)
 
 
 
