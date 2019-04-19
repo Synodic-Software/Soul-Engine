@@ -10,8 +10,7 @@
 VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
 	std::shared_ptr<WindowModule>& windowModule_):
 	validationLayers_{
-			"VK_LAYER_LUNARG_assistant_layer",
-			"VK_LAYER_LUNARG_standard_validation"
+			"VK_LAYER_KHRONOS_validation"
 }
 {
 
