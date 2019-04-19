@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Composition/Entity/EntityManager.h"
-
 #include <vulkan/vulkan.hpp>
 
 class VulkanDevice;

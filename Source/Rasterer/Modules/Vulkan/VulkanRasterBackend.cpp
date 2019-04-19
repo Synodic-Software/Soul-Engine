@@ -4,10 +4,11 @@
 #include "Core/Utility/Exception/Exception.h"
 #include "System/Compiler.h"
 #include "Types.h"
-#include "Display/DisplayModule.h"
+#include "Display/Window/WindowModule.h"
 #include "VulkanSwapChain.h"
 
-VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& scheduler, std::shared_ptr<DisplayModule>& displayModule) :
+VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
+	std::shared_ptr<WindowModule>& windowModule_):
 	validationLayers_{
 			"VK_LAYER_LUNARG_assistant_layer",
 			"VK_LAYER_LUNARG_standard_validation"
@@ -23,7 +24,7 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<FiberScheduler>& schedu
 	appInfo.pEngineName = "Soul Engine"; //TODO forward the engine name here
 
 	// The display will forward the extensions needed for Vulkan
-	displayModule->RegisterRasterBackend(this);
+	windowModule_->RegisterRasterBackend(this);
 
 	//TODO minimize memory/runtime impact
 	if constexpr (Compiler::Debug()) {

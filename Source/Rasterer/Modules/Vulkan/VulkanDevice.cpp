@@ -1,11 +1,12 @@
 #include "VulkanDevice.h"
 
-#include "Parallelism/Modules/Fiber/FiberParameters.h"
-#include "Parallelism/Modules/Fiber/FiberScheduler.h"
+#include "Parallelism/TaskParameters.h"
+#include "Parallelism/SchedulerModule.h"
 #include "System/Compiler.h"
 
 //TODO: Refactor
-VulkanDevice::VulkanDevice(std::shared_ptr<FiberScheduler>& scheduler, vk::PhysicalDevice& physicalDevice) :
+VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
+	vk::PhysicalDevice& physicalDevice):
 	scheduler_(scheduler),
 	physicalDevice_(physicalDevice),
 	graphicsIndex_(-1)
@@ -90,7 +91,7 @@ VulkanDevice::VulkanDevice(std::shared_ptr<FiberScheduler>& scheduler, vk::Physi
 		poolInfo.queueFamilyIndex = graphicsIndex_;
 
 		//TODO: move to 3 commandpools per thread as suggested by NVIDIA
-		scheduler_->ForEachThread(FiberPriority::UX, [this, poolInfo]()
+		scheduler_->ForEachThread(TaskPriority::UX, [this, poolInfo]()
 		{
 
 			//TODO: multiple logical devices
@@ -103,7 +104,7 @@ VulkanDevice::VulkanDevice(std::shared_ptr<FiberScheduler>& scheduler, vk::Physi
 
 VulkanDevice::~VulkanDevice() {
 
-	scheduler_->ForEachThread(FiberPriority::UX, [this]() noexcept
+	scheduler_->ForEachThread(TaskPriority::UX, [this]() noexcept
 	{
 
 		//TODO: multiple logical devices

@@ -46,13 +46,8 @@ target_sources(${PROJECT_NAME}
         Scene/Sky.cpp
         Scene/Sky.h
         Soul.cpp
-        SoulImplementation.cpp
-        SoulImplementation.h
-        Structures/AbstractSparseSet.cpp
-        Structures/AbstractSparseSet.h
         Structures/RingBuffer.h
-        Structures/SparseSet.cpp
-        Structures/SparseSet.h
+        Structures/IntrusiveSparseSet.h
         Utility/Exception/Exception.h
         Utility/Function/function_ref.cpp
         Utility/Function/function_ref.h

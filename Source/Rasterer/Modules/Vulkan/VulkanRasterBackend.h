@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rasterer/RasterBackend.h"
+#include "Rasterer/RasterModule.h"
 
 #include "VulkanSwapChain.h"
 
@@ -8,16 +8,16 @@
 #include <glm/vec2.hpp>
 
 
-class FiberScheduler;
-class DisplayModule;
+class SchedulerModule;
+class WindowModule;
 class VulkanDevice;
 class VulkanSwapChain;
 
-class VulkanRasterBackend final : public RasterBackend {
+class VulkanRasterBackend final : public RasterModule {
 
 public:
 
-	VulkanRasterBackend(std::shared_ptr<FiberScheduler>&, std::shared_ptr<DisplayModule>&);
+	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&, std::shared_ptr<WindowModule>&);
 	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;

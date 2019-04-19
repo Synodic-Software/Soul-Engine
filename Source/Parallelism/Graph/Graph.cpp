@@ -1,9 +1,9 @@
 #include "Graph.h"
 
-#include "Parallelism/Modules/Fiber/FiberScheduler.h"
+#include "Parallelism/SchedulerModule.h"
 
 
-Graph::Graph(FiberScheduler* scheduler) :
+Graph::Graph(std::shared_ptr<SchedulerModule>& scheduler):
 	scheduler_(scheduler)
 {
 

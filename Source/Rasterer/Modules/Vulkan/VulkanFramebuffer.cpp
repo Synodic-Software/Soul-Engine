@@ -1,6 +1,5 @@
 #include "VulkanFrameBuffer.h"
 
-#include "Composition/Entity/EntityManager.h"
 #include "VulkanDevice.h"
 #include "VulkanRenderPass.h"
 

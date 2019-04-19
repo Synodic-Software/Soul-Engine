@@ -7,16 +7,14 @@
 
 #include <forward_list>
 
-class FiberScheduler;
+class SchedulerModule;
 
 class Graph : public Node {
-
-	friend class FiberScheduler;
 
 
 public:
 
-	Graph(FiberScheduler*);
+	Graph(std::shared_ptr<SchedulerModule>&);
 
 	~Graph() override = default;
 
@@ -35,7 +33,7 @@ public:
 
 private:
 
-	FiberScheduler* scheduler_;
+	std::shared_ptr<SchedulerModule> scheduler_;
 
 	std::forward_list<Task> tasks_;
 	std::forward_list<Graph> graphs_;

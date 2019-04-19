@@ -5,7 +5,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-class FiberScheduler;
+class SchedulerModule;
 
 //TODO: Refactor and move
 struct SurfaceFormat
@@ -20,7 +20,7 @@ class VulkanDevice final: public RasterDevice {
 
 public:
 
-	VulkanDevice(std::shared_ptr<FiberScheduler>&, vk::PhysicalDevice&);
+	VulkanDevice(std::shared_ptr<SchedulerModule>&, vk::PhysicalDevice&);
 	~VulkanDevice() override;
 
 	VulkanDevice(const VulkanDevice &) = delete;
@@ -41,7 +41,7 @@ public:
 
 private:
 
-	std::shared_ptr<FiberScheduler> scheduler_;
+	std::shared_ptr<SchedulerModule> scheduler_;
 
 	std::vector<vk::Device> logicalDevices_; //noexcept dependent on vk::device
 	vk::PhysicalDevice physicalDevice_;

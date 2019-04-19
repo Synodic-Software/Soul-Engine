@@ -3,13 +3,13 @@
 #include "Node.h"
 #include <functional>
 
-class FiberScheduler;
+class SchedulerModule;
 
 class Task : public Node{
 
 public:
 
-	Task(FiberScheduler*, std::function<void()>&&) noexcept;
+	Task(std::shared_ptr<SchedulerModule>&, std::function<void()>&&) noexcept;
 
 	~Task() override = default;
 
@@ -24,7 +24,7 @@ public:
 
 private:
 
-	FiberScheduler* scheduler_;
+	std::shared_ptr<SchedulerModule> scheduler_;
 	std::function<void()> callable_;
 
 

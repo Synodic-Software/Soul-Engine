@@ -2,19 +2,14 @@
 
 #include "Types.h"
 
-class EntityManager;
+class EntityModule;
 
-template<typename T>
-class SparseEntitySet;
 
 class Entity
 {
 
 	//typedefs and constants
-	friend class EntityManager;
-
-	template<typename>
-	friend class SparseEntitySet;
+	friend class EntityModule;
 
 	using value_type = uint64;
 	using id_type = uint32;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parallelism/Modules/Fiber/FiberParameters.h"
+#include "Parallelism/TaskParameters.h"
 
 #include <vector>
 #include <chrono>
@@ -32,7 +32,7 @@ public:
 
 protected:
 
-	FiberParameters parameters_;
+	TaskParameters parameters_;
 	std::vector<Node*> children_;
 
 
