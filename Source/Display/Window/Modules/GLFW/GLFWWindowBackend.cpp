@@ -1,7 +1,7 @@
-#include "GLFWDisplay.h"
+#include "GLFWWindowBackend.h"
 
 #include "WindowParameters.h"
-#include "Display/Modules/GLFW/GLFWWindow.h"
+#include "Display/Window/Modules/GLFW/GLFWWindow.h"
 #include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
 #include "Core/Utility/Exception/Exception.h"
 
@@ -10,7 +10,7 @@
 
 #include <cassert>
 
-GLFWDisplay::GLFWDisplay()
+GLFWWindowBackend::GLFWWindowBackend()
 {
 
 	//set the error callback
@@ -45,7 +45,7 @@ GLFWDisplay::GLFWDisplay()
 
 }
 
-GLFWDisplay::~GLFWDisplay()
+GLFWWindowBackend::~GLFWWindowBackend()
 {
 
 	windows_.clear();
@@ -54,7 +54,7 @@ GLFWDisplay::~GLFWDisplay()
 
 }
 
-void GLFWDisplay::Draw() {
+void GLFWWindowBackend::Draw() {
 
 	//TODO: selective drawing based on dirty state
 	for (auto& window : windows_)
@@ -66,13 +66,13 @@ void GLFWDisplay::Draw() {
 
 }
 
-bool GLFWDisplay::Active() {
+bool GLFWWindowBackend::Active() {
 
 	return !windows_.empty();
 
 }
 
-void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterModule* rasterModule)
+void GLFWWindowBackend::CreateWindow(const WindowParameters& params, RasterModule* rasterModule)
 {
 
 	assert(params.monitor < static_cast<int>(monitors_.size()));
@@ -91,25 +91,25 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterModule* ras
 	//all window related callbacks
 	glfwSetWindowSizeCallback(context, [](GLFWwindow* window, const int x, const int y)
 	{
-		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
 		display->Resize(x, y);
 	});
 
 	glfwSetWindowPosCallback(context, [](GLFWwindow* window, const int x, const int y)
 	{
-		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
 		display->PositionUpdate(x, y);
 	});
 
 	glfwSetWindowRefreshCallback(context, [](GLFWwindow* window)
 	{
-		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
 		display->Refresh();
 	});
 
 	glfwSetFramebufferSizeCallback(context, [](GLFWwindow* window, const int x, const int y)
 	{
-		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
 		auto& thisWindow = display->GetWindow(window);
 
 		//Only resize if necessary
@@ -120,7 +120,7 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterModule* ras
 
 	glfwSetWindowCloseCallback(context, [](GLFWwindow* window)
 	{
-		const auto display = static_cast<GLFWDisplay*>(glfwGetWindowUserPointer(window));
+		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
 		display->Close(display->GetWindow(window));
 	});
 
@@ -129,7 +129,7 @@ void GLFWDisplay::CreateWindow(const WindowParameters& params, RasterModule* ras
 
 }
 
-void GLFWDisplay::RegisterRasterBackend(RasterModule* rasterBackend)
+void GLFWWindowBackend::RegisterRasterBackend(RasterModule* rasterBackend)
 {
 
 	uint32 glfwExtensionCount = 0;
@@ -147,25 +147,25 @@ void GLFWDisplay::RegisterRasterBackend(RasterModule* rasterBackend)
 
 }
 
-void GLFWDisplay::Refresh() {
+void GLFWWindowBackend::Refresh() {
 
 }
 
-void GLFWDisplay::Resize(const int x, const int y) {
+void GLFWWindowBackend::Resize(const int x, const int y) {
 
 }
 
-void GLFWDisplay::FrameBufferResize(GLFWWindow& window, const int x, const int y) {
+void GLFWWindowBackend::FrameBufferResize(GLFWWindow& window, const int x, const int y) {
 
 	window.FrameBufferResize(x, y);
 
 }
 
-void GLFWDisplay::PositionUpdate(const int, const int) {
+void GLFWWindowBackend::PositionUpdate(const int, const int) {
 
 }
 
-void GLFWDisplay::Close(GLFWWindow& window) {
+void GLFWWindowBackend::Close(GLFWWindow& window) {
 
 	if (!window.Master()) {
 
@@ -180,7 +180,7 @@ void GLFWDisplay::Close(GLFWWindow& window) {
 	}
 }
 
-GLFWWindow& GLFWDisplay::GetWindow(GLFWwindow* context)
+GLFWWindow& GLFWWindowBackend::GetWindow(GLFWwindow* context)
 {
 
 	return *windows_[context];

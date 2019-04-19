@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Display/DisplayModule.h"
+#include "Display/Window/WindowModule.h"
 
 #include <vector>
 #include <unordered_map>
@@ -11,18 +11,18 @@ class GLFWWindow;
 class WindowParameters;
 class VulkanRasterBackend;
 
-class GLFWDisplay final : public DisplayModule {
+class GLFWWindowBackend final : public WindowModule {
 
 public:
 
-	GLFWDisplay();
-	~GLFWDisplay() override;
+	GLFWWindowBackend();
+	~GLFWWindowBackend() override;
 
-	GLFWDisplay(const GLFWDisplay&) = delete;
-	GLFWDisplay(GLFWDisplay&&) noexcept = default;
+	GLFWWindowBackend(const GLFWWindowBackend&) = delete;
+	GLFWWindowBackend(GLFWWindowBackend&&) noexcept = default;
 
-	GLFWDisplay& operator=(const GLFWDisplay&) = delete;
-	GLFWDisplay& operator=(GLFWDisplay&&) noexcept = default;
+	GLFWWindowBackend& operator=(const GLFWWindowBackend&) = delete;
+	GLFWWindowBackend& operator=(GLFWWindowBackend&&) noexcept = default;
 
 	void Draw() override;
 	bool Active() override;

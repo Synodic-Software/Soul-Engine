@@ -12,9 +12,8 @@ class Frame;
 
 class SchedulerModule;
 class ComputeModule;
-class DisplayModule;
+class WindowModule;
 class RasterModule;
-class GUIModule;
 class InputModule;
 class EntityModule;
 class EventModule;
@@ -70,7 +69,7 @@ private:
 	//services and modules	
 	std::shared_ptr<SchedulerModule> schedulerModule_;
 	std::shared_ptr<ComputeModule> computeModule_;
-	std::shared_ptr<DisplayModule> displayModule_;
+	std::shared_ptr<WindowModule> windowModule_;
 	std::shared_ptr<RasterModule> rasterModule_;
 	std::shared_ptr<InputModule> inputModule_;
 	std::shared_ptr<EntityModule> entityModule_;

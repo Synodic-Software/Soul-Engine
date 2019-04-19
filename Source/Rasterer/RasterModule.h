@@ -9,7 +9,7 @@ class Window;
 class RasterDevice;
 class WindowParameters;
 class SchedulerModule;
-class DisplayModule;
+class WindowModule;
 
 class RasterModule : public Module<RasterModule> {
 
@@ -29,7 +29,7 @@ public:
 
 	//Factory
 	static std::shared_ptr<RasterModule> CreateModule(std::shared_ptr<SchedulerModule>&,
-		std::shared_ptr<DisplayModule>&);
+		std::shared_ptr<WindowModule>&);
 
 
 };

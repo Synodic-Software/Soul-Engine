@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GUI/GUIModule.h"
+#include "Display/GUI/GUIModule.h"
 
 
 class ImguiBackend final : public GUIModule {

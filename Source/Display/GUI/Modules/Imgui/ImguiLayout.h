@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GUI/Layout.h"
+#include "Display/GUI/Layout.h"
 
 
 class ImguiLayout : public Layout

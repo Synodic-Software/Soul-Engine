@@ -20,4 +20,3 @@ target_sources(${PROJECT_NAME}
         Modules/Mock/MockWidget.h
         Widget.h
 )
-

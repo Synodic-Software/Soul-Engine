@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GUI/Widget.h"
+#include "Display/GUI/Widget.h"
 
 
 class ImguiWidget : public Widget {

@@ -5,9 +5,9 @@
 
 #include "Parallelism/SchedulerModule.h"
 #include "Compute/ComputeModule.h"
-#include "Display/DisplayModule.h"
+#include "Display/Window/WindowModule.h"
 #include "Rasterer/RasterModule.h"
-#include "GUI/GUIModule.h"
+#include "Display/GUI/GUIModule.h"
 #include "Transput/Input/InputModule.h"
 #include "Composition/Entity/EntityModule.h"
 #include "Composition/Event/EventModule.h"
@@ -20,8 +20,8 @@ Soul::Soul(SoulParameters& params) :
 	active_(true),
 	schedulerModule_(SchedulerModule::CreateModule(parameters_.threadCount)),
 	computeModule_(ComputeModule::CreateModule()),
-	displayModule_(DisplayModule::CreateModule()),
-	rasterModule_(RasterModule::CreateModule(schedulerModule_, displayModule_)),
+	windowModule_(WindowModule::CreateModule()),
+	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
 	inputModule_(InputModule::CreateModule()), 
 	entityModule_(EntityModule::CreateModule()), 
 	eventModule_(EventModule::CreateModule())
@@ -44,7 +44,7 @@ void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 
 	newFrame.Dirty(Poll());
 
-	active_ = displayModule_->Active();
+	active_ = windowModule_->Active();
 
 }
 
@@ -125,7 +125,7 @@ void Soul::LateUpdate() {
 
 void Soul::Raster() {
 
-	displayModule_->Draw();
+	windowModule_->Draw();
 
 }
 
@@ -148,7 +148,7 @@ void Soul::Init()
 
 void Soul::CreateWindow(WindowParameters& params) {
 
-	displayModule_->CreateWindow(params, rasterModule_.get());
+	windowModule_->CreateWindow(params, rasterModule_.get());
 
 }
 

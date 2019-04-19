@@ -9,7 +9,7 @@
 
 
 class SchedulerModule;
-class DisplayModule;
+class WindowModule;
 class VulkanDevice;
 class VulkanSwapChain;
 
@@ -17,7 +17,7 @@ class VulkanRasterBackend final : public RasterModule {
 
 public:
 
-	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&, std::shared_ptr<DisplayModule>&);
+	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&, std::shared_ptr<WindowModule>&);
 	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;

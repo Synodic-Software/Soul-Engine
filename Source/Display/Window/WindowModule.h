@@ -2,25 +2,25 @@
 
 #include "Core/Interface/Module/Module.h"
 #include "WindowParameters.h"
-#include "GUI/GUIModule.h"
+#include "Display/GUI/GUIModule.h"
 
 #include <memory>
 
 class Window;
 class RasterModule;
 
-class DisplayModule : public Module<DisplayModule> {
+class WindowModule : public Module<WindowModule> {
 
 public:
 
-	DisplayModule();
-	virtual ~DisplayModule() = default;
+	WindowModule();
+	virtual ~WindowModule() = default;
 
-	DisplayModule(const DisplayModule&) = delete;
-	DisplayModule(DisplayModule&&) noexcept = default;
+	WindowModule(const WindowModule&) = delete;
+	WindowModule(WindowModule&&) noexcept = default;
 
-	DisplayModule& operator=(const DisplayModule&) = delete;
-	DisplayModule& operator=(DisplayModule&&) noexcept = default;
+	WindowModule& operator=(const WindowModule&) = delete;
+	WindowModule& operator=(WindowModule&&) noexcept = default;
 
 
 	virtual void Draw() = 0;
@@ -31,7 +31,7 @@ public:
 
 
 	//Factory
-	static std::unique_ptr<DisplayModule> CreateModule();
+	static std::unique_ptr<WindowModule> CreateModule();
 
 
 protected:
