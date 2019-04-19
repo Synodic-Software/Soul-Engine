@@ -7,6 +7,13 @@ from pathlib import Path
 
 def main():
 
+
+    print("Updating the Python environment")
+
+    #TODO: Use a venv
+    #subprocess.call(["poetry", "install"])
+    
+
     print("Updating the C++ environment")
 
     buildPath = Path().absolute() / "Build"
