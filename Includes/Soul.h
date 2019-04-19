@@ -72,7 +72,6 @@ private:
 	std::shared_ptr<ComputeModule> computeModule_;
 	std::shared_ptr<DisplayModule> displayModule_;
 	std::shared_ptr<RasterModule> rasterModule_;
-	std::shared_ptr<GUIModule> guiModule_;
 	std::shared_ptr<InputModule> inputModule_;
 	std::shared_ptr<EntityModule> entityModule_;
 	std::shared_ptr<EventModule> eventModule_;

@@ -22,7 +22,6 @@ Soul::Soul(SoulParameters& params) :
 	computeModule_(ComputeModule::CreateModule()),
 	displayModule_(DisplayModule::CreateModule()),
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, displayModule_)),
-	guiModule_(GUIModule::CreateModule()), 
 	inputModule_(InputModule::CreateModule()), 
 	entityModule_(EntityModule::CreateModule()), 
 	eventModule_(EventModule::CreateModule())
