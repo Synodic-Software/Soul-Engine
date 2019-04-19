@@ -4,6 +4,7 @@
 
 target_sources(${PROJECT_NAME}
     PRIVATE
+        Component/Component.h
         Entity/Entity.cpp
         Entity/Entity.h
         Entity/EntityModule.cpp
