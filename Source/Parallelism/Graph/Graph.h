@@ -14,7 +14,7 @@ class Graph : public Node {
 
 public:
 
-	Graph(SchedulerModule*);
+	Graph(std::shared_ptr<SchedulerModule>&);
 
 	~Graph() override = default;
 
@@ -33,7 +33,7 @@ public:
 
 private:
 
-	SchedulerModule* scheduler_;
+	std::shared_ptr<SchedulerModule> scheduler_;
 
 	std::forward_list<Task> tasks_;
 	std::forward_list<Graph> graphs_;

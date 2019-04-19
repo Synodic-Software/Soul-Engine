@@ -1,7 +1,7 @@
 #include "Soul.h"
 
 #include "System/Platform.h"
-#include "Frame/Frame.h"
+#include "Frame/FramePipeline.h"
 
 #include "Parallelism/SchedulerModule.h"
 #include "Compute/ComputeModule.h"
@@ -162,19 +162,21 @@ void Soul::Run()
 	auto currentTime = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
 	auto nextTime = currentTime + frameTime_;
 
-	Frame oldFrame;
-	Frame newFrame;
+	FramePipeline<3> framePipeline {
+		schedulerModule_,
+		{[this](Frame& oldFrame, Frame& newFrame) { Process(oldFrame, newFrame); },
+			[this](Frame& oldFrame, Frame& newFrame) { Update(oldFrame, newFrame); },
+			[this](Frame& oldFrame, Frame& newFrame) { Render(oldFrame, newFrame); }
+		}
+	};
+
 
 	while (active_) {
 
 		currentTime = nextTime;
 		nextTime = currentTime + frameTime_;
 
-		Process(oldFrame, newFrame);
-		Update(oldFrame, newFrame);
-		Render(oldFrame, newFrame);
-
-		std::swap(oldFrame, newFrame);
+		framePipeline.Execute(frameTime_);
 
 		schedulerModule_->YieldUntil(nextTime);
 

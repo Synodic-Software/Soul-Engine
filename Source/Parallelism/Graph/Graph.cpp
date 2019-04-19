@@ -3,7 +3,7 @@
 #include "Parallelism/SchedulerModule.h"
 
 
-Graph::Graph(SchedulerModule* scheduler) :
+Graph::Graph(std::shared_ptr<SchedulerModule>& scheduler):
 	scheduler_(scheduler)
 {
 

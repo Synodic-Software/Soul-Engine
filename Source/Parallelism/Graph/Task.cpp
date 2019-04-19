@@ -2,7 +2,7 @@
 
 #include "Parallelism/SchedulerModule.h"
 
-Task::Task(SchedulerModule* scheduler, std::function<void()>&& callable) noexcept:
+Task::Task(std::shared_ptr<SchedulerModule>& scheduler, std::function<void()>&& callable) noexcept:
 	scheduler_(scheduler),
 	callable_(std::forward<std::function<void()>>(callable))
 {

@@ -9,7 +9,7 @@ class Task : public Node{
 
 public:
 
-	Task(SchedulerModule*, std::function<void()>&&) noexcept;
+	Task(std::shared_ptr<SchedulerModule>&, std::function<void()>&&) noexcept;
 
 	~Task() override = default;
 
@@ -24,7 +24,7 @@ public:
 
 private:
 
-	SchedulerModule* scheduler_;
+	std::shared_ptr<SchedulerModule> scheduler_;
 	std::function<void()> callable_;
 
 
