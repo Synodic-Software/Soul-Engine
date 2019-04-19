@@ -137,7 +137,6 @@ add_subdirectory(Source/Network)
 add_subdirectory(Source/Parallelism)
 add_subdirectory(Source/Physics)
 add_subdirectory(Source/Rasterer)
-add_subdirectory(Source/System)
 add_subdirectory(Source/Tracer)
 add_subdirectory(Source/Transput)
 

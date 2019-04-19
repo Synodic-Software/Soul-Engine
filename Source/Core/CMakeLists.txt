@@ -48,6 +48,8 @@ target_sources(${PROJECT_NAME}
         Soul.cpp
         Structures/RingBuffer.h
         Structures/IntrusiveSparseSet.h
+        System/Compiler.h
+        System/Platform.h
         Utility/Exception/Exception.h
         Utility/Function/function_ref.cpp
         Utility/Function/function_ref.h

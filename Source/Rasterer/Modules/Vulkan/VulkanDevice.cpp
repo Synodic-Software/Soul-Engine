@@ -2,7 +2,7 @@
 
 #include "Parallelism/TaskParameters.h"
 #include "Parallelism/SchedulerModule.h"
-#include "System/Compiler.h"
+#include "Core/System/Compiler.h"
 
 //TODO: Refactor
 VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
