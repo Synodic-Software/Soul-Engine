@@ -1,6 +1,6 @@
 #include "Graph.h"
 
-#include "Parallelism/SchedulerModule.h"
+#include "Parallelism/Scheduler/SchedulerModule.h"
 
 
 Graph::Graph(std::shared_ptr<SchedulerModule>& scheduler):

@@ -9,7 +9,7 @@
 #include <forward_list>
 
 #include "Property.h"
-#include "Parallelism/TaskParameters.h"
+#include "Parallelism/Scheduler/TaskParameters.h"
 #include "FiberProperties.h"
 #include "Types.h"
 

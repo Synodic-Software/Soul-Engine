@@ -1,7 +1,7 @@
 #pragma once
 
 #include "boost/fiber/properties.hpp"
-#include "Parallelism/TaskParameters.h"
+#include "Parallelism/Scheduler/TaskParameters.h"
 
 class FiberProperties : public boost::fibers::fiber_properties {
 

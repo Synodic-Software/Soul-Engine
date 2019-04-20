@@ -3,7 +3,7 @@
 #include "Entity.h"
 #include "Core/Composition/Component/Component.h"
 #include "Core/Utility/ID/ClassID.h"
-#include "Core/Structures/IntrusiveSparseSet.h"
+#include "Core/Structure/IntrusiveSparseSet.h"
 
 #include <vector>
 #include <memory>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Rasterer/RasterDevice.h"
-#include "Parallelism/Thread/ThreadLocal.h"
+#include "Core/Utility/Thread/ThreadLocal.h"
 
 #include <vulkan/vulkan.hpp>
 

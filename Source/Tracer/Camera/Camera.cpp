@@ -1,4 +1,4 @@
-#include "Core/Camera/Camera.h"
+#include "Tracer/Camera/Camera.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/rotate_vector.hpp"

@@ -1,9 +1,9 @@
 #include "Soul.h"
 
 #include "System/Platform.h"
-#include "Frame/FramePipeline.h"
+#include "Core/Frame/FramePipeline.h"
 
-#include "Parallelism/SchedulerModule.h"
+#include "Parallelism/Scheduler/SchedulerModule.h"
 #include "Compute/ComputeModule.h"
 #include "Display/Window/WindowModule.h"
 #include "Rasterer/RasterModule.h"

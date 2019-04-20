@@ -1,6 +1,6 @@
 #include "Task.h"
 
-#include "Parallelism/SchedulerModule.h"
+#include "Parallelism/Scheduler/SchedulerModule.h"
 
 Task::Task(std::shared_ptr<SchedulerModule>& scheduler, std::function<void()>&& callable) noexcept:
 	scheduler_(scheduler),

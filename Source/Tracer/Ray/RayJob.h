@@ -2,7 +2,7 @@
 
 #include "Types.h"
 //#include "Parallelism/ComputeOld/CUDA/Utility/CudaHelper.cuh"
-#include "Core/Camera/Camera.h"
+#include "Tracer/Camera/Camera.h"
 
 enum rayType {
 	RayCOLOUR				//RayCOLOUR: A vec3 of RGB values to be displayed

@@ -1,7 +1,7 @@
 #include "VulkanDevice.h"
 
-#include "Parallelism/TaskParameters.h"
-#include "Parallelism/SchedulerModule.h"
+#include "Parallelism/Scheduler/TaskParameters.h"
+#include "Parallelism/Scheduler/SchedulerModule.h"
 #include "Core/System/Compiler.h"
 
 //TODO: Refactor

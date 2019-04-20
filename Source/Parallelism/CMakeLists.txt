@@ -10,18 +10,16 @@ target_sources(${PROJECT_NAME}
         Graph/Node.h
         Graph/Task.cpp
         Graph/Task.h
-        TaskParameters.cpp
-        TaskParameters.h
-        Modules/Fiber/FiberProperties.cpp
-        Modules/Fiber/FiberProperties.h
-        Modules/Fiber/FiberSchedulerBackend.cpp
-        Modules/Fiber/FiberSchedulerBackend.h
-        Modules/Fiber/FiberSchedulerAlgorithm.cpp
-        Modules/Fiber/FiberSchedulerAlgorithm.h
-        Modules/Dispatch/DispatchSchedulerBackend.cpp
-        Modules/Dispatch/DispatchSchedulerBackend.h
-        SchedulerModule.cpp
-        SchedulerModule.h
-        Thread/ThreadLocal.cpp
-        Thread/ThreadLocal.h
+        Scheduler/Modules/Dispatch/DispatchSchedulerBackend.cpp
+        Scheduler/Modules/Dispatch/DispatchSchedulerBackend.h
+        Scheduler/Modules/Fiber/FiberProperties.cpp
+        Scheduler/Modules/Fiber/FiberProperties.h
+        Scheduler/Modules/Fiber/FiberSchedulerAlgorithm.cpp
+        Scheduler/Modules/Fiber/FiberSchedulerAlgorithm.h
+        Scheduler/Modules/Fiber/FiberSchedulerBackend.cpp
+        Scheduler/Modules/Fiber/FiberSchedulerBackend.h
+        Scheduler/SchedulerModule.cpp
+        Scheduler/SchedulerModule.h
+        Scheduler/TaskParameters.cpp
+        Scheduler/TaskParameters.h
 )

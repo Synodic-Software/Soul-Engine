@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Camera/Film/Film.h"
+#include "Tracer/Camera/Film/Film.h"
 //#include <curand_kernel.h>
 
 #include "Types.h"
