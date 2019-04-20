@@ -1,7 +1,7 @@
 #pragma once
 
 #include "WindowParameters.h"
-#include "Composition/Entity/Entity.h"
+#include "Core/Composition/Entity/Entity.h"
 
 
 class Window

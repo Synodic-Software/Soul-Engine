@@ -9,8 +9,8 @@
 #include "Rasterer/RasterModule.h"
 #include "Display/GUI/GUIModule.h"
 #include "Transput/Input/InputModule.h"
-#include "Composition/Entity/EntityModule.h"
-#include "Composition/Event/EventModule.h"
+#include "Core/Composition/Entity/EntityRegistry.h"
+#include "Core/Composition/Event/EventRegistry.h"
 
 
 
@@ -23,8 +23,8 @@ Soul::Soul(SoulParameters& params) :
 	windowModule_(WindowModule::CreateModule()),
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
 	inputModule_(InputModule::CreateModule()), 
-	entityModule_(EntityModule::CreateModule()), 
-	eventModule_(EventModule::CreateModule())
+	entityRegistry_(new EntityRegistry()), 
+	eventRegistry_(new EventRegistry())
 {
 	parameters_.engineRefreshRate.AddCallback([this](const int value)
 	{
@@ -94,31 +94,31 @@ void Soul::Warmup() {
 
 void Soul::EarlyFrameUpdate() {
 
-	eventModule_->Emit("Update"_hashed, "EarlyFrame"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "EarlyFrame"_hashed);
 
 }
 
 void Soul::LateFrameUpdate() {
 
-	eventModule_->Emit("Update"_hashed, "LateFrame"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "LateFrame"_hashed);
 
 }
 
 void Soul::EarlyUpdate() {
 
-	eventModule_->Emit("Update"_hashed, "Early"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "Early"_hashed);
 
 	//Update the engine cameras
 	//RayEngine::Instance().Update();
 
 	//pull cameras into jobs
-	eventModule_->Emit("Update"_hashed, "Job Cameras"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "Job Cameras"_hashed);
 
 }
 
 void Soul::LateUpdate() {
 
-	eventModule_->Emit("Update"_hashed, "Late"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "Late"_hashed);
 
 }
 

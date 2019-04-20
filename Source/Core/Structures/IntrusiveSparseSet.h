@@ -2,6 +2,7 @@
 
 #include "Types.h"
 
+#include <vector>
 #include <cassert>
 
 
@@ -21,8 +22,6 @@ public:
 
 	//operators
 	T& operator [](uint i);
-
-	//set/get
 
 
 protected:

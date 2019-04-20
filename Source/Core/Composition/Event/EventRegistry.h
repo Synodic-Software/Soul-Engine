@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Composition/Event/EventModule.h"
-
 #include "Event.h"
 #include "Core/Utility/HashString/HashString.h"
 
@@ -12,21 +10,20 @@
 #include <boost/callable_traits.hpp>
 
 //signal and slots system
-class DefaultEventBackend final : public EventModule {
+class EventRegistry final {
 
 public:
 
-	//construction and assignment
-	DefaultEventBackend();
-	~DefaultEventBackend() = default;
+	EventRegistry();
+	~EventRegistry() = default;
 
-	DefaultEventBackend(const DefaultEventBackend &) = delete;
-	DefaultEventBackend(DefaultEventBackend &&) = default;
+	EventRegistry(const EventRegistry &) = delete;
+	EventRegistry(EventRegistry &&) = default;
 
-	DefaultEventBackend & operator=(const DefaultEventBackend &) = delete;
-	DefaultEventBackend & operator=(DefaultEventBackend &&) = default;
+	EventRegistry & operator=(const EventRegistry &) = delete;
+	EventRegistry & operator=(EventRegistry &&) = default;
 
-	//event functions
+
 	template<typename Fn>
 	uint64 Listen(HashString::HashType, HashString::HashType, Fn&&);
 
@@ -53,7 +50,7 @@ private:
 };
 
 template<typename Fn>
-uint64 DefaultEventBackend::Listen(HashString::HashType channel,
+uint64 EventRegistry::Listen(HashString::HashType channel,
 	HashString::HashType name,
 	Fn&& func)
 {
@@ -72,7 +69,7 @@ uint64 DefaultEventBackend::Listen(HashString::HashType channel,
 }
 
 template <typename... Args>
-void DefaultEventBackend::Emit(HashString::HashType channel, HashString::HashType name, Args&&... args)
+void EventRegistry::Emit(HashString::HashType channel, HashString::HashType name, Args&&... args)
 {
 
 	//TODO cast return type

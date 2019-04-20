@@ -1,7 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "Composition/Component/Component.h"
+#include "Core/Composition/Component/Component.h"
 
 #include <bitset>
 

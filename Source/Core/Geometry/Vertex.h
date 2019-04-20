@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-#include "Composition/Component/Component.h"
+#include "Core/Composition/Component/Component.h"
 
 #include <glm/glm.hpp>
 

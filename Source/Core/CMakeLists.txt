@@ -11,6 +11,14 @@ target_sources(${PROJECT_NAME}
         Camera/Film/Filter/Filter.cpp
         Camera/Film/Filter/Filter.h
         Camera/Lens/Lens.h
+        Composition/Component/Component.h
+        Composition/Event/Event.h
+        Composition/Event/EventRegistry.h
+        Composition/Event/EventRegistry.cpp
+        Composition/Entity/Entity.h
+        Composition/Entity/Entity.cpp
+        Composition/Entity/EntityRegistry.h
+        Composition/Entity/EntityRegistry.cpp
         Frame/Frame.cpp
         Frame/Frame.h
         Frame/FramePipeline.h

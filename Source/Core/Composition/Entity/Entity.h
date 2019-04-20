@@ -8,8 +8,7 @@ class EntityModule;
 class Entity
 {
 
-	//typedefs and constants
-	friend class EntityModule;
+	friend class EntityRegistry;
 
 	using value_type = uint64;
 	using id_type = uint32;
