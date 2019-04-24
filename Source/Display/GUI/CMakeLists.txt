@@ -16,7 +16,5 @@ target_sources(${PROJECT_NAME}
         Modules/Imgui/ImguiWidget.h
         Modules/Imgui/RenderWidget.h
         Modules/Imgui/SingleLayout.h
-        Modules/Mock/MockLayout.h
-        Modules/Mock/MockWidget.h
         Widget.h
 )

@@ -17,5 +17,8 @@ public:
 	ImguiBackend& operator=(ImguiBackend&&) noexcept = default;
 
 
+	void Update() override;
+
+
 };
 

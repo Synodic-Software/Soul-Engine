@@ -3,6 +3,7 @@
 #include "Transput/Input/Button.h"
 #include "Transput/Input/InputModule.h"
 
+#include <unordered_map>
 
 struct GLFWwindow;
 
@@ -22,9 +23,6 @@ public:
 
 	bool Poll() override;
 
-
-private:
-
 	void KeyCallback(GLFWwindow*, int, int, int, int);
 	void CharacterCallback(GLFWwindow*, uint);
 	void ModdedCharacterCallback(GLFWwindow*, uint, int);
@@ -32,6 +30,9 @@ private:
 	void CursorCallback(GLFWwindow*, double, double);
 	void CursorEnterCallback(GLFWwindow*, int);
 	void ScrollCallback(GLFWwindow*, double, double);
+
+
+private:
 
 	std::unordered_map<int, Button> keyStates_;
 
@@ -41,6 +42,5 @@ private:
 	double mouseXOffset_;
 	double mouseYOffset_;
 
-	bool firstMouse_;
 
 };

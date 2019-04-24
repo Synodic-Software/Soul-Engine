@@ -1,16 +1,19 @@
 #include "GLFWWindowBackend.h"
 
 #include "WindowParameters.h"
-#include "Display/Window/Modules/GLFW/GLFWWindow.h"
-#include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
+#include "GLFWWindow.h"
 #include "Core/Utility/Exception/Exception.h"
+#include "Transput/Input/Modules/GLFW/GLFWInputBackend.h"
 
-#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
 #include <cassert>
 
-GLFWWindowBackend::GLFWWindowBackend()
+static GLFWWindowBackend::UserPointers userPointers_;
+
+GLFWWindowBackend::GLFWWindowBackend(std::shared_ptr<InputModule>& inputModule):
+	WindowModule(inputModule), 
+	inputModule_(std::static_pointer_cast<GLFWInputBackend>(inputModule))
 {
 
 	//set the error callback
@@ -54,6 +57,11 @@ GLFWWindowBackend::~GLFWWindowBackend()
 
 }
 
+void GLFWWindowBackend::Update()
+{
+	
+}
+
 void GLFWWindowBackend::Draw() {
 
 	//TODO: selective drawing based on dirty state
@@ -72,7 +80,7 @@ bool GLFWWindowBackend::Active() {
 
 }
 
-void GLFWWindowBackend::CreateWindow(const WindowParameters& params, RasterModule* rasterModule)
+void GLFWWindowBackend::CreateWindow(const WindowParameters& params, std::shared_ptr<RasterModule>& rasterModule)
 {
 
 	assert(params.monitor < static_cast<int>(monitors_.size()));
@@ -80,48 +88,50 @@ void GLFWWindowBackend::CreateWindow(const WindowParameters& params, RasterModul
 	GLFWmonitor* monitor = monitors_[params.monitor];
 
 
-	std::unique_ptr<GLFWWindow> window = std::make_unique<GLFWWindow>(params, monitor, static_cast<VulkanRasterBackend*>(rasterModule), windows_.empty());
+	std::unique_ptr<GLFWWindow> window = std::make_unique<GLFWWindow>(params, monitor, rasterModule, windows_.empty());
 
 	const auto context = window->Context();
 	windows_[context] = std::move(window);
 
 	//set so the window object that holds the context is visible in callbacks
-	glfwSetWindowUserPointer(context, this);
+	userPointers_.windowBackend = this;
+	userPointers_.inputBackend = inputModule_;
+	glfwSetWindowUserPointer(context, &userPointers_);
 
 	//all window related callbacks
 	glfwSetWindowSizeCallback(context, [](GLFWwindow* window, const int x, const int y)
 	{
-		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
-		display->Resize(x, y);
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->windowBackend->Resize(x, y);
 	});
 
 	glfwSetWindowPosCallback(context, [](GLFWwindow* window, const int x, const int y)
 	{
-		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
-		display->PositionUpdate(x, y);
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->windowBackend->PositionUpdate(x, y);
 	});
 
 	glfwSetWindowRefreshCallback(context, [](GLFWwindow* window)
 	{
-		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
-		display->Refresh();
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->windowBackend->Refresh();
 	});
 
 	glfwSetFramebufferSizeCallback(context, [](GLFWwindow* window, const int x, const int y)
 	{
-		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
-		auto& thisWindow = display->GetWindow(window);
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		auto& thisWindow = userPointers->windowBackend->GetWindow(window);
 
 		//Only resize if necessary
 		if (static_cast<uint>(x) != thisWindow.Parameters().pixelSize.x || static_cast<uint>(y) != thisWindow.Parameters().pixelSize.y) {
-			display->FrameBufferResize(thisWindow, x, y);
+			userPointers->windowBackend->FrameBufferResize(thisWindow, x, y);
 		}
 	});
 
 	glfwSetWindowCloseCallback(context, [](GLFWwindow* window)
 	{
-		const auto display = static_cast<GLFWWindowBackend*>(glfwGetWindowUserPointer(window));
-		display->Close(display->GetWindow(window));
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->windowBackend->Close(userPointers->windowBackend->GetWindow(window));
 	});
 
 	//only show the window once all proper callbacks and settings are in place
@@ -129,9 +139,57 @@ void GLFWWindowBackend::CreateWindow(const WindowParameters& params, RasterModul
 
 }
 
-void GLFWWindowBackend::RegisterRasterBackend(RasterModule* rasterBackend)
+void GLFWWindowBackend::RegisterInputBackend(GLFWwindow* windowContext)
 {
 
+
+	// TODO construct templated function for all callbacks
+	// register the input with the Window
+
+	glfwSetKeyCallback(
+		windowContext, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+			const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+			userPointers->inputBackend->KeyCallback(window, key, scancode, action, mods);
+		});
+
+	glfwSetCharCallback(windowContext, [](GLFWwindow* window, uint codepoint) {
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->CharacterCallback(window, codepoint);
+	});
+
+	glfwSetCharModsCallback(windowContext, [](GLFWwindow* window, uint a, int b) {
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->ModdedCharacterCallback(window, a, b);
+	});
+
+	glfwSetMouseButtonCallback(
+		windowContext, [](GLFWwindow* window, int button, int action, int mods) {
+			const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+			userPointers->inputBackend->ButtonCallback(window, button, action, mods);
+	});
+
+	glfwSetCursorPosCallback(windowContext, [](GLFWwindow* window, double xPos, double yPos) {
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->CursorCallback(window, xPos, yPos);
+	});
+
+	glfwSetCursorEnterCallback(windowContext, [](GLFWwindow* window, int temp) {
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->CursorEnterCallback(window, temp);
+	});
+
+	glfwSetScrollCallback(windowContext, [](GLFWwindow* window, double xoffset, double yoffset) {
+		const auto userPointers = static_cast<UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->ScrollCallback(window, xoffset, yoffset);
+	});
+
+
+}
+
+std::vector<const char*> GLFWWindowBackend::GetRasterExtensions()
+{
+
+	//TODO: std::span would be better than vector come c+20
 	uint32 glfwExtensionCount = 0;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
@@ -142,8 +200,7 @@ void GLFWWindowBackend::RegisterRasterBackend(RasterModule* rasterBackend)
 		requiredInstanceExtensions.push_back(glfwExtensions[i]);
 	}
 
-	//TODO: pattern match better
-	dynamic_cast<VulkanRasterBackend*>(rasterBackend)->AddInstanceExtensions(requiredInstanceExtensions);
+	return requiredInstanceExtensions;
 
 }
 

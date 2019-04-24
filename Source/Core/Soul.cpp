@@ -20,9 +20,9 @@ Soul::Soul(SoulParameters& params) :
 	active_(true),
 	schedulerModule_(SchedulerModule::CreateModule(parameters_.threadCount)),
 	computeModule_(ComputeModule::CreateModule()),
-	windowModule_(WindowModule::CreateModule()),
-	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
 	inputModule_(InputModule::CreateModule()), 
+	windowModule_(WindowModule::CreateModule(inputModule_)),
+	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
 	entityRegistry_(new EntityRegistry()), 
 	eventRegistry_(new EventRegistry())
 {
@@ -40,17 +40,13 @@ Soul::Soul(SoulParameters& params) :
 
 void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 
-	EarlyFrameUpdate();
-
-	newFrame.Dirty(Poll());
-
-	active_ = windowModule_->Active();
+	EarlyFrameUpdate(oldFrame, newFrame);
 
 }
 
 void Soul::Update(Frame& oldFrame, Frame& newFrame) {
 
-	EarlyUpdate();
+	EarlyUpdate(oldFrame, newFrame);
 
 	if (newFrame.Dirty()) {
 
@@ -64,13 +60,13 @@ void Soul::Update(Frame& oldFrame, Frame& newFrame) {
 
 	}
 
-	LateUpdate();
+	LateUpdate(oldFrame, newFrame);
 
 }
 
 void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 
-	LateFrameUpdate();
+	LateFrameUpdate(oldFrame, newFrame);
 
 	if (newFrame.Dirty()) {
 
@@ -84,29 +80,39 @@ void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 
 void Soul::Warmup() {
 
-	inputModule_->Poll();
-
 	//for (auto& scene : scenes) {
 	//	scene->Build(engineRefreshRate);
 	//}
 
+	inputModule_->Poll();
+
 }
 
-void Soul::EarlyFrameUpdate() {
+void Soul::EarlyFrameUpdate(Frame& oldFrame, Frame& newFrame)
+{
 
 	eventRegistry_->Emit("Update"_hashed, "EarlyFrame"_hashed);
 
 }
 
-void Soul::LateFrameUpdate() {
+void Soul::LateFrameUpdate(Frame& oldFrame, Frame& newFrame)
+{
 
 	eventRegistry_->Emit("Update"_hashed, "LateFrame"_hashed);
 
+	//Update the window state as late as possible before rendering 
+	windowModule_->Update();
+
 }
 
-void Soul::EarlyUpdate() {
+void Soul::EarlyUpdate(Frame& oldFrame, Frame& newFrame)
+{
 
 	eventRegistry_->Emit("Update"_hashed, "Early"_hashed);
+
+	//Poll the keys as late as possible before an update
+	newFrame.Dirty(Poll());
+	active_ = windowModule_->Active();
 
 	//Update the engine cameras
 	//RayEngine::Instance().Update();
@@ -116,7 +122,8 @@ void Soul::EarlyUpdate() {
 
 }
 
-void Soul::LateUpdate() {
+void Soul::LateUpdate(Frame& oldFrame, Frame& newFrame)
+{
 
 	eventRegistry_->Emit("Update"_hashed, "Late"_hashed);
 
@@ -148,7 +155,7 @@ void Soul::Init()
 
 void Soul::CreateWindow(WindowParameters& params) {
 
-	windowModule_->CreateWindow(params, rasterModule_.get());
+	windowModule_->CreateWindow(params, rasterModule_);
 
 }
 

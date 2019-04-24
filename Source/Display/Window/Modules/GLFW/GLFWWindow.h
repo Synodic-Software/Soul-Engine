@@ -2,19 +2,21 @@
 
 #include "Display/Window/Window.h"
 #include "Core/Utility/ID/TypeID.h"
-#include <vulkan/vulkan.hpp>
+
+#include <memory>
 
 struct GLFWmonitor;
 struct GLFWwindow;
+class RasterModule;
 class VulkanRasterBackend;
-class VulkanSwapChain;
+
 
 class GLFWWindow final : public Window, TypeID<GLFWWindow>
 {
 
 public:
 
-	GLFWWindow(const WindowParameters&, GLFWmonitor*, VulkanRasterBackend*, bool);
+	GLFWWindow(const WindowParameters&, GLFWmonitor*, std::shared_ptr<RasterModule>, bool);
 	~GLFWWindow() override;
 
 	GLFWWindow(const GLFWWindow &) = delete;
@@ -34,13 +36,17 @@ public:
 
 private:
 
-	VulkanRasterBackend* rasterModule_;
+	std::shared_ptr<VulkanRasterBackend> rasterModule_;
 	GLFWwindow* context_;
 
 	bool master_;
 
 
-	vk::SurfaceKHR surface_;
-	std::unique_ptr<VulkanSwapChain> swapChain_;
+	Entity surface_;
+	Entity swapChain_;
+
+	//TODO: Refactor to remove implementation specific code
+	//vk::SurfaceKHR surface_;
+	//std::unique_ptr<VulkanSwapChain> swapChain_;
 
 };

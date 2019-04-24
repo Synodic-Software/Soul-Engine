@@ -6,6 +6,7 @@ class MockWindowBackend final : public WindowModule {
 
 public:
 
+	MockWindowBackend(std::shared_ptr<InputModule>&);
 	~MockWindowBackend() override = default;
 
 	MockWindowBackend(const MockWindowBackend&) = delete;
@@ -14,10 +15,13 @@ public:
 	MockWindowBackend& operator=(const MockWindowBackend&) = delete;
 	MockWindowBackend& operator=(MockWindowBackend&&) noexcept = default;
 
+
+	void Update() override;
 	void Draw() override;
 	bool Active() override;
 
-	void CreateWindow(const WindowParameters&, RasterModule*) override;
-	void RegisterRasterBackend(RasterModule*) override;
+	void CreateWindow(const WindowParameters&, std::shared_ptr<RasterModule>&) override;
+
+	std::vector<const char*> GetRasterExtensions() override;
 
 };

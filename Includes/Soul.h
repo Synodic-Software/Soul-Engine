@@ -12,9 +12,9 @@ class Frame;
 
 class SchedulerModule;
 class ComputeModule;
+class InputModule;
 class WindowModule;
 class RasterModule;
-class InputModule;
 
 class EntityRegistry;
 class EventRegistry;
@@ -53,10 +53,10 @@ private:
 
 	void Warmup();
 
-	void EarlyFrameUpdate();
-	void LateFrameUpdate();
-	void EarlyUpdate();
-	void LateUpdate();
+	void EarlyFrameUpdate(Frame&, Frame&);
+	void LateFrameUpdate(Frame&, Frame&);
+	void EarlyUpdate(Frame&, Frame&);
+	void LateUpdate(Frame&, Frame&);
 
 	void Raster();
 	bool Poll();
@@ -70,9 +70,9 @@ private:
 	//services and modules	
 	std::shared_ptr<SchedulerModule> schedulerModule_;
 	std::shared_ptr<ComputeModule> computeModule_;
+	std::shared_ptr<InputModule> inputModule_;
 	std::shared_ptr<WindowModule> windowModule_;
 	std::shared_ptr<RasterModule> rasterModule_;
-	std::shared_ptr<InputModule> inputModule_;
 	std::shared_ptr<EntityRegistry> entityRegistry_;
 	std::shared_ptr<EventRegistry> eventRegistry_;
 

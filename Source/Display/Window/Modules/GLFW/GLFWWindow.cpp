@@ -6,9 +6,12 @@
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
-GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, VulkanRasterBackend* rasterModule, bool master) :
+GLFWWindow::GLFWWindow(const WindowParameters& params,
+	GLFWmonitor* monitor,
+	std::shared_ptr<RasterModule> rasterModule,
+	bool master):
 	Window(params),
-	rasterModule_(rasterModule),
+	rasterModule_(std::static_pointer_cast<VulkanRasterBackend>(rasterModule)),
 	master_(master)
 {
 
@@ -72,15 +75,15 @@ GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, Vul
 
 	assert(error == VK_SUCCESS);
 
-	surface_ = static_cast<vk::SurfaceKHR>(castSurface);
-	swapChain_ = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize);
+	//surface_ = static_cast<vk::SurfaceKHR>(castSurface);
+	//swapChain_ = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize);
 
 }
 
 GLFWWindow::~GLFWWindow() {
 
-	swapChain_.reset();
-	rasterModule_->RemoveSurface(surface_);
+	//swapChain_.reset();
+	//rasterModule_->RemoveSurface(surface_);
 
 	glfwDestroyWindow(context_);
 
@@ -89,16 +92,16 @@ GLFWWindow::~GLFWWindow() {
 void GLFWWindow::Draw()
 {
 
-	swapChain_->Present();
+	//swapChain_->Present();
 
 }
 
 void GLFWWindow::FrameBufferResize(int x, int y)
 {
 
-	windowParams_.pixelSize = { x,y };
-	auto newSwapChain = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize, swapChain_.get());
-	swapChain_.swap(newSwapChain);
+	//windowParams_.pixelSize = { x,y };
+	//auto newSwapChain = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize, swapChain_.get());
+	//swapChain_.swap(newSwapChain);
 
 }
 

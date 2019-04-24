@@ -1,12 +1,11 @@
 #include "GLFWInputBackend.h"
 
-#include "GLFW/glfw3.h"
+#include "Core/Utility/Exception/Exception.h"
+
+#include <GLFW/glfw3.h>
 
 
-GLFWInputBackend::GLFWInputBackend() :
-	mouseXOffset_(0),
-	mouseYOffset_(0),
-	firstMouse_(true)
+GLFWInputBackend::GLFWInputBackend() : mouseXOffset_(0), mouseYOffset_(0), mouseXPos_(0), mouseYPos_(0)
 {
 }
 
@@ -20,17 +19,22 @@ void GLFWInputBackend::KeyCallback(GLFWwindow* window, int key, int scancode, in
 		}
 
 		keyStates_[key].state = KeyState::PRESS;
+
 	}
 	else if (action == GLFW_REPEAT) {
+
 		//GLFW_REPEAT is handled in GLFW, but we want custimization for input, so this is ignored
+
 	}
 	else if (action == GLFW_RELEASE) {
+
 		keyStates_[key].state = KeyState::RELEASE;
+
 	}
 	else {
-		//case GLFW_UNKNOWN
-		// TODO: proper error handling
-		//S_LOG_ERROR("Reached unknown key case");
+
+		throw NotImplemented();
+
 	}
 
 }
@@ -49,12 +53,6 @@ void GLFWInputBackend::ButtonCallback(GLFWwindow* window, int button, int action
 
 void GLFWInputBackend::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
 
-	if (firstMouse_) {
-		mouseXPos_ = xPos;
-		mouseYPos_ = yPos;
-		firstMouse_ = false;
-	}
-
 	mouseXOffset_ = xPos - mouseXPos_;
 	mouseYOffset_ = yPos - mouseYPos_;
 	mouseXPos_ = xPos;
@@ -68,59 +66,6 @@ void GLFWInputBackend::CursorEnterCallback(GLFWwindow* window, int) {
 void GLFWInputBackend::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 
 }
-
-
-//void GLFWInputBackend::AttachWindow(DesktopWindow* window) {
-//
-//	//If the desktop is used, glfw is present in both cases
-//	const auto context_ = std::any_cast<GLFWwindow*>(window->context_);
-//
-//	//TODO construct templated function for all callbacks
-//	//register the input with the Window
-//	
-//	glfwSetKeyCallback(context_, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-//	{
-//		auto thisManager = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(window))->GetInputSet();
-//		thisManager.KeyCallback(window, key, scancode, action, mods);
-//	});
-//
-//	glfwSetCharCallback(context_, [](GLFWwindow* window, uint codepoint)
-//	{
-//		auto thisManager = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(window))->GetInputSet();
-//		thisManager.CharacterCallback(window, codepoint);
-//	});
-//
-//	glfwSetCharModsCallback(context_, [](GLFWwindow* window, uint a, int b)
-//	{
-//		auto thisManager = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(window))->GetInputSet();
-//		thisManager.ModdedCharacterCallback(window, a, b);
-//	});
-//
-//	glfwSetMouseButtonCallback(context_, [](GLFWwindow* window, int button, int action, int mods)
-//	{
-//		auto thisManager = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(window))->GetInputSet();
-//		thisManager.ButtonCallback(window, button, action, mods);
-//	});
-//
-//	glfwSetCursorPosCallback(context_, [](GLFWwindow* window, double xPos, double yPos)
-//	{
-//		auto thisManager = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(window))->GetInputSet();
-//		thisManager.CursorCallback(window, xPos, yPos);
-//	});
-//
-//	glfwSetCursorEnterCallback(context_, [](GLFWwindow* window, int temp)
-//	{
-//		auto thisManager = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(window))->GetInputSet();
-//		thisManager.CursorEnterCallback(window, temp);
-//	});
-//
-//	glfwSetScrollCallback(context_, [](GLFWwindow* window, double xoffset, double yoffset)
-//	{
-//		auto thisManager = static_cast<DesktopWindow*>(glfwGetWindowUserPointer(window))->GetInputSet();
-//		thisManager.ScrollCallback(window, xoffset, yoffset);
-//	});
-//
-//}
 
 bool GLFWInputBackend::Poll() {
 
