@@ -1,7 +1,6 @@
 #include "MockWindowBackend.h"
 
-MockWindowBackend::MockWindowBackend(std::shared_ptr<InputModule>& inputModule):
-	WindowModule(inputModule)
+MockWindowBackend::MockWindowBackend(std::shared_ptr<InputModule>& inputModule)
 {
 }
 

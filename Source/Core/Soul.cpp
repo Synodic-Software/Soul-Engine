@@ -8,7 +8,7 @@
 #include "Display/Window/WindowModule.h"
 #include "Rasterer/RasterModule.h"
 #include "Display/GUI/GUIModule.h"
-#include "Transput/Input/InputModule.h"
+#include "Display/Input/InputModule.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
 #include "Core/Composition/Event/EventRegistry.h"
 
@@ -21,7 +21,8 @@ Soul::Soul(SoulParameters& params) :
 	schedulerModule_(SchedulerModule::CreateModule(parameters_.threadCount)),
 	computeModule_(ComputeModule::CreateModule()),
 	inputModule_(InputModule::CreateModule()), 
-	windowModule_(WindowModule::CreateModule(inputModule_)),
+	windowModule_(WindowModule::CreateModule(inputModule_)), 
+	guiModule_(GUIModule::CreateModule()),
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
 	entityRegistry_(new EntityRegistry()), 
 	eventRegistry_(new EventRegistry())

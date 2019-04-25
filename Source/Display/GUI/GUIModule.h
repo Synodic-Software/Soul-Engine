@@ -23,7 +23,7 @@ public:
 
 
 	// Factory
-	static std::unique_ptr<GUIModule> CreateModule();
+	static std::shared_ptr<GUIModule> CreateModule();
 
 
 };

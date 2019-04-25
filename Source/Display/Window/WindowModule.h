@@ -15,7 +15,7 @@ class WindowModule : public Module<WindowModule> {
 
 public:
 
-	WindowModule(std::shared_ptr<InputModule>&);
+	WindowModule();
 	virtual ~WindowModule() = default;
 
 	WindowModule(const WindowModule&) = delete;
@@ -42,6 +42,5 @@ protected:
 
 	bool active_;
 
-	std::unique_ptr<GUIModule> gui_;
 
 };
