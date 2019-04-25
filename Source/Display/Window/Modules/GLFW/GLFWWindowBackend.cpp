@@ -9,7 +9,6 @@
 
 #include <cassert>
 
-static GLFWWindowBackend::UserPointers userPointers_;
 
 GLFWWindowBackend::GLFWWindowBackend(std::shared_ptr<InputModule>& inputModule):
 	WindowModule(inputModule), 

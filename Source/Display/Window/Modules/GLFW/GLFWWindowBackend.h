@@ -38,11 +38,6 @@ public:
 	void FrameBufferResize(GLFWWindow&, int, int);
 	void Close(GLFWWindow&);
 
-	struct UserPointers {
-		GLFWWindowBackend* windowBackend;
-		std::shared_ptr<GLFWInputBackend> inputBackend;
-	};
-
 
 private:
 
@@ -58,8 +53,12 @@ private:
 	std::shared_ptr<GLFWInputBackend> inputModule_;
 
 	
+	struct UserPointers {
+		GLFWWindowBackend* windowBackend;
+		std::shared_ptr<GLFWInputBackend> inputBackend;
+	};
 
-	static UserPointers userPointers_;
+	UserPointers userPointers_;
 
 
 };
