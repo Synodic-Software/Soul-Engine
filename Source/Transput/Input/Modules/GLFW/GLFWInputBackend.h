@@ -22,6 +22,7 @@ public:
 
 
 	bool Poll() override;
+	void Listen(Window&) override;
 
 	void KeyCallback(GLFWwindow*, int, int, int, int);
 	void CharacterCallback(GLFWwindow*, uint);

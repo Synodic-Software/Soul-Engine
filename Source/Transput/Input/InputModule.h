@@ -24,6 +24,7 @@ public:
 
 
 	virtual bool Poll() = 0;
+	virtual void Listen(Window&) = 0;
 
 
 	// Factory

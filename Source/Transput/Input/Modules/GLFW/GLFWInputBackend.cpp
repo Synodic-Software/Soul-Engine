@@ -1,6 +1,8 @@
 #include "GLFWInputBackend.h"
 
 #include "Core/Utility/Exception/Exception.h"
+#include "Display/Window/Modules/GLFW/GLFWWindow.h"
+#include "Display/Window/Modules/GLFW/GLFWWindowBackend.h"
 
 #include <GLFW/glfw3.h>
 
@@ -64,6 +66,60 @@ void GLFWInputBackend::CursorEnterCallback(GLFWwindow* window, int) {
 
 }
 void GLFWInputBackend::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+
+}
+
+
+void GLFWInputBackend::Listen(Window& window)
+{
+
+	//Luxery of having the Windowing system be GLFW
+	const auto glfwWindow = static_cast<GLFWWindow*>(&window);
+	GLFWwindow* context = glfwWindow->Context();
+
+	glfwSetKeyCallback(
+		context, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+			const auto userPointers =
+				static_cast<GLFWWindowBackend::UserPointers*>(glfwGetWindowUserPointer(window));
+			userPointers->inputBackend->KeyCallback(window, key, scancode, action, mods);
+		});
+
+	glfwSetCharCallback(context, [](GLFWwindow* window, uint codepoint) {
+		const auto userPointers =
+			static_cast<GLFWWindowBackend::UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->CharacterCallback(window, codepoint);
+	});
+
+	glfwSetCharModsCallback(context, [](GLFWwindow* window, uint a, int b) {
+		const auto userPointers =
+			static_cast<GLFWWindowBackend::UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->ModdedCharacterCallback(window, a, b);
+	});
+
+	glfwSetMouseButtonCallback(
+		context, [](GLFWwindow* window, int button, int action, int mods) {
+		const auto userPointers =
+			static_cast<GLFWWindowBackend::UserPointers*>(glfwGetWindowUserPointer(window));
+			userPointers->inputBackend->ButtonCallback(window, button, action, mods);
+		});
+
+	glfwSetCursorPosCallback(context, [](GLFWwindow* window, double xPos, double yPos) {
+		const auto userPointers =
+			static_cast<GLFWWindowBackend::UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->CursorCallback(window, xPos, yPos);
+	});
+
+	glfwSetCursorEnterCallback(context, [](GLFWwindow* window, int temp) {
+		const auto userPointers =
+			static_cast<GLFWWindowBackend::UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->CursorEnterCallback(window, temp);
+	});
+
+	glfwSetScrollCallback(context, [](GLFWwindow* window, double xoffset, double yoffset) {
+		const auto userPointers =
+			static_cast<GLFWWindowBackend::UserPointers*>(glfwGetWindowUserPointer(window));
+		userPointers->inputBackend->ScrollCallback(window, xoffset, yoffset);
+	});
 
 }
 
