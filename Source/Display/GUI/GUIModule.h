@@ -18,6 +18,10 @@ public:
 	GUIModule& operator=(const GUIModule&) = delete;
 	GUIModule& operator=(GUIModule&&) noexcept = default;
 
+
+	virtual void Update() = 0;
+
+
 	// Factory
 	static std::unique_ptr<GUIModule> CreateModule();
 

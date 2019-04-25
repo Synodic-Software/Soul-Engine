@@ -32,7 +32,6 @@ public:
 	std::unique_ptr<VulkanSwapChain> RegisterSurface(vk::SurfaceKHR&, glm::uvec2, VulkanSwapChain* = nullptr);
 	void RemoveSurface(vk::SurfaceKHR&);
 
-	void AddInstanceExtensions(std::vector<char const*>&);
 	vk::Instance& GetInstance();
 
 

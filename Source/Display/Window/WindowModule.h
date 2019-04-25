@@ -4,16 +4,18 @@
 #include "WindowParameters.h"
 #include "Display/GUI/GUIModule.h"
 
+#include <vector>
 #include <memory>
 
 class Window;
+class InputModule;
 class RasterModule;
 
 class WindowModule : public Module<WindowModule> {
 
 public:
 
-	WindowModule();
+	WindowModule(std::shared_ptr<InputModule>&);
 	virtual ~WindowModule() = default;
 
 	WindowModule(const WindowModule&) = delete;
@@ -23,15 +25,17 @@ public:
 	WindowModule& operator=(WindowModule&&) noexcept = default;
 
 
+	virtual void Update() = 0;
 	virtual void Draw() = 0;
 	virtual bool Active() = 0;
 
-	virtual void CreateWindow(const WindowParameters&, RasterModule*) = 0;
-	virtual void RegisterRasterBackend(RasterModule*) = 0;
+	virtual void CreateWindow(const WindowParameters&, std::shared_ptr<RasterModule>&) = 0;
+
+	virtual std::vector<const char*> GetRasterExtensions() = 0;
 
 
 	//Factory
-	static std::unique_ptr<WindowModule> CreateModule();
+	static std::unique_ptr<WindowModule> CreateModule(std::shared_ptr<InputModule>&);
 
 
 protected:

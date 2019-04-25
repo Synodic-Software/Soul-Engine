@@ -2,7 +2,7 @@
 
 #include "VulkanDevice.h"
 #include "Core/Utility/Exception/Exception.h"
-#include "System/Compiler.h"
+#include "Core/System/Compiler.h"
 #include "Types.h"
 #include "Display/Window/WindowModule.h"
 #include "VulkanSwapChain.h"
@@ -10,8 +10,7 @@
 VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
 	std::shared_ptr<WindowModule>& windowModule_):
 	validationLayers_{
-			"VK_LAYER_LUNARG_assistant_layer",
-			"VK_LAYER_LUNARG_standard_validation"
+			"VK_LAYER_KHRONOS_validation"
 }
 {
 
@@ -24,7 +23,10 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 	appInfo.pEngineName = "Soul Engine"; //TODO forward the engine name here
 
 	// The display will forward the extensions needed for Vulkan
-	windowModule_->RegisterRasterBackend(this);
+	const auto newExtensions = windowModule_->GetRasterExtensions();
+
+	requiredInstanceExtensions_.insert(
+		std::end(requiredInstanceExtensions_), std::begin(newExtensions), std::end(newExtensions));
 
 	//TODO minimize memory/runtime impact
 	if constexpr (Compiler::Debug()) {
@@ -168,12 +170,6 @@ void VulkanRasterBackend::RemoveSurface(vk::SurfaceKHR& surface)
 
 	instance_.destroySurfaceKHR(surface);
 
-}
-
-//TODO: Refactor. Better way for the Display module to inject extensions?
-void VulkanRasterBackend::AddInstanceExtensions(std::vector<char const*>& newExtensions)
-{
-	requiredInstanceExtensions_.insert(std::end(requiredInstanceExtensions_), std::begin(newExtensions), std::end(newExtensions));
 }
 
 vk::Instance& VulkanRasterBackend::GetInstance()

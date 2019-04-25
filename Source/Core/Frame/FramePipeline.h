@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Frame.h"
-#include "Core/Structures/RingBuffer.h"
+#include "Core/Structure/RingBuffer.h"
 #include "Parallelism/Graph/Graph.h"
-#include "Parallelism/SchedulerModule.h"
+#include "Parallelism/Scheduler/SchedulerModule.h"
 
 #include <chrono>
 

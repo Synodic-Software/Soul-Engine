@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parallelism/TaskParameters.h"
+#include "Parallelism/Scheduler/TaskParameters.h"
 
 #include <vector>
 #include <chrono>

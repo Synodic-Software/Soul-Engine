@@ -1,8 +1,8 @@
 #include "VulkanDevice.h"
 
-#include "Parallelism/TaskParameters.h"
-#include "Parallelism/SchedulerModule.h"
-#include "System/Compiler.h"
+#include "Parallelism/Scheduler/TaskParameters.h"
+#include "Parallelism/Scheduler/SchedulerModule.h"
+#include "Core/System/Compiler.h"
 
 //TODO: Refactor
 VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
@@ -20,8 +20,7 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 	};
 
 	const std::vector<const char*> validationLayers = {
-		"VK_LAYER_LUNARG_assistant_layer",
-		"VK_LAYER_LUNARG_standard_validation"
+			"VK_LAYER_KHRONOS_validation"
 	};
 
 

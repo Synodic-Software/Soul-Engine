@@ -1,16 +1,16 @@
 #include "Soul.h"
 
 #include "System/Platform.h"
-#include "Frame/FramePipeline.h"
+#include "Core/Frame/FramePipeline.h"
 
-#include "Parallelism/SchedulerModule.h"
+#include "Parallelism/Scheduler/SchedulerModule.h"
 #include "Compute/ComputeModule.h"
 #include "Display/Window/WindowModule.h"
 #include "Rasterer/RasterModule.h"
 #include "Display/GUI/GUIModule.h"
 #include "Transput/Input/InputModule.h"
-#include "Composition/Entity/EntityModule.h"
-#include "Composition/Event/EventModule.h"
+#include "Core/Composition/Entity/EntityRegistry.h"
+#include "Core/Composition/Event/EventRegistry.h"
 
 
 
@@ -20,11 +20,11 @@ Soul::Soul(SoulParameters& params) :
 	active_(true),
 	schedulerModule_(SchedulerModule::CreateModule(parameters_.threadCount)),
 	computeModule_(ComputeModule::CreateModule()),
-	windowModule_(WindowModule::CreateModule()),
-	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
 	inputModule_(InputModule::CreateModule()), 
-	entityModule_(EntityModule::CreateModule()), 
-	eventModule_(EventModule::CreateModule())
+	windowModule_(WindowModule::CreateModule(inputModule_)),
+	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
+	entityRegistry_(new EntityRegistry()), 
+	eventRegistry_(new EventRegistry())
 {
 	parameters_.engineRefreshRate.AddCallback([this](const int value)
 	{
@@ -40,17 +40,13 @@ Soul::Soul(SoulParameters& params) :
 
 void Soul::Process(Frame& oldFrame, Frame& newFrame) {
 
-	EarlyFrameUpdate();
-
-	newFrame.Dirty(Poll());
-
-	active_ = windowModule_->Active();
+	EarlyFrameUpdate(oldFrame, newFrame);
 
 }
 
 void Soul::Update(Frame& oldFrame, Frame& newFrame) {
 
-	EarlyUpdate();
+	EarlyUpdate(oldFrame, newFrame);
 
 	if (newFrame.Dirty()) {
 
@@ -64,13 +60,13 @@ void Soul::Update(Frame& oldFrame, Frame& newFrame) {
 
 	}
 
-	LateUpdate();
+	LateUpdate(oldFrame, newFrame);
 
 }
 
 void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 
-	LateFrameUpdate();
+	LateFrameUpdate(oldFrame, newFrame);
 
 	if (newFrame.Dirty()) {
 
@@ -84,41 +80,52 @@ void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 
 void Soul::Warmup() {
 
-	inputModule_->Poll();
-
 	//for (auto& scene : scenes) {
 	//	scene->Build(engineRefreshRate);
 	//}
 
-}
-
-void Soul::EarlyFrameUpdate() {
-
-	eventModule_->Emit("Update"_hashed, "EarlyFrame"_hashed);
+	inputModule_->Poll();
 
 }
 
-void Soul::LateFrameUpdate() {
+void Soul::EarlyFrameUpdate(Frame& oldFrame, Frame& newFrame)
+{
 
-	eventModule_->Emit("Update"_hashed, "LateFrame"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "EarlyFrame"_hashed);
 
 }
 
-void Soul::EarlyUpdate() {
+void Soul::LateFrameUpdate(Frame& oldFrame, Frame& newFrame)
+{
 
-	eventModule_->Emit("Update"_hashed, "Early"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "LateFrame"_hashed);
+
+	//Update the window state as late as possible before rendering 
+	windowModule_->Update();
+
+}
+
+void Soul::EarlyUpdate(Frame& oldFrame, Frame& newFrame)
+{
+
+	eventRegistry_->Emit("Update"_hashed, "Early"_hashed);
+
+	//Poll the keys as late as possible before an update
+	newFrame.Dirty(Poll());
+	active_ = windowModule_->Active();
 
 	//Update the engine cameras
 	//RayEngine::Instance().Update();
 
 	//pull cameras into jobs
-	eventModule_->Emit("Update"_hashed, "Job Cameras"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "Job Cameras"_hashed);
 
 }
 
-void Soul::LateUpdate() {
+void Soul::LateUpdate(Frame& oldFrame, Frame& newFrame)
+{
 
-	eventModule_->Emit("Update"_hashed, "Late"_hashed);
+	eventRegistry_->Emit("Update"_hashed, "Late"_hashed);
 
 }
 
@@ -148,7 +155,7 @@ void Soul::Init()
 
 void Soul::CreateWindow(WindowParameters& params) {
 
-	windowModule_->CreateWindow(params, rasterModule_.get());
+	windowModule_->CreateWindow(params, rasterModule_);
 
 }
 

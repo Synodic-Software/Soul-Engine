@@ -127,7 +127,6 @@ target_sources(${PROJECT_NAME}
 
 #Each `Source` subdirectory handles its own sources and compilation choices
 add_subdirectory(Source/Audio)
-add_subdirectory(Source/Composition)
 add_subdirectory(Source/Compute)
 add_subdirectory(Source/Core)
 add_subdirectory(Source/Display/Window)
@@ -137,7 +136,6 @@ add_subdirectory(Source/Network)
 add_subdirectory(Source/Parallelism)
 add_subdirectory(Source/Physics)
 add_subdirectory(Source/Rasterer)
-add_subdirectory(Source/System)
 add_subdirectory(Source/Tracer)
 add_subdirectory(Source/Transput)
 

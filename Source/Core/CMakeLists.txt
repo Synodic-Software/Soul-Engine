@@ -4,13 +4,14 @@
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        Camera/Camera.cpp
-        Camera/Camera.h
-        Camera/Film/Film.cpp
-        Camera/Film/Film.h
-        Camera/Film/Filter/Filter.cpp
-        Camera/Film/Filter/Filter.h
-        Camera/Lens/Lens.h
+        Composition/Component/Component.h
+        Composition/Entity/Entity.cpp
+        Composition/Entity/Entity.h
+        Composition/Entity/EntityRegistry.cpp
+        Composition/Entity/EntityRegistry.h
+        Composition/Event/Event.h
+        Composition/Event/EventRegistry.cpp
+        Composition/Event/EventRegistry.h
         Frame/Frame.cpp
         Frame/Frame.h
         Frame/FramePipeline.h
@@ -36,18 +37,19 @@ target_sources(${PROJECT_NAME}
         Object/Loader.h
         Object/Object.cpp
         Object/Object.h
-        Scene/BVH/LBVHManager.cpp
-        Scene/BVH/LBVHManager.h
-        Scene/BVH/Node.cpp
-        Scene/BVH/Node.h
-        Scene/Morton/MortonCode.h
         Scene/Scene.cpp
         Scene/Scene.h
         Scene/Sky.cpp
         Scene/Sky.h
         Soul.cpp
-        Structures/RingBuffer.h
-        Structures/IntrusiveSparseSet.h
+        Structure/Acceleration/LBVHManager.cpp
+        Structure/Acceleration/LBVHManager.h
+        Structure/Acceleration/Node.cpp
+        Structure/Acceleration/Node.h
+        Structure/IntrusiveSparseSet.h
+        Structure/RingBuffer.h
+        System/Compiler.h
+        System/Platform.h
         Utility/Exception/Exception.h
         Utility/Function/function_ref.cpp
         Utility/Function/function_ref.h
@@ -57,10 +59,13 @@ target_sources(${PROJECT_NAME}
         Utility/ID/TypeID.h
         Utility/Log/Logger.cpp
         Utility/Log/Logger.h
+        Utility/Morton/MortonCode.h
         Utility/Property/Property.cpp
         Utility/Template/CRTP.h
         Utility/Template/Optional.h
         Utility/Template/TypeTraits.h
+        Utility/Thread/ThreadLocal.cpp
+        Utility/Thread/ThreadLocal.h
         Utility/Timer/Timer.cpp
         Utility/Timer/Timer.h
 )

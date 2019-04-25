@@ -3,12 +3,14 @@
 #include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
 #include "Rasterer/Modules/Vulkan/VulkanSwapChain.h"
 
-#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
-GLFWWindow::GLFWWindow(const WindowParameters& params, GLFWmonitor* monitor, VulkanRasterBackend* rasterModule, bool master) :
+GLFWWindow::GLFWWindow(const WindowParameters& params,
+	GLFWmonitor* monitor,
+	std::shared_ptr<RasterModule> rasterModule,
+	bool master):
 	Window(params),
-	rasterModule_(rasterModule),
+	rasterModule_(std::static_pointer_cast<VulkanRasterBackend>(rasterModule)),
 	master_(master)
 {
 

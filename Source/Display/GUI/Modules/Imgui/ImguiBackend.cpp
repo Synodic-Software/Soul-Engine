@@ -16,3 +16,10 @@ ImguiBackend::~ImguiBackend()
 	ImGui::DestroyContext();
 
 }
+
+void ImguiBackend::Update()
+{
+
+	ImGuiIO& inputInfo = ImGui::GetIO();
+
+}

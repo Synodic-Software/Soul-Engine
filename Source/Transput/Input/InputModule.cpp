@@ -1,5 +1,5 @@
 #include "InputModule.h"
-#include "System/Platform.h"
+#include "Core/System/Platform.h"
 
 #include "Modules/GLFW/GLFWInputBackend.h"
 
