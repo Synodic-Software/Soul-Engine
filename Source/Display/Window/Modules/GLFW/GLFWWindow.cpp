@@ -3,7 +3,6 @@
 #include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
 #include "Rasterer/Modules/Vulkan/VulkanSwapChain.h"
 
-#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
 GLFWWindow::GLFWWindow(const WindowParameters& params,
@@ -75,15 +74,15 @@ GLFWWindow::GLFWWindow(const WindowParameters& params,
 
 	assert(error == VK_SUCCESS);
 
-	//surface_ = static_cast<vk::SurfaceKHR>(castSurface);
-	//swapChain_ = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize);
+	surface_ = static_cast<vk::SurfaceKHR>(castSurface);
+	swapChain_ = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize);
 
 }
 
 GLFWWindow::~GLFWWindow() {
 
-	//swapChain_.reset();
-	//rasterModule_->RemoveSurface(surface_);
+	swapChain_.reset();
+	rasterModule_->RemoveSurface(surface_);
 
 	glfwDestroyWindow(context_);
 
@@ -92,16 +91,16 @@ GLFWWindow::~GLFWWindow() {
 void GLFWWindow::Draw()
 {
 
-	//swapChain_->Present();
+	swapChain_->Present();
 
 }
 
 void GLFWWindow::FrameBufferResize(int x, int y)
 {
 
-	//windowParams_.pixelSize = { x,y };
-	//auto newSwapChain = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize, swapChain_.get());
-	//swapChain_.swap(newSwapChain);
+	windowParams_.pixelSize = { x,y };
+	auto newSwapChain = rasterModule_->RegisterSurface(surface_, windowParams_.pixelSize, swapChain_.get());
+	swapChain_.swap(newSwapChain);
 
 }
 

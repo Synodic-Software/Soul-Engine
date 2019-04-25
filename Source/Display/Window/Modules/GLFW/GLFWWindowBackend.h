@@ -54,9 +54,6 @@ private:
 	// Luxery of having the Input system be GLFW
 	std::shared_ptr<GLFWInputBackend> inputModule_;
 
-	
-	
-
 	UserPointers userPointers_;
 
 

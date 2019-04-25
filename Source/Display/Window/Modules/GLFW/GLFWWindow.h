@@ -3,16 +3,16 @@
 #include "Display/Window/Window.h"
 #include "Core/Utility/ID/TypeID.h"
 
+#include <vulkan/vulkan.hpp>
 #include <memory>
 
 struct GLFWmonitor;
 struct GLFWwindow;
 class RasterModule;
 class VulkanRasterBackend;
+class VulkanSwapChain;
 
-
-class GLFWWindow final : public Window, TypeID<GLFWWindow>
-{
+class GLFWWindow final : public Window, TypeID<GLFWWindow> {
 
 public:
 
@@ -42,11 +42,8 @@ private:
 	bool master_;
 
 
-	Entity surface_;
-	Entity swapChain_;
-
 	//TODO: Refactor to remove implementation specific code
-	//vk::SurfaceKHR surface_;
-	//std::unique_ptr<VulkanSwapChain> swapChain_;
+	vk::SurfaceKHR surface_;
+	std::unique_ptr<VulkanSwapChain> swapChain_;
 
 };
