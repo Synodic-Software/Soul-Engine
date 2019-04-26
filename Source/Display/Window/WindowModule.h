@@ -15,7 +15,7 @@ class WindowModule : public Module<WindowModule> {
 
 public:
 
-	WindowModule(std::shared_ptr<InputModule>&);
+	WindowModule();
 	virtual ~WindowModule() = default;
 
 	WindowModule(const WindowModule&) = delete;
@@ -26,12 +26,13 @@ public:
 
 
 	virtual void Update() = 0;
-	virtual void Draw() = 0;
 	virtual bool Active() = 0;
 
 	virtual void CreateWindow(const WindowParameters&, std::shared_ptr<RasterModule>&) = 0;
 
 	virtual std::vector<const char*> GetRasterExtensions() = 0;
+
+	virtual Window& GetWindow() = 0;
 
 
 	//Factory
@@ -42,6 +43,5 @@ protected:
 
 	bool active_;
 
-	std::unique_ptr<GUIModule> gui_;
 
 };

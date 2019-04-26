@@ -2,12 +2,13 @@
 
 #include "Display/GUI/GUIModule.h"
 
+class InputModule;
 
 class ImguiBackend final : public GUIModule {
 
 public:
 
-	ImguiBackend();
+	ImguiBackend(std::shared_ptr<InputModule>&, std::shared_ptr<WindowModule>&);
 	~ImguiBackend() override;
 
 	ImguiBackend(const ImguiBackend&) = delete;
@@ -18,6 +19,12 @@ public:
 
 
 	void Update() override;
+	void Draw() override;
+
+private:
+
+	std::shared_ptr<InputModule> inputModule_;
+	std::shared_ptr<WindowModule> windowModule_;
 
 
 };

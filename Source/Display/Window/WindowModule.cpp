@@ -6,9 +6,8 @@
 #include "Display/GUI/GUIModule.h"
 
 
-WindowModule::WindowModule(std::shared_ptr<InputModule>&): 
-	active_(true), 
-	gui_(GUIModule::CreateModule())
+WindowModule::WindowModule(): 
+	active_(true)
 {	
 }
 

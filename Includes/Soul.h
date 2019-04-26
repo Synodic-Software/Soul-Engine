@@ -14,6 +14,7 @@ class SchedulerModule;
 class ComputeModule;
 class InputModule;
 class WindowModule;
+class GUIModule;
 class RasterModule;
 
 class EntityRegistry;
@@ -58,9 +59,6 @@ private:
 	void EarlyUpdate(Frame&, Frame&);
 	void LateUpdate(Frame&, Frame&);
 
-	void Raster();
-	bool Poll();
-
 	SoulParameters& parameters_;
 
 	std::chrono::nanoseconds frameTime_;
@@ -72,6 +70,7 @@ private:
 	std::shared_ptr<ComputeModule> computeModule_;
 	std::shared_ptr<InputModule> inputModule_;
 	std::shared_ptr<WindowModule> windowModule_;
+	std::shared_ptr<GUIModule> guiModule_;
 	std::shared_ptr<RasterModule> rasterModule_;
 	std::shared_ptr<EntityRegistry> entityRegistry_;
 	std::shared_ptr<EventRegistry> eventRegistry_;

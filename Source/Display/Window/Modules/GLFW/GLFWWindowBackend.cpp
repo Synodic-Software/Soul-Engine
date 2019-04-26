@@ -3,7 +3,7 @@
 #include "WindowParameters.h"
 #include "GLFWWindow.h"
 #include "Core/Utility/Exception/Exception.h"
-#include "Transput/Input/Modules/GLFW/GLFWInputBackend.h"
+#include "Display/Input/Modules/GLFW/GLFWInputBackend.h"
 
 #include <GLFW/glfw3.h>
 
@@ -11,7 +11,7 @@
 
 
 GLFWWindowBackend::GLFWWindowBackend(std::shared_ptr<InputModule>& inputModule):
-	WindowModule(inputModule), inputModule_(std::static_pointer_cast<GLFWInputBackend>(inputModule))
+	inputModule_(std::static_pointer_cast<GLFWInputBackend>(inputModule))
 {
 
 	// set the error callback
@@ -58,16 +58,9 @@ GLFWWindowBackend::~GLFWWindowBackend()
 
 void GLFWWindowBackend::Update()
 {
-}
 
-void GLFWWindowBackend::Draw()
-{
+	throw NotImplemented();
 
-	// TODO: selective drawing based on dirty state
-	for (auto& window : windows_) {
-
-		window.second->Draw();
-	}
 }
 
 bool GLFWWindowBackend::Active()
@@ -187,4 +180,11 @@ GLFWWindow& GLFWWindowBackend::GetWindow(GLFWwindow* context)
 {
 
 	return *windows_[context];
+}
+
+Window& GLFWWindowBackend::GetWindow()
+{
+
+	return *windows_.begin()->second;
+
 }

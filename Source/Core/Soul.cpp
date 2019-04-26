@@ -8,7 +8,7 @@
 #include "Display/Window/WindowModule.h"
 #include "Rasterer/RasterModule.h"
 #include "Display/GUI/GUIModule.h"
-#include "Transput/Input/InputModule.h"
+#include "Display/Input/InputModule.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
 #include "Core/Composition/Event/EventRegistry.h"
 
@@ -21,7 +21,8 @@ Soul::Soul(SoulParameters& params) :
 	schedulerModule_(SchedulerModule::CreateModule(parameters_.threadCount)),
 	computeModule_(ComputeModule::CreateModule()),
 	inputModule_(InputModule::CreateModule()), 
-	windowModule_(WindowModule::CreateModule(inputModule_)),
+	windowModule_(WindowModule::CreateModule(inputModule_)), 
+	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_)),
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
 	entityRegistry_(new EntityRegistry()), 
 	eventRegistry_(new EventRegistry())
@@ -72,7 +73,7 @@ void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 
 		//	//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
 
-		Raster();
+		rasterModule_->Render();
 
 	}
 
@@ -100,8 +101,18 @@ void Soul::LateFrameUpdate(Frame& oldFrame, Frame& newFrame)
 
 	eventRegistry_->Emit("Update"_hashed, "LateFrame"_hashed);
 
+	//Additional Poll as the inner update may still have taken some time
+	inputModule_->Poll();
+
+	//TODO: Is Update even needed for windowModule_?
 	//Update the window state as late as possible before rendering 
-	windowModule_->Update();
+	//windowModule_->Update();
+
+	if (windowModule_->Active()) {
+
+		guiModule_->Update();
+
+	}
 
 }
 
@@ -111,7 +122,7 @@ void Soul::EarlyUpdate(Frame& oldFrame, Frame& newFrame)
 	eventRegistry_->Emit("Update"_hashed, "Early"_hashed);
 
 	//Poll the keys as late as possible before an update
-	newFrame.Dirty(Poll());
+	newFrame.Dirty(inputModule_->Poll());
 	active_ = windowModule_->Active();
 
 	//Update the engine cameras
@@ -127,19 +138,6 @@ void Soul::LateUpdate(Frame& oldFrame, Frame& newFrame)
 
 	eventRegistry_->Emit("Update"_hashed, "Late"_hashed);
 
-}
-
-
-void Soul::Raster() {
-
-	windowModule_->Draw();
-
-}
-
-//returns a bool that is true if the engine is dirty
-bool Soul::Poll() {
-
-	return inputModule_->Poll();
 
 }
 

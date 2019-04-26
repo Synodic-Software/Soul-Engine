@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Transput/Input/Button.h"
-#include "Transput/Input/InputModule.h"
+#include "Display/Input/Button.h"
+#include "Display/Input/InputModule.h"
 
 #include <unordered_map>
 

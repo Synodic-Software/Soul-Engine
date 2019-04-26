@@ -17,11 +17,12 @@ public:
 
 
 	void Update() override;
-	void Draw() override;
 	bool Active() override;
 
 	void CreateWindow(const WindowParameters&, std::shared_ptr<RasterModule>&) override;
 
 	std::vector<const char*> GetRasterExtensions() override;
+
+	Window& GetWindow() override;
 
 };

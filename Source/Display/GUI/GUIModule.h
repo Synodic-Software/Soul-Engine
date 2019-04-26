@@ -4,6 +4,9 @@
 
 #include <memory>
 
+class InputModule;
+class WindowModule;
+
 
 class GUIModule : public Module<GUIModule> {
 
@@ -20,10 +23,11 @@ public:
 
 
 	virtual void Update() = 0;
-
+	virtual void Draw() = 0;
 
 	// Factory
-	static std::unique_ptr<GUIModule> CreateModule();
+	static std::shared_ptr<GUIModule> CreateModule(std::shared_ptr<InputModule>&,
+		std::shared_ptr<WindowModule>&);
 
 
 };
