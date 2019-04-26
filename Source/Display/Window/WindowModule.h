@@ -33,6 +33,8 @@ public:
 
 	virtual std::vector<const char*> GetRasterExtensions() = 0;
 
+	virtual Window& GetWindow() = 0;
+
 
 	//Factory
 	static std::unique_ptr<WindowModule> CreateModule(std::shared_ptr<InputModule>&);

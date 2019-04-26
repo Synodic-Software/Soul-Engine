@@ -31,6 +31,8 @@ public:
 
 	std::vector<const char*> GetRasterExtensions() override;
 
+	Window& GetWindow() override;
+
 
 	void Refresh();
 	void Resize(int, int);

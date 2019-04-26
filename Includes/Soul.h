@@ -60,7 +60,6 @@ private:
 	void LateUpdate(Frame&, Frame&);
 
 	void Raster();
-	bool Poll();
 
 	SoulParameters& parameters_;
 

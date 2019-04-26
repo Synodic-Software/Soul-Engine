@@ -6,11 +6,12 @@
 
 // TODO: There will only ever be one DisplayModule system per Soul application. This will need to be
 // moved to the build system per platform
-std::shared_ptr<GUIModule> GUIModule::CreateModule()
+std::shared_ptr<GUIModule> GUIModule::CreateModule(std::shared_ptr<InputModule>& inputModule,
+	std::shared_ptr<WindowModule>& windowModule)
 {
 
 	if constexpr (Platform::IsDesktop()) {
-		return std::make_shared<ImguiBackend>();
+		return std::make_shared<ImguiBackend>(inputModule, windowModule);
 	}
 	else {
 		return nullptr;

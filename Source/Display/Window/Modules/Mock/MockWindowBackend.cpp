@@ -1,5 +1,7 @@
 #include "MockWindowBackend.h"
 
+#include "MockWindow.h"
+
 MockWindowBackend::MockWindowBackend(std::shared_ptr<InputModule>& inputModule)
 {
 }
@@ -27,5 +29,12 @@ std::vector<const char*> MockWindowBackend::GetRasterExtensions()
 {
 
 	return std::vector<const char*>();
+
+}
+
+Window& MockWindowBackend::GetWindow()
+{
+
+	return MockWindow();
 
 }

@@ -4,6 +4,9 @@
 
 #include <memory>
 
+class InputModule;
+class WindowModule;
+
 
 class GUIModule : public Module<GUIModule> {
 
@@ -23,7 +26,8 @@ public:
 
 
 	// Factory
-	static std::shared_ptr<GUIModule> CreateModule();
+	static std::shared_ptr<GUIModule> CreateModule(std::shared_ptr<InputModule>&,
+		std::shared_ptr<WindowModule>&);
 
 
 };

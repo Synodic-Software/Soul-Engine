@@ -22,7 +22,7 @@ Soul::Soul(SoulParameters& params) :
 	computeModule_(ComputeModule::CreateModule()),
 	inputModule_(InputModule::CreateModule()), 
 	windowModule_(WindowModule::CreateModule(inputModule_)), 
-	guiModule_(GUIModule::CreateModule()),
+	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_)),
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
 	entityRegistry_(new EntityRegistry()), 
 	eventRegistry_(new EventRegistry())
@@ -101,8 +101,12 @@ void Soul::LateFrameUpdate(Frame& oldFrame, Frame& newFrame)
 
 	eventRegistry_->Emit("Update"_hashed, "LateFrame"_hashed);
 
+	//Additional Poll as the inner update may still have taken some time
+	inputModule_->Poll();
+
 	//Update the window state as late as possible before rendering 
 	windowModule_->Update();
+	guiModule_->Update();
 
 }
 
@@ -112,7 +116,7 @@ void Soul::EarlyUpdate(Frame& oldFrame, Frame& newFrame)
 	eventRegistry_->Emit("Update"_hashed, "Early"_hashed);
 
 	//Poll the keys as late as possible before an update
-	newFrame.Dirty(Poll());
+	newFrame.Dirty(inputModule_->Poll());
 	active_ = windowModule_->Active();
 
 	//Update the engine cameras
@@ -128,19 +132,13 @@ void Soul::LateUpdate(Frame& oldFrame, Frame& newFrame)
 
 	eventRegistry_->Emit("Update"_hashed, "Late"_hashed);
 
+
 }
 
 
 void Soul::Raster() {
 
 	windowModule_->Draw();
-
-}
-
-//returns a bool that is true if the engine is dirty
-bool Soul::Poll() {
-
-	return inputModule_->Poll();
 
 }
 

@@ -12,6 +12,8 @@ target_sources(${PROJECT_NAME}
         Modules/GLFW/GLFWWindow.h
         Modules/Mock/MockWindowBackend.cpp
         Modules/Mock/MockWindowBackend.h
+        Modules/Mock/MockWindow.cpp
+        Modules/Mock/MockWindow.h
         Window.cpp
         Window.h
 )

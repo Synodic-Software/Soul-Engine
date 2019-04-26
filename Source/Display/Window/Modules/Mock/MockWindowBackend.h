@@ -24,4 +24,6 @@ public:
 
 	std::vector<const char*> GetRasterExtensions() override;
 
+	Window& GetWindow() override;
+
 };

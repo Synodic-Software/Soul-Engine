@@ -1,5 +1,9 @@
 #pragma once
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+
 //global type helpers
 using uint8 = unsigned char;
 using int8 = signed char;
