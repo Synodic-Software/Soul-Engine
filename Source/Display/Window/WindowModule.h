@@ -26,7 +26,6 @@ public:
 
 
 	virtual void Update() = 0;
-	virtual void Draw() = 0;
 	virtual bool Active() = 0;
 
 	virtual void CreateWindow(const WindowParameters&, std::shared_ptr<RasterModule>&) = 0;

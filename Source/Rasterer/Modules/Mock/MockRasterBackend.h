@@ -17,6 +17,12 @@ public:
 	MockRasterBackend& operator=(const MockRasterBackend &) = delete;
 	MockRasterBackend& operator=(MockRasterBackend &&) noexcept = default;
 
+	void Render() override;
+
+	uint RegisterSurface(std::any, glm::uvec2) override;
+	void UpdateSurface(uint, glm::uvec2) override;
+	void RemoveSurface(uint) override;
+
 	void Draw() override;
 	void DrawIndirect() override;
 	void UpdateBuffer() override;

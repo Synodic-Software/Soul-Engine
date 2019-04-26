@@ -7,7 +7,10 @@
 #include "Display/Window/WindowModule.h"
 #include "VulkanSwapChain.h"
 
-VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
+uint VulkanRasterBackend::surfaceCounter = 0;
+
+VulkanRasterBackend::VulkanRasterBackend(
+	std::shared_ptr<SchedulerModule>& scheduler,
 	std::shared_ptr<WindowModule>& windowModule_):
 	validationLayers_{
 			"VK_LAYER_KHRONOS_validation"
@@ -132,6 +135,17 @@ VulkanRasterBackend::~VulkanRasterBackend()
 
 }
 
+void VulkanRasterBackend::Render()
+{
+
+	for (const auto& [id, swapchain]: swapChains_) {
+
+		swapchain->Present();
+
+	}
+
+}
+
 void VulkanRasterBackend::Draw()
 {
 
@@ -174,8 +188,10 @@ void VulkanRasterBackend::CopyTexture()
 
 }
 
-std::unique_ptr<VulkanSwapChain> VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size, VulkanSwapChain* oldSwapChain)
+uint VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
 {
+
+	auto surface = std::any_cast<vk::SurfaceKHR>(anySurface);
 
 	//TODO: multiple devices
 	auto& device = devices_[0];
@@ -189,14 +205,46 @@ std::unique_ptr<VulkanSwapChain> VulkanRasterBackend::RegisterSurface(vk::Surfac
 	}
 
 	const auto format = device->GetSurfaceFormat(surface);
-	return std::make_unique<VulkanSwapChain>(device, surface, format.colorFormat, format.colorSpace, size, false, oldSwapChain);
+
+	uint surfaceID = surfaceCounter++;
+
+	surfaces_[surfaceID] = surface;
+	swapChains_[surfaceID] = std::make_unique<VulkanSwapChain>(
+		device, surface, format.colorFormat, format.colorSpace, size, false);
+
+	return surfaceID; 
 
 }
 
-void VulkanRasterBackend::RemoveSurface(vk::SurfaceKHR& surface)
+void VulkanRasterBackend::UpdateSurface(uint surfaceID, glm::uvec2 size)
+{
+	
+	auto surface = surfaces_[surfaceID];
+
+	auto& device = devices_[0];
+	const vk::PhysicalDevice& physicalDevice = device->GetPhysical();
+
+	if (!physicalDevice.getSurfaceSupportKHR(device->GetGraphicsIndex(), surface)) {
+
+		throw NotImplemented();
+	}
+
+	const auto format = device->GetSurfaceFormat(surface);
+
+	auto newSwapchain = std::make_unique<VulkanSwapChain>(device, surface, format.colorFormat, format.colorSpace, size,
+		false, swapChains_[surfaceID].get());
+
+	swapChains_[surfaceID].swap(newSwapchain);
+
+}
+
+void VulkanRasterBackend::RemoveSurface(uint surfaceID)
 {
 
-	instance_.destroySurfaceKHR(surface);
+	swapChains_.erase(surfaceID);
+
+	instance_.destroySurfaceKHR(surfaces_[surfaceID]);
+	surfaces_.erase(surfaceID);
 
 }
 

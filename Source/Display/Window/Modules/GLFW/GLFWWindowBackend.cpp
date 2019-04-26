@@ -58,16 +58,9 @@ GLFWWindowBackend::~GLFWWindowBackend()
 
 void GLFWWindowBackend::Update()
 {
-}
 
-void GLFWWindowBackend::Draw()
-{
+	throw NotImplemented();
 
-	// TODO: selective drawing based on dirty state
-	for (auto& window : windows_) {
-
-		window.second->Draw();
-	}
 }
 
 bool GLFWWindowBackend::Active()

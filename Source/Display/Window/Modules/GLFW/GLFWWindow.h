@@ -3,14 +3,12 @@
 #include "Display/Window/Window.h"
 #include "Core/Utility/ID/TypeID.h"
 
-#include <vulkan/vulkan.hpp>
 #include <memory>
 
 struct GLFWmonitor;
 struct GLFWwindow;
 class RasterModule;
-class VulkanRasterBackend;
-class VulkanSwapChain;
+class RasterBackend;
 
 class GLFWWindow final : public Window, TypeID<GLFWWindow> {
 
@@ -26,7 +24,6 @@ public:
 	GLFWWindow& operator=(GLFWWindow &&) noexcept = default;
 
 
-	void Draw();
 	void FrameBufferResize(int, int);
 
 
@@ -36,14 +33,12 @@ public:
 
 private:
 
-	std::shared_ptr<VulkanRasterBackend> rasterModule_;
+	std::shared_ptr<RasterModule> rasterModule_;
+
 	GLFWwindow* context_;
 
 	bool master_;
 
-
-	//TODO: Refactor to remove implementation specific code
-	vk::SurfaceKHR surface_;
-	std::unique_ptr<VulkanSwapChain> swapChain_;
+	uint surface_;
 
 };

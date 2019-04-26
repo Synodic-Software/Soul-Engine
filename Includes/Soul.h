@@ -59,8 +59,6 @@ private:
 	void EarlyUpdate(Frame&, Frame&);
 	void LateUpdate(Frame&, Frame&);
 
-	void Raster();
-
 	SoulParameters& parameters_;
 
 	std::chrono::nanoseconds frameTime_;

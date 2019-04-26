@@ -13,11 +13,13 @@ class WindowModule;
 class VulkanDevice;
 class VulkanSwapChain;
 
+
 class VulkanRasterBackend final : public RasterModule {
 
 public:
 
-	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&, std::shared_ptr<WindowModule>&);
+	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&,
+		std::shared_ptr<WindowModule>&);
 	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
@@ -25,6 +27,12 @@ public:
 
 	VulkanRasterBackend& operator=(const VulkanRasterBackend &) = delete;
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
+
+	void Render() override;
+
+	uint RegisterSurface(std::any, glm::uvec2) override;
+	void UpdateSurface(uint, glm::uvec2) override;
+	void RemoveSurface(uint) override;
 
 	void Draw() override;
 	void DrawIndirect() override;
@@ -34,13 +42,17 @@ public:
 	void CopyTexture() override;
 
 
-	std::unique_ptr<VulkanSwapChain> RegisterSurface(vk::SurfaceKHR&, glm::uvec2, VulkanSwapChain* = nullptr);
-	void RemoveSurface(vk::SurfaceKHR&);
-
 	vk::Instance& GetInstance();
 
 
 private:
+
+	//TODO: replace the uint id with Entity maybe?
+
+	static uint surfaceCounter;
+
+	std::unordered_map<uint, vk::SurfaceKHR> surfaces_;
+	std::unordered_map<uint, std::unique_ptr<VulkanSwapChain>> swapChains_;
 
 	std::vector<char const*> requiredInstanceExtensions_;
 	std::vector<const char*> validationLayers_;

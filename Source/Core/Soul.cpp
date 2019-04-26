@@ -73,7 +73,7 @@ void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 
 		//	//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
 
-		Raster();
+		rasterModule_->Render();
 
 	}
 
@@ -104,8 +104,9 @@ void Soul::LateFrameUpdate(Frame& oldFrame, Frame& newFrame)
 	//Additional Poll as the inner update may still have taken some time
 	inputModule_->Poll();
 
+	//TODO: Is Update even needed for windowModule_?
 	//Update the window state as late as possible before rendering 
-	windowModule_->Update();
+	//windowModule_->Update();
 
 	if (windowModule_->Active()) {
 
@@ -137,13 +138,6 @@ void Soul::LateUpdate(Frame& oldFrame, Frame& newFrame)
 
 	eventRegistry_->Emit("Update"_hashed, "Late"_hashed);
 
-
-}
-
-
-void Soul::Raster() {
-
-	windowModule_->Draw();
 
 }
 
