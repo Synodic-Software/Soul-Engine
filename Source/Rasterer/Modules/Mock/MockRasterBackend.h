@@ -19,6 +19,9 @@ public:
 
 	void Draw() override;
 	void DrawIndirect() override;
-
+	void UpdateBuffer() override;
+	void UpdateTexture() override;
+	void CopyBuffer() override;
+	void CopyTexture() override;
 
 };

@@ -28,6 +28,11 @@ public:
 
 	void Draw() override;
 	void DrawIndirect() override;
+	void UpdateBuffer() override;
+	void UpdateTexture() override;
+	void CopyBuffer() override;
+	void CopyTexture() override;
+
 
 	std::unique_ptr<VulkanSwapChain> RegisterSurface(vk::SurfaceKHR&, glm::uvec2, VulkanSwapChain* = nullptr);
 	void RemoveSurface(vk::SurfaceKHR&);

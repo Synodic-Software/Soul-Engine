@@ -146,6 +146,34 @@ void VulkanRasterBackend::DrawIndirect()
 
 }
 
+void VulkanRasterBackend::UpdateBuffer()
+{
+
+	throw NotImplemented();
+
+}
+
+void VulkanRasterBackend::UpdateTexture()
+{
+
+	throw NotImplemented();
+
+}
+
+void VulkanRasterBackend::CopyBuffer()
+{
+
+	throw NotImplemented();
+
+}
+
+void VulkanRasterBackend::CopyTexture()
+{
+
+	throw NotImplemented();
+
+}
+
 std::unique_ptr<VulkanSwapChain> VulkanRasterBackend::RegisterSurface(vk::SurfaceKHR& surface, glm::uvec2 size, VulkanSwapChain* oldSwapChain)
 {
 

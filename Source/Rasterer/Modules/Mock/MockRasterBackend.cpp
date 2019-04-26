@@ -15,3 +15,31 @@ void MockRasterBackend::DrawIndirect()
 	throw NotImplemented();
 
 }
+
+void MockRasterBackend::UpdateBuffer()
+{
+
+	throw NotImplemented();
+
+}
+
+void MockRasterBackend::UpdateTexture()
+{
+
+	throw NotImplemented();
+
+}
+
+void MockRasterBackend::CopyBuffer()
+{
+
+	throw NotImplemented();
+
+}
+
+void MockRasterBackend::CopyTexture()
+{
+
+	throw NotImplemented();
+
+}

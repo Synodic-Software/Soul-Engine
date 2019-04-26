@@ -26,6 +26,10 @@ public:
 
 	virtual void Draw() = 0;
 	virtual void DrawIndirect() = 0;
+	virtual void UpdateBuffer() = 0;
+	virtual void UpdateTexture() = 0;
+	virtual void CopyBuffer() = 0;
+	virtual void CopyTexture() = 0;
 
 	//Factory
 	static std::shared_ptr<RasterModule> CreateModule(std::shared_ptr<SchedulerModule>&,
