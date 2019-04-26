@@ -106,7 +106,12 @@ void Soul::LateFrameUpdate(Frame& oldFrame, Frame& newFrame)
 
 	//Update the window state as late as possible before rendering 
 	windowModule_->Update();
-	guiModule_->Update();
+
+	if (windowModule_->Active()) {
+
+		guiModule_->Update();
+
+	}
 
 }
 

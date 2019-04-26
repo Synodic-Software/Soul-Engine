@@ -14,11 +14,14 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 	ImGui::CreateContext();
 
+
 	ImGuiIO& inputInfo = ImGui::GetIO();
 
+	//TODO: abstract fonts
+	//Grab and upload font data
 	unsigned char* fontData;
-	int texWidth, texHeight;
-	inputInfo.Fonts->GetTexDataAsRGBA32(&fontData, &texWidth, &texHeight);
+	int textureWidth, textureHeight;
+	inputInfo.Fonts->GetTexDataAsRGBA32(&fontData, &textureWidth, &textureHeight);
 
 
 
