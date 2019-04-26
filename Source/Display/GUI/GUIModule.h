@@ -23,7 +23,7 @@ public:
 
 
 	virtual void Update() = 0;
-
+	virtual void Draw() = 0;
 
 	// Factory
 	static std::shared_ptr<GUIModule> CreateModule(std::shared_ptr<InputModule>&,

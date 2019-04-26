@@ -23,7 +23,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	int textureWidth, textureHeight;
 	inputInfo.Fonts->GetTexDataAsRGBA32(&fontData, &textureWidth, &textureHeight);
 
-
+	// TODO: actual rasterModule upload
 
 }
 
@@ -47,8 +47,34 @@ void ImguiBackend::Update()
 	ImGui::NewFrame();
 
 	//TODO: Convert retained framework to dear imgui intermediate
+	//TODO: Remove hardcoded gui
 
 
 	ImGui::Render();
+
+	//Upload raster data
+	ImDrawData* drawData = ImGui::GetDrawData();
+
+	uint vertexBufferSize = drawData->TotalVtxCount * sizeof(ImDrawVert);
+	uint indexBufferSize = drawData->TotalIdxCount * sizeof(ImDrawIdx);
+
+	if (vertexBufferSize == 0 || indexBufferSize == 0) {
+
+		return;
+
+	}
+
+	//TODO: actual rasterModule upload
+
+}
+
+
+void ImguiBackend::Draw()
+{
+
+	// Record raster commands
+	ImDrawData* drawData = ImGui::GetDrawData();
+
+	// TODO: actual rasterModule recording
 
 }
