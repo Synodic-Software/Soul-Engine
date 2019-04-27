@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Core/Interface/Module/Module.h"
-
 #include <memory>
 
 class RasterDevice {

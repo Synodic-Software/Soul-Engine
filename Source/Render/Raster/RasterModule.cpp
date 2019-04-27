@@ -3,6 +3,11 @@
 #include "Display/Window/WindowModule.h"
 #include "Modules/Vulkan/VulkanRasterBackend.h"
 
+RasterModule::RasterModule(): 
+	commandList_(5)
+{
+}
+
 
 //TODO: This needs to instead be runtime loadable from shared libraries or statically linked
 std::shared_ptr<RasterModule> RasterModule::CreateModule(

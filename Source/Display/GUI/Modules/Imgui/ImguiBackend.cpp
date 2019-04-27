@@ -4,7 +4,7 @@
 #include "Display/Window/WindowModule.h"
 #include "Display/Window/Window.h"
 #include "Display/Input/InputModule.h"
-#include "Rasterer/RasterModule.h"
+#include "Render/Raster/RasterModule.h"
 
 #include <imgui.h>
 
@@ -79,11 +79,7 @@ void ImguiBackend::Update(std::chrono::nanoseconds frameTime)
 
 
 	ImGui::NewFrame();
-
-	//TODO: Convert retained framework to dear imgui intermediate
-	//TODO: Remove hardcoded gui
-
-
+	ConvertRetained();
 	ImGui::Render();
 
 	//Upload raster data
@@ -100,8 +96,30 @@ void ImguiBackend::Update(std::chrono::nanoseconds frameTime)
 
 	//TODO: actual rasterModule upload
 
+	Draw();
+
 }
 
+void ImguiBackend::ConvertRetained()
+{
+
+	//TODO: Convert retained framework to dear imgui intermediate
+	//TODO: Remove hardcoded gui
+
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("Exit")) {
+
+				//TODO: Call an exit command
+
+				ImGui::EndMenu();
+			}
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+
+}
 
 void ImguiBackend::Draw()
 {
@@ -109,8 +127,9 @@ void ImguiBackend::Draw()
 	// Record raster commands
 	ImDrawData* drawData = ImGui::GetDrawData();
 
-	// TODO: actual rasterModule recording
-	rasterModule_->Draw();
+	DrawCommand drawParameters;
+
+	rasterModule_->Draw(drawParameters);
 
 
 }

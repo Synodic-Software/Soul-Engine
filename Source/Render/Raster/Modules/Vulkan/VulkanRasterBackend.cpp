@@ -146,42 +146,40 @@ void VulkanRasterBackend::Render()
 
 }
 
-void VulkanRasterBackend::Draw()
+void VulkanRasterBackend::Draw(DrawCommand&)
+{
+
+}
+
+void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&)
 {
 
 	throw NotImplemented();
 
 }
 
-void VulkanRasterBackend::DrawIndirect()
+void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&)
 {
 
 	throw NotImplemented();
 
 }
 
-void VulkanRasterBackend::UpdateBuffer()
+void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&)
 {
 
 	throw NotImplemented();
 
 }
 
-void VulkanRasterBackend::UpdateTexture()
+void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&)
 {
 
 	throw NotImplemented();
 
 }
 
-void VulkanRasterBackend::CopyBuffer()
-{
-
-	throw NotImplemented();
-
-}
-
-void VulkanRasterBackend::CopyTexture()
+void VulkanRasterBackend::CopyTexture(CopyTextureCommand&)
 {
 
 	throw NotImplemented();

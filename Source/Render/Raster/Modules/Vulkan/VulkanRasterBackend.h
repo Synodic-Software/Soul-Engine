@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rasterer/RasterModule.h"
+#include "Render/Raster/RasterModule.h"
 
 #include "VulkanSwapChain.h"
 
@@ -34,12 +34,12 @@ public:
 	void UpdateSurface(uint, glm::uvec2) override;
 	void RemoveSurface(uint) override;
 
-	void Draw() override;
-	void DrawIndirect() override;
-	void UpdateBuffer() override;
-	void UpdateTexture() override;
-	void CopyBuffer() override;
-	void CopyTexture() override;
+	void Draw(DrawCommand&) override;
+	void DrawIndirect(DrawIndirectCommand&) override;
+	void UpdateBuffer(UpdateBufferCommand&) override;
+	void UpdateTexture(UpdateTextureCommand&) override;
+	void CopyBuffer(CopyBufferCommand&) override;
+	void CopyTexture(CopyTextureCommand&) override;
 
 
 	vk::Instance& GetInstance();

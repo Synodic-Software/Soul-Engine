@@ -6,7 +6,7 @@
 #include "Parallelism/Scheduler/SchedulerModule.h"
 #include "Compute/ComputeModule.h"
 #include "Display/Window/WindowModule.h"
-#include "Rasterer/RasterModule.h"
+#include "Render/Raster/RasterModule.h"
 #include "Display/GUI/GUIModule.h"
 #include "Display/Input/InputModule.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
@@ -70,6 +70,8 @@ void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 	LateFrameUpdate(oldFrame, newFrame);
 
 	if (newFrame.Dirty()) {
+
+
 
 		//	//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
 

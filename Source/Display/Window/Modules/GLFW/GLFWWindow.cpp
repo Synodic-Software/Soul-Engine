@@ -1,7 +1,7 @@
 #include "GLFWWindow.h"
 
-#include "Rasterer/RasterModule.h"
-#include "Rasterer/Modules/Vulkan/VulkanRasterBackend.h"
+#include "Render/Raster/RasterModule.h"
+#include "Render/Raster/Modules/Vulkan/VulkanRasterBackend.h"
 
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>

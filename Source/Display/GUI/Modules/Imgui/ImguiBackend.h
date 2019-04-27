@@ -19,9 +19,11 @@ public:
 
 
 	void Update(std::chrono::nanoseconds) override;
-	void Draw() override;
 
 private:
+
+	void ConvertRetained();
+	void Draw();
 
 	std::shared_ptr<InputModule> inputModule_;
 	std::shared_ptr<WindowModule> windowModule_;
