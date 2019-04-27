@@ -14,8 +14,8 @@ class SchedulerModule;
 class ComputeModule;
 class InputModule;
 class WindowModule;
-class GUIModule;
 class RasterModule;
+class GUIModule;
 
 class EntityRegistry;
 class EventRegistry;
@@ -70,8 +70,9 @@ private:
 	std::shared_ptr<ComputeModule> computeModule_;
 	std::shared_ptr<InputModule> inputModule_;
 	std::shared_ptr<WindowModule> windowModule_;
-	std::shared_ptr<GUIModule> guiModule_;
 	std::shared_ptr<RasterModule> rasterModule_;
+	std::shared_ptr<GUIModule> guiModule_;
+
 	std::shared_ptr<EntityRegistry> entityRegistry_;
 	std::shared_ptr<EventRegistry> eventRegistry_;
 

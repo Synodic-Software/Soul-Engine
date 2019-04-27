@@ -22,8 +22,8 @@ Soul::Soul(SoulParameters& params) :
 	computeModule_(ComputeModule::CreateModule()),
 	inputModule_(InputModule::CreateModule()), 
 	windowModule_(WindowModule::CreateModule(inputModule_)), 
-	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_)),
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
+	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_, rasterModule_)),
 	entityRegistry_(new EntityRegistry()), 
 	eventRegistry_(new EventRegistry())
 {

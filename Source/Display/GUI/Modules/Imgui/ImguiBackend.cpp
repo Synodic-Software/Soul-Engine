@@ -4,13 +4,16 @@
 #include "Display/Window/WindowModule.h"
 #include "Display/Window/Window.h"
 #include "Display/Input/InputModule.h"
+#include "Rasterer/RasterModule.h"
 
 #include <imgui.h>
 
 ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
-	std::shared_ptr<WindowModule>& windowModule):
+	std::shared_ptr<WindowModule>& windowModule,
+	std::shared_ptr<RasterModule>& rasterModule):
 	inputModule_(inputModule),
-	windowModule_(windowModule)
+	windowModule_(windowModule), 
+	rasterModule_(rasterModule)
 {
 
 	ImGui::CreateContext();
@@ -63,6 +66,7 @@ void ImguiBackend::Update(std::chrono::nanoseconds frameTime)
 	ImGuiIO& inputInfo = ImGui::GetIO();
 
 	//TODO: use the GUI associated window
+	//TODO: via callback
 	//Update Display
 	WindowParameters& windowParams = windowModule_->GetWindow().Parameters();
 	inputInfo.DisplaySize = ImVec2(windowParams.pixelSize.x, windowParams.pixelSize.y);
@@ -106,5 +110,7 @@ void ImguiBackend::Draw()
 	ImDrawData* drawData = ImGui::GetDrawData();
 
 	// TODO: actual rasterModule recording
+	rasterModule_->Draw();
+
 
 }
