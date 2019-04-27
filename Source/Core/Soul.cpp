@@ -110,7 +110,7 @@ void Soul::LateFrameUpdate(Frame& oldFrame, Frame& newFrame)
 
 	if (windowModule_->Active()) {
 
-		guiModule_->Update();
+		guiModule_->Update(frameTime_);
 
 	}
 

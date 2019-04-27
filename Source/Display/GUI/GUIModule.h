@@ -3,6 +3,7 @@
 #include "Core/Interface/Module/Module.h"
 
 #include <memory>
+#include <chrono>
 
 class InputModule;
 class WindowModule;
@@ -22,7 +23,7 @@ public:
 	GUIModule& operator=(GUIModule&&) noexcept = default;
 
 
-	virtual void Update() = 0;
+	virtual void Update(std::chrono::nanoseconds) = 0;
 	virtual void Draw() = 0;
 
 	// Factory

@@ -3,6 +3,7 @@
 #include "WindowParameters.h"
 #include "Display/Window/WindowModule.h"
 #include "Display/Window/Window.h"
+#include "Display/Input/InputModule.h"
 
 #include <imgui.h>
 
@@ -13,6 +14,28 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 {
 
 	ImGui::CreateContext();
+
+	//Set callbacks
+	inputModule_->AddMousePositionCallback([](double xPos, double yPos) {
+		
+		ImGuiIO& inputInfo = ImGui::GetIO();
+
+		inputInfo.MousePos = ImVec2(xPos, yPos);
+
+	});
+
+	inputModule_->AddMouseButtonCallback([](int button, ButtonState state) {
+
+		if (button > 1) {
+			return;
+		}
+
+		ImGuiIO& inputInfo = ImGui::GetIO();
+
+		inputInfo.MouseDown[button] = state == ButtonState::PRESS;
+
+	});
+
 
 
 	ImGuiIO& inputInfo = ImGui::GetIO();
@@ -34,15 +57,22 @@ ImguiBackend::~ImguiBackend()
 
 }
 
-void ImguiBackend::Update()
+void ImguiBackend::Update(std::chrono::nanoseconds frameTime)
 {
 
 	ImGuiIO& inputInfo = ImGui::GetIO();
 
 	//TODO: use the GUI associated window
+	//Update Display
 	WindowParameters& windowParams = windowModule_->GetWindow().Parameters();
 	inputInfo.DisplaySize = ImVec2(windowParams.pixelSize.x, windowParams.pixelSize.y);
 	inputInfo.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+
+	//TODO: via callback
+	//Update frame timings
+	auto frameSeconds = std::chrono::duration_cast<std::chrono::duration<float>>(frameTime);
+	inputInfo.DeltaTime = frameSeconds.count();
+
 
 	ImGui::NewFrame();
 

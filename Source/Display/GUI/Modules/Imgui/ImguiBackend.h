@@ -18,7 +18,7 @@ public:
 	ImguiBackend& operator=(ImguiBackend&&) noexcept = default;
 
 
-	void Update() override;
+	void Update(std::chrono::nanoseconds) override;
 	void Draw() override;
 
 private:
