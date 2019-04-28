@@ -127,9 +127,15 @@ void ImguiBackend::Draw()
 	// Record raster commands
 	ImDrawData* drawData = ImGui::GetDrawData();
 
-	DrawCommand drawParameters;
+	int vertexOffset = 0;
+	int indexOffset = 0;
 
-	rasterModule_->Draw(drawParameters);
+	if (drawData->CmdListsCount > 0) {
 
+		DrawCommand drawParameters;
+
+		rasterModule_->Draw(drawParameters);
+
+	}
 
 }
