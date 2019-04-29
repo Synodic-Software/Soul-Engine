@@ -2,13 +2,18 @@
 
 #include "Types.h"
 
-class EntityModule;
-
+class EntityStorage;
+class EntityRegistry;
+class EntityWriter;
+class EntityReader;
 
 class Entity
 {
 
+	friend class EntityStorage;
 	friend class EntityRegistry;
+	friend class EntityWriter;
+	friend class EntityReader;
 
 	using value_type = uint64;
 	using id_type = uint32;

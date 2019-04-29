@@ -54,12 +54,10 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 
 
-	renderGraphModule_->CreatePass("GUI", [&]() {
+	renderGraphModule_->CreatePass("GUI", [&](EntityWriter&) {
 
 
-		return [=](CommandList& commandList) {
-
-
+		return [=](EntityReader&, CommandList& commandList) {
 
 			// Upload raster data
 			ImDrawData* drawData = ImGui::GetDrawData();

@@ -17,7 +17,13 @@ public:
 	VulkanRenderGraphBackend& operator=(VulkanRenderGraphBackend &&) noexcept = default;
 
 
-	void CreatePass(std::string, std::function<std::function<void(CommandList&)>()>) override;
+	void CreatePass(std::string,
+		std::function<std::function<void(EntityReader&, CommandList&)>(
+			EntityWriter&)>) override;
 
+private:
+
+	EntityRegistry graphRegistry_;
+	std::vector<std::function<void(EntityReader&, CommandList&)>> graphTasks_;
 
 };

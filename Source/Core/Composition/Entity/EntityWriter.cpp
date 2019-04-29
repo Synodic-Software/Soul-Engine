@@ -1,10 +1,7 @@
-#include "EntityRegistry.h"
+#include "EntityWriter.h"
 
-EntityRegistry::EntityRegistry(): availableEntities_(0), nextAvailable_(0)
-{
-}
 
-Entity EntityRegistry::CreateEntity()
+Entity EntityWriter::CreateEntity()
 {
 
 	Entity entityID;
@@ -30,13 +27,13 @@ Entity EntityRegistry::CreateEntity()
 	return entityID;
 }
 
-void EntityRegistry::RemoveEntity(Entity entity)
+void EntityWriter::RemoveEntity(Entity entity)
 {
 
 	assert(IsValid(entity));
 
-	//TODO: re-enable
-	//for (auto& pool : componentPools_) {
+	// TODO: re-enable
+	// for (auto& pool : componentPools_) {
 	//	pool->Remove(entity.GetId());
 	//}
 
@@ -48,10 +45,4 @@ void EntityRegistry::RemoveEntity(Entity entity)
 	entities_[id] = Entity(id, version);
 	nextAvailable_ = id;
 	++availableEntities_;
-}
-
-bool EntityRegistry::IsValid(Entity entity) const noexcept
-{
-	const auto id = entity.GetId();
-	return id < entities_.size() && entities_[id].entity_ == entity.entity_;
 }

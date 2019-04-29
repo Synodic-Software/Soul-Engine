@@ -3,6 +3,7 @@
 #include "Core/Interface/Module/Module.h"
 
 #include "CommandList.h"
+#include "Core/Composition/Entity/EntityRegistry.h"
 
 #include <memory>
 #include <string>
@@ -24,7 +25,8 @@ public:
 	RenderGraphModule& operator=(RenderGraphModule &&) noexcept = default;
 
 
-	virtual void CreatePass(std::string, std::function<std::function<void(CommandList&)>()>) = 0;
+	virtual void CreatePass(std::string,
+		std::function<std::function<void(EntityReader&, CommandList&)>(EntityWriter&)>) = 0;
 
 	// Factory
 	static std::shared_ptr<RenderGraphModule> CreateModule(std::shared_ptr<RasterModule>&);
