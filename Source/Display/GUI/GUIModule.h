@@ -7,7 +7,7 @@
 
 class InputModule;
 class WindowModule;
-class RasterModule;
+class RenderGraphModule;
 
 class GUIModule : public Module<GUIModule> {
 
@@ -28,7 +28,7 @@ public:
 	// Factory
 	static std::shared_ptr<GUIModule> CreateModule(std::shared_ptr<InputModule>&,
 		std::shared_ptr<WindowModule>&,
-		std::shared_ptr<RasterModule>&);
+		std::shared_ptr<RenderGraphModule>&);
 
 
 };

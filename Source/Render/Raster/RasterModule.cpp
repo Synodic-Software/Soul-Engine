@@ -3,8 +3,7 @@
 #include "Display/Window/WindowModule.h"
 #include "Modules/Vulkan/VulkanRasterBackend.h"
 
-RasterModule::RasterModule(): 
-	commandList_(5)
+RasterModule::RasterModule()
 {
 }
 

@@ -34,14 +34,6 @@ public:
 	void UpdateSurface(uint, glm::uvec2) override;
 	void RemoveSurface(uint) override;
 
-	void Draw(DrawCommand&) override;
-	void DrawIndirect(DrawIndirectCommand&) override;
-	void UpdateBuffer(UpdateBufferCommand&) override;
-	void UpdateTexture(UpdateTextureCommand&) override;
-	void CopyBuffer(CopyBufferCommand&) override;
-	void CopyTexture(CopyTextureCommand&) override;
-
-
 	vk::Instance& GetInstance();
 
 

@@ -7,7 +7,7 @@ class VulkanRenderGraphBackend final : public RenderGraphModule {
 
 public:
 
-	VulkanRenderGraphBackend() = default;
+	VulkanRenderGraphBackend(std::shared_ptr<RasterModule>&);
 	~VulkanRenderGraphBackend() override = default;
 
 	VulkanRenderGraphBackend(const VulkanRenderGraphBackend &) = delete;
@@ -15,6 +15,9 @@ public:
 
 	VulkanRenderGraphBackend& operator=(const VulkanRenderGraphBackend &) = delete;
 	VulkanRenderGraphBackend& operator=(VulkanRenderGraphBackend &&) noexcept = default;
+
+
+	void CreatePass(std::string, std::function<std::function<void(CommandList&)>()>) override;
 
 
 };

@@ -2,7 +2,13 @@
 
 #include "Core/Interface/Module/Module.h"
 
+#include "CommandList.h"
+
 #include <memory>
+#include <string>
+#include <functional>
+
+class RasterModule;
 
 class RenderGraphModule : public Module<RenderGraphModule> {
 
@@ -18,7 +24,10 @@ public:
 	RenderGraphModule& operator=(RenderGraphModule &&) noexcept = default;
 
 
+	virtual void CreatePass(std::string, std::function<std::function<void(CommandList&)>()>) = 0;
+
 	// Factory
-	static std::shared_ptr<RenderGraphModule> CreateModule();
+	static std::shared_ptr<RenderGraphModule> CreateModule(std::shared_ptr<RasterModule>&);
+
 
 };

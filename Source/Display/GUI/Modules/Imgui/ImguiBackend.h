@@ -8,7 +8,7 @@ public:
 
 	ImguiBackend(std::shared_ptr<InputModule>&,
 		std::shared_ptr<WindowModule>&,
-		std::shared_ptr<RasterModule>&);
+		std::shared_ptr<RenderGraphModule>&);
 	~ImguiBackend() override;
 
 	ImguiBackend(const ImguiBackend&) = delete;
@@ -27,7 +27,7 @@ private:
 
 	std::shared_ptr<InputModule> inputModule_;
 	std::shared_ptr<WindowModule> windowModule_;
-	std::shared_ptr<RasterModule> rasterModule_;
+	std::shared_ptr<RenderGraphModule> renderGraphModule_;
 
 };
 

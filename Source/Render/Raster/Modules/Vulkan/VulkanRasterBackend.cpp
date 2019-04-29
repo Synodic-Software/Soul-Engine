@@ -146,46 +146,6 @@ void VulkanRasterBackend::Render()
 
 }
 
-void VulkanRasterBackend::Draw(DrawCommand&)
-{
-
-}
-
-void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&)
-{
-
-	throw NotImplemented();
-
-}
-
-void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&)
-{
-
-	throw NotImplemented();
-
-}
-
-void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&)
-{
-
-	throw NotImplemented();
-
-}
-
-void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&)
-{
-
-	throw NotImplemented();
-
-}
-
-void VulkanRasterBackend::CopyTexture(CopyTextureCommand&)
-{
-
-	throw NotImplemented();
-
-}
-
 uint VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
 {
 

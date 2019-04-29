@@ -5,8 +5,6 @@
 #include "Types.h"
 #include "RenderCommands.h"
 
-
-#include <boost/lockfree/queue.hpp>
 #include <memory>
 #include <any>
 
@@ -30,15 +28,6 @@ public:
 	RasterModule& operator=(const RasterModule &) = delete;
 	RasterModule& operator=(RasterModule &&) noexcept = default;
 
-
-	// Agnostic raster API interface
-	virtual void Draw(DrawCommand&) = 0;
-	virtual void DrawIndirect(DrawIndirectCommand&) = 0;
-	virtual void UpdateBuffer(UpdateBufferCommand&) = 0;
-	virtual void UpdateTexture(UpdateTextureCommand&) = 0;
-	virtual void CopyBuffer(CopyBufferCommand&) = 0;
-	virtual void CopyTexture(CopyTextureCommand&) = 0;
-
 	virtual void Render() = 0;
 
 	virtual uint RegisterSurface(std::any, glm::uvec2) = 0;
@@ -49,10 +38,5 @@ public:
 	//Factory
 	static std::shared_ptr<RasterModule> CreateModule(std::shared_ptr<SchedulerModule>&,
 		std::shared_ptr<WindowModule>&);
-
-protected:
-
-	boost::lockfree::queue<RenderCommand> commandList_;
-
 
 };

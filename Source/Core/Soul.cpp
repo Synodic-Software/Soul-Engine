@@ -7,6 +7,7 @@
 #include "Compute/ComputeModule.h"
 #include "Display/Window/WindowModule.h"
 #include "Render/Raster/RasterModule.h"
+#include "Render/RenderGraph/RenderGraphModule.h"
 #include "Display/GUI/GUIModule.h"
 #include "Display/Input/InputModule.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
@@ -23,7 +24,8 @@ Soul::Soul(SoulParameters& params) :
 	inputModule_(InputModule::CreateModule()), 
 	windowModule_(WindowModule::CreateModule(inputModule_)), 
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
-	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_, rasterModule_)),
+	renderGraphModule_(RenderGraphModule::CreateModule(rasterModule_)),
+	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_, renderGraphModule_)),
 	entityRegistry_(new EntityRegistry()), 
 	eventRegistry_(new EventRegistry())
 {

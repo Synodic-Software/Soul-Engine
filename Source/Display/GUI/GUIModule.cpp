@@ -8,11 +8,11 @@
 // moved to the build system per platform
 std::shared_ptr<GUIModule> GUIModule::CreateModule(std::shared_ptr<InputModule>& inputModule,
 	std::shared_ptr<WindowModule>& windowModule,
-	std::shared_ptr<RasterModule>& rasterModule)
+	std::shared_ptr<RenderGraphModule>& renderGraphModule)
 {
 
 	if constexpr (Platform::IsDesktop()) {
-		return std::make_shared<ImguiBackend>(inputModule, windowModule, rasterModule);
+		return std::make_shared<ImguiBackend>(inputModule, windowModule, renderGraphModule);
 	}
 	else {
 		return nullptr;
