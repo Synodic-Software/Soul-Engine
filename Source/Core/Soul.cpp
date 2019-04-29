@@ -76,7 +76,7 @@ void Soul::Render(Frame& oldFrame, Frame& newFrame) {
 
 
 		//	//RayEngine::Instance().Process(*scenes[0], engineRefreshRate);
-
+		renderGraphModule_->Execute();
 		rasterModule_->Render();
 
 	}

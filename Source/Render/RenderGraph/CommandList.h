@@ -18,12 +18,12 @@ public:
 	CommandList& operator=(CommandList &&) noexcept = default;
 
 	// Agnostic raster API interface
-	virtual void Draw(DrawCommand&) = 0;
-	virtual void DrawIndirect(DrawIndirectCommand&) = 0;
-	virtual void UpdateBuffer(UpdateBufferCommand&) = 0;
-	virtual void UpdateTexture(UpdateTextureCommand&) = 0;
-	virtual void CopyBuffer(CopyBufferCommand&) = 0;
-	virtual void CopyTexture(CopyTextureCommand&) = 0;
+	void Draw(DrawCommand&);
+	void DrawIndirect(DrawIndirectCommand&);
+	void UpdateBuffer(UpdateBufferCommand&);
+	void UpdateTexture(UpdateTextureCommand&);
+	void CopyBuffer(CopyBufferCommand&);
+	void CopyTexture(CopyTextureCommand&);
 
 private:
 

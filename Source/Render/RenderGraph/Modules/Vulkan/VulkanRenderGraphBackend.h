@@ -17,11 +17,16 @@ public:
 	VulkanRenderGraphBackend& operator=(VulkanRenderGraphBackend &&) noexcept = default;
 
 
+	void Execute() override;
+
 	void CreatePass(std::string,
 		std::function<std::function<void(EntityReader&, CommandList&)>(
 			EntityWriter&)>) override;
 
 private:
+
+	//TODO: doesn't belo
+	CommandList commandList_;
 
 	EntityRegistry graphRegistry_;
 	std::vector<std::function<void(EntityReader&, CommandList&)>> graphTasks_;

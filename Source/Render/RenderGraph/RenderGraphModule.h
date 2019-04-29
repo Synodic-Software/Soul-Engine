@@ -25,6 +25,8 @@ public:
 	RenderGraphModule& operator=(RenderGraphModule &&) noexcept = default;
 
 
+	virtual void Execute() = 0;
+
 	virtual void CreatePass(std::string,
 		std::function<std::function<void(EntityReader&, CommandList&)>(EntityWriter&)>) = 0;
 
