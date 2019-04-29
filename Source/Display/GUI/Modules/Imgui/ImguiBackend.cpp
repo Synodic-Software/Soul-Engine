@@ -49,7 +49,61 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	int textureWidth, textureHeight;
 	inputInfo.Fonts->GetTexDataAsRGBA32(&fontData, &textureWidth, &textureHeight);
 
-	// TODO: actual rasterModule upload
+	// TODO: actual upload
+
+
+
+
+	renderGraphModule_->CreatePass("GUI", [&]() {
+
+
+		return [=](CommandList& commandList) {
+
+
+
+			// Upload raster data
+			ImDrawData* drawData = ImGui::GetDrawData();
+
+			uint vertexBufferSize = drawData->TotalVtxCount * sizeof(ImDrawVert);
+			uint indexBufferSize = drawData->TotalIdxCount * sizeof(ImDrawIdx);
+
+			if (vertexBufferSize == 0 || indexBufferSize == 0) {
+
+				return;
+			}
+
+			// TODO: actual data upload
+
+			// TODO: imgui push constants
+
+			int vertexOffset = 0;
+			int indexOffset = 0;
+
+			if (drawData->CmdListsCount > 0) {
+
+				for (int32 i = 0; i < drawData->CmdListsCount; i++) {
+
+					const ImDrawList* imguiCommands = drawData->CmdLists[i];
+
+					for (int32 j = 0; j < imguiCommands->CmdBuffer.Size; j++) {
+
+						const ImDrawCmd* command = &imguiCommands->CmdBuffer[j];
+
+						DrawCommand drawParameters;
+
+						// TODO: fill with imgui scissor and draw info
+
+
+						commandList.Draw(drawParameters);
+
+						indexOffset += command->ElemCount;
+					}
+
+					vertexOffset += imguiCommands->VtxBuffer.Size;
+				}
+			}
+		};
+	});
 
 }
 
@@ -82,22 +136,6 @@ void ImguiBackend::Update(std::chrono::nanoseconds frameTime)
 	ConvertRetained();
 	ImGui::Render();
 
-	//Upload raster data
-	ImDrawData* drawData = ImGui::GetDrawData();
-
-	uint vertexBufferSize = drawData->TotalVtxCount * sizeof(ImDrawVert);
-	uint indexBufferSize = drawData->TotalIdxCount * sizeof(ImDrawIdx);
-
-	if (vertexBufferSize == 0 || indexBufferSize == 0) {
-
-		return;
-
-	}
-
-	//TODO: actual rasterModule upload
-
-	Draw();
-
 }
 
 void ImguiBackend::ConvertRetained()
@@ -117,28 +155,6 @@ void ImguiBackend::ConvertRetained()
 		}
 
 		ImGui::EndMainMenuBar();
-	}
-
-}
-
-void ImguiBackend::Draw()
-{
-
-	// Record raster commands
-	ImDrawData* drawData = ImGui::GetDrawData();
-
-	int vertexOffset = 0;
-	int indexOffset = 0;
-
-
-
-
-	if (drawData->CmdListsCount > 0) {
-
-		DrawCommand drawParameters;
-
-		//rasterModule_->Draw(drawParameters);
-
 	}
 
 }
