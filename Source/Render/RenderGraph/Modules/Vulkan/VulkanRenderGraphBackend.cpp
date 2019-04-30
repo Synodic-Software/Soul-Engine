@@ -2,7 +2,8 @@
 
 #include "Core/Utility/Exception/Exception.h"
 
-VulkanRenderGraphBackend::VulkanRenderGraphBackend(std::shared_ptr<RasterModule>& rasterModule)
+VulkanRenderGraphBackend::VulkanRenderGraphBackend(std::shared_ptr<RasterModule>& rasterModule):
+	rasterModule_(rasterModule)
 {
 }
 
@@ -10,7 +11,8 @@ void VulkanRenderGraphBackend::Execute()
 {
 
 	for (const auto& callback : graphTasks_) {
-		callback(graphRegistry_, commandList_);
+		CommandList commandList(rasterModule_);
+		callback(graphRegistry_, commandList);
 	}
 
 }

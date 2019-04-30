@@ -25,8 +25,7 @@ public:
 
 private:
 
-	//TODO: doesn't belo
-	CommandList commandList_;
+	std::shared_ptr<RasterModule> rasterModule_;
 
 	EntityRegistry graphRegistry_;
 	std::vector<std::function<void(EntityReader&, CommandList&)>> graphTasks_;

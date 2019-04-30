@@ -1,37 +1,41 @@
 #include "CommandList.h"
 #include "Core/Utility/Exception/Exception.h"
 
-CommandList::CommandList() : 
-	commandList_(5)
+#include "Render/Raster/RasterModule.h"
+
+CommandList::CommandList(std::shared_ptr<RasterModule>& rasterModule): 
+	rasterModule_(rasterModule)
 {
 }
 
-void CommandList::Draw(DrawCommand&)
+void CommandList::Draw(DrawCommand& command)
 {
+
+	rasterModule_->Draw(command);
 
 }
 
-void CommandList::DrawIndirect(DrawIndirectCommand&)
+void CommandList::DrawIndirect(DrawIndirectCommand& command)
 {
-	throw NotImplemented();
+	rasterModule_->DrawIndirect(command);
 }
 
-void CommandList::UpdateBuffer(UpdateBufferCommand&)
+void CommandList::UpdateBuffer(UpdateBufferCommand& command)
 {
-	throw NotImplemented();
+	rasterModule_->UpdateBuffer(command);
 }
 
-void CommandList::UpdateTexture(UpdateTextureCommand&)
+void CommandList::UpdateTexture(UpdateTextureCommand& command)
 {
-	throw NotImplemented();
+	rasterModule_->UpdateTexture(command);
 }
 
-void CommandList::CopyBuffer(CopyBufferCommand&)
+void CommandList::CopyBuffer(CopyBufferCommand& command)
 {
-	throw NotImplemented();
+	rasterModule_->CopyBuffer(command);
 }
 
-void CommandList::CopyTexture(CopyTextureCommand&)
+void CommandList::CopyTexture(CopyTextureCommand& command)
 {
-	throw NotImplemented();
+	rasterModule_->CopyTexture(command);
 }

@@ -206,6 +206,36 @@ void VulkanRasterBackend::RemoveSurface(uint surfaceID)
 
 }
 
+void VulkanRasterBackend::Draw(DrawCommand&)
+{
+	throw NotImplemented();
+}
+
+void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&)
+{
+	throw NotImplemented();
+}
+
+void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&)
+{
+	throw NotImplemented();
+}
+
+void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&)
+{
+	throw NotImplemented();
+}
+
+void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&)
+{
+	throw NotImplemented();
+}
+
+void VulkanRasterBackend::CopyTexture(CopyTextureCommand&)
+{
+	throw NotImplemented();
+}
+
 vk::Instance& VulkanRasterBackend::GetInstance()
 {
 	return instance_;

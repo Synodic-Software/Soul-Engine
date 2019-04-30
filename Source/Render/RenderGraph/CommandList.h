@@ -4,11 +4,13 @@
 
 #include <boost/lockfree/queue.hpp>
 
+class RasterModule;
+
 class CommandList{
 
 public:
 
-	CommandList();
+	CommandList(std::shared_ptr<RasterModule>&);
 	~CommandList() = default;
 
 	CommandList(const CommandList&) = default;
@@ -25,8 +27,9 @@ public:
 	void CopyBuffer(CopyBufferCommand&);
 	void CopyTexture(CopyTextureCommand&);
 
+
 private:
 
-	boost::lockfree::queue<RenderCommand> commandList_;
+	std::shared_ptr<RasterModule> rasterModule_;
 
 };
