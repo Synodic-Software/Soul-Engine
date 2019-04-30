@@ -34,14 +34,6 @@ public:
 	virtual void UpdateSurface(uint, glm::uvec2) = 0;
 	virtual void RemoveSurface(uint) = 0;
 
-	// Agnostic raster API interface
-	virtual void Draw(DrawCommand&) = 0;
-	virtual void DrawIndirect(DrawIndirectCommand&) = 0;
-	virtual void UpdateBuffer(UpdateBufferCommand&) = 0;
-	virtual void UpdateTexture(UpdateTextureCommand&) = 0;
-	virtual void CopyBuffer(CopyBufferCommand&) = 0;
-	virtual void CopyTexture(CopyTextureCommand&) = 0;
-
 
 	//Factory
 	static std::shared_ptr<RasterModule> CreateModule(std::shared_ptr<SchedulerModule>&,

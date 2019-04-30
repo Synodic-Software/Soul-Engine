@@ -17,7 +17,7 @@ uint MockRasterBackend::RegisterSurface(std::any, glm::uvec2 size)
 
 }
 
-void MockRasterBackend(uint, glm::uvec2)
+void MockRasterBackend::UpdateSurface(uint, glm::uvec2)
 {
 
 	throw NotImplemented();
@@ -29,34 +29,4 @@ void MockRasterBackend::RemoveSurface(uint surface)
 
 	throw NotImplemented();
 
-}
-
-void MockRasterBackend::Draw(DrawCommand&)
-{
-	throw NotImplemented();
-}
-
-void MockRasterBackend::DrawIndirect(DrawIndirectCommand&)
-{
-	throw NotImplemented();
-}
-
-void MockRasterBackend::UpdateBuffer(UpdateBufferCommand&)
-{
-	throw NotImplemented();
-}
-
-void MockRasterBackend::UpdateTexture(UpdateTextureCommand&)
-{
-	throw NotImplemented();
-}
-
-void MockRasterBackend::CopyBuffer(CopyBufferCommand&)
-{
-	throw NotImplemented();
-}
-
-void MockRasterBackend::CopyTexture(CopyTextureCommand&)
-{
-	throw NotImplemented();
 }

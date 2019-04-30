@@ -206,34 +206,12 @@ void VulkanRasterBackend::RemoveSurface(uint surfaceID)
 
 }
 
-void VulkanRasterBackend::Draw(DrawCommand&)
+void VulkanRasterBackend::Draw(DrawCommand& command)
 {
-	throw NotImplemented();
-}
 
-void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&)
-{
-	throw NotImplemented();
-}
+	const auto& commandBuffer = GetCommandBuffer();
+	commandBuffer.drawIndexed(command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
 
-void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&)
-{
-	throw NotImplemented();
-}
-
-void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&)
-{
-	throw NotImplemented();
-}
-
-void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&)
-{
-	throw NotImplemented();
-}
-
-void VulkanRasterBackend::CopyTexture(CopyTextureCommand&)
-{
-	throw NotImplemented();
 }
 
 vk::Instance& VulkanRasterBackend::GetInstance()

@@ -8,6 +8,10 @@
 
 #include <imgui.h>
 
+//TODO: temporary include
+#include "Core/Geometry/Vertex.h"
+
+
 ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	std::shared_ptr<WindowModule>& windowModule,
 	std::shared_ptr<RenderGraphModule>& renderGraphModule):
@@ -58,6 +62,68 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 
 		return [=](EntityReader&, CommandList& commandList) {
+
+
+			//this is the temporary hardcoded square that what previous hardcoded into the pipeline. 
+			//Step-by-step development and refactoring :)
+
+			std::vector<Vertex> vertices(4);
+			vertices[0].position = {-0.5f, -0.5f, 0.0f};
+			vertices[1].position = {0.5f, -0.5f, 0.0f};
+			vertices[2].position = {0.5f, 0.5f, 0.0f};
+			vertices[3].position = {-0.5f, 0.5f, 0.0f};
+
+			const std::vector<uint16> indices = {0, 1, 2, 2, 3, 0};
+
+			Vertex* data = vertexStagingBuffer_.Map();
+			std::memcpy(data, vertices.data(), sizeof(Vertex) * vertices.size());
+			vertexStagingBuffer_.UnMap();
+
+			uint16* data2 = indexStagingBuffer_.Map();
+			std::memcpy(data2, indices.data(), sizeof(uint16) * indices.size());
+			indexStagingBuffer_.UnMap();
+
+			// copy buffer
+			{
+
+				VulkanCommandBuffer commandBuffer(, device_, vk::CommandBufferLevel::ePrimary,
+					vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+
+				commandBuffer.Begin();
+
+				vk::BufferCopy copyRegion;
+				copyRegion.size = sizeof(Vertex) * vertices.size();
+				commandBuffer.GetCommandBuffer().copyBuffer(
+					vertexStagingBuffer_.GetBuffer(), vertexBuffer_.GetBuffer(), 1, &copyRegion);
+
+				commandBuffer.End();
+				commandBuffer.Submit();
+			}
+
+			{
+				VulkanCommandBuffer commandBuffer(, device_, vk::CommandBufferLevel::ePrimary,
+					vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+
+				commandBuffer.Begin();
+
+				vk::BufferCopy copyRegion;
+				copyRegion.size = sizeof(Vertex) * indices.size();
+				commandBuffer.GetCommandBuffer().copyBuffer(
+					indexStagingBuffer_.GetBuffer(), indexBuffer_.GetBuffer(), 1, &copyRegion);
+
+				commandBuffer.End();
+				commandBuffer.Submit();
+			}
+
+
+
+
+
+
+			return;
+
+			//What follows will be the actual imgui render task
+
 
 			// Upload raster data
 			ImDrawData* drawData = ImGui::GetDrawData();

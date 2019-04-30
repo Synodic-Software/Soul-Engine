@@ -81,35 +81,12 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 
 	logicalDevices_.push_back(physicalDevice.createDevice(deviceCreateInfo));
 
-	//TODO: refactor queue 
+	// TODO: refactor queue
 	graphicsQueue_ = logicalDevices_[0].getQueue(graphicsIndex_, 0);
-
-	//TODO: Refactor, should be an object instantiated by the device
-	{
-		vk::CommandPoolCreateInfo poolInfo;
-		poolInfo.queueFamilyIndex = graphicsIndex_;
-
-		//TODO: move to 3 commandpools per thread as suggested by NVIDIA
-		scheduler_->ForEachThread(TaskPriority::UX, [this, poolInfo]()
-		{
-
-			//TODO: multiple logical devices
-			commandPool_ = logicalDevices_[0].createCommandPool(poolInfo);
-
-		});
-	}
 
 }
 
 VulkanDevice::~VulkanDevice() {
-
-	scheduler_->ForEachThread(TaskPriority::UX, [this]() noexcept
-	{
-
-		//TODO: multiple logical devices
-		logicalDevices_[0].destroyCommandPool(commandPool_);
-
-	});
 
 	for (auto& logicalDevice : logicalDevices_)
 	{
@@ -145,12 +122,6 @@ const  vk::PhysicalDevice& VulkanDevice::GetPhysical() const
 {
 
 	return physicalDevice_;
-
-}
-
-const vk::CommandPool& VulkanDevice::GetCommandPool() const {
-
-	return commandPool_;
 
 }
 

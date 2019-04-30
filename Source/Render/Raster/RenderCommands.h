@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Types.h"
 
 class RenderCommand {
 
@@ -18,6 +19,10 @@ public:
 };
 
 struct DrawCommand : RenderCommand {
+
+	uint elementSize;
+	uint indexOffset;
+	uint vertexOffset;
 
 };
 

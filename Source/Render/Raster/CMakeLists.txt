@@ -9,6 +9,10 @@ target_sources(${PROJECT_NAME}
         Modules/Mock/MockRasterBackend.cpp
         Modules/Mock/MockRasterBackend.h
         Modules/Vulkan/Buffer/VulkanBuffer.h
+        Modules/Vulkan/Command/VulkanCommandBuffer.cpp
+        Modules/Vulkan/Command/VulkanCommandBuffer.h
+        Modules/Vulkan/Command/VulkanCommandPool.cpp
+        Modules/Vulkan/Command/VulkanCommandPool.h
         Modules/Vulkan/VulkanDevice.cpp
         Modules/Vulkan/VulkanDevice.h
         Modules/Vulkan/VulkanFramebuffer.cpp
@@ -23,6 +27,8 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/VulkanShader.h
         Modules/Vulkan/VulkanSwapChain.cpp
         Modules/Vulkan/VulkanSwapChain.h
+        CommandList.cpp
+        CommandList.h
         RenderCommands.h
         RasterModule.cpp
         RasterModule.h

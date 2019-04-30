@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Render/Raster/RasterDevice.h"
-#include "Core/Utility/Thread/ThreadLocal.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -33,7 +32,6 @@ public:
 
 	const vk::Device& GetLogical() const;
 	const vk::PhysicalDevice& GetPhysical() const;
-	const vk::CommandPool& GetCommandPool() const;
 	const vk::Queue& GetGraphicsQueue() const;
 	const vk::Queue& GetPresentQueue() const;
 	int GetGraphicsIndex() const;
@@ -45,8 +43,6 @@ private:
 
 	std::vector<vk::Device> logicalDevices_; //noexcept dependent on vk::device
 	vk::PhysicalDevice physicalDevice_;
-
-	ThreadLocal<vk::CommandPool> commandPool_;
 
 	vk::PhysicalDeviceProperties deviceProperties_;
 	vk::PhysicalDeviceFeatures deviceFeatures_;

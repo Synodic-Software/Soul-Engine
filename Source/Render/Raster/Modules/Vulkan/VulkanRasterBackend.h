@@ -6,7 +6,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
-
+#include <unordered_map>
 
 class SchedulerModule;
 class WindowModule;
@@ -34,19 +34,11 @@ public:
 	void UpdateSurface(uint, glm::uvec2) override;
 	void RemoveSurface(uint) override;
 
-	// Agnostic raster API interface
-	void Draw(DrawCommand&) override;
-	void DrawIndirect(DrawIndirectCommand&) override;
-	void UpdateBuffer(UpdateBufferCommand&) override;
-	void UpdateTexture(UpdateTextureCommand&) override;
-	void CopyBuffer(CopyBufferCommand&) override;
-	void CopyTexture(CopyTextureCommand&) override;
-
-
 	vk::Instance& GetInstance();
 
 
 private:
+
 
 	//TODO: replace the uint id with Entity maybe?
 
