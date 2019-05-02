@@ -38,7 +38,6 @@ private:
 
 	vk::SwapchainKHR swapChain_;
 	std::vector<SwapChainImage> images_;
-	std::vector<vk::Fence> fences_;
 
 	uint currentFrame_;
 	uint activeImageIndex_;
@@ -49,6 +48,8 @@ private:
 	////TODO: refactor
 	//std::vector<vk::Semaphore> imageAvailableSemaphores;
 	//std::vector<vk::Semaphore> renderFinishedSemaphores;
+	//std::vector<vk::Fence> fences_;
+
 
 	////TODO: refactor
 	//std::vector<VulkanFrameBuffer> frameBuffers_;

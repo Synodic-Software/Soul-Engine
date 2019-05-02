@@ -162,18 +162,18 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 	////set up synchronization primitives
 	//imageAvailableSemaphores.resize(flightFramesCount);
 	//renderFinishedSemaphores.resize(flightFramesCount);
-	fences_.resize(frameMax_);
+	//fences_.resize(frameMax_);
 
-	//vk::SemaphoreCreateInfo semaphoreInfo;
+	////vk::SemaphoreCreateInfo semaphoreInfo;
 
-	vk::FenceCreateInfo fenceInfo;
-	fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
+	//vk::FenceCreateInfo fenceInfo;
+	//fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
 
-	for (size_t i = 0; i < frameMax_; i++) {
+	//for (size_t i = 0; i < frameMax_; i++) {
 
-		fences_[i] = logicalDevice.createFence(fenceInfo);
+	//	fences_[i] = logicalDevice.createFence(fenceInfo);
 
-	}
+	//}
 }
 
 VulkanSwapChain::~VulkanSwapChain() {
@@ -188,13 +188,13 @@ VulkanSwapChain::~VulkanSwapChain() {
 		logicalDevice.destroyImageView(image.view);
 	}
 
-	for (auto& fence : fences_) {
+	//for (auto& fence : fences_) {
 
-		//logicalDevice.destroySemaphore(imageAvailableSemaphores[i]);
-		//logicalDevice.destroySemaphore(renderFinishedSemaphores[i]);
-		logicalDevice.destroyFence(fence);
+	//	//logicalDevice.destroySemaphore(imageAvailableSemaphores[i]);
+	//	//logicalDevice.destroySemaphore(renderFinishedSemaphores[i]);
+	//	logicalDevice.destroyFence(fence);
 
-	}
+	//}
 
 	logicalDevice.destroySwapchainKHR(swapChain_);
 
@@ -220,8 +220,8 @@ void VulkanSwapChain::Present(const vk::Queue& presentQueue, const vk::Semaphore
 
 	const auto& logicalDevice = vkDevice_->GetLogical();
 
-	logicalDevice.waitForFences(fences_[currentFrame_], true, std::numeric_limits<uint64_t>::max());
-	logicalDevice.resetFences(fences_[currentFrame_]);
+	//logicalDevice.waitForFences(fences_[currentFrame_], true, std::numeric_limits<uint64_t>::max());
+	//logicalDevice.resetFences(fences_[currentFrame_]);
 
 	//vk::SubmitInfo submitInfo;
 
