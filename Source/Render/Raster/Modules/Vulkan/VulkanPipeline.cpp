@@ -16,23 +16,7 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
 	renderPass_(device_,
 		swapChainFormat),  // TODO: remove hardcoded renderpass + allow multiple renderpasses
 	vertexShader_(device, vk::ShaderStageFlagBits::eVertex, vertexResource),
-	fragmentShader_(device, vk::ShaderStageFlagBits::eFragment, fragmentResource),
-	vertexBuffer_(4,
-		vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
-		vk::MemoryPropertyFlagBits::eDeviceLocal,
-		device_),
-	vertexStagingBuffer_(4,
-		vk::BufferUsageFlagBits::eTransferSrc,
-		vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-		device_),
-	indexBuffer_(6,
-		vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
-		vk::MemoryPropertyFlagBits::eDeviceLocal,
-		device_),
-	indexStagingBuffer_(6,
-		vk::BufferUsageFlagBits::eTransferSrc,
-		vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-		device_)
+	fragmentShader_(device, vk::ShaderStageFlagBits::eFragment, fragmentResource)
 {
 
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
@@ -169,14 +153,4 @@ VulkanRenderPass& VulkanPipeline::GetRenderPass()
 const vk::Pipeline& VulkanPipeline::GetPipeline() const
 {
 	return pipeline_;
-}
-
-const VulkanBuffer<Vertex>& VulkanPipeline::GetVertexBuffer() const
-{
-	return vertexBuffer_;
-}
-
-const VulkanBuffer<uint16>& VulkanPipeline::GetIndexBuffer() const
-{
-	return indexBuffer_;
 }

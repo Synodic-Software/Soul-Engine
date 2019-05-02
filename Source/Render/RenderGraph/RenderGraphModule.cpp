@@ -1,7 +1,7 @@
 #include "RenderGraphModule.h"
 
 #include "Display/Window/WindowModule.h"
-#include "Render/RenderGraph/Modules/Vulkan/VulkanRenderGraphBackend.h"
+#include "Render/RenderGraph/Modules/Entity/EntityRenderGraphBackend.h"
 #include "Render/RenderGraph/RenderGraphModule.h"
 
 
@@ -9,6 +9,6 @@
 std::shared_ptr<RenderGraphModule> RenderGraphModule::CreateModule(std::shared_ptr<RasterModule>& rasterModule)
 {
 
-	return std::make_unique<VulkanRenderGraphBackend>(rasterModule);
+	return std::make_unique<EntityRenderGraphBackend>(rasterModule);
 
 }

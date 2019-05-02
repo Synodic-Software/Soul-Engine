@@ -29,6 +29,7 @@ public:
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
 
 	void Render() override;
+	void CompileCommandList(CommandList&) override;
 
 	uint RegisterSurface(std::any, glm::uvec2) override;
 	void UpdateSurface(uint, glm::uvec2) override;
@@ -37,7 +38,10 @@ public:
 	vk::Instance& GetInstance();
 
 
+
 private:
+
+	void Draw(DrawCommand&);
 
 
 	//TODO: replace the uint id with Entity maybe?

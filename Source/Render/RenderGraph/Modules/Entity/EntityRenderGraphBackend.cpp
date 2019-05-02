@@ -1,24 +1,24 @@
-#include "VulkanRenderGraphBackend.h"
+#include "EntityRenderGraphBackend.h"
 
 #include "Core/Utility/Exception/Exception.h"
 
-VulkanRenderGraphBackend::VulkanRenderGraphBackend(std::shared_ptr<RasterModule>& rasterModule):
+EntityRenderGraphBackend::EntityRenderGraphBackend(std::shared_ptr<RasterModule>& rasterModule):
 	rasterModule_(rasterModule)
 {
 }
 
-void VulkanRenderGraphBackend::Execute()
+void EntityRenderGraphBackend::Execute()
 {
 
 	for (const auto& callback : graphTasks_) {
-		CommandList commandList(rasterModule_);
+		CommandList commandList;
 		callback(graphRegistry_, commandList);
 	}
 
 }
 
 
-void VulkanRenderGraphBackend::CreatePass(std::string name,
+void EntityRenderGraphBackend::CreatePass(std::string name,
 	std::function<std::function<void(EntityReader&, CommandList&)>(EntityWriter&)> passCallback)
 {
 

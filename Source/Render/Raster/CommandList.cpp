@@ -3,39 +3,44 @@
 
 #include "Render/Raster/RasterModule.h"
 
-CommandList::CommandList(std::shared_ptr<RasterModule>& rasterModule): 
-	rasterModule_(rasterModule)
-{
-}
-
 void CommandList::Draw(DrawCommand& command)
 {
 
-	rasterModule_->Draw(command);
+	drawList_->push_back(command);
 
 }
 
 void CommandList::DrawIndirect(DrawIndirectCommand& command)
 {
-	rasterModule_->DrawIndirect(command);
+
+	drawIndirectList_->push_back(command);
+
 }
 
 void CommandList::UpdateBuffer(UpdateBufferCommand& command)
 {
-	rasterModule_->UpdateBuffer(command);
+
+	updateBufferList_->push_back(command);
+
 }
 
 void CommandList::UpdateTexture(UpdateTextureCommand& command)
 {
-	rasterModule_->UpdateTexture(command);
+
+	updateTextureList_->push_back(command);
+
 }
 
 void CommandList::CopyBuffer(CopyBufferCommand& command)
 {
-	rasterModule_->CopyBuffer(command);
+
+	copyBufferList_->push_back(command);
+
 }
 
 void CommandList::CopyTexture(CopyTextureCommand& command)
 {
-	rasterModule_->CopyTexture(command);
+
+	copyTextureList_->push_back(command);
+
 }

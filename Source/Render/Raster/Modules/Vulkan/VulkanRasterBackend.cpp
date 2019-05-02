@@ -140,9 +140,14 @@ void VulkanRasterBackend::Render()
 
 	for (const auto& [id, swapchain]: swapChains_) {
 
-		swapchain->Present();
+		//swapchain->Present();
 
 	}
+
+}
+
+void VulkanRasterBackend::CompileCommandList(CommandList& commandList)
+{
 
 }
 
@@ -209,8 +214,7 @@ void VulkanRasterBackend::RemoveSurface(uint surfaceID)
 void VulkanRasterBackend::Draw(DrawCommand& command)
 {
 
-	const auto& commandBuffer = GetCommandBuffer();
-	commandBuffer.drawIndexed(command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
+	//commandBuffer.drawIndexed(command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
 
 }
 

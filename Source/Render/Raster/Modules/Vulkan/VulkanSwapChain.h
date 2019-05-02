@@ -2,6 +2,7 @@
 
 #include "VulkanPipeline.h"
 #include "VulkanFrameBuffer.h"
+#include "Command/VulkanCommandBuffer.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
@@ -27,7 +28,8 @@ public:
 	VulkanSwapChain& operator=(const VulkanSwapChain&) = delete;
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
-	void Present();
+	void AquireImage(const vk::Semaphore&);
+	void Present(const vk::Queue&, const vk::Semaphore&);
 
 
 private:
@@ -36,19 +38,20 @@ private:
 
 	vk::SwapchainKHR swapChain_;
 	std::vector<SwapChainImage> images_;
+	std::vector<vk::Fence> fences_;
 
+	uint currentFrame_;
+	uint activeImageIndex_;
+	uint frameMax_;
 	glm::uvec2 size_;
 
-	//TODO: refactor
-	std::vector<vk::Semaphore> imageAvailableSemaphores;
-	std::vector<vk::Semaphore> renderFinishedSemaphores;
-	std::vector<vk::Fence> inFlightFences;
-	size_t currentFrame;
-	uint flightFramesCount;
 
-	//TODO: refactor
-	std::vector<VulkanFrameBuffer> frameBuffers_;
-	std::vector<vk::CommandBuffer> commandBuffers_;
-	std::unique_ptr<VulkanPipeline> pipeline_;
+	////TODO: refactor
+	//std::vector<vk::Semaphore> imageAvailableSemaphores;
+	//std::vector<vk::Semaphore> renderFinishedSemaphores;
+
+	////TODO: refactor
+	//std::vector<VulkanFrameBuffer> frameBuffers_;
+	//std::vector<VulkanCommandBuffer> commandBuffers_;
 
 };

@@ -14,6 +14,7 @@ class RasterDevice;
 class WindowParameters;
 class SchedulerModule;
 class WindowModule;
+class CommandList;
 
 class RasterModule : public Module<RasterModule> {
 
@@ -29,6 +30,7 @@ public:
 	RasterModule& operator=(RasterModule &&) noexcept = default;
 
 	virtual void Render() = 0;
+	virtual void CompileCommandList(CommandList&) = 0;
 
 	virtual uint RegisterSurface(std::any, glm::uvec2) = 0;
 	virtual void UpdateSurface(uint, glm::uvec2) = 0;

@@ -58,62 +58,85 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 
 
-	renderGraphModule_->CreatePass("GUI", [&](EntityWriter&) {
+	renderGraphModule_->CreatePass("GUI", [&](EntityWriter& writer) {
+
+		writer;
+
+		return [=](EntityReader& reader, CommandList& commandList) {
 
 
-		return [=](EntityReader&, CommandList& commandList) {
+			////this is the temporary hardcoded square that what previous hardcoded into the pipeline. 
+			////Step-by-step development and refactoring :)
 
+			//std::vector<Vertex> vertices(4);
+			//vertices[0].position = {-0.5f, -0.5f, 0.0f};
+			//vertices[1].position = {0.5f, -0.5f, 0.0f};
+			//vertices[2].position = {0.5f, 0.5f, 0.0f};
+			//vertices[3].position = {-0.5f, 0.5f, 0.0f};
 
-			//this is the temporary hardcoded square that what previous hardcoded into the pipeline. 
-			//Step-by-step development and refactoring :)
+			//const std::vector<uint16> indices = {0, 1, 2, 2, 3, 0};
 
-			std::vector<Vertex> vertices(4);
-			vertices[0].position = {-0.5f, -0.5f, 0.0f};
-			vertices[1].position = {0.5f, -0.5f, 0.0f};
-			vertices[2].position = {0.5f, 0.5f, 0.0f};
-			vertices[3].position = {-0.5f, 0.5f, 0.0f};
+			//// TODO: temporary, refactor
+			//VulkanBuffer<Vertex> vertexBuffer_;
+			//VulkanBuffer<Vertex> vertexStagingBuffer_;
 
-			const std::vector<uint16> indices = {0, 1, 2, 2, 3, 0};
+			//VulkanBuffer<uint16> indexBuffer_;
+			//VulkanBuffer<uint16> indexStagingBuffer_;
 
-			Vertex* data = vertexStagingBuffer_.Map();
-			std::memcpy(data, vertices.data(), sizeof(Vertex) * vertices.size());
-			vertexStagingBuffer_.UnMap();
+			//vertexBuffer_(4,
+			//vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+			//vk::MemoryPropertyFlagBits::eDeviceLocal, device_),
+			//vertexStagingBuffer_(4, vk::BufferUsageFlagBits::eTransferSrc,
+			//	vk::MemoryPropertyFlagBits::eHostVisible |
+			//		vk::MemoryPropertyFlagBits::eHostCoherent,
+			//	device_),
+			//indexBuffer_(6,
+			//	vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+			//	vk::MemoryPropertyFlagBits::eDeviceLocal, device_),
+			//indexStagingBuffer_(6, vk::BufferUsageFlagBits::eTransferSrc,
+			//	vk::MemoryPropertyFlagBits::eHostVisible |
+			//		vk::MemoryPropertyFlagBits::eHostCoherent,
+			//	device_)
 
-			uint16* data2 = indexStagingBuffer_.Map();
-			std::memcpy(data2, indices.data(), sizeof(uint16) * indices.size());
-			indexStagingBuffer_.UnMap();
+			//Vertex* data = vertexStagingBuffer_.Map();
+			//std::memcpy(data, vertices.data(), sizeof(Vertex) * vertices.size());
+			//vertexStagingBuffer_.UnMap();
 
-			// copy buffer
-			{
+			//uint16* data2 = indexStagingBuffer_.Map();
+			//std::memcpy(data2, indices.data(), sizeof(uint16) * indices.size());
+			//indexStagingBuffer_.UnMap();
 
-				VulkanCommandBuffer commandBuffer(, device_, vk::CommandBufferLevel::ePrimary,
-					vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+			//// copy buffer
+			//{
 
-				commandBuffer.Begin();
+			//	VulkanCommandBuffer commandBuffer(, device_, vk::CommandBufferLevel::ePrimary,
+			//		vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 
-				vk::BufferCopy copyRegion;
-				copyRegion.size = sizeof(Vertex) * vertices.size();
-				commandBuffer.GetCommandBuffer().copyBuffer(
-					vertexStagingBuffer_.GetBuffer(), vertexBuffer_.GetBuffer(), 1, &copyRegion);
+			//	commandBuffer.Begin();
 
-				commandBuffer.End();
-				commandBuffer.Submit();
-			}
+			//	vk::BufferCopy copyRegion;
+			//	copyRegion.size = sizeof(Vertex) * vertices.size();
+			//	commandBuffer.GetCommandBuffer().copyBuffer(
+			//		vertexStagingBuffer_.GetBuffer(), vertexBuffer_.GetBuffer(), 1, &copyRegion);
 
-			{
-				VulkanCommandBuffer commandBuffer(, device_, vk::CommandBufferLevel::ePrimary,
-					vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+			//	commandBuffer.End();
+			//	commandBuffer.Submit();
+			//}
 
-				commandBuffer.Begin();
+			//{
+			//	VulkanCommandBuffer commandBuffer(, device_, vk::CommandBufferLevel::ePrimary,
+			//		vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 
-				vk::BufferCopy copyRegion;
-				copyRegion.size = sizeof(Vertex) * indices.size();
-				commandBuffer.GetCommandBuffer().copyBuffer(
-					indexStagingBuffer_.GetBuffer(), indexBuffer_.GetBuffer(), 1, &copyRegion);
+			//	commandBuffer.Begin();
 
-				commandBuffer.End();
-				commandBuffer.Submit();
-			}
+			//	vk::BufferCopy copyRegion;
+			//	copyRegion.size = sizeof(Vertex) * indices.size();
+			//	commandBuffer.GetCommandBuffer().copyBuffer(
+			//		indexStagingBuffer_.GetBuffer(), indexBuffer_.GetBuffer(), 1, &copyRegion);
+
+			//	commandBuffer.End();
+			//	commandBuffer.Submit();
+			//}
 
 
 

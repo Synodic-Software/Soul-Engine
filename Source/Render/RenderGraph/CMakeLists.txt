@@ -4,8 +4,8 @@
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        Modules/Vulkan/VulkanRenderGraphBackend.cpp
-        Modules/Vulkan/VulkanRenderGraphBackend.h
+        Modules/Entity/EntityRenderGraphBackend.cpp
+        Modules/Entity/EntityRenderGraphBackend.h
         RenderGraphModule.cpp
         RenderGraphModule.h
 )
