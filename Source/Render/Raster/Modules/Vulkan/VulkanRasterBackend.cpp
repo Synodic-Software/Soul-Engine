@@ -104,11 +104,13 @@ VulkanRasterBackend::VulkanRasterBackend(
 	//setup devices
 	auto physicalDevices = instance_.enumeratePhysicalDevices();
 	devices_.reserve(physicalDevices.size());
+	commandPools_.reserve(physicalDevices.size());
 
 	for (auto& physicalDevice : physicalDevices)
 	{
 
 		devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
+		commandPools_.emplace_back(scheduler, devices_.back());
 
 	}
 

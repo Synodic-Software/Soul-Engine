@@ -41,10 +41,12 @@ VulkanRenderPass::~VulkanRenderPass() {
 
 	const vk::Device& logicalDevice = device_->GetLogical();
 
-	logicalDevice.destroyRenderPass(renderPass_, nullptr);
+	logicalDevice.destroyRenderPass(renderPass_);
 
 }
 
 const vk::RenderPass& VulkanRenderPass::GetRenderPass() const {
+
 	return renderPass_;
+
 }

@@ -12,11 +12,11 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
 	const Resource& vertexResource,
 	const Resource& fragmentResource,
 	vk::Format swapChainFormat):
-	device_(device),
-	renderPass_(device_,
-		swapChainFormat),  // TODO: remove hardcoded renderpass + allow multiple renderpasses
-	vertexShader_(device, vk::ShaderStageFlagBits::eVertex, vertexResource),
-	fragmentShader_(device, vk::ShaderStageFlagBits::eFragment, fragmentResource)
+	device_(device)
+	//renderPass_(device_,
+	//	swapChainFormat),  // TODO: remove hardcoded renderpass + allow multiple renderpasses
+	/*vertexShader_(device, vk::ShaderStageFlagBits::eVertex, vertexResource),
+	fragmentShader_(device, vk::ShaderStageFlagBits::eFragment, fragmentResource)*/
 {
 
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
@@ -27,30 +27,31 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
 
 	pipelineLayout_ = logicalDevice.createPipelineLayout(pipelineLayoutInfo, nullptr);
 
-	vk::PipelineShaderStageCreateInfo shaderStages[] = {
-		vertexShader_.GetInfo(), fragmentShader_.GetInfo()};
+	//vk::PipelineShaderStageCreateInfo shaderStages[] = {
+	//	vertexShader_.GetInfo(), fragmentShader_.GetInfo()};
 
 
 	// TODO: Refactor and move vertex attribute and bindings.
-	vk::VertexInputBindingDescription bindingDescription;
-	bindingDescription.binding = 0;
-	bindingDescription.stride = sizeof(Vertex);
-	bindingDescription.inputRate = vk::VertexInputRate::eVertex;
+	//vk::VertexInputBindingDescription bindingDescription;
+	//bindingDescription.binding = 0;
+	//bindingDescription.stride = sizeof(Vertex);
+	//bindingDescription.inputRate = vk::VertexInputRate::eVertex;
 
-	std::array<vk::VertexInputAttributeDescription, 1> attributeDescriptions;
+	//std::array<vk::VertexInputAttributeDescription, 1> attributeDescriptions;
 
-	attributeDescriptions[0].binding = 0;
-	attributeDescriptions[0].location = 0;
-	attributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
-	attributeDescriptions[0].offset = offsetof(Vertex, position);  // TODO: C++23 Reflection
+	//attributeDescriptions[0].binding = 0;
+	//attributeDescriptions[0].location = 0;
+	//attributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
+	//attributeDescriptions[0].offset = offsetof(Vertex, position);  // TODO: C++23 Reflection
 
 
 
+	//TODO: fill with meaningful data
 	vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
 	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
-	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+	//vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
+	//vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+	//vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
 
 	vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
@@ -117,7 +118,7 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
 
 	vk::GraphicsPipelineCreateInfo pipelineInfo;
 	pipelineInfo.stageCount = 2;
-	pipelineInfo.pStages = shaderStages;
+	//pipelineInfo.pStages = shaderStages;
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pViewportState = &viewportState;
@@ -126,7 +127,7 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.layout = pipelineLayout_;
-	pipelineInfo.renderPass = renderPass_.GetRenderPass();
+	//pipelineInfo.renderPass = renderPass_.GetRenderPass();
 
 	vk::PipelineCacheCreateInfo pipelineCreateInfo;
 	// TODO: pipeline serialization n' such
@@ -143,11 +144,6 @@ VulkanPipeline::~VulkanPipeline()
 	logicalDevice.destroyPipelineCache(pipelineCache_);
 	logicalDevice.destroyPipeline(pipeline_);
 	logicalDevice.destroyPipelineLayout(pipelineLayout_);
-}
-
-VulkanRenderPass& VulkanPipeline::GetRenderPass()
-{
-	return renderPass_;
 }
 
 const vk::Pipeline& VulkanPipeline::GetPipeline() const

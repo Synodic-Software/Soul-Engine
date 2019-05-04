@@ -23,17 +23,16 @@ public:
 	VulkanPipeline& operator=(const VulkanPipeline&) = delete;
 	VulkanPipeline& operator=(VulkanPipeline&&) noexcept = delete;
 
-	VulkanRenderPass& GetRenderPass();
 	const vk::Pipeline& GetPipeline() const;
 
 
 private:
 
 	std::shared_ptr<VulkanDevice> device_;
-	VulkanRenderPass renderPass_;
+	//VulkanRenderPass renderPass_;
 
-	VulkanShader vertexShader_;
-	VulkanShader fragmentShader_;
+	//VulkanShader vertexShader_;
+	//VulkanShader fragmentShader_;
 
 	vk::PipelineLayout pipelineLayout_;
 	vk::Pipeline pipeline_;

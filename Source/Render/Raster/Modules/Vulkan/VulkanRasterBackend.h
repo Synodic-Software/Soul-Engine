@@ -3,6 +3,7 @@
 #include "Render/Raster/RasterModule.h"
 
 #include "VulkanSwapChain.h"
+#include "Command/VulkanCommandPool.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
@@ -43,6 +44,8 @@ private:
 
 	void Draw(DrawCommand&);
 
+
+	std::vector<VulkanCommandPool> commandPools_;
 
 	//TODO: replace the uint id with Entity maybe?
 
