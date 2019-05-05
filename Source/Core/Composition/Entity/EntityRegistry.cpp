@@ -1,7 +1,16 @@
-#include "EntityWriter.h"
+#include "EntityRegistry.h"
 
+EntityRegistry::EntityRegistry(): availableEntities_(0), nextAvailable_(0)
+{
+}
 
-Entity EntityWriter::CreateEntity()
+bool EntityRegistry::IsValid(Entity entity) const noexcept
+{
+	const auto id = entity.GetId();
+	return id < entities_.size() && entities_[id].entity_ == entity.entity_;
+}
+
+Entity EntityRegistry::CreateEntity()
 {
 
 	Entity entityID;
@@ -27,7 +36,7 @@ Entity EntityWriter::CreateEntity()
 	return entityID;
 }
 
-void EntityWriter::RemoveEntity(Entity entity)
+void EntityRegistry::RemoveEntity(Entity entity)
 {
 
 	assert(IsValid(entity));

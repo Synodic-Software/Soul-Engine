@@ -8,11 +8,7 @@ target_sources(${PROJECT_NAME}
         Composition/Entity/Entity.cpp
         Composition/Entity/Entity.h
         Composition/Entity/EntityRegistry.h
-        Composition/Entity/EntityReader.h
-        Composition/Entity/EntityWriter.cpp
-        Composition/Entity/EntityWriter.h
-        Composition/Entity/EntityStorage.cpp
-        Composition/Entity/EntityStorage.h
+        Composition/Entity/EntityRegistry.cpp
         Composition/Event/Event.h
         Composition/Event/EventRegistry.cpp
         Composition/Event/EventRegistry.h
