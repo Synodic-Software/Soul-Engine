@@ -60,7 +60,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 	renderGraphModule_->CreatePass("GUI", [&](Graph& graph) {
 
-		return [=](const Graph& graph, CommandList& commandList) {
+		return [=](const EntityRegistry& registry, CommandList& commandList) {
 
 
 			//this is the temporary hardcoded square that what previous hardcoded into the pipeline. 

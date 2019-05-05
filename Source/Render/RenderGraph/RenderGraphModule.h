@@ -30,7 +30,7 @@ public:
 	virtual void Execute() = 0;
 
 	virtual void CreatePass(std::string,
-		std::function<std::function<void(const Graph&, CommandList&)>(Graph&)>) = 0;
+		std::function<std::function<void(const EntityRegistry&, CommandList&)>(Graph&)>) = 0;
 
 	// Factory
 	static std::shared_ptr<RenderGraphModule> CreateModule(

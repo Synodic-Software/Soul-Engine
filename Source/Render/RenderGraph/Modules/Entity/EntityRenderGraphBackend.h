@@ -19,11 +19,12 @@ public:
 	void Execute() override;
 
 	void CreatePass(std::string,
-		std::function<std::function<void(const Graph&, CommandList&)>(Graph&)>) override;
+		std::function<std::function<void(const EntityRegistry&, CommandList&)>(Graph&)>) override;
 
 private:
 
 	Graph renderGraph_;
-	std::vector<std::function<void(const Graph&, CommandList&)>> graphTasks_;
+	EntityRegistry registry_;
+	std::vector<std::function<void(const EntityRegistry&, CommandList&)>> graphTasks_;
 
 };
