@@ -2,6 +2,8 @@
 
 #include "Render/RenderGraph/RenderGraphModule.h"
 
+class RasterModule;
+
 class EntityRenderGraphBackend final : public RenderGraphModule {
 
 public:
@@ -23,6 +25,7 @@ public:
 
 private:
 
+	std::shared_ptr<RasterModule> rasterModule_;
 	Graph renderGraph_;
 	EntityRegistry registry_;
 	std::vector<std::function<void(const EntityRegistry&, CommandList&)>> graphTasks_;

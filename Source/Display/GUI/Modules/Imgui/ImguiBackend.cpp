@@ -92,8 +92,12 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 						DrawCommand drawParameters;
 
-						// TODO: fill with imgui scissor and draw info
-
+						drawParameters.elementSize = command->ElemCount;
+						drawParameters.indexOffset = indexOffset;
+						drawParameters.vertexOffset = vertexOffset;
+						drawParameters.scissorOffset = {command->ClipRect.x, command->ClipRect.y};
+						drawParameters.scissorExtent = {command->ClipRect.z - command->ClipRect.x,
+							command->ClipRect.w - command->ClipRect.y};
 
 						commandList.Draw(drawParameters);
 

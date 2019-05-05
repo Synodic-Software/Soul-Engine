@@ -30,20 +30,26 @@ public:
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
 
 	void Render() override;
-	void CompileCommandList(CommandList&) override;
+	void Consume(CommandList&) override;
 
 	uint RegisterSurface(std::any, glm::uvec2) override;
 	void UpdateSurface(uint, glm::uvec2) override;
 	void RemoveSurface(uint) override;
+
+	// Agnostic raster API interface
+	void Draw(DrawCommand&) override;
+	void DrawIndirect(DrawIndirectCommand&) override;
+	void UpdateBuffer(UpdateBufferCommand&) override;
+	void UpdateTexture(UpdateTextureCommand&) override;
+	void CopyBuffer(CopyBufferCommand&) override;
+	void CopyTexture(CopyTextureCommand&) override;
+
 
 	vk::Instance& GetInstance();
 
 
 
 private:
-
-	void Draw(DrawCommand&);
-
 
 	std::vector<VulkanCommandPool> commandPools_;
 

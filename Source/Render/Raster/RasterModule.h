@@ -30,11 +30,19 @@ public:
 	RasterModule& operator=(RasterModule &&) noexcept = default;
 
 	virtual void Render() = 0;
-	virtual void CompileCommandList(CommandList&) = 0;
+	virtual void Consume(CommandList&) = 0;
 
 	virtual uint RegisterSurface(std::any, glm::uvec2) = 0;
 	virtual void UpdateSurface(uint, glm::uvec2) = 0;
 	virtual void RemoveSurface(uint) = 0;
+
+	// Agnostic raster API interface
+	virtual void Draw(DrawCommand&) = 0;
+	virtual void DrawIndirect(DrawIndirectCommand&) = 0;
+	virtual void UpdateBuffer(UpdateBufferCommand&) = 0;
+	virtual void UpdateTexture(UpdateTextureCommand&) = 0;
+	virtual void CopyBuffer(CopyBufferCommand&) = 0;
+	virtual void CopyTexture(CopyTextureCommand&) = 0;
 
 
 	//Factory

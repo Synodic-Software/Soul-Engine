@@ -2,7 +2,7 @@
 
 #include "Types.h"
 
-class RenderCommand {
+class RenderCommand{
 
 public:
 
@@ -20,9 +20,14 @@ public:
 
 struct DrawCommand : RenderCommand {
 
+	//draw
 	uint elementSize;
 	uint indexOffset;
 	uint vertexOffset;
+
+	//scissor
+	glm::uvec2 scissorOffset;
+	glm::uvec2 scissorExtent;
 
 };
 

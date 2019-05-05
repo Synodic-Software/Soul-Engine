@@ -30,3 +30,41 @@ void MockRasterBackend::RemoveSurface(uint surface)
 	throw NotImplemented();
 
 }
+
+void MockRasterBackend::Draw(DrawCommand& command)
+{
+
+	throw NotImplemented();
+
+}
+
+void MockRasterBackend::DrawIndirect(DrawIndirectCommand&)
+{
+
+	throw NotImplemented();
+
+}
+void MockRasterBackend::UpdateBuffer(UpdateBufferCommand&)
+{
+
+	throw NotImplemented();
+
+}
+void MockRasterBackend::UpdateTexture(UpdateTextureCommand&)
+{
+
+	throw NotImplemented();
+
+}
+void MockRasterBackend::CopyBuffer(CopyBufferCommand&)
+{
+
+	throw NotImplemented();
+
+}
+void MockRasterBackend::CopyTexture(CopyTextureCommand&)
+{
+
+	throw NotImplemented();
+
+}

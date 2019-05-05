@@ -1,11 +1,14 @@
 #include "EntityRenderGraphBackend.h"
 
 #include "Core/Utility/Exception/Exception.h"
+#include "Render/Raster/RasterModule.h"
+
 
 EntityRenderGraphBackend::EntityRenderGraphBackend(
 	std::shared_ptr<RasterModule>& rasterModule, 
 	std::shared_ptr<SchedulerModule>& scheduler):
 	RenderGraphModule(rasterModule, scheduler),
+	rasterModule_(rasterModule),
 	renderGraph_(scheduler)
 {
 }
@@ -14,8 +17,9 @@ void EntityRenderGraphBackend::Execute()
 {
 
 	for (const auto& callback : graphTasks_) {
-		CommandList commandList;
+		CommandList commandList(rasterModule_);
 		callback(registry_, commandList);
+		rasterModule_->Consume(commandList);
 	}
 
 }

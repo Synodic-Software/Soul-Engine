@@ -24,4 +24,13 @@ public:
 	void RemoveSurface(uint) override;
 
 
+	// Agnostic raster API interface
+	void Draw(DrawCommand&) override;
+	void DrawIndirect(DrawIndirectCommand&) override;
+	void UpdateBuffer(UpdateBufferCommand&) override;
+	void UpdateTexture(UpdateTextureCommand&) override;
+	void CopyBuffer(CopyBufferCommand&) override;
+	void CopyTexture(CopyTextureCommand&) override;
+
+
 };

@@ -21,7 +21,6 @@ public:
 	ThreadLocal<T>& operator= (const T&);
 	operator T&() const;
 
-	T* operator->();
 
 private:
 
@@ -68,12 +67,6 @@ ThreadLocal<T>::operator T&() const {
 
 	return objectMap_[id_];
 
-}
-
-template<typename T>
-T* ThreadLocal<T>::operator->()
-{
-	return &objectMap_[id_];
 }
 
 template<typename T>

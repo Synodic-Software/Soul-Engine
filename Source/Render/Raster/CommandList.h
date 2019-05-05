@@ -4,9 +4,15 @@
 
 #include "Core/Utility/Thread/ThreadLocal.h"
 
+#include <memory>
+
+class RasterModule;
+
 class CommandList {
 
 public:
+
+	CommandList(std::shared_ptr<RasterModule>&);
 
 	// Agnostic raster API interface
 	void Draw(DrawCommand&);
@@ -19,11 +25,6 @@ public:
 
 private:
 
-	ThreadLocal<std::vector<DrawCommand>> drawList_;
-	ThreadLocal<std::vector<DrawIndirectCommand>> drawIndirectList_;
-	ThreadLocal<std::vector<UpdateBufferCommand>> updateBufferList_;
-	ThreadLocal<std::vector<UpdateTextureCommand>> updateTextureList_;
-	ThreadLocal<std::vector<CopyBufferCommand>> copyBufferList_;
-	ThreadLocal<std::vector<CopyTextureCommand>> copyTextureList_;
+	std::shared_ptr<RasterModule> rasterModule_;
 
 };

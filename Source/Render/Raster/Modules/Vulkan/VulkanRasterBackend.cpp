@@ -148,8 +148,9 @@ void VulkanRasterBackend::Render()
 
 }
 
-void VulkanRasterBackend::CompileCommandList(CommandList& commandList)
+void VulkanRasterBackend::Consume(CommandList& commandList)
 {
+
 
 }
 
@@ -217,6 +218,37 @@ void VulkanRasterBackend::Draw(DrawCommand& command)
 {
 
 	//commandBuffer.drawIndexed(command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
+
+}
+
+void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&)
+{
+
+	throw NotImplemented();
+
+}
+void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&)
+{
+
+	throw NotImplemented();
+
+}
+void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&)
+{
+
+	throw NotImplemented();
+
+}
+void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&)
+{
+
+	throw NotImplemented();
+
+}
+void VulkanRasterBackend::CopyTexture(CopyTextureCommand&)
+{
+
+	throw NotImplemented();
 
 }
 
