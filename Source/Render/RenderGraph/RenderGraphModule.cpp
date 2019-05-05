@@ -5,10 +5,17 @@
 #include "Render/RenderGraph/RenderGraphModule.h"
 
 
+RenderGraphModule::RenderGraphModule(
+	std::shared_ptr<RasterModule>&,
+	std::shared_ptr<SchedulerModule>& scheduler)
+{
+}
+
 //TODO: This needs to instead be runtime loadable from shared libraries or statically linked
-std::shared_ptr<RenderGraphModule> RenderGraphModule::CreateModule(std::shared_ptr<RasterModule>& rasterModule)
+std::shared_ptr<RenderGraphModule> RenderGraphModule::CreateModule(
+	std::shared_ptr<RasterModule>& rasterModule, std::shared_ptr<SchedulerModule>& scheduler)
 {
 
-	return std::make_unique<EntityRenderGraphBackend>(rasterModule);
+	return std::make_unique<EntityRenderGraphBackend>(rasterModule, scheduler);
 
 }

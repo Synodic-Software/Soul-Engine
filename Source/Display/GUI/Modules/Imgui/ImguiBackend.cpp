@@ -58,23 +58,21 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 
 
-	renderGraphModule_->CreatePass("GUI", [&](EntityWriter& writer) {
+	renderGraphModule_->CreatePass("GUI", [&](Graph& graph) {
 
-		writer;
-
-		return [=](EntityReader& reader, CommandList& commandList) {
+		return [=](const Graph& graph, CommandList& commandList) {
 
 
-			////this is the temporary hardcoded square that what previous hardcoded into the pipeline. 
-			////Step-by-step development and refactoring :)
+			//this is the temporary hardcoded square that what previous hardcoded into the pipeline. 
+			//Step-by-step development and refactoring :)
 
-			//std::vector<Vertex> vertices(4);
-			//vertices[0].position = {-0.5f, -0.5f, 0.0f};
-			//vertices[1].position = {0.5f, -0.5f, 0.0f};
-			//vertices[2].position = {0.5f, 0.5f, 0.0f};
-			//vertices[3].position = {-0.5f, 0.5f, 0.0f};
+			std::vector<Vertex> vertices(4);
+			vertices[0].position = {-0.5f, -0.5f, 0.0f};
+			vertices[1].position = {0.5f, -0.5f, 0.0f};
+			vertices[2].position = {0.5f, 0.5f, 0.0f};
+			vertices[3].position = {-0.5f, 0.5f, 0.0f};
 
-			//const std::vector<uint16> indices = {0, 1, 2, 2, 3, 0};
+			const std::vector<uint16> indices = {0, 1, 2, 2, 3, 0};
 
 			//// TODO: temporary, refactor
 			//VulkanBuffer<Vertex> vertexBuffer_;

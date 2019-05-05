@@ -24,7 +24,7 @@ Soul::Soul(SoulParameters& params) :
 	inputModule_(InputModule::CreateModule()), 
 	windowModule_(WindowModule::CreateModule(inputModule_)), 
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
-	renderGraphModule_(RenderGraphModule::CreateModule(rasterModule_)),
+	renderGraphModule_(RenderGraphModule::CreateModule(rasterModule_, schedulerModule_)),
 	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_, renderGraphModule_)),
 	entityRegistry_(new EntityRegistry()), 
 	eventRegistry_(new EventRegistry())

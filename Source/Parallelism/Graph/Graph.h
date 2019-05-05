@@ -15,7 +15,6 @@ class Graph : public Node {
 public:
 
 	Graph(std::shared_ptr<SchedulerModule>&);
-
 	~Graph() override = default;
 
 	Graph(const Graph&) = delete;

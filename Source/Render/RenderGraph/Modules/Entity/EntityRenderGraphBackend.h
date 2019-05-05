@@ -2,12 +2,11 @@
 
 #include "Render/RenderGraph/RenderGraphModule.h"
 
-
 class EntityRenderGraphBackend final : public RenderGraphModule {
 
 public:
 
-	EntityRenderGraphBackend(std::shared_ptr<RasterModule>&);
+	EntityRenderGraphBackend(std::shared_ptr<RasterModule>&, std::shared_ptr<SchedulerModule>&);
 	~EntityRenderGraphBackend() override = default;
 
 	EntityRenderGraphBackend(const EntityRenderGraphBackend &) = delete;
@@ -20,14 +19,11 @@ public:
 	void Execute() override;
 
 	void CreatePass(std::string,
-		std::function<std::function<void(EntityReader&, CommandList&)>(
-			EntityWriter&)>) override;
+		std::function<std::function<void(const Graph&, CommandList&)>(Graph&)>) override;
 
 private:
 
-	std::shared_ptr<RasterModule> rasterModule_;
-
-	EntityRegistry graphRegistry_;
-	std::vector<std::function<void(EntityReader&, CommandList&)>> graphTasks_;
+	Graph renderGraph_;
+	std::vector<std::function<void(const Graph&, CommandList&)>> graphTasks_;
 
 };
