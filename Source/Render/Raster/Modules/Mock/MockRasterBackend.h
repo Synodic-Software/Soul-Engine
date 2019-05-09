@@ -18,6 +18,7 @@ public:
 	MockRasterBackend& operator=(MockRasterBackend &&) noexcept = default;
 
 	void Render() override;
+	void RenderPass(std::function<void()>) override;
 
 	uint RegisterSurface(std::any, glm::uvec2) override;
 	void UpdateSurface(uint, glm::uvec2) override;

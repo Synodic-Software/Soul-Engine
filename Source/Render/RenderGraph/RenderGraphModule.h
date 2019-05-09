@@ -5,6 +5,7 @@
 #include "Render/Raster/CommandList.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
 #include "Parallelism/Graph/Graph.h"
+#include "RenderTaskParameters.h"
 
 #include <memory>
 #include <string>
@@ -29,13 +30,17 @@ public:
 
 	virtual void Execute() = 0;
 
-	virtual void CreatePass(std::string,
-		std::function<std::function<void(const EntityRegistry&, CommandList&)>(Graph&)>) = 0;
+	virtual void CreateTask(RenderTaskParameters&,
+		std::function<std::function<void(const EntityRegistry&, CommandList&)>(Task&)>) = 0;
 
 	// Factory
 	static std::shared_ptr<RenderGraphModule> CreateModule(
 		std::shared_ptr<RasterModule>&,
 		std::shared_ptr<SchedulerModule>&);
+
+protected:
+
+	Graph renderGraph_;
 
 
 };

@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <any>
+#include <functional>
 
 class Scheduler;
 class Window;
@@ -30,7 +31,8 @@ public:
 	RasterModule& operator=(RasterModule &&) noexcept = default;
 
 	virtual void Render() = 0;
-	virtual void Consume(CommandList&) = 0;
+
+	virtual void RenderPass(std::function<void()>) = 0;
 
 	virtual uint RegisterSurface(std::any, glm::uvec2) = 0;
 	virtual void UpdateSurface(uint, glm::uvec2) = 0;

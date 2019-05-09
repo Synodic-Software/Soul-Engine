@@ -53,7 +53,7 @@ FramePipeline<N>::FramePipeline(std::shared_ptr<SchedulerModule>& scheduler,
 			task(frames_[index+1], frames_[index]);
 		};
 
-		Task& newTask = graph_.AddTask(voidWrapper);
+		Task& newTask = graph_.CreateTask(voidWrapper);
 
 		if (oldTask) {
 			newTask.DependsOn(*oldTask);

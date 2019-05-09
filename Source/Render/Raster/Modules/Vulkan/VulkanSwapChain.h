@@ -28,8 +28,8 @@ public:
 	VulkanSwapChain& operator=(const VulkanSwapChain&) = delete;
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
-	void AquireImage(const vk::Semaphore&);
-	void Present(const vk::Queue&, const vk::Semaphore&);
+	void AquireImage();
+	void Present(const vk::Queue&, VulkanCommandBuffer&);
 
 
 private:
@@ -44,15 +44,9 @@ private:
 	uint frameMax_;
 	glm::uvec2 size_;
 
+	std::vector<vk::Fence> frameFences_;
+	std::vector<vk::Semaphore> presentSemaphores_;
+	std::vector<vk::Semaphore> renderSemaphores_;
 
-	////TODO: refactor
-	//std::vector<vk::Semaphore> imageAvailableSemaphores;
-	//std::vector<vk::Semaphore> renderFinishedSemaphores;
-	//std::vector<vk::Fence> fences_;
-
-
-	////TODO: refactor
-	//std::vector<VulkanFrameBuffer> frameBuffers_;
-	//std::vector<VulkanCommandBuffer> commandBuffers_;
 
 };

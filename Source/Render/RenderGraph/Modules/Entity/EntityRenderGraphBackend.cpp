@@ -8,8 +8,7 @@ EntityRenderGraphBackend::EntityRenderGraphBackend(
 	std::shared_ptr<RasterModule>& rasterModule, 
 	std::shared_ptr<SchedulerModule>& scheduler):
 	RenderGraphModule(rasterModule, scheduler),
-	rasterModule_(rasterModule),
-	renderGraph_(scheduler)
+	rasterModule_(rasterModule)
 {
 }
 
@@ -17,18 +16,29 @@ void EntityRenderGraphBackend::Execute()
 {
 
 	for (const auto& callback : graphTasks_) {
-		CommandList commandList(rasterModule_);
-		callback(registry_, commandList);
-		rasterModule_->Consume(commandList);
+
+		rasterModule_->RenderPass([&]() {
+			CommandList commandList(rasterModule_);
+			callback(registry_, commandList);
+		});
+
 	}
 
 }
 
 
-void EntityRenderGraphBackend::CreatePass(std::string name,
-	std::function<std::function<void(const EntityRegistry&, CommandList&)>(Graph&)> passCallback)
+void EntityRenderGraphBackend::CreateTask(RenderTaskParameters& parameters,
+	std::function<std::function<void(const EntityRegistry&, CommandList&)>(Task&)> passCallback)
 {
 
-	graphTasks_.push_back(passCallback(renderGraph_));
+	Task& task = renderGraph_.CreateTask([](){
+
+	});
+
+	//Call the pass construction
+	auto callback = passCallback(task);
+
+	//Store the execution step for later
+	graphTasks_.push_back(callback);
 
 }

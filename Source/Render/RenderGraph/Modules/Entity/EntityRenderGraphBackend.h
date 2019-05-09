@@ -20,13 +20,12 @@ public:
 
 	void Execute() override;
 
-	void CreatePass(std::string,
-		std::function<std::function<void(const EntityRegistry&, CommandList&)>(Graph&)>) override;
+	void CreateTask(RenderTaskParameters&,
+		std::function<std::function<void(const EntityRegistry&, CommandList&)>(Task&)>) override;
 
 private:
 
 	std::shared_ptr<RasterModule> rasterModule_;
-	Graph renderGraph_;
 	EntityRegistry registry_;
 	std::vector<std::function<void(const EntityRegistry&, CommandList&)>> graphTasks_;
 

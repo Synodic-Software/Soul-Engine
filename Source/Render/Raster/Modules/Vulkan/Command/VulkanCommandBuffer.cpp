@@ -62,7 +62,9 @@ void VulkanCommandBuffer::Submit()
 
 }
 
-const vk::CommandBuffer& VulkanCommandBuffer::GetCommandBuffer() const
+const vk::CommandBuffer& VulkanCommandBuffer::Get() const
 {
+
 	return commandBuffer_;
+
 }

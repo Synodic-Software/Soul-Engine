@@ -24,7 +24,7 @@ public:
 	Graph& operator=(Graph&&) noexcept = default;
 
 	template <typename Callable>
-	Task& AddTask(Callable&&);
+	Task& CreateTask(Callable&&);
 	Graph& AddGraph();
 	
 	void Execute(std::chrono::nanoseconds) override;
@@ -42,7 +42,8 @@ private:
 
 //Create a tasks under this graph's control
 template <typename Callable>
-Task& Graph::AddTask(Callable&& callable) {
+Task& Graph::CreateTask(Callable&& callable)
+{
 
 	if constexpr (!std::is_invocable_v<Callable>) {
 

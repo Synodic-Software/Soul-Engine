@@ -4,6 +4,7 @@
 
 #include "VulkanSwapChain.h"
 #include "Command/VulkanCommandPool.h"
+#include "Command/VulkanCommandBuffer.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
@@ -30,7 +31,7 @@ public:
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
 
 	void Render() override;
-	void Consume(CommandList&) override;
+	void RenderPass(std::function<void()>) override;
 
 	uint RegisterSurface(std::any, glm::uvec2) override;
 	void UpdateSurface(uint, glm::uvec2) override;
@@ -45,13 +46,17 @@ public:
 	void CopyTexture(CopyTextureCommand&) override;
 
 
+
+
 	vk::Instance& GetInstance();
 
 
 
 private:
 
-	std::vector<VulkanCommandPool> commandPools_;
+	std::vector<std::shared_ptr<VulkanCommandPool>> commandPools_;
+	std::vector<std::shared_ptr<VulkanCommandBuffer>> commandBuffers_;
+
 
 	//TODO: replace the uint id with Entity maybe?
 
@@ -59,6 +64,7 @@ private:
 
 	std::unordered_map<uint, vk::SurfaceKHR> surfaces_;
 	std::unordered_map<uint, std::unique_ptr<VulkanSwapChain>> swapChains_;
+
 
 	std::vector<char const*> requiredInstanceExtensions_;
 	std::vector<const char*> validationLayers_;

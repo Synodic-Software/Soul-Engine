@@ -27,7 +27,7 @@ public:
 
 	void Submit();
 
-	const vk::CommandBuffer& GetCommandBuffer() const;
+	const vk::CommandBuffer& Get() const;
 
 
 private:

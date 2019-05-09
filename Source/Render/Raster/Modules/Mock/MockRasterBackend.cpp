@@ -10,6 +10,13 @@ void MockRasterBackend::Render()
 
 }
 
+void MockRasterBackend::RenderPass(std::function<void()>)
+{
+
+	throw NotImplemented();
+
+}
+
 uint MockRasterBackend::RegisterSurface(std::any, glm::uvec2 size)
 {
 

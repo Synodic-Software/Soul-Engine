@@ -56,9 +56,10 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	// TODO: actual upload
 
 
+	RenderTaskParameters params;
+	params.name = "GUI";
 
-
-	renderGraphModule_->CreatePass("GUI", [&](Graph& graph) {
+	renderGraphModule_->CreateTask(params, [&](Task& graph) {
 
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
 
@@ -81,6 +82,19 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 			int indexOffset = 0;
 
 			if (drawData->CmdListsCount > 0) {
+
+				UpdateBufferCommand updateVertexParameters;
+				// TODO: abstract
+				//commandBuffer->bindVertexBuffers(0, 1, vertexBuffer, 0);
+
+				commandList.UpdateBuffer(updateVertexParameters);
+
+				UpdateBufferCommand updateIndexParameters;
+				// TODO: abstract
+				//commandBuffer->bindIndexBuffer(indexBuffer, 0, index_type?);
+
+				commandList.UpdateBuffer(updateIndexParameters);
+
 
 				for (int32 i = 0; i < drawData->CmdListsCount; i++) {
 

@@ -113,98 +113,54 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
 	}*/
 
-	/*vk::CommandBufferAllocateInfo allocInfo;
-	allocInfo.commandPool = vkDevice_->GetCommandPool();
-	allocInfo.level = vk::CommandBufferLevel::ePrimary;
-	allocInfo.commandBufferCount = static_cast<uint32_t>(swapChainImages.size());
+	//set up synchronization primitives
+	presentSemaphores_.resize(frameMax_);
+	renderSemaphores_.resize(frameMax_);
+	frameFences_.resize(frameMax_);
 
-	commandBuffers_
+	vk::SemaphoreCreateInfo semaphoreInfo;
 
-	commandBuffers_ = logicalDevice.allocateCommandBuffers(allocInfo);
+	vk::FenceCreateInfo fenceInfo;
+	fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
 
-	vk::ClearValue clearColor(
-		vk::ClearColorValue(std::array<float, 4>{ 0.0f, 0.0f, 0.0f, 1.0f })
-	);
+	for (size_t i = 0; i < frameMax_; i++) {
 
-	for (size_t i = 0; i < commandBuffers_.size(); i++) {
+		presentSemaphores_[i] = logicalDevice.createSemaphore(semaphoreInfo);
+		renderSemaphores_[i] = logicalDevice.createSemaphore(semaphoreInfo);
+		frameFences_[i] = logicalDevice.createFence(fenceInfo);
 
-		vk::CommandBufferBeginInfo beginInfo;
-		beginInfo.flags = vk::CommandBufferUsageFlagBits::eSimultaneousUse;
-		beginInfo.pInheritanceInfo = nullptr;
+	}
 
-		vk::RenderPassBeginInfo renderPassInfo;
-		renderPassInfo.renderPass = pipeline_->GetRenderPass().GetRenderPass();
-		renderPassInfo.framebuffer = frameBuffers_[i].GetFrameBuffer();
-		renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-		renderPassInfo.renderArea.extent = swapchainSize;
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &clearColor;
-
-		commandBuffers_[i].begin(beginInfo);
-
-		commandBuffers_[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
-		commandBuffers_[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
-
-        vk::Buffer vertexBuffers[] = { pipeline_->GetVertexBuffer().GetBuffer() };
-		vk::DeviceSize offsets[] = { 0 };
-
-		commandBuffers_[i].bindVertexBuffers(0, 1, vertexBuffers, offsets);
-		commandBuffers_[i].bindIndexBuffer(pipeline_->GetIndexBuffer().GetBuffer(), 0, vk::IndexType::eUint16);
-
-		commandBuffers_[i].drawIndexed(6, 1, 0, 0, 0);
-		commandBuffers_[i].endRenderPass();
-
-		commandBuffers_[i].end();
-
-	}*/
-
-
-	////set up synchronization primitives
-	//imageAvailableSemaphores.resize(flightFramesCount);
-	//renderFinishedSemaphores.resize(flightFramesCount);
-	//fences_.resize(frameMax_);
-
-	////vk::SemaphoreCreateInfo semaphoreInfo;
-
-	//vk::FenceCreateInfo fenceInfo;
-	//fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
-
-	//for (size_t i = 0; i < frameMax_; i++) {
-
-	//	fences_[i] = logicalDevice.createFence(fenceInfo);
-
-	//}
 }
 
 VulkanSwapChain::~VulkanSwapChain() {
 
 	const auto& logicalDevice = vkDevice_->GetLogical();
 
-	//vkDevice_->Synchronize();
-
-	//frameBuffers_.clear();
+	vkDevice_->Synchronize();
 
 	for (const auto& image : images_) {
 		logicalDevice.destroyImageView(image.view);
 	}
 
-	//for (auto& fence : fences_) {
+	for (size_t i = 0; i < frameMax_; i++) {
 
-	//	//logicalDevice.destroySemaphore(imageAvailableSemaphores[i]);
-	//	//logicalDevice.destroySemaphore(renderFinishedSemaphores[i]);
-	//	logicalDevice.destroyFence(fence);
+		logicalDevice.destroySemaphore(presentSemaphores_[i]);
+		logicalDevice.destroySemaphore(renderSemaphores_[i]);
+		logicalDevice.destroyFence(frameFences_[i]);
 
-	//}
+	}
 
 	logicalDevice.destroySwapchainKHR(swapChain_);
 
 }
 
-void VulkanSwapChain::AquireImage(const vk::Semaphore& presentSemaphore)
+void VulkanSwapChain::AquireImage()
 {
 	const auto& logicalDevice = vkDevice_->GetLogical();
 
-	 auto[acquireResult, activeImageIndex_] = logicalDevice.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), presentSemaphore, nullptr);
+	 auto [acquireResult, activeImageIndex_] = logicalDevice.acquireNextImageKHR(swapChain_,
+		std::numeric_limits<uint64_t>::max(), presentSemaphores_[currentFrame_], nullptr);
 
 	 if (acquireResult != vk::Result::eSuccess) {
 
@@ -215,35 +171,33 @@ void VulkanSwapChain::AquireImage(const vk::Semaphore& presentSemaphore)
 }
 
 
-void VulkanSwapChain::Present(const vk::Queue& presentQueue, const vk::Semaphore& waitSemaphore)
+void VulkanSwapChain::Present(const vk::Queue& presentQueue, VulkanCommandBuffer& commandBuffer_)
 {
 
 	const auto& logicalDevice = vkDevice_->GetLogical();
 
-	//logicalDevice.waitForFences(fences_[currentFrame_], true, std::numeric_limits<uint64_t>::max());
-	//logicalDevice.resetFences(fences_[currentFrame_]);
+	logicalDevice.waitForFences(frameFences_[currentFrame_], true, std::numeric_limits<uint64_t>::max());
+	logicalDevice.resetFences(frameFences_[currentFrame_]);
 
-	//vk::SubmitInfo submitInfo;
+	vk::SubmitInfo submitInfo;
 
-	//vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
-	//vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-	//submitInfo.waitSemaphoreCount = 1;
-	//submitInfo.pWaitSemaphores = waitSemaphores;
-	//submitInfo.pWaitDstStageMask = waitStages;
+	vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.pWaitSemaphores = &presentSemaphores_[currentFrame_];
+	submitInfo.pWaitDstStageMask = waitStages;
 
-	//submitInfo.commandBufferCount = 1;
-	//submitInfo.pCommandBuffers = &commandBuffers_[imageIndex];
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &commandBuffer_.Get();
 
-	//vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
-	//submitInfo.signalSemaphoreCount = 1;
-	//submitInfo.pSignalSemaphores = signalSemaphores;
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pSignalSemaphores = &renderSemaphores_[currentFrame_];
 
-	//vkDevice_->GetGraphicsQueue().submit(submitInfo, inFlightFences[currentFrame]);
+	vkDevice_->GetGraphicsQueue().submit(submitInfo, frameFences_[currentFrame_]);
 
 	vk::PresentInfoKHR presentInfo;
 
 	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = &waitSemaphore;
+	presentInfo.pWaitSemaphores = &renderSemaphores_[currentFrame_];
 
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = &swapChain_;
@@ -251,7 +205,5 @@ void VulkanSwapChain::Present(const vk::Queue& presentQueue, const vk::Semaphore
 	presentInfo.pImageIndices = &activeImageIndex_;
 
 	presentQueue.presentKHR(presentInfo);
-
-	currentFrame_ = (currentFrame_ + 1) % frameMax_;
 
 }

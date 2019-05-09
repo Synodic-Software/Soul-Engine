@@ -7,7 +7,8 @@
 
 RenderGraphModule::RenderGraphModule(
 	std::shared_ptr<RasterModule>&,
-	std::shared_ptr<SchedulerModule>& scheduler)
+	std::shared_ptr<SchedulerModule>& scheduler):
+		renderGraph_(scheduler)
 {
 }
 
