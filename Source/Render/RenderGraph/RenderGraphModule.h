@@ -31,7 +31,7 @@ public:
 	virtual void Execute() = 0;
 
 	virtual void CreateTask(RenderTaskParameters&,
-		std::function<std::function<void(const EntityRegistry&, CommandList&)>(Task&)>) = 0;
+		std::function<std::function<void(const EntityRegistry&, CommandList&)>(GraphTask&)>) = 0;
 
 	// Factory
 	static std::shared_ptr<RenderGraphModule> CreateModule(

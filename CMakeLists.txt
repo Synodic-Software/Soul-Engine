@@ -67,7 +67,7 @@ option(BUILD_VULKAN_RASTER "Build the Vulkan Raster backend" ${Vulkan_FOUND})#TO
 option(BUILD_GLFW_DISPLAY "Build the GLFW Display backend" ON)#TODO: Implement use of this option
 option(BUILD_IMGUI_GUI "Build the Imgui GUI backend" ON)#TODO: Implement use of this option
 option(BUILD_FIBER_SCHEDULER "Build the Fiber Scheduler backend" ON)
-
+option(BUILD_ENTITY_GRAPH "Build the Entity Graph backend" ON)
 
 ##############################################
 #Project Target
@@ -87,9 +87,10 @@ set_target_properties(${PROJECT_NAME}
 
 target_compile_definitions(${PROJECT_NAME} 
     PRIVATE
-        CUDA=BUILD_CUDA_COMPUTE
-        OPENCL=BUILD_OPENCL_COMPUTE
-        FIBER=BUILD_FIBER_SCHEDULER
+        CUDA_COMPUTE=${BUILD_CUDA_COMPUTE}
+        OPENCL_COMPUTE=${BUILD_OPENCL_COMPUTE}
+        FIBER_SCHEDULER=${BUILD_FIBER_SCHEDULER}
+        ENTITY_GRAPH=${BUILD_ENTITY_GRAPH}
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -21,7 +21,8 @@ public:
 	void Execute() override;
 
 	void CreateTask(RenderTaskParameters&,
-		std::function<std::function<void(const EntityRegistry&, CommandList&)>(Task&)>) override;
+		std::function<std::function<void(const EntityRegistry&, CommandList&)>(GraphTask&)>)
+		override;
 
 private:
 

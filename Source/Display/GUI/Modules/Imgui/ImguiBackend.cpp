@@ -59,7 +59,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	RenderTaskParameters params;
 	params.name = "GUI";
 
-	renderGraphModule_->CreateTask(params, [&](Task& graph) {
+	renderGraphModule_->CreateTask(params, [&](GraphTask& graph) {
 
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
 

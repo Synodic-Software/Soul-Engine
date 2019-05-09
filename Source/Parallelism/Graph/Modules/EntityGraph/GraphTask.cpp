@@ -1,15 +1,15 @@
-#include "Task.h"
+#include "GraphTask.h"
 
 #include "Parallelism/Scheduler/SchedulerModule.h"
 
-Task::Task(std::shared_ptr<SchedulerModule>& scheduler, std::function<void()>&& callable) noexcept:
+GraphTask::GraphTask(std::shared_ptr<SchedulerModule>& scheduler, std::function<void()>&& callable) noexcept:
 	scheduler_(scheduler),
 	callable_(std::forward<std::function<void()>>(callable))
 {
 
 }
 
-void Task::Execute(std::chrono::nanoseconds targetDuration) {
+void GraphTask::Execute(std::chrono::nanoseconds targetDuration) {
 	
 	scheduler_->AddTask(parameters_, [this]()
 	{

@@ -26,7 +26,8 @@ void Graph::Execute(std::chrono::nanoseconds targetDuration) {
 }
 
 //Create a sub-graph
-Graph& Graph::AddGraph() {
+Graph& Graph::CreateGraph()
+{
 
 	return graphs_.emplace_front(scheduler_);
 

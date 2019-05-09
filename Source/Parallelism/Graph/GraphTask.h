@@ -2,6 +2,6 @@
 
 #if defined(ENTITY_GRAPH)
 
-	#include "Modules/EntityGraph/Graph.h"
+	#include "Modules/EntityGraph/GraphTask.h"
 
 #endif
