@@ -21,13 +21,14 @@ public:
 	void Execute() override;
 
 	void CreateTask(RenderTaskParameters&,
-		std::function<std::function<void(const EntityRegistry&, CommandList&)>(GraphTask&)>)
+		std::function<std::function<void(const EntityRegistry&, CommandList&)>(RenderGraphBuilder&)>)
 		override;
 
 private:
 
 	std::shared_ptr<RasterModule> rasterModule_;
 	EntityRegistry registry_;
+	RenderGraphBuilder builder_;
 	std::vector<std::function<void(const EntityRegistry&, CommandList&)>> graphTasks_;
 
 };

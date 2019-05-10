@@ -18,6 +18,7 @@ class Entity
 	static constexpr auto entityBitCount = 32;
 	static constexpr auto nullState = entityMask;
 
+
 public:
 
 	//construction and assignment

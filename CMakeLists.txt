@@ -85,14 +85,6 @@ set_target_properties(${PROJECT_NAME}
 		USE_FOLDERS ON
 )
 
-target_compile_definitions(${PROJECT_NAME} 
-    PRIVATE
-        CUDA_COMPUTE=BUILD_CUDA_COMPUTE
-        OPENCL_COMPUTE=BUILD_OPENCL_COMPUTE
-        FIBER_SCHEDULER=BUILD_FIBER_SCHEDULER
-        ENTITY_GRAPH=BUILD_ENTITY_GRAPH
-)
-
 target_include_directories(${PROJECT_NAME}
     PUBLIC 
         $<INSTALL_INTERFACE:Includes>
@@ -136,7 +128,8 @@ add_subdirectory(Source/Display/Input)
 add_subdirectory(Source/Display/GUI)
 add_subdirectory(Source/Memory)
 add_subdirectory(Source/Network)
-add_subdirectory(Source/Parallelism)
+add_subdirectory(Source/Parallelism/Graph)
+add_subdirectory(Source/Parallelism/Scheduler)
 add_subdirectory(Source/Physics)
 add_subdirectory(Source/Render/Raster)
 add_subdirectory(Source/Render/RenderGraph)

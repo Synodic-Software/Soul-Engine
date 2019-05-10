@@ -2,6 +2,11 @@
 
 #include "Parallelism/Scheduler/SchedulerModule.h"
 
+GraphTask::GraphTask(std::shared_ptr<SchedulerModule>& scheduler) noexcept:
+	scheduler_(scheduler)
+{
+}
+
 GraphTask::GraphTask(std::shared_ptr<SchedulerModule>& scheduler, std::function<void()>&& callable) noexcept:
 	scheduler_(scheduler),
 	callable_(std::forward<std::function<void()>>(callable))

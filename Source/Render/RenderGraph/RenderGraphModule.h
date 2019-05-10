@@ -6,6 +6,7 @@
 #include "Core/Composition/Entity/EntityRegistry.h"
 #include "Parallelism/Graph/Graph.h"
 #include "RenderTaskParameters.h"
+#include "RenderGraphBuilder.h"
 
 #include <memory>
 #include <string>
@@ -31,7 +32,7 @@ public:
 	virtual void Execute() = 0;
 
 	virtual void CreateTask(RenderTaskParameters&,
-		std::function<std::function<void(const EntityRegistry&, CommandList&)>(GraphTask&)>) = 0;
+		std::function<std::function<void(const EntityRegistry&, CommandList&)>(RenderGraphBuilder&)>) = 0;
 
 	// Factory
 	static std::shared_ptr<RenderGraphModule> CreateModule(

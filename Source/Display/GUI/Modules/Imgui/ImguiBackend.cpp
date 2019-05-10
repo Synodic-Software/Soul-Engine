@@ -59,7 +59,10 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	RenderTaskParameters params;
 	params.name = "GUI";
 
-	renderGraphModule_->CreateTask(params, [&](GraphTask& graph) {
+	renderGraphModule_->CreateTask(params, [&](RenderGraphBuilder& builder) {
+
+		//TODO: Create vertex + index + font buffers
+
 
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
 
@@ -72,6 +75,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 			if (vertexBufferSize == 0 || indexBufferSize == 0) {
 
 				return;
+
 			}
 
 			// TODO: actual data upload

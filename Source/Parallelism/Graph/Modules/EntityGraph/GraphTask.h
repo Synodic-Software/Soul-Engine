@@ -9,6 +9,7 @@ class GraphTask : public GraphNode {
 
 public:
 
+	GraphTask(std::shared_ptr<SchedulerModule>&) noexcept;
 	GraphTask(std::shared_ptr<SchedulerModule>&, std::function<void()>&&) noexcept;
 
 	~GraphTask() override = default;

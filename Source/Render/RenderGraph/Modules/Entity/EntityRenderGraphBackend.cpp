@@ -28,18 +28,14 @@ void EntityRenderGraphBackend::Execute()
 
 
 void EntityRenderGraphBackend::CreateTask(RenderTaskParameters& parameters,
-	std::function<std::function<void(const EntityRegistry&, CommandList&)>(GraphTask&)>
+	std::function<std::function<void(const EntityRegistry&, CommandList&)>(RenderGraphBuilder&)>
 		passCallback)
 {
 
-	GraphTask& task = renderGraph_.CreateTask([]() {
-
-	});
-
-	//task.
+	//GraphTask& task = renderGraph_.CreateTask();
 
 	//Call the pass construction
-	auto callback = passCallback(task);
+	auto callback = passCallback(builder_);
 
 	//Store the execution step for later
 	graphTasks_.push_back(callback);
