@@ -1,5 +1,7 @@
 #pragma once
 
+#include "RenderGraphParameters.h"
+
 class RenderGraphBuilder{
 
 public:
@@ -13,5 +15,7 @@ public:
 	RenderGraphBuilder& operator=(const RenderGraphBuilder &) = delete;
 	RenderGraphBuilder& operator=(RenderGraphBuilder &&) noexcept = default;
 
+	void CreateOutput(RenderGraphOutputParameters&);
+	void CreateInput(RenderGraphInputParameters&);
 
 };

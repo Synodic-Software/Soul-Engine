@@ -5,7 +5,7 @@
 #include "Render/Raster/CommandList.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
 #include "Parallelism/Graph/Graph.h"
-#include "RenderTaskParameters.h"
+#include "RenderGraphParameters.h"
 #include "RenderGraphBuilder.h"
 
 #include <memory>

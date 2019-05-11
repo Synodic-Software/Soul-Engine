@@ -55,14 +55,18 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 	// TODO: actual upload
 
+	//TODO: Create vertex + index + font buffers
 
 	RenderTaskParameters params;
 	params.name = "GUI";
 
 	renderGraphModule_->CreateTask(params, [&](RenderGraphBuilder& builder) {
 
-		//TODO: Create vertex + index + font buffers
+		RenderGraphOutputParameters outputParams;
+		outputParams.name = "Final";
 
+
+		builder.CreateOutput(outputParams);
 
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
 
