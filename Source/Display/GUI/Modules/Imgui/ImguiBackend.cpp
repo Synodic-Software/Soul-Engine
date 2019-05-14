@@ -8,9 +8,6 @@
 
 #include <imgui.h>
 
-//TODO: temporary include
-#include "Core/Geometry/Vertex.h"
-
 
 ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	std::shared_ptr<WindowModule>& windowModule,
@@ -27,7 +24,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 		
 		ImGuiIO& inputInfo = ImGui::GetIO();
 
-		inputInfo.MousePos = ImVec2(xPos, yPos);
+		inputInfo.MousePos = ImVec2(static_cast<float>(xPos), static_cast<float>(yPos));
 
 	});
 
@@ -62,11 +59,11 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 	renderGraphModule_->CreateTask(params, [&](RenderGraphBuilder& builder) {
 
-		builder.Request<VertexBuffer>();
+		Entity vertexBuffer = builder.Request<VertexBuffer>();
+		Entity indexBuffer = builder.Request<IndexBuffer>();
 
 		RenderGraphOutputParameters outputParams;
 		outputParams.name = "Final";
-
 
 		builder.CreateOutput(outputParams);
 
@@ -94,6 +91,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 			if (drawData->CmdListsCount > 0) {
 
 				UpdateBufferCommand updateVertexParameters;
+				updateVertexParameters.offset = 0;
 				// TODO: abstract
 				//commandBuffer->bindVertexBuffers(0, 1, vertexBuffer, 0);
 
@@ -152,7 +150,7 @@ void ImguiBackend::Update(std::chrono::nanoseconds frameTime)
 	//TODO: via callback
 	//Update Display
 	WindowParameters& windowParams = windowModule_->GetWindow().Parameters();
-	inputInfo.DisplaySize = ImVec2(windowParams.pixelSize.x, windowParams.pixelSize.y);
+	inputInfo.DisplaySize = ImVec2(static_cast<float>(windowParams.pixelSize.x), static_cast<float>(windowParams.pixelSize.y));
 	inputInfo.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
 	//TODO: via callback
