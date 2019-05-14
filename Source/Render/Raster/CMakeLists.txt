@@ -29,6 +29,7 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/VulkanSwapChain.h
         CommandList.cpp
         CommandList.h
+        RenderResource.h
         RenderCommands.h
         RasterModule.cpp
         RasterModule.h

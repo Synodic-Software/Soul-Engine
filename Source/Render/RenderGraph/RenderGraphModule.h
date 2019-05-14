@@ -7,6 +7,7 @@
 #include "Parallelism/Graph/Graph.h"
 #include "RenderGraphParameters.h"
 #include "RenderGraphBuilder.h"
+#include "Render/Raster/RenderResource.h"
 
 #include <memory>
 #include <string>

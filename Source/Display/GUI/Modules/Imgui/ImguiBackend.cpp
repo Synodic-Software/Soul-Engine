@@ -62,6 +62,8 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 	renderGraphModule_->CreateTask(params, [&](RenderGraphBuilder& builder) {
 
+		builder.Request<VertexBuffer>();
+
 		RenderGraphOutputParameters outputParams;
 		outputParams.name = "Final";
 

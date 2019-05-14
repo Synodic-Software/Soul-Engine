@@ -27,7 +27,7 @@ public:
 private:
 
 	std::shared_ptr<RasterModule> rasterModule_;
-	EntityRegistry registry_;
+	std::shared_ptr<EntityRegistry> entityRegistry_;
 	RenderGraphBuilder builder_;
 	std::vector<std::function<void(const EntityRegistry&, CommandList&)>> graphTasks_;
 

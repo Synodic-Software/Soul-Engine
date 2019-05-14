@@ -8,7 +8,9 @@ EntityRenderGraphBackend::EntityRenderGraphBackend(
 	std::shared_ptr<RasterModule>& rasterModule, 
 	std::shared_ptr<SchedulerModule>& scheduler):
 	RenderGraphModule(rasterModule, scheduler),
-	rasterModule_(rasterModule)
+	rasterModule_(rasterModule), 
+	entityRegistry_(new EntityRegistry),
+	builder_(entityRegistry_)
 {
 }
 
@@ -19,7 +21,7 @@ void EntityRenderGraphBackend::Execute()
 
 		rasterModule_->RenderPass([&]() {
 			CommandList commandList(rasterModule_);
-			callback(registry_, commandList);
+			callback(*entityRegistry_, commandList);
 		});
 
 	}
