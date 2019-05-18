@@ -1,24 +1,21 @@
 #pragma once
 
 #include "Types.h"
-
-class RenderResource{
+#include "Core/Composition/Component/Component.h"
+class RenderResource : Component{
 
 public:
 
 	RenderResource() = default;
 	~RenderResource() = default;
 
-	RenderResource(const RenderResource&) = default;
-	RenderResource(RenderResource &&) noexcept = default;
-
-	RenderResource& operator=(const RenderResource&) = default;
-	RenderResource& operator=(RenderResource &&) noexcept = default;
-
-
 };
 
 struct Buffer : RenderResource {
+
+public:
+
+	uint size;
 
 };
 

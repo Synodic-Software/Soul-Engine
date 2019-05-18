@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+#include "Render/Raster/RenderResource.h"
 
 class RenderCommand{
 
@@ -29,6 +30,10 @@ struct DrawCommand : RenderCommand {
 	glm::uvec2 scissorOffset;
 	glm::uvec2 scissorExtent;
 
+	//data
+	VertexBuffer vertexBuffer;
+	IndexBuffer indexBuffer;
+
 };
 
 struct DrawIndirectCommand : RenderCommand {
@@ -36,8 +41,6 @@ struct DrawIndirectCommand : RenderCommand {
 };
 
 struct UpdateBufferCommand : RenderCommand {
-
-	uint offset;
 
 };
 

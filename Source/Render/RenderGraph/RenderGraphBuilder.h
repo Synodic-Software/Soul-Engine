@@ -32,10 +32,13 @@ private:
 template<class T>
 Entity RenderGraphBuilder::Request()
 {
+	// TODO: C++20 Concepts
 	static_assert(std::is_base_of<RenderResource, T>::value,
-		"The type parameter must be a subclass of RenderResource");
+		"The type parameter must be a subclass of RenderResource"); 
 
+	Entity returnedEntity = entityRegistry_->CreateEntity();
+	entityRegistry_->AttachComponent<T>(returnedEntity);
 
-	return entityRegistry_->CreateEntity();
+	return returnedEntity;
 
 }

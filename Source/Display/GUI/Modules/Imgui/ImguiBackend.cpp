@@ -41,7 +41,6 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	});
 
 
-
 	ImGuiIO& inputInfo = ImGui::GetIO();
 
 	//TODO: abstract fonts
@@ -59,8 +58,8 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 	renderGraphModule_->CreateTask(params, [&](RenderGraphBuilder& builder) {
 
-		Entity vertexBuffer = builder.Request<VertexBuffer>();
-		Entity indexBuffer = builder.Request<IndexBuffer>();
+		Entity vertexResource = builder.Request<VertexBuffer>();
+		Entity indexResource = builder.Request<IndexBuffer>();
 
 		RenderGraphOutputParameters outputParams;
 		outputParams.name = "Final";
@@ -81,7 +80,28 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 			}
 
-			// TODO: actual data upload
+			auto& vertexBuffer = registry.GetComponent<VertexBuffer>(vertexResource);
+			auto& indexBuffer = registry.GetComponent<IndexBuffer>(indexResource);
+
+			//Update the imgui index and vertex buffers
+
+			if (vertexBuffer.size != vertexBufferSize) {
+
+				UpdateBufferCommand updateVertexParameters;
+
+				commandList.UpdateBuffer(updateVertexParameters);
+
+			}
+			
+
+			if (indexBuffer.size != indexBufferSize) {
+
+				UpdateBufferCommand updateIndexParameters;
+
+				commandList.UpdateBuffer(updateIndexParameters);
+
+			}
+
 
 			// TODO: imgui push constants
 
@@ -90,18 +110,11 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 			if (drawData->CmdListsCount > 0) {
 
-				UpdateBufferCommand updateVertexParameters;
-				updateVertexParameters.offset = 0;
 				// TODO: abstract
 				//commandBuffer->bindVertexBuffers(0, 1, vertexBuffer, 0);
 
-				commandList.UpdateBuffer(updateVertexParameters);
-
-				UpdateBufferCommand updateIndexParameters;
 				// TODO: abstract
 				//commandBuffer->bindIndexBuffer(indexBuffer, 0, index_type?);
-
-				commandList.UpdateBuffer(updateIndexParameters);
 
 
 				for (int32 i = 0; i < drawData->CmdListsCount; i++) {
@@ -120,6 +133,9 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 						drawParameters.scissorOffset = {command->ClipRect.x, command->ClipRect.y};
 						drawParameters.scissorExtent = {command->ClipRect.z - command->ClipRect.x,
 							command->ClipRect.w - command->ClipRect.y};
+
+						drawParameters.vertexBuffer = vertexBuffer;
+						drawParameters.indexBuffer = indexBuffer;
 
 						commandList.Draw(drawParameters);
 

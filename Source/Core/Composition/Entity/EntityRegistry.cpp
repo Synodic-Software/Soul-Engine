@@ -25,12 +25,14 @@ Entity EntityRegistry::CreateEntity()
 		entityID = Entity(id, version);
 		entities_[id] = entityID;
 		--availableEntities_;
+
 	}
 	else {
 
 		// simply add an entity. No max entity size check, who will ever go past uint32 entities? ;P
 		entityID = Entity(entities_.size());
 		entities_.push_back(entityID);
+
 	}
 
 	return entityID;
@@ -41,10 +43,9 @@ void EntityRegistry::RemoveEntity(Entity entity)
 
 	assert(IsValid(entity));
 
-	// TODO: re-enable
-	// for (auto& pool : componentPools_) {
-	//	pool->Remove(entity.GetId());
-	//}
+	for (auto& pool : componentPools_) {
+		pool->Erase(entity);
+	}
 
 	// grab entity data
 	const auto id = availableEntities_ ? nextAvailable_ : entity.GetId() + 1;
@@ -54,4 +55,5 @@ void EntityRegistry::RemoveEntity(Entity entity)
 	entities_[id] = Entity(id, version);
 	nextAvailable_ = id;
 	++availableEntities_;
+
 }

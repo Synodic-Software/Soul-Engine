@@ -4,10 +4,11 @@
 
 class EntityRegistry;
 
-class Entity
+class Entity 
 {
 
 	friend class EntityRegistry;
+	friend struct std::hash<Entity>; 
 
 	using value_type = uint64;
 	using id_type = uint32;
@@ -49,3 +50,15 @@ private:
 	value_type entity_;
 
 };
+
+namespace std {
+
+	template<>
+	struct hash<Entity> {
+		std::size_t operator()(const Entity& entity) const
+		{
+			return static_cast<std::size_t>(entity.GetId());
+		}
+	};
+
+}

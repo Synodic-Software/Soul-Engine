@@ -3,7 +3,7 @@
 #include "Entity.h"
 #include "Core/Composition/Component/Component.h"
 #include "Core/Utility/ID/ClassID.h"
-#include "Core/Structure/IntrusiveSparseSet.h"
+#include "Core/Structure/SparseHashMap.h"
 
 #include <vector>
 #include <memory>
@@ -11,6 +11,9 @@
 
 
 class EntityRegistry{
+
+	template<typename Comp>
+	using storage_type = SparseHashMap<Entity, std::decay_t<Comp>>;
 
 public:
 
@@ -26,18 +29,19 @@ public:
 
 	bool IsValid(Entity) const noexcept;
 
-	// entity operations
 	Entity CreateEntity();
 	void RemoveEntity(Entity);
 
 
-	// A component can only be attached if it is derived from the Component class
 	template<typename Comp, typename... Args>
-	std::enable_if_t<std::is_base_of_v<Component<Comp>, Comp>, void> AttachComponent(Entity,
+	void AttachComponent(Entity,
 		Args&&...);
 
 	template<typename Comp>
 	void RemoveComponent();
+
+	template<typename Comp>
+	void RemoveComponent(Entity);
 
 	template<typename Comp>
 	Comp& GetComponent(Entity) const noexcept;
@@ -49,24 +53,30 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<IntrusiveSparseSet<Entity>>> componentPools_;
+	std::vector<std::unique_ptr<SparseTable<Entity>>> componentPools_;
 	std::vector<Entity> entities_;
 
-	size_t availableEntities_;
-	uint64 nextAvailable_;
+	Entity::id_type availableEntities_;
+	Entity::id_type nextAvailable_;
+
+
 };
 
 template<typename Comp>
 Comp& EntityRegistry::GetComponent(Entity entity) const noexcept
 {
 
+	// TODO: C++20 Concepts
+	static_assert(std::is_base_of<Component, Comp>::value,
+		"The Comp parameter must be a subclass of Component");
+
 	assert(IsValid(entity));
 
 	const auto componentId = ClassID::Id<Comp>();
-	SparseEntitySet<Comp>& pool =
-		*static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
+	auto& pool = *static_cast<storage_type<Comp>*> (componentPools_[componentId].get());
 
-	return pool[entity.GetId()];
+	return pool[entity];
+
 }
 
 template<typename... Comp>
@@ -75,13 +85,18 @@ std::enable_if_t<bool(sizeof...(Comp) > 1), std::tuple<Comp&...>> EntityRegistry
 {
 
 	return std::tuple<Comp&...> {GetComponent<Comp>(entity)...};
+
 }
 
 template<typename Comp, typename... Args>
-std::enable_if_t<std::is_base_of_v<Component<Comp>, Comp>, void> EntityRegistry::AttachComponent(
+void EntityRegistry::AttachComponent(
 	Entity entity,
 	Args&&... args)
 {
+
+	//TODO: C++20 Concepts
+	static_assert(std::is_base_of<Component, Comp>::value,
+		"The Comp parameter must be a subclass of Component");
 
 	assert(IsValid(entity));
 
@@ -89,20 +104,33 @@ std::enable_if_t<std::is_base_of_v<Component<Comp>, Comp>, void> EntityRegistry:
 
 	// componentId is always incrementing.
 	if (componentId >= componentPools_.size()) {
-		componentPools_.push_back(std::make_unique<SparseEntitySet<Comp>>());
+		componentPools_.push_back(std::make_unique<SparseHashMap<Entity, Comp>>());
 	}
 
-	auto& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
+	auto& pool = *static_cast<storage_type<Comp>*>(componentPools_[componentId].get());
 
-	pool.Insert(entity, std::forward<Args>(args)...);
+	pool.Emplace(entity, std::forward<Args>(args)...);
+
 }
 
 template<typename Comp>
 void EntityRegistry::RemoveComponent()
 {
+	// TODO: C++20 Concepts
+	static_assert(std::is_base_of<Component, Comp>::value,
+		"The Comp parameter must be a subclass of Component");
 
 	const auto componentId = ClassID::Id<Comp>();
-	auto& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
+	auto& pool = *static_cast<storage_type<Comp>*>(componentPools_[componentId].get());
 
 	pool.Clear();
+
+}
+
+template<typename Comp>
+void EntityRegistry::RemoveComponent(Entity entity)
+{
+
+	throw NotImplemented();
+
 }
