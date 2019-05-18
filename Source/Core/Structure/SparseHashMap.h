@@ -45,7 +45,7 @@ private:
 	std::pair<size_t&, bool> Insert(const Key& key, size_t indirection);
 
 	bool Full() const;
-	size_t ReduceHash(const size_t hash) const;
+	size_t ReduceHash(size_t hash) const;
 	void Rehash(size_t);
 
 	std::vector<Key> keys_;
@@ -92,7 +92,7 @@ std::pair<Value&, bool> SparseHashMap<Key, Value, Hash>::Emplace(const Key& key,
 	}
 
 	size_t hash = hasher_(key);
-	size_t index = ReduceHash(hash);
+ 	size_t index = ReduceHash(hash);
 
 	for (size_t i=0; true; ++i) {
 
@@ -169,7 +169,7 @@ std::pair<size_t&, bool> SparseHashMap<Key, Value, Hash>::Insert(const Key& key,
 		index += ( hash + i * i ) % values_.size();
 
 		// Wrap to the blocksize
-		index &= blocks_.size() - 1;
+		index &= blocks_.size() * blockSize_ - 1;
 	}
 
 	//TODO: should never reach here. Error handling? Dummy return?
@@ -185,12 +185,12 @@ bool SparseHashMap<Key, Value, Hash>::Full() const {
 }
 
 template<class Key, class Value, class Hash>
-size_t SparseHashMap<Key, Value, Hash>::ReduceHash(const size_t hash) const
+size_t SparseHashMap<Key, Value, Hash>::ReduceHash(size_t hash) const
 {
 
-	auto shiftedFib = (11400714819323198485ull * hash) >> 63;
-	//TODO: verify correctness
-	return shiftedFib & (blocks_.size() * blockSize_ - 1);
+	hash ^= hash >> 7;
+	hash *= 11400714819323198485llu >> 7;
+    return hash & (blocks_.size() * blockSize_ - 1);
 
 }
 
