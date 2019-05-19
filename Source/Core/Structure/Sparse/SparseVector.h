@@ -1,7 +1,5 @@
 #pragma once
 
-#include "SparseArray.h"
-
 #include "Types.h"
 #include "Core/Structure/SparseStructure.h"
 #include "SparseBitMap.h"

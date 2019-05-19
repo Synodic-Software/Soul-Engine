@@ -5,7 +5,7 @@
 #include "SparseBitMap.h"
 #include "Core/Utility/Exception/Exception.h"
 
-#include <vector>
+#include <array>
 #include <cassert>
 
 template<class T, size_t N, size_t GroupSize>
