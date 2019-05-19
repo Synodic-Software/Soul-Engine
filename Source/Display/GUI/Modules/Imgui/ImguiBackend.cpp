@@ -88,6 +88,8 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 			if (vertexBuffer.size != vertexBufferSize) {
 
 				UpdateBufferCommand updateVertexParameters;
+				updateVertexParameters.size = vertexBufferSize;
+				updateVertexParameters.offset = 0;
 
 				commandList.UpdateBuffer(updateVertexParameters);
 
@@ -97,6 +99,8 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 			if (indexBuffer.size != indexBufferSize) {
 
 				UpdateBufferCommand updateIndexParameters;
+				updateIndexParameters.size = indexBufferSize;
+				updateIndexParameters.offset = 0;
 
 				commandList.UpdateBuffer(updateIndexParameters);
 

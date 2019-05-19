@@ -3,7 +3,7 @@
 #include "SparseArray.h"
 
 #include "Types.h"
-#include "SparseStructure.h"
+#include "Core/Structure/SparseStructure.h"
 #include "SparseBitMap.h"
 #include "Core/Utility/Exception/Exception.h"
 

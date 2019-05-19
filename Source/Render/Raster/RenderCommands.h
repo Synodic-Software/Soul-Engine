@@ -42,6 +42,9 @@ struct DrawIndirectCommand : RenderCommand {
 
 struct UpdateBufferCommand : RenderCommand {
 
+	uint size;
+	uint offset;
+
 };
 
 struct UpdateTextureCommand : RenderCommand {

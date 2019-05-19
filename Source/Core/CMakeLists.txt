@@ -46,12 +46,12 @@ target_sources(${PROJECT_NAME}
         Structure/Acceleration/LBVHManager.h
         Structure/Acceleration/Node.cpp
         Structure/Acceleration/Node.h
-        Structure/SparseArray.h
-        Structure/SparseBitMap.h
-        Structure/SparseHashMap.h
-        Structure/SparseHashSet.h
-        Structure/SparseTable.h
-        Structure/SparseVector.h
+        Structure/Sparse/SparseArray.h
+        Structure/Sparse/SparseBitMap.h
+        Structure/Sparse/SparseHashMap.h
+        Structure/Sparse/SparseHashSet.h
+        Structure/Sparse/SparseTable.h
+        Structure/Sparse/SparseVector.h
         Structure/RingBuffer.h
         Structure/Structure.h
         Structure/SparseStructure.h

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-#include "SparseStructure.h"
+#include "Core/Structure/SparseStructure.h"
 #include "SparseTable.h"
 #include "Core/Utility/Exception/Exception.h"
 
