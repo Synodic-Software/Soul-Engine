@@ -57,7 +57,9 @@ target_sources(${PROJECT_NAME}
         Structure/ExternalStructure.h
         Structure/RingBuffer.h
         Structure/Structure.h
+        Structure/StructureConcepts.h
         Structure/SparseStructure.h
+        Structure/View.h
         System/Compiler.h
         System/Platform.h
         Utility/Exception/Exception.h
