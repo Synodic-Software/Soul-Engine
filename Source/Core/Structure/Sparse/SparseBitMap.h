@@ -10,6 +10,8 @@
 #include <cassert>
 #include <memory>
 #include <type_traits>
+#include <bitset>
+#include <algorithm>
 
 
 template<class T, uint8 N>

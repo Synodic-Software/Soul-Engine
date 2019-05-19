@@ -1,9 +1,8 @@
 #pragma once
 
-#include <bitset>
-#include <array>
+#include "Structure.h"
 
-class SparseStructure{
+class SparseStructure : public Structure{
 
 public:
 
