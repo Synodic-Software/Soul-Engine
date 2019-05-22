@@ -2,6 +2,7 @@
 
 #include "Node.h"
 #include <functional>
+#include <memory>
 
 class SchedulerModule;
 

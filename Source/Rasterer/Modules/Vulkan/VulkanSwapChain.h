@@ -1,7 +1,7 @@
 #pragma once
 
 #include "VulkanPipeline.h"
-#include "VulkanFrameBuffer.h"
+#include "VulkanFramebuffer.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>

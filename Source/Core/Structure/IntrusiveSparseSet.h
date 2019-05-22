@@ -30,9 +30,9 @@ protected:
 
 };
 
-template <typename T>
+/*template <typename T>
 T& IntrusiveSparseSet<T>::operator [](uint i)
 {
 	assert(Find(i));
 	return objects_[sparse_[i]];
-}
+}*/

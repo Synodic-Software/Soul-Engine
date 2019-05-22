@@ -53,7 +53,7 @@ private:
 	size_t availableEntities_;
 	uint64 nextAvailable_;
 };
-
+/*
 template<typename Comp>
 Comp& EntityRegistry::GetComponent(Entity entity) const noexcept
 {
@@ -66,7 +66,7 @@ Comp& EntityRegistry::GetComponent(Entity entity) const noexcept
 
 	return pool[entity.GetId()];
 }
-
+*/
 template<typename... Comp>
 std::enable_if_t<bool(sizeof...(Comp) > 1), std::tuple<Comp&...>> EntityRegistry::GetComponent(
 	Entity entity) const noexcept
@@ -86,13 +86,13 @@ std::enable_if_t<std::is_base_of_v<Component<Comp>, Comp>, void> EntityRegistry:
 	const auto componentId = ClassID::Id<Comp>();
 
 	// componentId is always incrementing.
-	if (componentId >= componentPools_.size()) {
+	/*if (componentId >= componentPools_.size()) {
 		componentPools_.push_back(std::make_unique<SparseEntitySet<Comp>>());
 	}
 
 	auto& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
 
-	pool.Insert(entity, std::forward<Args>(args)...);
+	pool.Insert(entity, std::forward<Args>(args)...);*/
 }
 
 template<typename Comp>
@@ -100,7 +100,7 @@ void EntityRegistry::RemoveComponent()
 {
 
 	const auto componentId = ClassID::Id<Comp>();
-	auto& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
+	/*auto& pool = *static_cast<SparseEntitySet<Comp>*>(componentPools_[componentId].get());
 
-	pool.Clear();
+	pool.Clear();*/
 }
