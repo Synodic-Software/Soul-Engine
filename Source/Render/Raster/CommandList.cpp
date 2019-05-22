@@ -3,9 +3,8 @@
 
 #include "Render/Raster/RasterModule.h"
 
-CommandList::CommandList(std::shared_ptr<RasterModule>& rasterModule): rasterModule_(rasterModule)
+CommandList::CommandList(RasterModule* rasterModule): rasterModule_(rasterModule)
 {
-
 }
 
 void CommandList::Draw(DrawCommand& command)

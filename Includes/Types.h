@@ -3,8 +3,8 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <cstddef>
 
-//global type helpers
 using uint8 = uint8_t;
 using int8 = int8_t;
 

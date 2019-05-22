@@ -4,6 +4,10 @@
 #include "Render/Raster/RenderResource.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
 
+enum class ResourceGroupType {
+	Default
+};
+
 class RenderGraphBuilder{
 
 public:
@@ -20,8 +24,10 @@ public:
 	void CreateOutput(RenderGraphOutputParameters&);
 	void CreateInput(RenderGraphInputParameters&);
 
+	Entity CreateGroup(ResourceGroupType);
+
 	template<class T>
-	Entity Request();
+	bool Request(Entity);
 
 private:
 
@@ -30,7 +36,7 @@ private:
 };
 
 template<class T>
-Entity RenderGraphBuilder::Request()
+bool RenderGraphBuilder::Request(Entity entity)
 {
 	// TODO: C++20 Concepts
 	static_assert(std::is_base_of<RenderResource, T>::value,
@@ -39,6 +45,6 @@ Entity RenderGraphBuilder::Request()
 	Entity returnedEntity = entityRegistry_->CreateEntity();
 	entityRegistry_->AttachComponent<T>(returnedEntity);
 
-	return returnedEntity;
+	return true;
 
 }

@@ -8,7 +8,7 @@
 #include <memory>
 
 template<class T>
-class ExternalVector final : public ExternalStructure {
+class ExternalVector final : public ExternalStructure<T> {
 
 	using size_type = size_t;
 
@@ -16,11 +16,6 @@ public:
 
 	ExternalVector() = default;
 	~ExternalVector() override = default;
-
-
-private:
-
-	std::vector<T> data_;
 
 
 };

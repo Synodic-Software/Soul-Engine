@@ -20,7 +20,7 @@ void EntityRenderGraphBackend::Execute()
 	for (const auto& callback : graphTasks_) {
 
 		rasterModule_->RenderPass([&]() {
-			CommandList commandList(rasterModule_);
+			CommandList commandList(rasterModule_.get());
 			callback(*entityRegistry_, commandList);
 		});
 

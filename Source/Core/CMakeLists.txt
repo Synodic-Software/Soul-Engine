@@ -60,6 +60,7 @@ target_sources(${PROJECT_NAME}
         Structure/StructureConcepts.h
         Structure/SparseStructure.h
         Structure/View.h
+        Structure/Span.h
         System/Compiler.h
         System/Platform.h
         Utility/Exception/Exception.h

@@ -12,7 +12,7 @@ class CommandList {
 
 public:
 
-	CommandList(std::shared_ptr<RasterModule>&);
+	CommandList(RasterModule*);
 
 	// Agnostic raster API interface
 	void Draw(DrawCommand&);
@@ -25,6 +25,6 @@ public:
 
 private:
 
-	std::shared_ptr<RasterModule> rasterModule_;
+	RasterModule* rasterModule_;
 
 };

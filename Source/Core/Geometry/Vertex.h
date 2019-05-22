@@ -23,3 +23,17 @@ public:
 	uint object;
 
 };
+
+class RenderVertex : Component {
+
+public:
+
+	RenderVertex() = default;
+	~RenderVertex() = default;
+
+
+	glm::vec3 position;
+	glm::vec4 colour;
+	glm::vec2 textureCoord;
+
+};

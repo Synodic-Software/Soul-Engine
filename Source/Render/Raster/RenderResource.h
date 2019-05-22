@@ -2,7 +2,11 @@
 
 #include "Types.h"
 #include "Core/Composition/Component/Component.h"
-class RenderResource : Component{
+#include "Core/Structure/External/ExternalVector.h"
+#include "Core/Structure/External/ExternalArray.h"
+#include "Core/Geometry/Vertex.h"
+
+class RenderResource : public Component {
 
 public:
 
@@ -11,18 +15,53 @@ public:
 
 };
 
-struct Buffer : RenderResource {
+class RenderView : public RenderResource {
 
 public:
 
-	uint size;
+	float width;
+	float height;
+	float minDepth;
+	float maxDepth;
 
 };
 
-struct VertexBuffer : Buffer {
+class Buffer : public RenderResource {
+};
+
+class VertexBuffer : public  Buffer{
+
+public:
+
+	nonstd::span<RenderVertex> vertices;
 
 };
 
-struct IndexBuffer : Buffer {
+//TODO: variable index sizes
+class IndexBuffer : public Buffer {
+
+public:
+
+	nonstd::span<uint16> indices;
+
+};
+
+template<class T>
+class UniformBuffer : Buffer{
+public:
+};
+
+
+//TODO: make constant
+//N = Number of bytes
+template<class T>
+class PushConstant : Buffer {
+
+public:
+
+	PushConstant() = default;
+	~PushConstant() = default;
+
+	T* pushConstant;
 
 };

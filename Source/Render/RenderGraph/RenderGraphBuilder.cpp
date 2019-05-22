@@ -12,3 +12,11 @@ void RenderGraphBuilder::CreateOutput(RenderGraphOutputParameters&)
 void RenderGraphBuilder::CreateInput(RenderGraphInputParameters&)
 {
 }
+
+Entity RenderGraphBuilder::CreateGroup(ResourceGroupType type)
+{
+
+	Entity entity = entityRegistry_->CreateEntity();
+	return entity;
+
+}

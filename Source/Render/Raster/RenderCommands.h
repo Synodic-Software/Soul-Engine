@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-#include "Render/Raster/RenderResource.h"
+#include "Core/Composition/Entity/Entity.h"
 
 class RenderCommand{
 
@@ -9,12 +9,6 @@ public:
 
 	RenderCommand() = default;
 	~RenderCommand() = default;
-
-	RenderCommand(const RenderCommand&) = default;
-	RenderCommand(RenderCommand &&) noexcept = default;
-
-	RenderCommand& operator=(const RenderCommand&) = default;
-	RenderCommand& operator=(RenderCommand &&) noexcept = default;
 
 
 };
@@ -31,8 +25,8 @@ struct DrawCommand : RenderCommand {
 	glm::uvec2 scissorExtent;
 
 	//data
-	VertexBuffer vertexBuffer;
-	IndexBuffer indexBuffer;
+	Entity vertexBuffer;
+	Entity indexBuffer;
 
 };
 
