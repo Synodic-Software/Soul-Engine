@@ -2,6 +2,7 @@
 
 #include "WindowParameters.h"
 #include "GLFWWindow.h"
+#include "GLFWMonitor.h"
 #include "Core/Utility/Exception/Exception.h"
 #include "Display/Input/Modules/GLFW/GLFWInputBackend.h"
 
@@ -28,13 +29,12 @@ GLFWWindowBackend::GLFWWindowBackend(std::shared_ptr<InputModule>& inputModule):
 	// Raster API specific checks
 	assert(glfwVulkanSupported());
 
-	// TODO: std::span
 	int monitorCount;
 	GLFWmonitor** tempMonitors = glfwGetMonitors(&monitorCount);
 	monitors_.reserve(monitorCount);
 
 	for (auto i = 0; i < monitorCount; ++i) {
-		monitors_.push_back(tempMonitors[i]);
+		monitors_.emplace_back(tempMonitors[i]);
 	}
 
 	// Global GLFW window settings
@@ -75,7 +75,7 @@ void GLFWWindowBackend::CreateWindow(const WindowParameters& params,
 
 	assert(params.monitor < static_cast<int>(monitors_.size()));
 
-	GLFWmonitor* monitor = monitors_[params.monitor];
+	GLFWMonitor& monitor = monitors_[params.monitor];
 
 
 	std::unique_ptr<GLFWWindow> window =

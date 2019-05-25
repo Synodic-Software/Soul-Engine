@@ -7,6 +7,7 @@
 
 struct GLFWmonitor;
 struct GLFWwindow;
+class GLFWMonitor;
 class RasterModule;
 class RasterBackend;
 
@@ -14,7 +15,7 @@ class GLFWWindow final : public Window, TypeID<GLFWWindow> {
 
 public:
 
-	GLFWWindow(const WindowParameters&, GLFWmonitor*, std::shared_ptr<RasterModule>, bool);
+	GLFWWindow(const WindowParameters&, GLFWMonitor&, std::shared_ptr<RasterModule>, bool);
 	~GLFWWindow() override;
 
 	GLFWWindow(const GLFWWindow &) = delete;

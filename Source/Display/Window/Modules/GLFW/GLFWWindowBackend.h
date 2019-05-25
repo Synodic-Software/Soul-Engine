@@ -4,9 +4,9 @@
 
 #include <unordered_map>
 
-struct GLFWmonitor;
 struct GLFWwindow;
 class GLFWWindow;
+class GLFWMonitor;
 class WindowParameters;
 class VulkanRasterBackend;
 class GLFWInputBackend;
@@ -48,8 +48,7 @@ private:
 
 	GLFWWindow& GetWindow(GLFWwindow*);
 
-	//TODO: Replace with std::span as GLFW owns and manages the monitors - C++20
-	std::vector<GLFWmonitor*> monitors_;
+	std::vector<GLFWMonitor> monitors_;
 	std::unordered_map<GLFWwindow*, std::unique_ptr<GLFWWindow>> windows_;
 
 	// Luxery of having the Input system be GLFW
