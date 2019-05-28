@@ -29,6 +29,7 @@ GLFWWindowBackend::GLFWWindowBackend(std::shared_ptr<InputModule>& inputModule):
 	// Raster API specific checks
 	assert(glfwVulkanSupported());
 
+	// TODO: std::span
 	int monitorCount;
 	GLFWmonitor** tempMonitors = glfwGetMonitors(&monitorCount);
 	monitors_.reserve(monitorCount);
