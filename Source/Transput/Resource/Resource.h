@@ -12,7 +12,7 @@ class Resource {
 	
 public:
 
-	constexpr Resource(std::string_view);
+	Resource(std::string_view);
 	~Resource() = default;
 
     const std::filesystem::path& Path() const;
@@ -24,9 +24,3 @@ private:
 
 
 };
-
-constexpr Resource::Resource(const std::string_view resourcePath) : 
-    path_(resourcePath) 
-{
-
-}

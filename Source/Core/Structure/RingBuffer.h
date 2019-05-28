@@ -69,7 +69,7 @@ inline bool RingBuffer<T, Capacity>::operator==(const RingBuffer & other)
 		return false;
 	}
 	for (int i = 0; i < this->size_; ++i) {
-		if (this->data_[i] != other.data_[i]) return false
+		if (this->data_[i] != other.data_[i]) return false;
 	}
 	return true;
 }
@@ -81,7 +81,7 @@ inline bool RingBuffer<T, Capacity>::operator==(RingBuffer & other)
 		return false;
 	}
 	for (int i = 0; i < this->size_; ++i) {
-		if (this->data_[i] != other.data_[i]) return false
+		if (this->data_[i] != other.data_[i]) return false;
 	}
 	return true;
 }

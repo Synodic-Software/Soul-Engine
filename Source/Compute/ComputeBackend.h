@@ -30,6 +30,6 @@ void ComputeBackend<T>::Launch(const ComputePolicy& policy,
 	const KernelFunction& kernel,
 	Args&&... parameters) {
 
-	Type()->Launch(policy, kernel, std::forward<Args>(parameters)...);
+	this->Type()->Launch(policy, kernel, std::forward<Args>(parameters)...);
 
 }

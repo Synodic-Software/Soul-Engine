@@ -42,6 +42,6 @@ Window& MockWindowBackend::GetWindow()
 
 	throw NotImplemented();
 
-	return MockWindow();
+//	return MockWindow();
 
 }
