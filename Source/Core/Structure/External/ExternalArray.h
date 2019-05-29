@@ -8,7 +8,7 @@
 #include <cassert>
 
 template<class T, size_t N>
-class ExternalArray final : public ExternalStructure<T> {
+class ExternalArray : public ExternalStructure<T> {
 
 	using size_type = size_t;
 

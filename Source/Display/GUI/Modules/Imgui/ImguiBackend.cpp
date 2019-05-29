@@ -60,7 +60,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 		builder.Request<VertexBuffer>(resources);
 		builder.Request<IndexBuffer>(resources);
-		builder.Request<PushConstant<PushBlock>>(resources);
+		builder.Request<PushBuffer>(resources);
 		builder.Request<RenderView>(resources);
 
 		RenderGraphOutputParameters outputParams;
@@ -70,7 +70,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
 			auto& renderView = registry.GetComponent<RenderView>(resources);
-			auto& pushConstant = registry.GetComponent<PushConstant<PushBlock>>(resources);
+			auto& pushConstant = registry.GetComponent<PushBuffer>(resources);
 
 			// Input
 			{

@@ -8,7 +8,7 @@
 #include <memory>
 
 template<class T>
-class ExternalVector final : public ExternalStructure<T> {
+class ExternalVector : public ExternalStructure<T> {
 
 	using size_type = size_t;
 

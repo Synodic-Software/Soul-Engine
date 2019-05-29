@@ -3,6 +3,7 @@
 #include "RenderGraphParameters.h"
 #include "Render/Raster/RenderResource.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
+#include "Render/Raster/RasterModule.h"
 
 enum class ResourceGroupType {
 	Default
@@ -12,7 +13,7 @@ class RenderGraphBuilder{
 
 public:
 
-	RenderGraphBuilder(std::shared_ptr<EntityRegistry>&);
+	RenderGraphBuilder(std::shared_ptr<RasterModule>&, std::shared_ptr<EntityRegistry>&);
 	virtual ~RenderGraphBuilder() = default;
 
 	RenderGraphBuilder(const RenderGraphBuilder &) = delete;
@@ -32,6 +33,7 @@ public:
 private:
 
 	std::shared_ptr<EntityRegistry> entityRegistry_;
+	std::shared_ptr<RasterModule> rasterModule_;
 
 };
 
@@ -41,6 +43,9 @@ bool RenderGraphBuilder::Request(Entity entity)
 	// TODO: C++20 Concepts
 	static_assert(std::is_base_of<RenderResource, T>::value,
 		"The type parameter must be a subclass of RenderResource"); 
+
+
+
 
 	Entity returnedEntity = entityRegistry_->CreateEntity();
 	entityRegistry_->AttachComponent<T>(returnedEntity);

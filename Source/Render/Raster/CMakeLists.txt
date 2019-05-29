@@ -23,6 +23,7 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/VulkanRasterBackend.h
         Modules/Vulkan/VulkanRenderPass.cpp
         Modules/Vulkan/VulkanRenderPass.h
+        Modules/Vulkan/VulkanResources.h
         Modules/Vulkan/VulkanShader.cpp
         Modules/Vulkan/VulkanShader.h
         Modules/Vulkan/VulkanSwapChain.cpp

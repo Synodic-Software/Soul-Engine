@@ -29,39 +29,37 @@ public:
 class Buffer : public RenderResource {
 };
 
-class VertexBuffer : public  Buffer{
+class VertexBuffer final : public  Buffer, ExternalVector<RenderVertex>{
 
 public:
-
-	nonstd::span<RenderVertex> vertices;
-
-};
-
-//TODO: variable index sizes
-class IndexBuffer : public Buffer {
-
-public:
-
-	nonstd::span<uint16> indices;
 
 };
 
 template<class T>
-class UniformBuffer : Buffer{
+class IndexBuffer final : public Buffer {
+
+	static_assert(std::is_integral<float>::value, "Type T must be an integral type.");
+
 public:
+
 };
 
-
-//TODO: make constant
-//N = Number of bytes
 template<class T>
-class PushConstant : Buffer {
+class UniformBuffer final : Buffer {
 
 public:
 
-	PushConstant() = default;
-	~PushConstant() = default;
+};
 
-	T* pushConstant;
+template<class T>
+class PushBuffer final : Buffer {
 
+public:
+
+};
+
+template<class T>
+class StorageBuffer final : Buffer {
+
+public:
 };

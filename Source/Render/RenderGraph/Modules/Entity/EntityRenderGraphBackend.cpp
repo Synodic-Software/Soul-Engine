@@ -10,7 +10,7 @@ EntityRenderGraphBackend::EntityRenderGraphBackend(
 	RenderGraphModule(rasterModule, scheduler),
 	rasterModule_(rasterModule), 
 	entityRegistry_(new EntityRegistry),
-	builder_(entityRegistry_)
+	builder_(rasterModule_, entityRegistry_)
 {
 }
 

@@ -4,6 +4,7 @@
 
 #include "Types.h"
 #include "RenderCommands.h"
+#include "RenderResource.h"
 
 #include <memory>
 #include <any>
@@ -46,9 +47,23 @@ public:
 	virtual void CopyBuffer(CopyBufferCommand&) = 0;
 	virtual void CopyTexture(CopyTextureCommand&) = 0;
 
+	//Resource Creation
+	VertexBuffer CreateVertexBuffer();
+	template<class T>
+	IndexBuffer<T> CreateIndexBuffer();
+	template<class T>
+	UniformBuffer<T> CreateUniformBuffer();
+	template<class T>
+	PushBuffer<T> CreatePushConstant();
+	template<class T>
+	StorageBuffer<T> CreateStorageBuffer();
 
 	//Factory
 	static std::shared_ptr<RasterModule> CreateModule(std::shared_ptr<SchedulerModule>&,
 		std::shared_ptr<WindowModule>&);
+
+protected:
+
+	std::any 
 
 };
