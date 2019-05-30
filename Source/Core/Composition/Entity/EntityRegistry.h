@@ -61,7 +61,7 @@ private:
 
 
 };
-
+/*
 template<typename Comp>
 Comp& EntityRegistry::GetComponent(Entity entity) const noexcept
 {
@@ -78,7 +78,7 @@ Comp& EntityRegistry::GetComponent(Entity entity) const noexcept
 	return pool[entity];
 
 }
-
+*/
 template<typename... Comp>
 std::enable_if_t<bool(sizeof...(Comp) > 1), std::tuple<Comp&...>> EntityRegistry::GetComponent(
 	Entity entity) const noexcept

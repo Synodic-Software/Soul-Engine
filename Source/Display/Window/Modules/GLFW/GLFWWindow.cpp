@@ -1,5 +1,7 @@
 #include "GLFWWindow.h"
 
+
+#include "GLFWMonitor.h"
 #include "Render/Raster/RasterModule.h"
 #include "Render/Raster/Modules/Vulkan/VulkanRasterBackend.h"
 
@@ -8,19 +10,20 @@
 #include <any>
 
 GLFWWindow::GLFWWindow(const WindowParameters& params,
-	GLFWmonitor* monitor,
+	GLFWMonitor& monitor,
 	std::shared_ptr<RasterModule> rasterModule,
 	bool master):
 	Window(params),
 	rasterModule_(rasterModule), master_(master)
 {
+	int redBits, greenBits, blueBits, refreshRate;
+	monitor.ColorBits(redBits, greenBits, blueBits);
+	monitor.RefreshRate(refreshRate);
 
-	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+	glfwWindowHint(GLFW_RED_BITS, redBits);
+	glfwWindowHint(GLFW_GREEN_BITS, greenBits);
+	glfwWindowHint(GLFW_BLUE_BITS, blueBits);
+	glfwWindowHint(GLFW_REFRESH_RATE, refreshRate);
 
 	// TODO Cleanup and implement more features
 
@@ -34,7 +37,7 @@ GLFWWindow::GLFWWindow(const WindowParameters& params,
 		glfwWindowHint(GLFW_RESIZABLE, false);
 		glfwWindowHint(GLFW_DECORATED, false);
 
-		fullscreenMonitor = monitor;
+		fullscreenMonitor = monitor.monitor_;
 	}
 	else if (windowParams_.type == WindowType::WINDOWED) {
 
