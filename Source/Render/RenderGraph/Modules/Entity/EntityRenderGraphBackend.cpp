@@ -29,7 +29,7 @@ void EntityRenderGraphBackend::Execute()
 }
 
 
-void EntityRenderGraphBackend::CreateTask(RenderTaskParameters& parameters,
+void EntityRenderGraphBackend::CreateRenderPass(RenderTaskParameters& parameters,
 	std::function<std::function<void(const EntityRegistry&, CommandList&)>(RenderGraphBuilder&)>
 		passCallback)
 {

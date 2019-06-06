@@ -20,7 +20,7 @@ public:
 
 	void Execute() override;
 
-	void CreateTask(RenderTaskParameters&,
+	void CreateRenderPass(RenderTaskParameters&,
 		std::function<std::function<void(const EntityRegistry&, CommandList&)>(RenderGraphBuilder&)>)
 		override;
 

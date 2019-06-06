@@ -49,21 +49,13 @@ public:
 
 	//Resource Creation
 	VertexBuffer CreateVertexBuffer();
-	template<class T>
-	IndexBuffer<T> CreateIndexBuffer();
-	template<class T>
-	UniformBuffer<T> CreateUniformBuffer();
-	template<class T>
-	PushBuffer<T> CreatePushConstant();
-	template<class T>
-	StorageBuffer<T> CreateStorageBuffer();
+	IndexBuffer CreateIndexBuffer();
+	UniformBuffer CreateUniformBuffer();
+	PushBuffer CreatePushConstant();
+	StorageBuffer CreateStorageBuffer();
 
 	//Factory
 	static std::shared_ptr<RasterModule> CreateModule(std::shared_ptr<SchedulerModule>&,
 		std::shared_ptr<WindowModule>&);
-
-protected:
-
-	std::any 
 
 };

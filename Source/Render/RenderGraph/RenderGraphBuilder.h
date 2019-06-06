@@ -5,10 +5,6 @@
 #include "Core/Composition/Entity/EntityRegistry.h"
 #include "Render/Raster/RasterModule.h"
 
-enum class ResourceGroupType {
-	Default
-};
-
 class RenderGraphBuilder{
 
 public:
@@ -25,10 +21,8 @@ public:
 	void CreateOutput(RenderGraphOutputParameters&);
 	void CreateInput(RenderGraphInputParameters&);
 
-	Entity CreateGroup(ResourceGroupType);
-
 	template<class T>
-	bool Request(Entity);
+	Entity Request();
 
 private:
 
@@ -38,18 +32,16 @@ private:
 };
 
 template<class T>
-bool RenderGraphBuilder::Request(Entity entity)
+Entity RenderGraphBuilder::Request()
 {
 	// TODO: C++20 Concepts
 	static_assert(std::is_base_of<RenderResource, T>::value,
 		"The type parameter must be a subclass of RenderResource"); 
 
 
-
-
 	Entity returnedEntity = entityRegistry_->CreateEntity();
 	entityRegistry_->AttachComponent<T>(returnedEntity);
 
-	return true;
+	return returnedEntity;
 
 }

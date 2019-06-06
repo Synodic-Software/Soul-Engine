@@ -36,8 +36,8 @@ struct DrawIndirectCommand : RenderCommand {
 
 struct UpdateBufferCommand : RenderCommand {
 
-	uint size;
 	uint offset;
+	nonstd::span<std::byte> data;
 
 };
 

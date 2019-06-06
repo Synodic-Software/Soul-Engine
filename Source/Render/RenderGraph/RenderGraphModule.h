@@ -32,7 +32,7 @@ public:
 
 	virtual void Execute() = 0;
 
-	virtual void CreateTask(RenderTaskParameters&,
+	virtual void CreateRenderPass(RenderTaskParameters&,
 		std::function<std::function<void(const EntityRegistry&, CommandList&)>(RenderGraphBuilder&)>) = 0;
 
 	// Factory

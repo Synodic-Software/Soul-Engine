@@ -27,39 +27,24 @@ public:
 };
 
 class Buffer : public RenderResource {
-};
-
-class VertexBuffer final : public  Buffer, ExternalVector<RenderVertex>{
 
 public:
 
-};
-
-template<class T>
-class IndexBuffer final : public Buffer {
-
-	static_assert(std::is_integral<float>::value, "Type T must be an integral type.");
-
-public:
+	uint size;
 
 };
 
-template<class T>
-class UniformBuffer final : Buffer {
-
-public:
-
+class VertexBuffer : public Buffer{
 };
 
-template<class T>
-class PushBuffer final : Buffer {
-
-public:
-
+class IndexBuffer : public Buffer {
 };
 
-template<class T>
-class StorageBuffer final : Buffer {
+class UniformBuffer : Buffer {
+};
 
-public:
+class PushBuffer : Buffer {
+};
+
+class StorageBuffer : Buffer {
 };

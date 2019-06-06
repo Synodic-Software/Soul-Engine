@@ -15,10 +15,7 @@ void RenderGraphBuilder::CreateInput(RenderGraphInputParameters&)
 {
 }
 
-Entity RenderGraphBuilder::CreateGroup(ResourceGroupType type)
+void CreateSubPass()
 {
-
-	Entity entity = entityRegistry_->CreateEntity();
-	return entity;
 
 }

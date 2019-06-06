@@ -6,6 +6,7 @@
 #include "Display/Input/InputModule.h"
 #include "Render/RenderGraph/RenderGraphModule.h"
 
+#define IMGUI_USER_CONFIG "ImguiConfig.h"
 #include <imgui.h>
 
 struct PushBlock {
@@ -55,13 +56,14 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	RenderTaskParameters params;
 	params.name = "GUI";
 
-	renderGraphModule_->CreateTask(params, [](RenderGraphBuilder& builder) {
-		Entity resources = builder.CreateGroup(ResourceGroupType::Default);
+	renderGraphModule_->CreateRenderPass(params, [](RenderGraphBuilder& builder) {
 
-		builder.Request<VertexBuffer>(resources);
-		builder.Request<IndexBuffer>(resources);
-		builder.Request<PushBuffer>(resources);
-		builder.Request<RenderView>(resources);
+		Entity vertexBufferResource = builder.Request<VertexBuffer>();
+		Entity indexBufferResource = builder.Request<IndexBuffer>();
+		Entity pushBufferResource = builder.Request<PushBlock>();
+
+		//TODO: Should not be a resource
+		Entity renderViewResource = builder.Request<RenderView>();
 
 		RenderGraphOutputParameters outputParams;
 		outputParams.name = "Final";
@@ -69,8 +71,8 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 		builder.CreateOutput(outputParams);
 
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
-			auto& renderView = registry.GetComponent<RenderView>(resources);
-			auto& pushConstant = registry.GetComponent<PushBuffer>(resources);
+			auto& renderView = registry.GetComponent<RenderView>(renderViewResource);
+			auto& pushBuffer = registry.GetComponent<PushBuffer>(pushBufferResource);
 
 			// Input
 			{
@@ -85,7 +87,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 				pushBlock.translate = glm::vec2(-1.0f);
 
 				UpdateBufferCommand updatePushParameters;
-				pushConstant;
+				pushBuffer;
 
 				commandList.UpdateBuffer(updatePushParameters);
 			}
@@ -97,8 +99,8 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 				return;
 			}
 
-			auto& vertexBuffer = registry.GetComponent<VertexBuffer>(resources);
-			auto& indexBuffer = registry.GetComponent<IndexBuffer>(resources);
+			auto& vertexBuffer = registry.GetComponent<VertexBuffer>(vertexBufferResource);
+			auto& indexBuffer = registry.GetComponent<IndexBuffer>(indexBufferResource);
 
 			// Push the data to the buffers
 			{
@@ -167,8 +169,8 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 						drawParameters.scissorExtent = {command->ClipRect.z - command->ClipRect.x,
 							command->ClipRect.w - command->ClipRect.y};
 
-						drawParameters.vertexBuffer = resources;
-						drawParameters.indexBuffer = resources;
+						drawParameters.vertexBuffer = vertexBufferResource;
+						drawParameters.indexBuffer = indexBufferResource;
 
 						commandList.Draw(drawParameters);
 
