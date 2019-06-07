@@ -19,11 +19,11 @@ void EntityRenderGraphBackend::Execute()
 
 	for (const auto& callback : graphTasks_) {
 
-		rasterModule_->RenderPass([&]() {
-			CommandList commandList;
-			callback(*entityRegistry_, commandList);
-			return commandList;
-		});
+		CommandList commandList;
+		callback(*entityRegistry_, commandList);
+
+		rasterModule_->Compile(commandList);
+		rasterModule_->ExecutePass(commandList);
 
 	}
 

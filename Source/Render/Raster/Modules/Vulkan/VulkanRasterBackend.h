@@ -31,14 +31,13 @@ public:
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
 
 	void Render() override;
-	void RenderPass(std::function<CommandList()>) override;
+	void ExecutePass(CommandList&) override;
 
 	uint RegisterSurface(std::any, glm::uvec2) override;
 	void UpdateSurface(uint, glm::uvec2) override;
 	void RemoveSurface(uint) override;
 
-	void CompileCommands(CommandList&) override;
-	void ExecuteCommands(CommandList&) override;
+	void Compile(CommandList&) override;
 
 
 	vk::Instance& GetInstance();

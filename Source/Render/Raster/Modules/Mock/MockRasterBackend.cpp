@@ -10,7 +10,7 @@ void MockRasterBackend::Render()
 
 }
 
-void MockRasterBackend::RenderPass(std::function<CommandList()>)
+void MockRasterBackend::ExecutePass(CommandList&)
 {
 
 	throw NotImplemented();
@@ -38,14 +38,7 @@ void MockRasterBackend::RemoveSurface(uint surface)
 
 }
 
-void MockRasterBackend::CompileCommands(CommandList&)
-{
-
-	throw NotImplemented();
-
-}
-
-void MockRasterBackend::ExecuteCommands(CommandList&)
+void MockRasterBackend::Compile(CommandList&)
 {
 
 	throw NotImplemented();
