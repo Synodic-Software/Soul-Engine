@@ -57,12 +57,11 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	params.name = "GUI";
 
 	renderGraphModule_->CreateRenderPass(params, [](RenderGraphBuilder& builder) {
+
 		Entity vertexBufferResource = builder.Request<VertexBuffer>();
 		Entity indexBufferResource = builder.Request<IndexBuffer>();
 		Entity pushBufferResource = builder.Request<PushBuffer>();
-
-		// TODO: Should not be a resource
-		//Entity renderViewResource = builder.Request<RenderView>();
+		Entity renderViewResource = builder.Request<RenderView>();
 
 		RenderGraphOutputParameters outputParams;
 		outputParams.name = "Final";
@@ -70,17 +69,17 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 		builder.CreateOutput(outputParams);
 
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
-			//auto& renderView = registry.GetComponent<RenderView>(renderViewResource);
+			auto& renderView = registry.GetComponent<RenderView>(renderViewResource);
 			auto& pushBuffer = registry.GetComponent<PushBuffer>(pushBufferResource);
 
 			// Input
 			{
 
 				ImGuiIO& io = ImGui::GetIO();
-				/*renderView.width = io.DisplaySize.x;
+				renderView.width = io.DisplaySize.x;
 				renderView.height = io.DisplaySize.y;
 				renderView.minDepth = 0.0f;
-				renderView.maxDepth = 1.0f;*/
+				renderView.maxDepth = 1.0f;
 
 				pushBlock.scale = glm::vec2(2.0f / io.DisplaySize.x, 2.0f / io.DisplaySize.y);
 				pushBlock.translate = glm::vec2(-1.0f);

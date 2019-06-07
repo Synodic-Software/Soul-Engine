@@ -13,7 +13,7 @@ public:
 
 };
 
-class RenderView {
+class RenderView : public RenderResource {
 
 public:
 
@@ -72,6 +72,7 @@ public:
 };
 
 class StorageBuffer : public Buffer {
+
 
 public:
 
