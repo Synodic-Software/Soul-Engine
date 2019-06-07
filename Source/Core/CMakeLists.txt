@@ -46,8 +46,7 @@ target_sources(${PROJECT_NAME}
         Structure/Acceleration/LBVHManager.h
         Structure/Acceleration/Node.cpp
         Structure/Acceleration/Node.h
-        Structure/External/ExternalArray.h
-        Structure/External/ExternalVector.h
+        Structure/External/ExternalBuffer.h
         Structure/Sparse/SparseArray.h
         Structure/Sparse/SparseBitMap.h
         Structure/Sparse/SparseHashMap.h

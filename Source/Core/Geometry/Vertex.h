@@ -24,16 +24,16 @@ public:
 
 };
 
-class RenderVertex : Component {
+class GUIVertex : Component {
 
 public:
 
-	RenderVertex() = default;
-	~RenderVertex() = default;
+	GUIVertex() = default;
+	~GUIVertex() = default;
 
 
-	glm::vec3 position;
-	glm::vec4 colour;
+	glm::vec2 position;
 	glm::vec2 textureCoord;
+	uint colour;
 
 };

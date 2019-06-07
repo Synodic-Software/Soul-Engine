@@ -57,13 +57,12 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	params.name = "GUI";
 
 	renderGraphModule_->CreateRenderPass(params, [](RenderGraphBuilder& builder) {
-
 		Entity vertexBufferResource = builder.Request<VertexBuffer>();
 		Entity indexBufferResource = builder.Request<IndexBuffer>();
-		Entity pushBufferResource = builder.Request<PushBlock>();
+		Entity pushBufferResource = builder.Request<PushBuffer>();
 
-		//TODO: Should not be a resource
-		Entity renderViewResource = builder.Request<RenderView>();
+		// TODO: Should not be a resource
+		//Entity renderViewResource = builder.Request<RenderView>();
 
 		RenderGraphOutputParameters outputParams;
 		outputParams.name = "Final";
@@ -71,17 +70,17 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 		builder.CreateOutput(outputParams);
 
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
-			auto& renderView = registry.GetComponent<RenderView>(renderViewResource);
+			//auto& renderView = registry.GetComponent<RenderView>(renderViewResource);
 			auto& pushBuffer = registry.GetComponent<PushBuffer>(pushBufferResource);
 
 			// Input
 			{
 
 				ImGuiIO& io = ImGui::GetIO();
-				renderView.width = io.DisplaySize.x;
+				/*renderView.width = io.DisplaySize.x;
 				renderView.height = io.DisplaySize.y;
 				renderView.minDepth = 0.0f;
-				renderView.maxDepth = 1.0f;
+				renderView.maxDepth = 1.0f;*/
 
 				pushBlock.scale = glm::vec2(2.0f / io.DisplaySize.x, 2.0f / io.DisplaySize.y);
 				pushBlock.translate = glm::vec2(-1.0f);
@@ -104,46 +103,31 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 			// Push the data to the buffers
 			{
-				UpdateBufferCommand updateVertexParameters;
-				updateVertexParameters.size = drawData->TotalVtxCount;
-				updateVertexParameters.offset = 0;
-
-				UpdateBufferCommand updateIndexParameters;
-				updateIndexParameters.size = drawData->TotalIdxCount;
-				updateIndexParameters.offset = 0;
-
-
-				nonstd::span<RenderVertex> vtxDst = vertexBuffer.vertices;
-				auto vtxOffest = 0;
-				nonstd::span<uint16> idxDst = indexBuffer.indices;
-				auto idxOffest = 0;
+				auto vertexOffset = 0;
+				auto indexOffset = 0;
 
 				for (int32 i = 0; i < drawData->CmdListsCount; i++) {
 
 					const ImDrawList* imguiCommand = drawData->CmdLists[i];
 
-					for (int v = 0; v < imguiCommand->VtxBuffer.Size; ++v) {
+					UpdateBufferCommand updateVertexParameters;
+					updateVertexParameters.buffer = vertexBufferResource;
+					updateVertexParameters.data = nonstd::as_writeable_bytes(
+						nonstd::span(imguiCommand->VtxBuffer.Data, imguiCommand->VtxBuffer.Size));
+					updateVertexParameters.offset = vertexOffset;
+					commandList.UpdateBuffer(updateVertexParameters);
 
-						//TODO: Refactor datatypes
-						vtxDst[vtxOffest + v].position = glm::vec3(
-							imguiCommand->VtxBuffer[v].pos.x, imguiCommand->VtxBuffer[v].pos.y, 0.0f);
-						vtxDst[vtxOffest + v].textureCoord = glm::vec2(
-							imguiCommand->VtxBuffer[v].uv.x, imguiCommand->VtxBuffer[v].uv.y);
-						vtxDst[vtxOffest + v].colour = glm::vec4(imguiCommand->VtxBuffer[v].col/255.0f);
+					UpdateBufferCommand updateIndexParameters;
+					updateIndexParameters.buffer = indexBufferResource;
 
-					}
+					updateIndexParameters.data = nonstd::as_writeable_bytes(nonstd::span(
+						imguiCommand->IdxBuffer.Data, imguiCommand->IdxBuffer.Size));
+					updateIndexParameters.offset = indexOffset;
+					commandList.UpdateBuffer(updateIndexParameters);
 
-					auto beginIterator = imguiCommand->IdxBuffer.begin() + idxOffest;
-					std::copy(beginIterator, beginIterator + imguiCommand->IdxBuffer.Size,
-						idxDst.begin() + idxOffest);
-
-					vtxOffest += imguiCommand->VtxBuffer.Size;
-					idxOffest += imguiCommand->IdxBuffer.Size;
+					vertexOffset += imguiCommand->VtxBuffer.Size;
+					indexOffset += imguiCommand->IdxBuffer.Size;
 				}
-
-				// Buffer processing
-				commandList.UpdateBuffer(updateVertexParameters);
-				commandList.UpdateBuffer(updateIndexParameters);
 			}
 
 			// Drawing

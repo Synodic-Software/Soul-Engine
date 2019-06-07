@@ -2,6 +2,7 @@
 
 #include "Types.h"
 #include "Core/Composition/Entity/Entity.h"
+#include "Core/Structure/External/ExternalBuffer.h"
 
 class RenderCommand{
 
@@ -37,7 +38,8 @@ struct DrawIndirectCommand : RenderCommand {
 struct UpdateBufferCommand : RenderCommand {
 
 	uint offset;
-	nonstd::span<std::byte> data;
+	ExternalBuffer<std::byte> data;
+	Entity buffer;
 
 };
 

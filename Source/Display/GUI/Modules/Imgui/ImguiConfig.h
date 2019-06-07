@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Types.h"
+
 #define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
 
 #define IM_VEC2_CLASS_EXTRA                                                 \
@@ -21,3 +23,5 @@
 	{                              \
 		return glm::vec4(x, y, z, w); \
 	}
+
+#define ImDrawIdx uint32

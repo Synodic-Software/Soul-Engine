@@ -2,8 +2,6 @@
 
 #include "Types.h"
 #include "Core/Composition/Component/Component.h"
-#include "Core/Structure/External/ExternalVector.h"
-#include "Core/Structure/External/ExternalArray.h"
 #include "Core/Geometry/Vertex.h"
 
 class RenderResource : public Component {
@@ -15,7 +13,7 @@ public:
 
 };
 
-class RenderView : public RenderResource {
+class RenderView {
 
 public:
 
@@ -30,21 +28,54 @@ class Buffer : public RenderResource {
 
 public:
 
+	Buffer() = default;
+	~Buffer() = default;
+
 	uint size;
 
 };
 
 class VertexBuffer : public Buffer{
+
+public:
+
+	VertexBuffer() = default;
+	~VertexBuffer() = default;
+
 };
 
 class IndexBuffer : public Buffer {
+
+public:
+
+	IndexBuffer() = default;
+	~IndexBuffer() = default;
+
 };
 
-class UniformBuffer : Buffer {
+class UniformBuffer : public Buffer {
+
+public:
+
+	UniformBuffer() = default;
+	~UniformBuffer() = default;
+
 };
 
-class PushBuffer : Buffer {
+class PushBuffer : public Buffer {
+
+public:
+
+	PushBuffer() = default;
+	~PushBuffer() = default;
+
 };
 
-class StorageBuffer : Buffer {
+class StorageBuffer : public Buffer {
+
+public:
+
+	StorageBuffer() = default;
+	~StorageBuffer() = default;
+
 };

@@ -64,7 +64,7 @@ public:
 	 * @returns	A pair;
 	 */
 
-	std::pair<T&, bool> Insert(size_t index, const T& value);
+	std::pair<T&, bool> Insert(size_type index, const T& value);
 
 	void Clear();
 
@@ -115,14 +115,15 @@ std::pair<T&, bool> SparseBitMap<T, N>::Emplace(size_type index, Args&&... args)
 	mask = ~(~mask << index) & mapping_;
 
 	// TODO: Replace with `popcount`
-	size_type pos = mask.count();
+	size_type pos = static_cast<size_type>(mask.count());
 
-	data_.emplace(data_.begin() + pos, std::forward<Args>(args)...);
+	auto iter = data_.emplace(data_.begin() + pos, std::forward<Args>(args)...);
 
+	return {*iter, true};
 }
 
 template<class T, uint8 N>
-std::pair<T&, bool> SparseBitMap<T, N>::Insert(size_t index, const T& value)
+std::pair<T&, bool> SparseBitMap<T, N>::Insert(size_type index, const T& value)
 {
 
 	if (Test(index)) {
@@ -133,9 +134,11 @@ std::pair<T&, bool> SparseBitMap<T, N>::Insert(size_t index, const T& value)
 	mask = ~(~mask << index) & mapping_;
 
 	// TODO: Replace with `popcount`
-	size_type pos = mask.count();
+	size_type pos = static_cast<size_type>(mask.count());
 
-	data_.insert(data_.begin() + pos, value);
+	auto iter = data_.insert(data_.begin() + pos, value);
+
+	return {*iter, true};
 
 }
 
