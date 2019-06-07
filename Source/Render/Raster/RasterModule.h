@@ -33,26 +33,15 @@ public:
 
 	virtual void Render() = 0;
 
-	virtual void RenderPass(std::function<void()>) = 0;
+	virtual void RenderPass(std::function<CommandList()>) = 0;
 
 	virtual uint RegisterSurface(std::any, glm::uvec2) = 0;
 	virtual void UpdateSurface(uint, glm::uvec2) = 0;
 	virtual void RemoveSurface(uint) = 0;
 
 	// Agnostic raster API interface
-	virtual void Draw(DrawCommand&) = 0;
-	virtual void DrawIndirect(DrawIndirectCommand&) = 0;
-	virtual void UpdateBuffer(UpdateBufferCommand&) = 0;
-	virtual void UpdateTexture(UpdateTextureCommand&) = 0;
-	virtual void CopyBuffer(CopyBufferCommand&) = 0;
-	virtual void CopyTexture(CopyTextureCommand&) = 0;
-
-	//Resource Creation
-	VertexBuffer CreateVertexBuffer();
-	IndexBuffer CreateIndexBuffer();
-	UniformBuffer CreateUniformBuffer();
-	PushBuffer CreatePushConstant();
-	StorageBuffer CreateStorageBuffer();
+	virtual void CompileCommands(CommandList&) = 0;
+	virtual void ExecuteCommands(CommandList&) = 0;
 
 	//Factory
 	static std::shared_ptr<RasterModule> CreateModule(std::shared_ptr<SchedulerModule>&,

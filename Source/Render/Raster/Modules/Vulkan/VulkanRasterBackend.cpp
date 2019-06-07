@@ -6,6 +6,7 @@
 #include "Types.h"
 #include "Display/Window/WindowModule.h"
 #include "VulkanSwapChain.h"
+#include "Render/Raster/CommandList.h"
 
 uint VulkanRasterBackend::surfaceCounter = 0;
 
@@ -135,7 +136,7 @@ void VulkanRasterBackend::Render()
 	}
 }
 
-void VulkanRasterBackend::RenderPass(std::function<void()> renderPass)
+void VulkanRasterBackend::RenderPass(std::function<CommandList()> renderPass)
 {
 
 	//vk::ClearValue clearColor(vk::ClearColorValue(std::array<float, 4> {0.0f, 0.0f, 0.0f, 1.0f}));
@@ -155,7 +156,7 @@ void VulkanRasterBackend::RenderPass(std::function<void()> renderPass)
 	//commandBuffers_[i].begin(beginInfo);
 	//commandBuffers_[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 
-	renderPass();
+	CommandList commandList = renderPass();
 
 	//commandBuffers_[i].endRenderPass();
 	//commandBuffers_[i].end();
@@ -215,6 +216,17 @@ void VulkanRasterBackend::RemoveSurface(uint surfaceID)
 
 	instance_.destroySurfaceKHR(surfaces_[surfaceID]);
 	surfaces_.erase(surfaceID);
+}
+
+void VulkanRasterBackend::CompileCommands(CommandList&)
+{
+
+
+}
+void VulkanRasterBackend::ExecuteCommands(CommandList&)
+{
+
+
 }
 
 void VulkanRasterBackend::Draw(DrawCommand& command)

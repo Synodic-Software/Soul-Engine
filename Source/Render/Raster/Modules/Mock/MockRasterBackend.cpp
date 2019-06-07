@@ -10,7 +10,7 @@ void MockRasterBackend::Render()
 
 }
 
-void MockRasterBackend::RenderPass(std::function<void()>)
+void MockRasterBackend::RenderPass(std::function<CommandList()>)
 {
 
 	throw NotImplemented();
@@ -38,38 +38,14 @@ void MockRasterBackend::RemoveSurface(uint surface)
 
 }
 
-void MockRasterBackend::Draw(DrawCommand& command)
+void MockRasterBackend::CompileCommands(CommandList&)
 {
 
 	throw NotImplemented();
 
 }
 
-void MockRasterBackend::DrawIndirect(DrawIndirectCommand&)
-{
-
-	throw NotImplemented();
-
-}
-void MockRasterBackend::UpdateBuffer(UpdateBufferCommand&)
-{
-
-	throw NotImplemented();
-
-}
-void MockRasterBackend::UpdateTexture(UpdateTextureCommand&)
-{
-
-	throw NotImplemented();
-
-}
-void MockRasterBackend::CopyBuffer(CopyBufferCommand&)
-{
-
-	throw NotImplemented();
-
-}
-void MockRasterBackend::CopyTexture(CopyTextureCommand&)
+void MockRasterBackend::ExecuteCommands(CommandList&)
 {
 
 	throw NotImplemented();

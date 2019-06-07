@@ -6,13 +6,12 @@
 
 #include <memory>
 
-class RasterModule;
-
 class CommandList {
 
 public:
 
-	CommandList(RasterModule*);
+	CommandList() = default;
+	~CommandList() = default;
 
 	// Agnostic raster API interface
 	void Draw(DrawCommand&);
@@ -22,9 +21,5 @@ public:
 	void CopyBuffer(CopyBufferCommand&);
 	void CopyTexture(CopyTextureCommand&);
 
-
-private:
-
-	RasterModule* rasterModule_;
 
 };
