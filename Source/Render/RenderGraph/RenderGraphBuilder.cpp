@@ -15,7 +15,16 @@ void RenderGraphBuilder::CreateInput(RenderGraphInputParameters&)
 {
 }
 
-void CreateSubPass()
+void RenderGraphBuilder::CreateSubpass()
 {
 
+}
+
+Entity RenderGraphBuilder::View()
+{
+
+	Entity returnedEntity = entityRegistry_->CreateEntity();
+	entityRegistry_->AttachComponent<RenderView>(returnedEntity);
+
+	return returnedEntity;
 }

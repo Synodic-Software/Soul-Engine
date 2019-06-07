@@ -21,8 +21,12 @@ public:
 	void CreateOutput(RenderGraphOutputParameters&);
 	void CreateInput(RenderGraphInputParameters&);
 
+	void CreateSubpass();
+
 	template<class T>
 	Entity Request();
+
+	Entity View();
 
 private:
 

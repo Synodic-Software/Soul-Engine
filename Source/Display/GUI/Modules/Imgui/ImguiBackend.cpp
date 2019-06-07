@@ -60,7 +60,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 		Entity vertexBufferResource = builder.Request<VertexBuffer>();
 		Entity indexBufferResource = builder.Request<IndexBuffer>();
 		Entity pushBufferResource = builder.Request<PushBuffer>();
-		Entity renderViewResource = builder.Request<RenderView>();
+		Entity renderViewResource = builder.View();
 
 		RenderGraphOutputParameters outputParams;
 		outputParams.name = "Final";

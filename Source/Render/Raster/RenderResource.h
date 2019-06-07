@@ -13,7 +13,7 @@ public:
 
 };
 
-class RenderView : public RenderResource {
+class RenderView : public Component {
 
 public:
 
