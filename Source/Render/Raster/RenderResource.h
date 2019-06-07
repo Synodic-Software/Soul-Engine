@@ -24,6 +24,14 @@ public:
 
 };
 
+enum class BufferType {
+	Vertex,
+	Index,
+	Uniform,
+	Push,
+	Storage
+};
+
 class Buffer : public RenderResource {
 
 public:

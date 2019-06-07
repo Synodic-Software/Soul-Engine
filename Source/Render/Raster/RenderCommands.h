@@ -2,6 +2,7 @@
 
 #include "Types.h"
 #include "Core/Composition/Entity/Entity.h"
+#include "RenderResource.h"
 #include "Core/Structure/External/ExternalBuffer.h"
 
 class RenderCommand{
@@ -37,9 +38,18 @@ struct DrawIndirectCommand : RenderCommand {
 
 struct UpdateBufferCommand : RenderCommand {
 
+	UpdateBufferCommand(BufferType typeIn): type(typeIn)
+	{
+	}
+
 	uint offset;
 	ExternalBuffer<std::byte> data;
 	Entity buffer;
+
+private:
+
+	BufferType type;
+
 
 };
 

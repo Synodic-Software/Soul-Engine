@@ -84,7 +84,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 				pushBlock.translate = glm::vec2(-1.0f);
 
 				{
-					UpdateBufferCommand updatePushParameters;
+					UpdateBufferCommand updatePushParameters(BufferType::Push);
 					updatePushParameters.buffer = pushBufferResource;
 					updatePushParameters.data =
 						nonstd::as_writeable_bytes(nonstd::span(&pushBlock, 1));
@@ -115,7 +115,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 					{
 
-						UpdateBufferCommand updateVertexParameters;
+						UpdateBufferCommand updateVertexParameters(BufferType::Vertex);
 						updateVertexParameters.buffer = vertexBufferResource;
 						updateVertexParameters.data = nonstd::as_writeable_bytes(nonstd::span(
 							imguiCommand->VtxBuffer.Data, imguiCommand->VtxBuffer.Size));
@@ -125,7 +125,7 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 					{
 
-						UpdateBufferCommand updateIndexParameters;
+						UpdateBufferCommand updateIndexParameters(BufferType::Index);
 						updateIndexParameters.buffer = indexBufferResource;
 
 						updateIndexParameters.data = nonstd::as_writeable_bytes(nonstd::span(
