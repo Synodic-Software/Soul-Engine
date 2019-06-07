@@ -57,7 +57,6 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 	params.name = "GUI";
 
 	renderGraphModule_->CreateRenderPass(params, [](RenderGraphBuilder& builder) {
-
 		Entity vertexBufferResource = builder.Request<VertexBuffer>();
 		Entity indexBufferResource = builder.Request<IndexBuffer>();
 		Entity pushBufferResource = builder.Request<PushBuffer>();
@@ -84,10 +83,15 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 				pushBlock.scale = glm::vec2(2.0f / io.DisplaySize.x, 2.0f / io.DisplaySize.y);
 				pushBlock.translate = glm::vec2(-1.0f);
 
-				UpdateBufferCommand updatePushParameters;
-				pushBuffer;
+				{
+					UpdateBufferCommand updatePushParameters;
+					updatePushParameters.buffer = pushBufferResource;
+					updatePushParameters.data =
+						nonstd::as_writeable_bytes(nonstd::span(&pushBlock, 1));
+					updatePushParameters.offset = 0;
 
-				commandList.UpdateBuffer(updatePushParameters);
+					commandList.UpdateBuffer(updatePushParameters);
+				}
 			}
 
 			ImDrawData* drawData = ImGui::GetDrawData();
@@ -109,20 +113,26 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 					const ImDrawList* imguiCommand = drawData->CmdLists[i];
 
-					UpdateBufferCommand updateVertexParameters;
-					updateVertexParameters.buffer = vertexBufferResource;
-					updateVertexParameters.data = nonstd::as_writeable_bytes(
-						nonstd::span(imguiCommand->VtxBuffer.Data, imguiCommand->VtxBuffer.Size));
-					updateVertexParameters.offset = vertexOffset;
-					commandList.UpdateBuffer(updateVertexParameters);
+					{
 
-					UpdateBufferCommand updateIndexParameters;
-					updateIndexParameters.buffer = indexBufferResource;
+						UpdateBufferCommand updateVertexParameters;
+						updateVertexParameters.buffer = vertexBufferResource;
+						updateVertexParameters.data = nonstd::as_writeable_bytes(nonstd::span(
+							imguiCommand->VtxBuffer.Data, imguiCommand->VtxBuffer.Size));
+						updateVertexParameters.offset = vertexOffset;
+						commandList.UpdateBuffer(updateVertexParameters);
+					}
 
-					updateIndexParameters.data = nonstd::as_writeable_bytes(nonstd::span(
-						imguiCommand->IdxBuffer.Data, imguiCommand->IdxBuffer.Size));
-					updateIndexParameters.offset = indexOffset;
-					commandList.UpdateBuffer(updateIndexParameters);
+					{
+
+						UpdateBufferCommand updateIndexParameters;
+						updateIndexParameters.buffer = indexBufferResource;
+
+						updateIndexParameters.data = nonstd::as_writeable_bytes(nonstd::span(
+							imguiCommand->IdxBuffer.Data, imguiCommand->IdxBuffer.Size));
+						updateIndexParameters.offset = indexOffset;
+						commandList.UpdateBuffer(updateIndexParameters);
+					}
 
 					vertexOffset += imguiCommand->VtxBuffer.Size;
 					indexOffset += imguiCommand->IdxBuffer.Size;
@@ -143,19 +153,22 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 
 						const ImDrawCmd* command = &imguiCommands->CmdBuffer[j];
 
-						DrawCommand drawParameters;
+						{
+							DrawCommand drawParameters;
+							drawParameters.elementSize = command->ElemCount;
+							drawParameters.indexOffset = indexOffset;
+							drawParameters.vertexOffset = vertexOffset;
+							drawParameters.scissorOffset = {
+								command->ClipRect.x, command->ClipRect.y};
+							drawParameters.scissorExtent = {
+								command->ClipRect.z - command->ClipRect.x,
+								command->ClipRect.w - command->ClipRect.y};
 
-						drawParameters.elementSize = command->ElemCount;
-						drawParameters.indexOffset = indexOffset;
-						drawParameters.vertexOffset = vertexOffset;
-						drawParameters.scissorOffset = {command->ClipRect.x, command->ClipRect.y};
-						drawParameters.scissorExtent = {command->ClipRect.z - command->ClipRect.x,
-							command->ClipRect.w - command->ClipRect.y};
+							drawParameters.vertexBuffer = vertexBufferResource;
+							drawParameters.indexBuffer = indexBufferResource;
 
-						drawParameters.vertexBuffer = vertexBufferResource;
-						drawParameters.indexBuffer = indexBufferResource;
-
-						commandList.Draw(drawParameters);
+							commandList.Draw(drawParameters);
+						}
 
 						indexOffset += command->ElemCount;
 					}
