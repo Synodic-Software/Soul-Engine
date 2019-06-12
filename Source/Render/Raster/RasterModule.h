@@ -33,17 +33,19 @@ public:
 
 	virtual void Render() = 0;
 
-	virtual void ExecutePass(CommandList&) = 0;
+	virtual Entity CreatePass(Entity) = 0;
+	virtual void ExecutePass(Entity, CommandList&) = 0;
 
-	virtual uint RegisterSurface(std::any, glm::uvec2) = 0;
-	virtual void UpdateSurface(uint, glm::uvec2) = 0;
-	virtual void RemoveSurface(uint) = 0;
+	virtual Entity RegisterSurface(std::any, glm::uvec2) = 0;
+	virtual void UpdateSurface(Entity, glm::uvec2) = 0;
+	virtual void RemoveSurface(Entity) = 0;
 
 	// Agnostic raster API interface
 	virtual void Compile(CommandList&) = 0;
 
 	//Factory
 	static std::shared_ptr<RasterModule> CreateModule(std::shared_ptr<SchedulerModule>&,
+		std::shared_ptr<EntityRegistry>&,
 		std::shared_ptr<WindowModule>&);
 
 };

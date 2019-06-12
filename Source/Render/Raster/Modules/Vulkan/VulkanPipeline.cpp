@@ -13,10 +13,6 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
 	const Resource& fragmentResource,
 	vk::Format swapChainFormat):
 	device_(device)
-	//renderPass_(device_,
-	//	swapChainFormat),  // TODO: remove hardcoded renderpass + allow multiple renderpasses
-	/*vertexShader_(device, vk::ShaderStageFlagBits::eVertex, vertexResource),
-	fragmentShader_(device, vk::ShaderStageFlagBits::eFragment, fragmentResource)*/
 {
 
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;

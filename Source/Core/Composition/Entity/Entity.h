@@ -7,6 +7,7 @@ class EntityRegistry;
 class Entity 
 {
 
+	//TODO: Replace with badge/attorney -client
 	friend class EntityRegistry;
 	friend struct std::hash<Entity>; 
 

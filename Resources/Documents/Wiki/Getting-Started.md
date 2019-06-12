@@ -26,9 +26,9 @@ In order to use Soul Engine you will have to download and install some dependenc
 ### Manual Dependencies
 Look for the following dependencies in your OS specific installation instructions:
 
-* [CMake 3.13.1](https://cmake.org/download/)
+* [CMake 3.14.1](https://cmake.org/download/)
 * [Python 3.7.2](https://www.python.org/downloads/release/python-372/)
-* [Conan 1.15.0](https://conan.io/downloads.html)
+* [Conan 1.16.0](https://conan.io/downloads.html)
 * [Vulkan SDK 1.1.106.0](https://vulkan.lunarg.com/sdk/home)
 * [CUDA 10.1](https://developer.nvidia.com/cuda-downloads)
 
@@ -57,9 +57,9 @@ You have three choices when using and developing Soul Engine.
 ### *Windows*
 
 1.  Install the project's dependencies.
-    * [CMake 3.13.1](https://cmake.org/download/) Download and install. This is only needed if not using the integrated CMake with Visual Studio 2019.
+    * [CMake 3.14.1](https://cmake.org/download/) Download and install. This is only needed if not using the integrated CMake with Visual Studio 2019.
     * [Python 3.7.2](https://www.python.org/downloads/release/python-372/) Download and install. Add Python to the system path via the installer option.
-    * [Conan 1.15.0](https://conan.io/downloads.html) Install via Python. `pip install conan`
+    * [Conan 1.16.0](https://conan.io/downloads.html) Install via Python. `pip install conan`
     * [Vulkan SDK 1.1.106.0](https://vulkan.lunarg.com/sdk/home) Download and install.
     * [CUDA 10.1](https://developer.nvidia.com/cuda-downloads) Download and install.
 
@@ -86,9 +86,9 @@ You have three choices when using and developing Soul Engine.
 
 
 1.  Install the project's dependencies.
-    * [CMake 3.13.1](https://cmake.org/download/) Download and install. This is only needed if not using the integrated CMake with Visual Studio 2019.
+    * [CMake 3.14.1](https://cmake.org/download/) Download and install. This is only needed if not using the integrated CMake with Visual Studio 2019.
     * [Python 3.7.2](https://www.python.org/downloads/release/python-372/) Download and install. Add Python to the system path via the installer option.
-    * [Conan 1.15.0](https://conan.io/downloads.html) Install via Python. `pip install conan`
+    * [Conan 1.16.0](https://conan.io/downloads.html) Install via Python. `pip install conan`
     * [Vulkan SDK 1.1.106.0](https://vulkan.lunarg.com/sdk/home) Download and install.
     * [CUDA 10.1](https://developer.nvidia.com/cuda-downloads) Download and install.
 
@@ -119,9 +119,9 @@ You have three choices when using and developing Soul Engine.
 1. **TODO: This Feature Is NOT Completed** - Contributions Welcome
 
 1.  Install the application's manual dependencies. The minimum requirements are listed here:
-    * [CMake 3.13.1](https://cmake.org/download/) Download and install. This is only needed if not using the integrated CMake with Visual Studio 2019.
+    * [CMake 3.14.1](https://cmake.org/download/) Download and install. This is only needed if not using the integrated CMake with Visual Studio 2019.
     * [Python 3.7.2](https://www.python.org/downloads/release/python-372/) Download and install. Add Python to the system path via the installer option.
-    * [Conan 1.15.0](https://conan.io/downloads.html) Install via Python. `pip install conan`
+    * [Conan 1.16.0](https://conan.io/downloads.html) Install via Python. `pip install conan`
 
 1. Clone or download an application. For example [Soul Editor](https://github.com/Synodic-Software/Soul-Editor).
 

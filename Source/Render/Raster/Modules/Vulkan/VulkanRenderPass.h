@@ -24,5 +24,6 @@ private:
 
 	std::shared_ptr<VulkanDevice> device_;
 	vk::RenderPass renderPass_;
+	std::vector<vk::SubpassDescription> subpasses_;
 
 };

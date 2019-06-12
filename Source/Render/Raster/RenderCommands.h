@@ -5,6 +5,15 @@
 #include "RenderResource.h"
 #include "Core/Structure/External/ExternalBuffer.h"
 
+enum class CommandType {
+	Draw,
+	DrawIndirect,
+	UpdateBuffer,
+	UpdateTexture, 
+	CopyBuffer, 
+	CopyTexture 
+};
+
 class RenderCommand{
 
 public:
@@ -12,8 +21,8 @@ public:
 	RenderCommand() = default;
 	~RenderCommand() = default;
 
-
 };
+
 
 struct DrawCommand : RenderCommand {
 
@@ -38,18 +47,9 @@ struct DrawIndirectCommand : RenderCommand {
 
 struct UpdateBufferCommand : RenderCommand {
 
-	UpdateBufferCommand(BufferType typeIn): type(typeIn)
-	{
-	}
-
 	uint offset;
 	ExternalBuffer<std::byte> data;
 	Entity buffer;
-
-private:
-
-	BufferType type;
-
 
 };
 

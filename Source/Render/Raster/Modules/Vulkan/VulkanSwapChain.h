@@ -29,8 +29,9 @@ public:
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
 	void AquireImage();
-	void Present(const vk::Queue&, VulkanCommandBuffer&);
+	void Present(VulkanCommandBuffer&);
 
+	vk::Format GetFormat();
 
 private:
 
@@ -38,6 +39,8 @@ private:
 
 	vk::SwapchainKHR swapChain_;
 	std::vector<SwapChainImage> images_;
+
+	vk::Format format_;
 
 	uint currentFrame_;
 	uint activeImageIndex_;

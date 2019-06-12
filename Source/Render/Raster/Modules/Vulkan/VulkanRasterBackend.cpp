@@ -3,15 +3,16 @@
 #include "VulkanDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 #include "Core/System/Compiler.h"
+#include "Core/Composition/Entity/EntityRegistry.h"
 #include "Types.h"
 #include "Display/Window/WindowModule.h"
 #include "VulkanSwapChain.h"
 #include "Render/Raster/CommandList.h"
 
-uint VulkanRasterBackend::surfaceCounter = 0;
-
 VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
+	std::shared_ptr<EntityRegistry>& entityRegistry,
 	std::shared_ptr<WindowModule>& windowModule_):
+	entityRegistry_(entityRegistry),
 	validationLayers_ {"VK_LAYER_KHRONOS_validation"}
 {
 
@@ -129,39 +130,71 @@ VulkanRasterBackend::~VulkanRasterBackend()
 
 void VulkanRasterBackend::Render()
 {
+	auto& device = devices_[0];
 
 	for (const auto& [id, swapchain] : swapChains_) {
 
-		// swapchain->Present();
+		 swapchain->Present(commandBuffers_[i]);
+
 	}
 }
 
-void VulkanRasterBackend::ExecutePass(CommandList& commandList)
+Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 {
+	// TODO: multiple devices
+	auto& device = devices_[0];
 
-	//vk::ClearValue clearColor(vk::ClearColorValue(std::array<float, 4> {0.0f, 0.0f, 0.0f, 1.0f}));
+	Entity renderPassID = entityRegistry_->CreateEntity();
 
-	//vk::CommandBufferBeginInfo beginInfo;
-	//beginInfo.flags = vk::CommandBufferUsageFlagBits::eSimultaneousUse;
-	//beginInfo.pInheritanceInfo = nullptr;
+	renderPasses_[renderPassID] =
+		std::make_unique<VulkanRenderPass>(device, swapChains_[swapchainID]->GetFormat());
 
-	//vk::RenderPassBeginInfo renderPassInfo;
-	//renderPassInfo.renderPass = pipeline_->GetRenderPass().GetRenderPass();
-	//renderPassInfo.framebuffer = frameBuffers_[i].GetFrameBuffer();
-	//renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-	//renderPassInfo.renderArea.extent = swapchainSize;
-	//renderPassInfo.clearValueCount = 1;
-	//renderPassInfo.pClearValues = &clearColor;
+	// TODO: Remove hardcoded pipeline + Hardcoded paths
+	// TODO: Associate paths to Project/Executable
+	// pipeline_ = std::make_unique<VulkanPipeline>(vkDevice_, swapchainSize,
+	// Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"),
+	// colorFormat);
 
-	//commandBuffers_[i].begin(beginInfo);
-	//commandBuffers_[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+	/*frameBuffers_.reserve(images_.size());
+	for (SwapChainImage& image : images_) {
+		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
+	}*/
 
 
-	//commandBuffers_[i].endRenderPass();
-	//commandBuffers_[i].end();
+	return renderPassID;
 }
 
-uint VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
+void VulkanRasterBackend::ExecutePass(Entity renderpass, CommandList& commandList)
+{
+
+	vk::ClearValue clearColor(vk::ClearColorValue(std::array<float, 4> {0.0f, 0.0f, 0.0f, 1.0f}));
+
+	vk::CommandBufferBeginInfo beginInfo;
+	beginInfo.flags = vk::CommandBufferUsageFlagBits::eSimultaneousUse;
+	beginInfo.pInheritanceInfo = nullptr;
+
+
+
+
+	vk::RenderPassBeginInfo renderPassInfo;
+	renderPassInfo.renderPass = pipeline_->GetRenderPass().GetRenderPass();
+	renderPassInfo.framebuffer = frameBuffers_[i].GetFrameBuffer();
+	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
+	renderPassInfo.renderArea.extent = swapchainSize;
+	renderPassInfo.clearValueCount = 1;
+	renderPassInfo.pClearValues = &clearColor;
+
+	commandBuffers_[i].begin(beginInfo);
+	commandBuffers_[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+
+
+
+	commandBuffers_[i].endRenderPass();
+	commandBuffers_[i].end();
+
+}
+
+Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
 {
 
 	auto surface = std::any_cast<vk::SurfaceKHR>(anySurface);
@@ -177,7 +210,7 @@ uint VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
 
 	const auto format = device->GetSurfaceFormat(surface);
 
-	uint surfaceID = surfaceCounter++;
+	Entity surfaceID = entityRegistry_->CreateEntity();
 
 	surfaces_[surfaceID] = surface;
 	swapChains_[surfaceID] = std::make_unique<VulkanSwapChain>(
@@ -187,7 +220,7 @@ uint VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
 	return surfaceID;
 }
 
-void VulkanRasterBackend::UpdateSurface(uint surfaceID, glm::uvec2 size)
+void VulkanRasterBackend::UpdateSurface(Entity surfaceID, glm::uvec2 size)
 {
 
 	auto surface = surfaces_[surfaceID];
@@ -208,7 +241,7 @@ void VulkanRasterBackend::UpdateSurface(uint surfaceID, glm::uvec2 size)
 	swapChains_[surfaceID].swap(newSwapchain);
 }
 
-void VulkanRasterBackend::RemoveSurface(uint surfaceID)
+void VulkanRasterBackend::RemoveSurface(Entity surfaceID)
 {
 
 	swapChains_.erase(surfaceID);
@@ -233,21 +266,22 @@ void VulkanRasterBackend::Draw(DrawCommand& command)
 	scissorRect.extent.width = command.scissorExtent.x;
 	scissorRect.extent.height = command.scissorExtent.y;
 
-	//commandBuffers_[0]->Get().setScissor(0, 1, &scissorRect);
-	//commandBuffers_[0]->Get().drawIndexed(
-	//	command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
+	commandBuffers_[0]->Get().setScissor(0, 1, &scissorRect);
+	commandBuffers_[0]->Get().drawIndexed(
+		command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
 
-	//// TODO: refactor below
-	//commandBuffers_[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
+	// TODO: refactor below
+	commandBuffers_[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
 
-	//vk::Buffer vertexBuffers[] = {pipeline_->GetVertexBuffer().GetBuffer()};
-	//vk::DeviceSize offsets[] = {0};
+	vk::Buffer vertexBuffers[] = {pipeline_->GetVertexBuffer().GetBuffer()};
+	vk::DeviceSize offsets[] = {0};
 
-	//commandBuffers_[i].bindVertexBuffers(0, 1, vertexBuffers, offsets);
-	//commandBuffers_[i].bindIndexBuffer(
-	//	pipeline_->GetIndexBuffer().GetBuffer(), 0, vk::IndexType::eUint16);
+	commandBuffers_[i].bindVertexBuffers(0, 1, vertexBuffers, offsets);
+	commandBuffers_[i].bindIndexBuffer(
+		pipeline_->GetIndexBuffer().GetBuffer(), 0, vk::IndexType::eUint16);
 
-	//commandBuffers_[i].drawIndexed(6, 1, 0, 0, 0);
+	commandBuffers_[i].drawIndexed(6, 1, 0, 0, 0);
+
 }
 
 void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&)

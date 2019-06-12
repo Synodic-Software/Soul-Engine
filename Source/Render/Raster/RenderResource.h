@@ -4,15 +4,25 @@
 #include "Core/Composition/Component/Component.h"
 #include "Core/Geometry/Vertex.h"
 
+enum class ResourceType { 
+	Buffer, 
+	Image
+};
+
 class RenderResource : public Component {
 
 public:
 
-	RenderResource() = default;
+	RenderResource(ResourceType typeIn): type(typeIn)
+	{
+	}
 	~RenderResource() = default;
+
+	ResourceType type;
 
 };
 
+//TODO: Place somewhere else
 class RenderView : public Component {
 
 public:
@@ -23,6 +33,8 @@ public:
 	float maxDepth;
 
 };
+
+
 
 enum class BufferType {
 	Vertex,
@@ -36,10 +48,18 @@ class Buffer : public RenderResource {
 
 public:
 
-	Buffer() = default;
+	Buffer(BufferType typeIn): 
+		RenderResource(ResourceType::Buffer),
+		type(typeIn)
+	{
+	}
 	~Buffer() = default;
 
-	uint size;
+
+private:
+
+	BufferType type;
+
 
 };
 
@@ -47,7 +67,9 @@ class VertexBuffer : public Buffer{
 
 public:
 
-	VertexBuffer() = default;
+	VertexBuffer(): Buffer(BufferType::Vertex)
+	{
+	}
 	~VertexBuffer() = default;
 
 };
@@ -56,7 +78,9 @@ class IndexBuffer : public Buffer {
 
 public:
 
-	IndexBuffer() = default;
+	IndexBuffer(): Buffer(BufferType::Index)
+	{
+	}
 	~IndexBuffer() = default;
 
 };
@@ -65,7 +89,9 @@ class UniformBuffer : public Buffer {
 
 public:
 
-	UniformBuffer() = default;
+	UniformBuffer(): Buffer(BufferType::Uniform)
+	{
+	}
 	~UniformBuffer() = default;
 
 };
@@ -74,7 +100,9 @@ class PushBuffer : public Buffer {
 
 public:
 
-	PushBuffer() = default;
+	PushBuffer() : Buffer(BufferType::Push)
+	{
+	}
 	~PushBuffer() = default;
 
 };
@@ -84,7 +112,9 @@ class StorageBuffer : public Buffer {
 
 public:
 
-	StorageBuffer() = default;
+	StorageBuffer(): Buffer(BufferType::Storage)
+	{
+	}
 	~StorageBuffer() = default;
 
 };

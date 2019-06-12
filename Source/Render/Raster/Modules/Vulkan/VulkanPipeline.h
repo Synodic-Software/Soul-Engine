@@ -29,10 +29,8 @@ public:
 private:
 
 	std::shared_ptr<VulkanDevice> device_;
-	//VulkanRenderPass renderPass_;
 
-	//VulkanShader vertexShader_;
-	//VulkanShader fragmentShader_;
+	std::vector<VulkanShader> stages_;
 
 	vk::PipelineLayout pipelineLayout_;
 	vk::Pipeline pipeline_;

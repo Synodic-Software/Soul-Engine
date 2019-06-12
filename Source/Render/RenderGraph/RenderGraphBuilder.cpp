@@ -18,6 +18,8 @@ void RenderGraphBuilder::CreateInput(RenderGraphInputParameters&)
 void RenderGraphBuilder::CreateSubpass()
 {
 
+	throw NotImplemented();
+
 }
 
 Entity RenderGraphBuilder::View()

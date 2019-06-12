@@ -10,6 +10,7 @@
 VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::SurfaceKHR& surface,
 	vk::Format colorFormat, vk::ColorSpaceKHR colorSpace, glm::uvec2& size, bool vSync, VulkanSwapChain* oldSwapChain) :
 	vkDevice_(device),
+	format_(colorFormat),
 	size_(size), currentFrame_(0), frameMax_(2)
 {
 	const auto& logicalDevice = vkDevice_->GetLogical();
@@ -71,7 +72,7 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 	vk::SwapchainCreateInfoKHR swapchainCreateInfo;
 	swapchainCreateInfo.surface = surface;
 	swapchainCreateInfo.minImageCount = imageCount;
-	swapchainCreateInfo.imageFormat = colorFormat;
+	swapchainCreateInfo.imageFormat = format_;
 	swapchainCreateInfo.imageColorSpace = colorSpace;
 	swapchainCreateInfo.imageExtent = swapchainSize;
 	swapchainCreateInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst;
@@ -89,7 +90,7 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 	auto swapChainImages = logicalDevice.getSwapchainImagesKHR(swapChain_);
 
 	vk::ImageViewCreateInfo colorAttachmentCreateInfo;
-	colorAttachmentCreateInfo.format = colorFormat;
+	colorAttachmentCreateInfo.format = format_;
 	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 	colorAttachmentCreateInfo.subresourceRange.levelCount = 1;
 	colorAttachmentCreateInfo.subresourceRange.layerCount = 1;
@@ -102,16 +103,6 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 		images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
 		images_[i].fence = vk::Fence();
 	}
-
-
-	//TODO: Remove hardcoded pipeline + Hardcoded paths
-	//TODO: Associate paths to Project/Executable
-	//pipeline_ = std::make_unique<VulkanPipeline>(vkDevice_, swapchainSize, Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"), colorFormat);
-
-	/*frameBuffers_.reserve(images_.size());
-	for (SwapChainImage& image : images_) {
-		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
-	}*/
 
 	//set up synchronization primitives
 	presentSemaphores_.resize(frameMax_);
@@ -171,7 +162,7 @@ void VulkanSwapChain::AquireImage()
 }
 
 
-void VulkanSwapChain::Present(const vk::Queue& presentQueue, VulkanCommandBuffer& commandBuffer_)
+void VulkanSwapChain::Present(VulkanCommandBuffer& commandBuffer_)
 {
 
 	const auto& logicalDevice = vkDevice_->GetLogical();
@@ -204,6 +195,11 @@ void VulkanSwapChain::Present(const vk::Queue& presentQueue, VulkanCommandBuffer
 
 	presentInfo.pImageIndices = &activeImageIndex_;
 
-	presentQueue.presentKHR(presentInfo);
+	vkDevice_->GetPresentQueue().presentKHR(presentInfo);
 
+}
+
+vk::Format VulkanSwapChain::GetFormat()
+{
+	return format_;
 }

@@ -21,6 +21,7 @@ class VulkanRasterBackend final : public RasterModule {
 public:
 
 	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&,
+		std::shared_ptr<EntityRegistry>&,
 		std::shared_ptr<WindowModule>&);
 	~VulkanRasterBackend() override;
 
@@ -31,13 +32,20 @@ public:
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
 
 	void Render() override;
-	void ExecutePass(CommandList&) override;
+	Entity CreatePass(Entity) override;
+	void ExecutePass(Entity, CommandList&) override;
 
-	uint RegisterSurface(std::any, glm::uvec2) override;
-	void UpdateSurface(uint, glm::uvec2) override;
-	void RemoveSurface(uint) override;
+	Entity RegisterSurface(std::any, glm::uvec2) override;
+	void UpdateSurface(Entity, glm::uvec2) override;
+	void RemoveSurface(Entity) override;
 
-	void Compile(CommandList&) override;
+	/*
+	 * Simplifies a commandlist into a ready-to-execute format. Creates the opportunity for commandList reuse
+	 *
+	 * @param [in,out]	commandList	The commandList to simplify.
+	 */
+
+	void Compile(CommandList& commandList) override;
 
 
 	vk::Instance& GetInstance();
@@ -45,6 +53,8 @@ public:
 
 
 private:
+
+	std::shared_ptr<EntityRegistry> entityRegistry_;
 
 	void Draw(DrawCommand&);
 	void DrawIndirect(DrawIndirectCommand&);
@@ -56,14 +66,10 @@ private:
 	std::vector<std::shared_ptr<VulkanCommandPool>> commandPools_;
 	std::vector<std::shared_ptr<VulkanCommandBuffer>> commandBuffers_;
 
-
-	//TODO: replace the uint id with Entity maybe?
-
-	static uint surfaceCounter;
-
-	std::unordered_map<uint, vk::SurfaceKHR> surfaces_;
-	std::unordered_map<uint, std::unique_ptr<VulkanSwapChain>> swapChains_;
-
+	std::unordered_map<Entity, vk::SurfaceKHR> surfaces_;
+	std::unordered_map<Entity, std::unique_ptr<VulkanSwapChain>> swapChains_;
+	std::unordered_map<Entity, std::unique_ptr<VulkanPipeline>> pipelines_;
+	std::unordered_map<Entity, std::unique_ptr<VulkanRenderPass>> renderPasses_;
 
 	std::vector<char const*> requiredInstanceExtensions_;
 	std::vector<const char*> validationLayers_;
