@@ -203,3 +203,8 @@ vk::Format VulkanSwapChain::GetFormat()
 {
 	return format_;
 }
+
+glm::uvec2 VulkanSwapChain::GetSize()
+{
+	return size_;
+}

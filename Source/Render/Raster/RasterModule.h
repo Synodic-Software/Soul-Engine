@@ -34,6 +34,7 @@ public:
 	virtual void Render() = 0;
 
 	virtual Entity CreatePass(Entity) = 0;
+	virtual Entity CreateSubPass(Entity) = 0;
 	virtual void ExecutePass(Entity, CommandList&) = 0;
 
 	virtual Entity RegisterSurface(std::any, glm::uvec2) = 0;

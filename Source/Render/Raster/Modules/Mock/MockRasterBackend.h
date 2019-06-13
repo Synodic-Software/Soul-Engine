@@ -18,11 +18,13 @@ public:
 	MockRasterBackend& operator=(MockRasterBackend &&) noexcept = default;
 
 	void Render() override;
-	void ExecutePass(CommandList&) override;
+	Entity CreatePass(Entity) override;
+	Entity CreateSubPass(Entity) override;
+	void ExecutePass(Entity, CommandList&) override;
 
-	uint RegisterSurface(std::any, glm::uvec2) override;
-	void UpdateSurface(uint, glm::uvec2) override;
-	void RemoveSurface(uint) override;
+	Entity RegisterSurface(std::any, glm::uvec2) override;
+	void UpdateSurface(Entity, glm::uvec2) override;
+	void RemoveSurface(Entity) override;
 
 	void Compile(CommandList&) override;
 

@@ -32,6 +32,7 @@ public:
 	void Present(VulkanCommandBuffer&);
 
 	vk::Format GetFormat();
+	glm::uvec2 GetSize();
 
 private:
 

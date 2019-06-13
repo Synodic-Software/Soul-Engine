@@ -10,28 +10,42 @@ void MockRasterBackend::Render()
 
 }
 
-void MockRasterBackend::ExecutePass(CommandList&)
+Entity MockRasterBackend::CreatePass(Entity)
 {
 
 	throw NotImplemented();
 
 }
 
-uint MockRasterBackend::RegisterSurface(std::any, glm::uvec2 size)
+Entity MockRasterBackend::CreateSubPass(Entity)
 {
 
 	throw NotImplemented();
 
 }
 
-void MockRasterBackend::UpdateSurface(uint, glm::uvec2)
+void MockRasterBackend::ExecutePass(Entity, CommandList&)
 {
 
 	throw NotImplemented();
 
 }
 
-void MockRasterBackend::RemoveSurface(uint surface)
+Entity MockRasterBackend::RegisterSurface(std::any, glm::uvec2 size)
+{
+
+	throw NotImplemented();
+
+}
+
+void MockRasterBackend::UpdateSurface(Entity, glm::uvec2)
+{
+
+	throw NotImplemented();
+
+}
+
+void MockRasterBackend::RemoveSurface(Entity surface)
 {
 
 	throw NotImplemented();

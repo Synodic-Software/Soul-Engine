@@ -172,7 +172,8 @@ void Soul::Run()
 
 	FramePipeline<3> framePipeline {
 		schedulerModule_,
-		{[this](Frame& oldFrame, Frame& newFrame) { Process(oldFrame, newFrame); },
+		{
+			[this](Frame& oldFrame, Frame& newFrame) { Process(oldFrame, newFrame); },
 			[this](Frame& oldFrame, Frame& newFrame) { Update(oldFrame, newFrame); },
 			[this](Frame& oldFrame, Frame& newFrame) { Render(oldFrame, newFrame); }
 		}

@@ -40,6 +40,6 @@ private:
 
 	bool master_;
 
-	uint surface_;
+	Entity surface_;
 
 };

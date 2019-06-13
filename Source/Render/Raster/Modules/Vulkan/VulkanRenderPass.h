@@ -18,7 +18,7 @@ public:
 	VulkanRenderPass& operator=(const VulkanRenderPass&) = delete;
 	VulkanRenderPass& operator=(VulkanRenderPass&&) noexcept = delete;
 
-	const vk::RenderPass& GetRenderPass() const;
+	const vk::RenderPass& Get() const;
 
 private:
 

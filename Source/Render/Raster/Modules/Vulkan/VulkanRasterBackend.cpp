@@ -8,6 +8,7 @@
 #include "Display/Window/WindowModule.h"
 #include "VulkanSwapChain.h"
 #include "Render/Raster/CommandList.h"
+#include "Transput/Resource/Resource.h"
 
 VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
 	std::shared_ptr<EntityRegistry>& entityRegistry,
@@ -104,9 +105,7 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 
 		devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
 		commandPools_.push_back(std::make_shared<VulkanCommandPool>(scheduler, devices_.back()));
-		commandBuffers_.push_back(std::make_shared<VulkanCommandBuffer>(commandPools_.back(),
-			devices_.back(), vk::CommandBufferUsageFlagBits::eSimultaneousUse,
-			vk::CommandBufferLevel::ePrimary));
+
 	}
 }
 
@@ -134,7 +133,7 @@ void VulkanRasterBackend::Render()
 
 	for (const auto& [id, swapchain] : swapChains_) {
 
-		 swapchain->Present(commandBuffers_[i]);
+		 swapchain->Present(*commandBuffers_[0]);
 
 	}
 }
@@ -146,25 +145,42 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 
 	Entity renderPassID = entityRegistry_->CreateEntity();
 
+	renderPassSwapchainMap_[renderPassID] = swapchainID;
+	auto& swapchain = swapChains_[swapchainID];
+
 	renderPasses_[renderPassID] =
-		std::make_unique<VulkanRenderPass>(device, swapChains_[swapchainID]->GetFormat());
+		std::make_unique<VulkanRenderPass>(device, swapchain->GetFormat());
 
-	// TODO: Remove hardcoded pipeline + Hardcoded paths
-	// TODO: Associate paths to Project/Executable
-	// pipeline_ = std::make_unique<VulkanPipeline>(vkDevice_, swapchainSize,
-	// Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"),
-	// colorFormat);
+	//TODO: Better management if commandBuffers
+	renderPassCommands_[renderPassID] = commandBuffers_.emplace_back(
+		std::make_unique<VulkanCommandBuffer>(commandPools_.back(), devices_.back(),
+			vk::CommandBufferUsageFlagBits::eSimultaneousUse, vk::CommandBufferLevel::ePrimary)).get();
 
-	/*frameBuffers_.reserve(images_.size());
+	//TODO: Better management of pipelines
+	pipelines_[renderPassID] = std::make_unique<VulkanPipeline>(device, swapchain->GetSize(),
+		Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"),
+		swapchain->GetFormat());
+
+	auto& frameBuffers = renderPassBuffers_[renderPassID];
+	frameBuffers.reserve(images_.size());
 	for (SwapChainImage& image : images_) {
 		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
-	}*/
+	}
 
 
 	return renderPassID;
 }
 
-void VulkanRasterBackend::ExecutePass(Entity renderpass, CommandList& commandList)
+Entity VulkanRasterBackend::CreateSubPass(Entity parentPass)
+{
+
+	Entity subPassID = entityRegistry_->CreateEntity();
+
+	return subPassID;
+
+}
+
+void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandList)
 {
 
 	vk::ClearValue clearColor(vk::ClearColorValue(std::array<float, 4> {0.0f, 0.0f, 0.0f, 1.0f}));
@@ -174,23 +190,27 @@ void VulkanRasterBackend::ExecutePass(Entity renderpass, CommandList& commandLis
 	beginInfo.pInheritanceInfo = nullptr;
 
 
+	auto& swapchain = swapChains_[renderPassSwapchainMap_[renderpassID]];
+	auto& frameBuffers = renderPassBuffers_[renderpassID];
+	auto& renderPass = renderPasses_[renderpassID];
+	auto& commandBuffer = renderPassCommands_[renderpassID]->Get();
 
 
 	vk::RenderPassBeginInfo renderPassInfo;
-	renderPassInfo.renderPass = pipeline_->GetRenderPass().GetRenderPass();
-	renderPassInfo.framebuffer = frameBuffers_[i].GetFrameBuffer();
+	renderPassInfo.renderPass = renderPass->Get();
+	renderPassInfo.framebuffer = frameBuffers[i].GetFrameBuffer();
 	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-	renderPassInfo.renderArea.extent = swapchainSize;
+	renderPassInfo.renderArea.extent = {swapchain->GetSize().x, swapchain->GetSize().y};
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
-	commandBuffers_[i].begin(beginInfo);
-	commandBuffers_[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+	commandBuffer.begin(beginInfo);
+	commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 
 
 
-	commandBuffers_[i].endRenderPass();
-	commandBuffers_[i].end();
+	commandBuffer.endRenderPass();
+	commandBuffer.end();
 
 }
 
@@ -256,7 +276,7 @@ void VulkanRasterBackend::Compile(CommandList&)
 
 }
 
-void VulkanRasterBackend::Draw(DrawCommand& command)
+void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandBuffer)
 {
 
 	vk::Rect2D scissorRect;
@@ -266,47 +286,48 @@ void VulkanRasterBackend::Draw(DrawCommand& command)
 	scissorRect.extent.width = command.scissorExtent.x;
 	scissorRect.extent.height = command.scissorExtent.y;
 
-	commandBuffers_[0]->Get().setScissor(0, 1, &scissorRect);
-	commandBuffers_[0]->Get().drawIndexed(
-		command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
+	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
 
-	// TODO: refactor below
-	commandBuffers_[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
+	vk::Buffer vertexBuffers[] = {
+		pipeline_->GetVertexBuffer().GetBuffer()
+	};
+	vk::DeviceSize offsets[] = {
+		0
+	};
 
-	vk::Buffer vertexBuffers[] = {pipeline_->GetVertexBuffer().GetBuffer()};
-	vk::DeviceSize offsets[] = {0};
-
-	commandBuffers_[i].bindVertexBuffers(0, 1, vertexBuffers, offsets);
-	commandBuffers_[i].bindIndexBuffer(
+	commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
+	commandBuffer.bindIndexBuffer(
 		pipeline_->GetIndexBuffer().GetBuffer(), 0, vk::IndexType::eUint16);
 
-	commandBuffers_[i].drawIndexed(6, 1, 0, 0, 0);
+
+	commandBuffer.setScissor(0, 1, &scissorRect);
+	commandBuffer.drawIndexed(command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
 
 }
 
-void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&)
+void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
 
 }
-void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&)
+void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 }
-void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&)
-{
-
-	throw NotImplemented();
-
-}
-void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&)
+void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
 
 }
-void VulkanRasterBackend::CopyTexture(CopyTextureCommand&)
+void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&, vk::CommandBuffer& commandBuffer)
+{
+
+	throw NotImplemented();
+
+}
+void VulkanRasterBackend::CopyTexture(CopyTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
