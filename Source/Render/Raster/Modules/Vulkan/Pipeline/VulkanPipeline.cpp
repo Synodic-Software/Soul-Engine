@@ -12,31 +12,31 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	pipelineLayout_(device_)
 {
 
-	//vk::PipelineShaderStageCreateInfo shaderStages[] = {
-	//	vertexShader_.GetInfo(), fragmentShader_.GetInfo()};
+	vk::PipelineShaderStageCreateInfo shaderStages[] = {
+		vertexShader_.GetInfo(), fragmentShader_.GetInfo()};
 
 
 	// TODO: Refactor and move vertex attribute and bindings.
-	//vk::VertexInputBindingDescription bindingDescription;
-	//bindingDescription.binding = 0;
-	//bindingDescription.stride = sizeof(Vertex);
-	//bindingDescription.inputRate = vk::VertexInputRate::eVertex;
+	vk::VertexInputBindingDescription bindingDescription;
+	bindingDescription.binding = 0;
+	bindingDescription.stride = sizeof(Vertex);
+	bindingDescription.inputRate = vk::VertexInputRate::eVertex;
 
-	//std::array<vk::VertexInputAttributeDescription, 1> attributeDescriptions;
+	std::array<vk::VertexInputAttributeDescription, 1> attributeDescriptions;
 
-	//attributeDescriptions[0].binding = 0;
-	//attributeDescriptions[0].location = 0;
-	//attributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
-	//attributeDescriptions[0].offset = offsetof(Vertex, position);  // TODO: C++23 Reflection
+	attributeDescriptions[0].binding = 0;
+	attributeDescriptions[0].location = 0;
+	attributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
+	attributeDescriptions[0].offset = offsetof(Vertex, position);  // TODO: C++23 Reflection
 
 
 
 	//TODO: fill with meaningful data
 	vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
 	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	//vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
-	//vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-	//vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+	vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
+	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
 
 	vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
@@ -114,17 +114,12 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	pipelineInfo.layout = pipelineLayout_.Get();
 	pipelineInfo.renderPass = renderPass_.GetRenderPass();
 
-	vk::PipelineCacheCreateInfo pipelineCreateInfo;
-	// TODO: pipeline serialization n' such
-
-	pipelineCache_ = device_.createPipelineCache(pipelineCreateInfo);
-	pipeline_ = device_.createGraphicsPipeline(pipelineCache_, pipelineInfo);
+	pipeline_ = device_.createGraphicsPipeline(pipelineCache_.Get(), pipelineInfo);
 }
 
 VulkanPipeline::~VulkanPipeline()
 {
 
-	device_.destroyPipelineCache(pipelineCache_);
 	device_.destroyPipeline(pipeline_);
 
 }

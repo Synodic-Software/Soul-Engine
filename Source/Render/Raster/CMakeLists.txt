@@ -21,6 +21,8 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/Pipeline/VulkanPipeline.h
         Modules/Vulkan/Pipeline/VulkanPipelineLayout.cpp
         Modules/Vulkan/Pipeline/VulkanPipelineLayout.h
+        Modules/Vulkan/Pipeline/VulkanPipelineCache.cpp
+        Modules/Vulkan/Pipeline/VulkanPipelineCache.h
         Modules/Vulkan/VulkanRasterBackend.cpp
         Modules/Vulkan/VulkanRasterBackend.h
         Modules/Vulkan/VulkanRenderPass.cpp

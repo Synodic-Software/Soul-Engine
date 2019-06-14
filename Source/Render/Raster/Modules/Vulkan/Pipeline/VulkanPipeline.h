@@ -3,6 +3,7 @@
 #include "Render/Raster/Modules/Vulkan/VulkanRenderPass.h"
 #include "Render/Raster/Modules/Vulkan/VulkanShader.h"
 #include "Render/Raster/Modules/Vulkan/Buffer/VulkanBuffer.h"
+#include "VulkanPipelineCache.h"
 #include "VulkanPipelineLayout.h"
 
 #include <vulkan/vulkan.hpp>
@@ -33,9 +34,10 @@ private:
 
 	std::vector<VulkanShader> stages_;
 
+	VulkanPipelineCache pipelineCache_;
 	VulkanPipelineLayout pipelineLayout_;
+
 	vk::Pipeline pipeline_;
-	vk::PipelineCache pipelineCache_;
 
 
 };
