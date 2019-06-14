@@ -9,6 +9,7 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	const Resource& fragmentResource,
 	vk::Format swapChainFormat):
 	device_(device),
+	pipelineCache_(device_),
 	pipelineLayout_(device_)
 {
 

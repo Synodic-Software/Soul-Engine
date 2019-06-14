@@ -4,14 +4,15 @@
 #include <glm/vec2.hpp>
 
 class VulkanRenderPass;
-class EntityManager;
-class VulkanDevice;
 
 class VulkanFrameBuffer{
 
 public:
 
-	VulkanFrameBuffer(std::shared_ptr<VulkanDevice>&, vk::ImageView& swapChainImageView, VulkanRenderPass&, glm::uvec2&);
+	VulkanFrameBuffer(const vk::Device& device,
+		vk::ImageView& swapChainImageView,
+		VulkanRenderPass&,
+		glm::uvec2&);
 	~VulkanFrameBuffer();
 
 	VulkanFrameBuffer(const VulkanFrameBuffer&) = delete;
@@ -21,12 +22,12 @@ public:
 	VulkanFrameBuffer& operator=(VulkanFrameBuffer&& other) noexcept = default;
 
 
-	const vk::Framebuffer& GetFrameBuffer() const;
+	const vk::Framebuffer& Get() const;
 
 private:
-	
+
+	vk::Device device_;
 	vk::Framebuffer frameBuffer_;
 
-	std::shared_ptr<VulkanDevice> device_;
 
 };

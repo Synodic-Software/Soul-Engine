@@ -1,13 +1,13 @@
 #include "VulkanFramebuffer.h"
 
-#include "VulkanDevice.h"
 #include "VulkanRenderPass.h"
 
-VulkanFrameBuffer::VulkanFrameBuffer(std::shared_ptr<VulkanDevice>& device, vk::ImageView& swapChainImageView, VulkanRenderPass& renderPass,  glm::uvec2& size) :
+VulkanFrameBuffer::VulkanFrameBuffer(const vk::Device& device,
+	vk::ImageView& swapChainImageView,
+	VulkanRenderPass& renderPass,
+	glm::uvec2& size):
 	device_(device)
 {
-
-	const vk::Device& logicalDevice = device_->GetLogical();
 
 	vk::ImageView attachments[] = {
 		swapChainImageView
@@ -22,18 +22,18 @@ VulkanFrameBuffer::VulkanFrameBuffer(std::shared_ptr<VulkanDevice>& device, vk::
 	framebufferInfo.layers = 1;
 
 
-	frameBuffer_ = logicalDevice.createFramebuffer(framebufferInfo);
+	frameBuffer_ = device_.createFramebuffer(framebufferInfo);
 
 }
 
 VulkanFrameBuffer::~VulkanFrameBuffer() {
 
-	const vk::Device& logicalDevice = device_->GetLogical();
-
-	logicalDevice.destroyFramebuffer(frameBuffer_);
+	device_.destroyFramebuffer(frameBuffer_);
 
 }
 
-const vk::Framebuffer& VulkanFrameBuffer::GetFrameBuffer() const {
+const vk::Framebuffer& VulkanFrameBuffer::Get() const {
+
 	return frameBuffer_;
+
 }
