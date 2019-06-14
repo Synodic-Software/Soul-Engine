@@ -4,10 +4,6 @@
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        Modules/Mock/MockDevice.cpp
-        Modules/Mock/MockDevice.h
-        Modules/Mock/MockRasterBackend.cpp
-        Modules/Mock/MockRasterBackend.h
         Modules/Vulkan/Buffer/VulkanBuffer.h
         Modules/Vulkan/Command/VulkanCommandBuffer.cpp
         Modules/Vulkan/Command/VulkanCommandBuffer.h
@@ -27,6 +23,8 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/Pipeline/VulkanPipelineLayout.h
         Modules/Vulkan/Pipeline/VulkanPipelineCache.cpp
         Modules/Vulkan/Pipeline/VulkanPipelineCache.h
+        Modules/Vulkan/VulkanInstance.cpp
+        Modules/Vulkan/VulkanInstance.h
         Modules/Vulkan/VulkanRasterBackend.cpp
         Modules/Vulkan/VulkanRasterBackend.h
         Modules/Vulkan/VulkanRenderPass.cpp

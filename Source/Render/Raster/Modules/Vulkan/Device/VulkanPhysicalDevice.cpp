@@ -5,10 +5,6 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(vk::Instance instance, vk::PhysicalDe
 {
 }
 
-VulkanPhysicalDevice::~VulkanPhysicalDevice()
-{
-}
-
 const vk::PhysicalDevice& VulkanPhysicalDevice::Get()
 {
 

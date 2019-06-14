@@ -10,7 +10,7 @@ class VulkanPhysicalDevice {
 public:
 
 	VulkanPhysicalDevice(vk::Instance, vk::PhysicalDevice);
-	~VulkanPhysicalDevice();
+	~VulkanPhysicalDevice() = default;
 
 	VulkanPhysicalDevice(const VulkanPhysicalDevice&) = default;
 	VulkanPhysicalDevice(VulkanPhysicalDevice&&) noexcept = default;
