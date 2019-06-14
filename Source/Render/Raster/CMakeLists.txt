@@ -13,8 +13,12 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/Command/VulkanCommandBuffer.h
         Modules/Vulkan/Command/VulkanCommandPool.cpp
         Modules/Vulkan/Command/VulkanCommandPool.h
-        Modules/Vulkan/VulkanDevice.cpp
-        Modules/Vulkan/VulkanDevice.h
+        Modules/Vulkan/Device/VulkanDevice.cpp
+        Modules/Vulkan/Device/VulkanDevice.h
+        Modules/Vulkan/Device/VulkanQueue.cpp
+        Modules/Vulkan/Device/VulkanQueue.h
+        Modules/Vulkan/Device/VulkanPhysicalDevice.cpp
+        Modules/Vulkan/Device/VulkanPhysicalDevice.h
         Modules/Vulkan/VulkanFramebuffer.cpp
         Modules/Vulkan/VulkanFramebuffer.h
         Modules/Vulkan/Pipeline/VulkanPipeline.cpp

@@ -1,6 +1,7 @@
 #include "VulkanRasterBackend.h"
 
-#include "VulkanDevice.h"
+#include "Device/VulkanDevice.h"
+#include "Device/VulkanPhysicalDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 #include "Core/System/Compiler.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
@@ -98,15 +99,19 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 
 	// setup devices
 	auto physicalDevices = instance_.enumeratePhysicalDevices();
-	devices_.reserve(physicalDevices.size());
-	commandPools_.reserve(physicalDevices.size());
+	physicalDevices_.reserve(physicalDevices.size());
+	/*devices_.reserve(physicalDevices.size());
+	commandPools_.reserve(physicalDevices.size());*/
 
 	for (auto& physicalDevice : physicalDevices) {
 
-		devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
-		commandPools_.push_back(std::make_shared<VulkanCommandPool>(scheduler, devices_.back()));
+		physicalDevices_.emplace_back(instance_, physicalDevice);
 
 	}
+
+	//devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
+	//commandPools_.push_back(std::make_shared<VulkanCommandPool>(scheduler, devices_.back()));
+
 }
 
 VulkanRasterBackend::~VulkanRasterBackend()
@@ -162,7 +167,7 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 		swapchain->GetFormat());
 
 
-	/*vk::ImageViewCreateInfo colorAttachmentCreateInfo;
+	vk::ImageViewCreateInfo colorAttachmentCreateInfo;
 	colorAttachmentCreateInfo.format = format_;
 	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 	colorAttachmentCreateInfo.subresourceRange.levelCount = 1;
@@ -175,7 +180,7 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 		colorAttachmentCreateInfo.image = swapChainImages[i];
 		images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
 		images_[i].fence = vk::Fence();
-	}*/
+	}
 
 	auto& frameBuffers = renderPassBuffers_[renderPassID];
 	frameBuffers.reserve(frameBufferSize_);
@@ -183,9 +188,9 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
 	}
 
-	//for (const auto& image : images_) {
-	//	logicalDevice.destroyImageView(image.view);
-	//}
+	for (const auto& image : images_) {
+		logicalDevice.destroyImageView(image.view);
+	}
 
 
 	return renderPassID;
@@ -218,7 +223,7 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 
 	vk::RenderPassBeginInfo renderPassInfo;
 	renderPassInfo.renderPass = renderPass->Get();
-	renderPassInfo.framebuffer = frameBuffers[i].GetFrameBuffer();
+	renderPassInfo.framebuffer = frameBuffers[i].Get();
 	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
 	renderPassInfo.renderArea.extent = {swapchain->GetSize().x, swapchain->GetSize().y};
 	renderPassInfo.clearValueCount = 1;
@@ -308,16 +313,14 @@ void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandB
 
 	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
 
-	vk::Buffer vertexBuffers[] = {
-		
+	vk::Buffer vertexBuffers[] = { command.vertexBuffer
 	};
 	vk::DeviceSize offsets[] = {
 		0
 	};
 
 	commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
-	commandBuffer.bindIndexBuffer(
-		, 0, vk::IndexType::eUint16);
+	commandBuffer.bindIndexBuffer(command.indexBuffer, 0, vk::IndexType::eUint16);
 
 
 	commandBuffer.setScissor(0, 1, &scissorRect);

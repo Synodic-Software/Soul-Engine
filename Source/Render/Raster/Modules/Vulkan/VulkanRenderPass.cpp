@@ -1,5 +1,5 @@
 #include "VulkanRenderPass.h"
-#include "VulkanDevice.h"
+#include "Device/VulkanDevice.h"
 
 VulkanRenderPass::VulkanRenderPass(const vk::Device& device, vk::Format swapChainImageFormat):
 	device_(device)

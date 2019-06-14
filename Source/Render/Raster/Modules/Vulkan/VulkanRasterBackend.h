@@ -14,7 +14,7 @@ class SchedulerModule;
 class WindowModule;
 class VulkanDevice;
 class VulkanSwapChain;
-
+class VulkanPhysicalDevice;
 
 class VulkanRasterBackend final : public RasterModule {
 
@@ -55,8 +55,6 @@ public:
 
 private:
 
-	constexpr static uint frameBufferSize_ = 3;
-
 	std::shared_ptr<EntityRegistry> entityRegistry_;
 
 	void Draw(DrawCommand&, vk::CommandBuffer&);
@@ -79,16 +77,12 @@ private:
 	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
 	std::unordered_map<Entity, std::vector<VulkanFrameBuffer>> renderPassBuffers_;
 
-	vk::Image renderBuffers_[frameBufferSize_];
-	vk::ImageView renderBufferViews_[frameBufferSize_];
-
-
-
 	std::vector<char const*> requiredInstanceExtensions_;
 	std::vector<const char*> validationLayers_;
 
 	vk::Instance instance_;
-	std::vector<std::shared_ptr<VulkanDevice>> devices_;
+	std::vector<VulkanPhysicalDevice> devices_;
+	std::vector<std::shared_ptr<VulkanDevice>> physicalDevices_;
 
 	//Dynamic dispatcher for extensions
 	vk::DispatchLoaderDynamic dispatcher_;

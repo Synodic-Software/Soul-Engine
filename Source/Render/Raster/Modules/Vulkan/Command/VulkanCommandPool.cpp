@@ -1,7 +1,7 @@
 #include "VulkanCommandPool.h"
 
 #include "Parallelism/Scheduler/SchedulerModule.h"
-#include "Render/Raster/Modules/Vulkan/VulkanDevice.h"
+#include "Render/Raster/Modules/Vulkan/Device/VulkanDevice.h"
 
 VulkanCommandPool::VulkanCommandPool(std::shared_ptr<SchedulerModule>& scheduler,
 	const std::shared_ptr<VulkanDevice>& vulkanDevice):

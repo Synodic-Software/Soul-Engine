@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include "Render/Raster/Modules/Vulkan/VulkanDevice.h"
+#include "Render/Raster/Modules/Vulkan/Device/VulkanDevice.h"
 #include "Types.h"
 
 

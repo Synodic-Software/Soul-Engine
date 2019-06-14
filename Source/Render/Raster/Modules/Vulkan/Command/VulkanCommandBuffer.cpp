@@ -2,7 +2,7 @@
 
 #include "VulkanCommandPool.h"
 
-#include "Render/Raster/Modules/Vulkan/VulkanDevice.h"
+#include "Render/Raster/Modules/Vulkan/Device/VulkanDevice.h"
 
 VulkanCommandBuffer::VulkanCommandBuffer(std::shared_ptr<VulkanCommandPool>& commandPool,
 	const std::shared_ptr<VulkanDevice>& vulkanDevice,

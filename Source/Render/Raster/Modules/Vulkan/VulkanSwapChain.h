@@ -13,7 +13,12 @@ class VulkanSwapChain {
 
 public:
 
-	VulkanSwapChain(std::shared_ptr<VulkanDevice>&, vk::SurfaceKHR&, vk::Format, vk::ColorSpaceKHR, glm::uvec2&, bool, VulkanSwapChain* = nullptr);
+	VulkanSwapChain(std::shared_ptr<VulkanDevice>&,
+		vk::SurfaceKHR&,
+		vk::ColorSpaceKHR,
+		const vk::Extent2D&,
+		bool,
+		VulkanSwapChain* = nullptr);
 	~VulkanSwapChain();
 
 	VulkanSwapChain(const VulkanSwapChain&) = delete;
@@ -30,16 +35,19 @@ public:
 
 private:
 
+
 	std::shared_ptr<VulkanDevice> vkDevice_;
 
-	vk::SwapchainKHR swapChain_;
 
-	vk::Format format_;
+	std::vector<vk::Image> renderBuffers_;
+	std::vector<vk::ImageView> renderBufferViews_;
 
 	uint currentFrame_;
 	uint activeImageIndex_;
 	uint frameMax_;
-	glm::uvec2 size_;
+
+	vk::Extent2D size_;
+	vk::SwapchainKHR swapChain_;
 
 	std::vector<vk::Fence> frameFences_;
 	std::vector<vk::Semaphore> presentSemaphores_;
