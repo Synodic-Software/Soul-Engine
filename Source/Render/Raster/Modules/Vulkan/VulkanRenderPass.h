@@ -2,14 +2,12 @@
 
 #include <vulkan/vulkan.hpp>
 
-class VulkanDevice;
-
 class VulkanRenderPass
 {
 
 public:
 
-	VulkanRenderPass(std::shared_ptr<VulkanDevice>&, vk::Format);
+	VulkanRenderPass(const vk::Device&, vk::Format);
 	~VulkanRenderPass();
 
 	VulkanRenderPass(const VulkanRenderPass&) = delete;
@@ -22,7 +20,7 @@ public:
 
 private:
 
-	std::shared_ptr<VulkanDevice> device_;
+	vk::Device device_;
 	vk::RenderPass renderPass_;
 	std::vector<vk::SubpassDescription> subpasses_;
 

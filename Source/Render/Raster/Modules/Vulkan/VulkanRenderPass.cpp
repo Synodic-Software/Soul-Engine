@@ -1,7 +1,7 @@
 #include "VulkanRenderPass.h"
 #include "VulkanDevice.h"
 
-VulkanRenderPass::VulkanRenderPass(std::shared_ptr<VulkanDevice>& device, vk::Format swapChainImageFormat) :
+VulkanRenderPass::VulkanRenderPass(const vk::Device& device, vk::Format swapChainImageFormat):
 	device_(device)
 {
 
@@ -30,18 +30,13 @@ VulkanRenderPass::VulkanRenderPass(std::shared_ptr<VulkanDevice>& device, vk::Fo
 	renderPassInfo.subpassCount = 1;
 	renderPassInfo.pSubpasses = &subpass;
 
-	const vk::Device& logicalDevice = device_->GetLogical();
-
-	renderPass_ = logicalDevice.createRenderPass(renderPassInfo, nullptr);
-
+	renderPass_ = device_.createRenderPass(renderPassInfo, nullptr);
 
 }
 
 VulkanRenderPass::~VulkanRenderPass() {
 
-	const vk::Device& logicalDevice = device_->GetLogical();
-
-	logicalDevice.destroyRenderPass(renderPass_);
+	device_.destroyRenderPass(renderPass_);
 
 }
 
