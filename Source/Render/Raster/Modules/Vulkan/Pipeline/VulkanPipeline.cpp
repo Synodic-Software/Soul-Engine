@@ -1,27 +1,16 @@
 #include "VulkanPipeline.h"
 
-#include "VulkanDevice.h"
-#include "Command/VulkanCommandBuffer.h"
-
 #include "Core/Geometry/Vertex.h"
-#include "Buffer/VulkanBuffer.h"
 
 
-VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
+VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	vk::Extent2D& extent,
 	const Resource& vertexResource,
 	const Resource& fragmentResource,
 	vk::Format swapChainFormat):
-	device_(device)
+	device_(device),
+	pipelineLayout_(device_)
 {
-
-	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
-	pipelineLayoutInfo.setLayoutCount = 0;
-	pipelineLayoutInfo.pushConstantRangeCount = 0;
-
-	const vk::Device& logicalDevice = device_->GetLogical();
-
-	pipelineLayout_ = logicalDevice.createPipelineLayout(pipelineLayoutInfo, nullptr);
 
 	//vk::PipelineShaderStageCreateInfo shaderStages[] = {
 	//	vertexShader_.GetInfo(), fragmentShader_.GetInfo()};
@@ -114,7 +103,7 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
 
 	vk::GraphicsPipelineCreateInfo pipelineInfo;
 	pipelineInfo.stageCount = 2;
-	//pipelineInfo.pStages = shaderStages;
+	pipelineInfo.pStages = shaderStages;
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pViewportState = &viewportState;
@@ -122,24 +111,22 @@ VulkanPipeline::VulkanPipeline(std::shared_ptr<VulkanDevice>& device,
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
-	pipelineInfo.layout = pipelineLayout_;
-	//pipelineInfo.renderPass = renderPass_.GetRenderPass();
+	pipelineInfo.layout = pipelineLayout_.Get();
+	pipelineInfo.renderPass = renderPass_.GetRenderPass();
 
 	vk::PipelineCacheCreateInfo pipelineCreateInfo;
 	// TODO: pipeline serialization n' such
 
-	pipelineCache_ = logicalDevice.createPipelineCache(pipelineCreateInfo);
-	pipeline_ = logicalDevice.createGraphicsPipeline(pipelineCache_, pipelineInfo);
+	pipelineCache_ = device_.createPipelineCache(pipelineCreateInfo);
+	pipeline_ = device_.createGraphicsPipeline(pipelineCache_, pipelineInfo);
 }
 
 VulkanPipeline::~VulkanPipeline()
 {
 
-	const vk::Device& logicalDevice = device_->GetLogical();
+	device_.destroyPipelineCache(pipelineCache_);
+	device_.destroyPipeline(pipeline_);
 
-	logicalDevice.destroyPipelineCache(pipelineCache_);
-	logicalDevice.destroyPipeline(pipeline_);
-	logicalDevice.destroyPipelineLayout(pipelineLayout_);
 }
 
 const vk::Pipeline& VulkanPipeline::GetPipeline() const

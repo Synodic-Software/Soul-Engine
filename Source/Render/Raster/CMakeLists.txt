@@ -17,8 +17,10 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/VulkanDevice.h
         Modules/Vulkan/VulkanFramebuffer.cpp
         Modules/Vulkan/VulkanFramebuffer.h
-        Modules/Vulkan/VulkanPipeline.cpp
-        Modules/Vulkan/VulkanPipeline.h
+        Modules/Vulkan/Pipeline/VulkanPipeline.cpp
+        Modules/Vulkan/Pipeline/VulkanPipeline.h
+        Modules/Vulkan/Pipeline/VulkanPipelineLayout.cpp
+        Modules/Vulkan/Pipeline/VulkanPipelineLayout.h
         Modules/Vulkan/VulkanRasterBackend.cpp
         Modules/Vulkan/VulkanRasterBackend.h
         Modules/Vulkan/VulkanRenderPass.cpp

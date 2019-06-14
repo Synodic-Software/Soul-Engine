@@ -178,7 +178,7 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 	}*/
 
 	auto& frameBuffers = renderPassBuffers_[renderPassID];
-	frameBuffers.reserve(images_.size());
+	frameBuffers.reserve(frameBufferSize_);
 	for (SwapChainImage& image : images_) {
 		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
 	}

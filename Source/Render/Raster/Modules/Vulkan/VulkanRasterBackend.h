@@ -79,8 +79,8 @@ private:
 	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
 	std::unordered_map<Entity, std::vector<VulkanFrameBuffer>> renderPassBuffers_;
 
-	vk::Image RenderBuffers[frameBufferSize_];
-	vk::ImageView RenderBufferViews[frameBufferSize_];
+	vk::Image renderBuffers_[frameBufferSize_];
+	vk::ImageView renderBufferViews_[frameBufferSize_];
 
 
 
