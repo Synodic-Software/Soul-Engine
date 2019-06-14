@@ -9,12 +9,6 @@
 
 class VulkanDevice;
 
-struct SwapChainImage {
-	vk::Image image;
-	vk::ImageView view;
-	vk::Fence fence;
-};
-
 class VulkanSwapChain {
 
 public:
@@ -39,7 +33,6 @@ private:
 	std::shared_ptr<VulkanDevice> vkDevice_;
 
 	vk::SwapchainKHR swapChain_;
-	std::vector<SwapChainImage> images_;
 
 	vk::Format format_;
 

@@ -89,21 +89,6 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device, vk::Surf
 	swapChain_ = logicalDevice.createSwapchainKHR(swapchainCreateInfo);
 	auto swapChainImages = logicalDevice.getSwapchainImagesKHR(swapChain_);
 
-	vk::ImageViewCreateInfo colorAttachmentCreateInfo;
-	colorAttachmentCreateInfo.format = format_;
-	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-	colorAttachmentCreateInfo.subresourceRange.levelCount = 1;
-	colorAttachmentCreateInfo.subresourceRange.layerCount = 1;
-	colorAttachmentCreateInfo.viewType = vk::ImageViewType::e2D;
-
-	images_.resize(swapChainImages.size());
-	for (uint32_t i = 0; i < swapChainImages.size(); ++i) {
-		images_[i].image = swapChainImages[i];
-		colorAttachmentCreateInfo.image = swapChainImages[i];
-		images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
-		images_[i].fence = vk::Fence();
-	}
-
 	//set up synchronization primitives
 	presentSemaphores_.resize(frameMax_);
 	renderSemaphores_.resize(frameMax_);
@@ -129,10 +114,6 @@ VulkanSwapChain::~VulkanSwapChain() {
 	const auto& logicalDevice = vkDevice_->GetLogical();
 
 	vkDevice_->Synchronize();
-
-	for (const auto& image : images_) {
-		logicalDevice.destroyImageView(image.view);
-	}
 
 	for (size_t i = 0; i < frameMax_; i++) {
 

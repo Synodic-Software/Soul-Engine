@@ -161,11 +161,31 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 		Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"),
 		swapchain->GetFormat());
 
+
+	/*vk::ImageViewCreateInfo colorAttachmentCreateInfo;
+	colorAttachmentCreateInfo.format = format_;
+	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	colorAttachmentCreateInfo.subresourceRange.levelCount = 1;
+	colorAttachmentCreateInfo.subresourceRange.layerCount = 1;
+	colorAttachmentCreateInfo.viewType = vk::ImageViewType::e2D;
+
+	images_.resize(swapChainImages.size());
+	for (uint32_t i = 0; i < swapChainImages.size(); ++i) {
+		images_[i].image = swapChainImages[i];
+		colorAttachmentCreateInfo.image = swapChainImages[i];
+		images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
+		images_[i].fence = vk::Fence();
+	}*/
+
 	auto& frameBuffers = renderPassBuffers_[renderPassID];
 	frameBuffers.reserve(images_.size());
 	for (SwapChainImage& image : images_) {
 		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
 	}
+
+	//for (const auto& image : images_) {
+	//	logicalDevice.destroyImageView(image.view);
+	//}
 
 
 	return renderPassID;
@@ -289,7 +309,7 @@ void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandB
 	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
 
 	vk::Buffer vertexBuffers[] = {
-		pipeline_->GetVertexBuffer().GetBuffer()
+		
 	};
 	vk::DeviceSize offsets[] = {
 		0
@@ -297,7 +317,7 @@ void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandB
 
 	commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
 	commandBuffer.bindIndexBuffer(
-		pipeline_->GetIndexBuffer().GetBuffer(), 0, vk::IndexType::eUint16);
+		, 0, vk::IndexType::eUint16);
 
 
 	commandBuffer.setScissor(0, 1, &scissorRect);

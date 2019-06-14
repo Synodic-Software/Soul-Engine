@@ -55,6 +55,8 @@ public:
 
 private:
 
+	constexpr static uint frameBufferSize_ = 3;
+
 	std::shared_ptr<EntityRegistry> entityRegistry_;
 
 	void Draw(DrawCommand&, vk::CommandBuffer&);
@@ -69,11 +71,18 @@ private:
 
 	std::unordered_map<Entity, vk::SurfaceKHR> surfaces_;
 	std::unordered_map<Entity, std::unique_ptr<VulkanSwapChain>> swapChains_;
+
+
 	std::unordered_map<Entity, Entity> renderPassSwapchainMap_;
 	std::unordered_map<Entity, std::unique_ptr<VulkanPipeline>> pipelines_;
 	std::unordered_map<Entity, std::unique_ptr<VulkanRenderPass>> renderPasses_;
 	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
 	std::unordered_map<Entity, std::vector<VulkanFrameBuffer>> renderPassBuffers_;
+
+	vk::Image RenderBuffers[frameBufferSize_];
+	vk::ImageView RenderBufferViews[frameBufferSize_];
+
+
 
 	std::vector<char const*> requiredInstanceExtensions_;
 	std::vector<const char*> validationLayers_;
