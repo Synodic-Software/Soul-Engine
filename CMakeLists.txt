@@ -37,29 +37,9 @@ endif()
 
 #Externally managed dependancies
 find_package(OpenCL 1.2)
-find_package(Vulkan)
 
 #TODO: Remove reliance on pre-installed VulkanSDK. Via Conan instead.
-#For Vulkan, we need to pull in some extra CMake dependancies
-if(${Vulkan_FOUND})
-
-    set(GLSLANG_ROOT $ENV{VULKAN_SDK}/glslang)
-
-    set(BUILD_TESTING OFF CACHE INTERNAL "")
-    set(ENABLE_GLSLANG_BINARIES OFF CACHE INTERNAL "")
-    set(ENABLE_SPVREMAPPER OFF CACHE INTERNAL "")
-    set(ENABLE_HLSL OFF CACHE INTERNAL "")
-    set(ENABLE_AMD_EXTENSIONS OFF CACHE INTERNAL "")
-    set(ENABLE_NV_EXTENSIONS OFF CACHE INTERNAL "")
-
-    set(SKIP_GLSLANG_INSTALL ON CACHE INTERNAL "")
-    set(ENABLE_OPT ON CACHE INTERNAL "")
-
-    #TODO: Get rid of this dependancy
-    add_subdirectory(${GLSLANG_ROOT} ${GLSLANG_ROOT}/build)
-
-endif()
-
+find_package(Vulkan)
 
 check_language(CUDA)
 
@@ -113,7 +93,6 @@ target_include_directories(${PROJECT_NAME}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Includes>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/Source
-        $<$<BOOL:${BUILD_VULKAN_RASTER}>:${GLSLANG_ROOT}>
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -126,9 +105,6 @@ target_link_libraries(${PROJECT_NAME}
         CONAN_PKG::stb
         CONAN_PKG::imgui
         $<$<BOOL:${BUILD_VULKAN_RASTER}>:Vulkan::Vulkan>
-        $<$<BOOL:${BUILD_VULKAN_RASTER}>:glslang>
-        $<$<BOOL:${BUILD_VULKAN_RASTER}>:SPIRV>
-
 )
 
 

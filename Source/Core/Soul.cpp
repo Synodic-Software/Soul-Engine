@@ -19,15 +19,15 @@ Soul::Soul(SoulParameters& params) :
 	parameters_(params),
 	frameTime_(),
 	active_(true),
+	entityRegistry_(new EntityRegistry()), 
+	eventRegistry_(new EventRegistry()),
 	schedulerModule_(SchedulerModule::CreateModule(parameters_.threadCount)),
 	computeModule_(ComputeModule::CreateModule()),
 	inputModule_(InputModule::CreateModule()), 
 	windowModule_(WindowModule::CreateModule(inputModule_)), 
-	rasterModule_(RasterModule::CreateModule(schedulerModule_, windowModule_)),
+	rasterModule_(RasterModule::CreateModule(schedulerModule_, entityRegistry_, windowModule_)),
 	renderGraphModule_(RenderGraphModule::CreateModule(rasterModule_, schedulerModule_)),
-	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_, renderGraphModule_)),
-	entityRegistry_(new EntityRegistry()), 
-	eventRegistry_(new EventRegistry())
+	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_, renderGraphModule_))
 {
 	parameters_.engineRefreshRate.AddCallback([this](const int value)
 	{

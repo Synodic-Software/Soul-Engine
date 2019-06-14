@@ -67,6 +67,9 @@ private:
 
 
 	//services and modules	
+	std::shared_ptr<EntityRegistry> entityRegistry_;
+	std::shared_ptr<EventRegistry> eventRegistry_;
+
 	std::shared_ptr<SchedulerModule> schedulerModule_;
 	std::shared_ptr<ComputeModule> computeModule_;
 	std::shared_ptr<InputModule> inputModule_;
@@ -74,9 +77,6 @@ private:
 	std::shared_ptr<RasterModule> rasterModule_;
 	std::shared_ptr<RenderGraphModule> renderGraphModule_;
 	std::shared_ptr<GUIModule> guiModule_;
-
-	std::shared_ptr<EntityRegistry> entityRegistry_;
-	std::shared_ptr<EventRegistry> eventRegistry_;
 
 
 };
