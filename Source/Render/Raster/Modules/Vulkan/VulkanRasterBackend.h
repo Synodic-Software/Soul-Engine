@@ -5,6 +5,7 @@
 #include "VulkanSwapChain.h"
 #include "Command/VulkanCommandPool.h"
 #include "Command/VulkanCommandBuffer.h"
+#include "VulkanInstance.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
@@ -14,7 +15,6 @@ class SchedulerModule;
 class WindowModule;
 class VulkanDevice;
 class VulkanSwapChain;
-class VulkanPhysicalDevice;
 
 class VulkanRasterBackend final : public RasterModule {
 
@@ -77,22 +77,7 @@ private:
 	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
 	std::unordered_map<Entity, std::vector<VulkanFrameBuffer>> renderPassBuffers_;
 
-	std::vector<char const*> requiredInstanceExtensions_;
-	std::vector<const char*> validationLayers_;
+	std::unique_ptr<VulkanInstance> instance_;
 
-	vk::Instance instance_;
-	std::vector<VulkanPhysicalDevice> devices_;
-	std::vector<std::shared_ptr<VulkanDevice>> physicalDevices_;
-
-	//Dynamic dispatcher for extensions
-	vk::DispatchLoaderDynamic dispatcher_;
-
-	//Debug state 
-	//TODO: Should be conditionally included when the class is only debug mode.
-
-	static VkBool32 DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, const VkDebugUtilsMessengerCallbackDataEXT*, void*);
-
-	vk::DebugUtilsMessengerEXT debugMessenger_;
-	vk::DebugReportCallbackEXT callback_;
 
 };

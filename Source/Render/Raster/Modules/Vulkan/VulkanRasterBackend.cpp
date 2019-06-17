@@ -1,7 +1,6 @@
 #include "VulkanRasterBackend.h"
 
 #include "Device/VulkanDevice.h"
-#include "Device/VulkanPhysicalDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 #include "Core/System/Compiler.h"
 #include "Core/Composition/Entity/EntityRegistry.h"
@@ -14,8 +13,7 @@
 VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
 	std::shared_ptr<EntityRegistry>& entityRegistry,
 	std::shared_ptr<WindowModule>& windowModule_):
-	entityRegistry_(entityRegistry),
-	validationLayers_ {"VK_LAYER_KHRONOS_validation"}
+	entityRegistry_(entityRegistry)
 {
 
 	// setup Vulkan app info
@@ -32,6 +30,10 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 
 	requiredInstanceExtensions_.insert(
 		std::end(requiredInstanceExtensions_), std::begin(newExtensions), std::end(newExtensions));
+
+	{
+		"VK_LAYER_KHRONOS_validation"
+	}
 
 	// TODO minimize memory/runtime impact
 	if constexpr (Compiler::Debug()) {
@@ -58,60 +60,14 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 		}
 	}
 
-	vk::InstanceCreateInfo instanceCreationInfo;
-	instanceCreationInfo.pApplicationInfo = &appInfo;
-	instanceCreationInfo.enabledExtensionCount =
-		static_cast<uint32>(requiredInstanceExtensions_.size());
-	instanceCreationInfo.ppEnabledExtensionNames = requiredInstanceExtensions_.data();
-
-	if constexpr (Compiler::Debug()) {
-
-		instanceCreationInfo.enabledLayerCount = static_cast<uint32>(validationLayers_.size());
-		instanceCreationInfo.ppEnabledLayerNames = validationLayers_.data();
-	}
-	else {
-
-		instanceCreationInfo.enabledLayerCount = 0;
-	}
-
-	instance_ = createInstance(instanceCreationInfo);
+	instance_ = 
 
 
-	// Create debugging callback
-	if constexpr (Compiler::Debug()) {
-
-		dispatcher_ = vk::DispatchLoaderDynamic(instance_);
-
-		vk::DebugUtilsMessengerCreateInfoEXT messengerCreateInfo;
-		messengerCreateInfo.flags = vk::DebugUtilsMessengerCreateFlagBitsEXT(0);
-		messengerCreateInfo.messageSeverity = vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
-											  vk::DebugUtilsMessageSeverityFlagBitsEXT::eError;
-		messengerCreateInfo.messageType = vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-										  vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
-										  vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance;
-		messengerCreateInfo.pfnUserCallback = DebugCallback;
-		messengerCreateInfo.pUserData = nullptr;
-
-		debugMessenger_ =
-			instance_.createDebugUtilsMessengerEXT(messengerCreateInfo, nullptr, dispatcher_);
-	}
-
-
-	// setup devices
-	auto physicalDevices = instance_.enumeratePhysicalDevices();
-	physicalDevices_.reserve(physicalDevices.size());
 	/*devices_.reserve(physicalDevices.size());
 	commandPools_.reserve(physicalDevices.size());*/
 
-	for (auto& physicalDevice : physicalDevices) {
-
-		physicalDevices_.emplace_back(instance_, physicalDevice);
-
-	}
-
-	//devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
-	//commandPools_.push_back(std::make_shared<VulkanCommandPool>(scheduler, devices_.back()));
-
+	// devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
+	// commandPools_.push_back(std::make_shared<VulkanCommandPool>(scheduler, devices_.back()));
 }
 
 VulkanRasterBackend::~VulkanRasterBackend()
@@ -123,13 +79,6 @@ VulkanRasterBackend::~VulkanRasterBackend()
 	}
 
 	devices_.clear();
-
-	if constexpr (Compiler::Debug()) {
-
-		instance_.destroyDebugUtilsMessengerEXT(debugMessenger_, nullptr, dispatcher_);
-	}
-
-	instance_.destroy();
 }
 
 void VulkanRasterBackend::Render()
@@ -138,8 +87,7 @@ void VulkanRasterBackend::Render()
 
 	for (const auto& [id, swapchain] : swapChains_) {
 
-		 swapchain->Present(*commandBuffers_[0]);
-
+		swapchain->Present(*commandBuffers_[0]);
 	}
 }
 
@@ -156,12 +104,15 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 	renderPasses_[renderPassID] =
 		std::make_unique<VulkanRenderPass>(device, swapchain->GetFormat());
 
-	//TODO: Better management if commandBuffers
-	renderPassCommands_[renderPassID] = commandBuffers_.emplace_back(
-		std::make_unique<VulkanCommandBuffer>(commandPools_.back(), devices_.back(),
-			vk::CommandBufferUsageFlagBits::eSimultaneousUse, vk::CommandBufferLevel::ePrimary)).get();
+	// TODO: Better management if commandBuffers
+	renderPassCommands_[renderPassID] =
+		commandBuffers_
+			.emplace_back(std::make_unique<VulkanCommandBuffer>(commandPools_.back(),
+				devices_.back(), vk::CommandBufferUsageFlagBits::eSimultaneousUse,
+				vk::CommandBufferLevel::ePrimary))
+			.get();
 
-	//TODO: Better management of pipelines
+	// TODO: Better management of pipelines
 	pipelines_[renderPassID] = std::make_unique<VulkanPipeline>(device, swapchain->GetSize(),
 		Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"),
 		swapchain->GetFormat());
@@ -202,7 +153,6 @@ Entity VulkanRasterBackend::CreateSubPass(Entity parentPass)
 	Entity subPassID = entityRegistry_->CreateEntity();
 
 	return subPassID;
-
 }
 
 void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandList)
@@ -233,10 +183,8 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 	commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 
 
-
 	commandBuffer.endRenderPass();
 	commandBuffer.end();
-
 }
 
 Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
@@ -297,8 +245,6 @@ void VulkanRasterBackend::RemoveSurface(Entity surfaceID)
 
 void VulkanRasterBackend::Compile(CommandList&)
 {
-
-
 }
 
 void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandBuffer)
@@ -313,11 +259,8 @@ void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandB
 
 	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline_->GetPipeline());
 
-	vk::Buffer vertexBuffers[] = { command.vertexBuffer
-	};
-	vk::DeviceSize offsets[] = {
-		0
-	};
+	vk::Buffer vertexBuffers[] = {command.vertexBuffer};
+	vk::DeviceSize offsets[] = {0};
 
 	commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
 	commandBuffer.bindIndexBuffer(command.indexBuffer, 0, vk::IndexType::eUint16);
@@ -325,48 +268,33 @@ void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandB
 
 	commandBuffer.setScissor(0, 1, &scissorRect);
 	commandBuffer.drawIndexed(command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
-
 }
 
 void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
-
 }
 void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
-
 }
 void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
-
 }
 void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
-
 }
 void VulkanRasterBackend::CopyTexture(CopyTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
-
 }
 
 vk::Instance& VulkanRasterBackend::GetInstance()
 {
 	return instance_;
-}
-
-VkBool32 VulkanRasterBackend::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-	VkDebugUtilsMessageTypeFlagsEXT messageType,
-	const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-	void* pUserData)
-{
-
-	throw NotImplemented();
 }

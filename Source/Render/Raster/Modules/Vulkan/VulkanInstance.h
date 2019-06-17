@@ -2,14 +2,17 @@
 
 #include "Types.h"
 
+#include <string>
 #include <vulkan/vulkan.hpp>
+
+class VulkanPhysicalDevice;
 
 
 class VulkanInstance {
 
 public:
 
-	VulkanInstance();
+	VulkanInstance(const vk::ApplicationInfo&, std::vector<std::string>, std::vector<std::string>);
 	~VulkanInstance();
 
 	VulkanInstance(const VulkanInstance&) = default;
@@ -23,5 +26,19 @@ public:
 private:
 
 	vk::Instance instance_;
+	std::vector<VulkanPhysicalDevice> physicalDevices_;
+
+	// Dynamic dispatcher for extensions
+	vk::DispatchLoaderDynamic dispatcher_;
+
+	// Debug state
+	// TODO: Should be conditionally included when the class is only debug mode.
+
+	static VkBool32 DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT,
+		VkDebugUtilsMessageTypeFlagsEXT,
+		const VkDebugUtilsMessengerCallbackDataEXT*,
+		void*);
+	 
+	vk::DebugUtilsMessengerEXT debugMessenger_;
 
 };
