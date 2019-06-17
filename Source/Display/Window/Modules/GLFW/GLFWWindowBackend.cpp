@@ -129,21 +129,16 @@ void GLFWWindowBackend::CreateWindow(const WindowParameters& params,
 	glfwShowWindow(context);
 }
 
-std::vector<const char*> GLFWWindowBackend::GetRasterExtensions()
+nonstd::span<const char*> GLFWWindowBackend::GetRasterExtensions()
 {
 
-	// TODO: std::span would be better than vector come c+20
 	uint32 glfwExtensionCount = 0;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-	std::vector<const char*> requiredInstanceExtensions;
-	requiredInstanceExtensions.reserve(glfwExtensionCount);
+	return {
+		glfwExtensions, glfwExtensions
+	};
 
-	for (uint i = 0; i < glfwExtensionCount; ++i) {
-		requiredInstanceExtensions.push_back(glfwExtensions[i]);
-	}
-
-	return requiredInstanceExtensions;
 }
 
 void GLFWWindowBackend::Refresh()

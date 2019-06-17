@@ -28,7 +28,7 @@ public:
 	bool Active() override;
 	void CreateWindow(const WindowParameters&, std::shared_ptr<RasterModule>&) override;
 
-	std::vector<const char*> GetRasterExtensions() override;
+	nonstd::span<const char*> GetRasterExtensions() override;
 
 	Window& GetWindow() override;
 
