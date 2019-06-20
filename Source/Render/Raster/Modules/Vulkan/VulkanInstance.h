@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+#include "Core/Structure/Span.h"
 
 #include <string>
 #include <vulkan/vulkan.hpp>
@@ -12,7 +13,9 @@ class VulkanInstance {
 
 public:
 
-	VulkanInstance(const vk::ApplicationInfo&, std::vector<std::string>, std::vector<std::string>);
+	VulkanInstance(const vk::ApplicationInfo&,
+		nonstd::span<std::string>,
+		nonstd::span<std::string>);
 	~VulkanInstance();
 
 	VulkanInstance(const VulkanInstance&) = default;

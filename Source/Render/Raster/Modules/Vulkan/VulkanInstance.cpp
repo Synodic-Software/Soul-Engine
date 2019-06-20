@@ -6,8 +6,8 @@
 
 
 VulkanInstance::VulkanInstance(const vk::ApplicationInfo& appInfo,
-	std::vector<std::string> validationLayers,
-	std::vector<std::string> requiredInstanceExtensions):
+	nonstd::span<std::string> validationLayers,
+	nonstd::span<std::string> requiredInstanceExtensions)
 {
 
 	std::vector<const char*> cValidationLayers(validationLayers.size());

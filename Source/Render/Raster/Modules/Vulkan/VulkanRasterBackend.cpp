@@ -28,26 +28,27 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 	// The display will forward the extensions needed for Vulkan
 	const auto newExtensions = windowModule_->GetRasterExtensions();
 
-	requiredInstanceExtensions_.insert(
-		std::end(requiredInstanceExtensions_), std::begin(newExtensions), std::end(newExtensions));
+	std::vector<std::string> validationLayers;
+	std::vector<std::string> instanceExtensions;
+	
+	instanceExtensions.insert(
+		std::end(instanceExtensions), std::begin(newExtensions), std::end(newExtensions));
 
-	{
-		"VK_LAYER_KHRONOS_validation"
-	}
 
 	// TODO minimize memory/runtime impact
 	if constexpr (Compiler::Debug()) {
 
-		requiredInstanceExtensions_.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		validationLayers.push_back("VK_LAYER_KHRONOS_validation");
+		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
 		std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
 
-		for (auto layer : validationLayers_) {
+		for (auto layer : validationLayers) {
 
 			bool found = false;
 			for (const auto& layerProperties : availableLayers) {
 
-				if (strcmp(layer, layerProperties.layerName) == 0) {
+				if (strcmp(layer.c_str(), layerProperties.layerName) == 0) {
 					found = true;
 					break;
 				}
@@ -60,7 +61,11 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 		}
 	}
 
-	instance_ = 
+	instance_.reset(new VulkanInstance(
+		appInfo, 
+		validationLayers, 
+		instanceExtensions
+	));
 
 
 	/*devices_.reserve(physicalDevices.size());
@@ -68,17 +73,6 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 
 	// devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
 	// commandPools_.push_back(std::make_shared<VulkanCommandPool>(scheduler, devices_.back()));
-}
-
-VulkanRasterBackend::~VulkanRasterBackend()
-{
-
-	for (auto& device : devices_) {
-
-		device->Synchronize();
-	}
-
-	devices_.clear();
 }
 
 void VulkanRasterBackend::Render()
@@ -274,27 +268,28 @@ void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&, vk::CommandBuffer& 
 {
 
 	throw NotImplemented();
+
 }
 void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
+
+
 }
 void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
+
 }
 void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
+
 }
 void VulkanRasterBackend::CopyTexture(CopyTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
-}
 
-vk::Instance& VulkanRasterBackend::GetInstance()
-{
-	return instance_;
 }

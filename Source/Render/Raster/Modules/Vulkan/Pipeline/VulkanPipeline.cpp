@@ -4,10 +4,7 @@
 
 
 VulkanPipeline::VulkanPipeline(const vk::Device& device,
-	vk::Extent2D& extent,
-	const Resource& vertexResource,
-	const Resource& fragmentResource,
-	vk::Format swapChainFormat):
+	vk::Extent2D& extent):
 	device_(device),
 	pipelineCache_(device_),
 	pipelineLayout_(device_)

@@ -6,12 +6,13 @@
 #include <fstream>
 #include <filesystem>
 
-VulkanShader::VulkanShader(std::shared_ptr<VulkanDevice>& device, const vk::ShaderStageFlagBits& shaderType, const Resource& resource) :
+VulkanShader::VulkanShader(const vk::Device& device,
+	const vk::ShaderStageFlagBits& shaderType,
+	const Resource& resource):
 	device_(device)
 {
-	const vk::Device& logicalDevice = device_->GetLogical();
 
-	module_ = CreateModule(logicalDevice, resource.Path());
+	module_ = CreateModule(device_, resource.Path());
 
     info_.stage = shaderType;
 	info_.module = module_;
@@ -21,9 +22,7 @@ VulkanShader::VulkanShader(std::shared_ptr<VulkanDevice>& device, const vk::Shad
 
 VulkanShader::~VulkanShader() {
 
-	const vk::Device& logicalDevice = device_->GetLogical();
-
-	logicalDevice.destroyShaderModule(module_, nullptr);
+	device_.destroyShaderModule(module_, nullptr);
 
 }
 

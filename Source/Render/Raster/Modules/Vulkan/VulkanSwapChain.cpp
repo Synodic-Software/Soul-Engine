@@ -28,15 +28,13 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device,
 
 	vk::Extent2D swapchainSize;
 	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max()) {
-		swapchainSize.width = size_.x;
-		swapchainSize.height = size_.y;
+		swapchainSize = size_;
 	}
 	else {
 		swapchainSize = surfaceCapabilities.currentExtent;
 	}
 
-	size_.x = swapchainSize.width;
-	size_.y = swapchainSize.height;
+	size_ = swapchainSize;
 
 	vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eFifo;
 
@@ -178,12 +176,7 @@ void VulkanSwapChain::Present(VulkanCommandBuffer& commandBuffer_)
 	vkDevice_->GetPresentQueue().presentKHR(presentInfo);
 }
 
-vk::Format VulkanSwapChain::GetFormat()
-{
-	return format_;
-}
-
-glm::uvec2 VulkanSwapChain::GetSize()
+vk::Extent2D VulkanSwapChain::GetSize()
 {
 	return size_;
 }

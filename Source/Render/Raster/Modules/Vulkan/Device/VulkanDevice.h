@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Types.h"
 #include "Render/Raster/RasterDevice.h"
 #include "Core/Structure/Span.h"
 

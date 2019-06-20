@@ -10,6 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
 #include <unordered_map>
+#include <memory>
 
 class SchedulerModule;
 class WindowModule;
@@ -23,7 +24,7 @@ public:
 	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&,
 		std::shared_ptr<EntityRegistry>&,
 		std::shared_ptr<WindowModule>&);
-	~VulkanRasterBackend() override;
+	~VulkanRasterBackend() override = default;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
 	VulkanRasterBackend(VulkanRasterBackend &&) noexcept = default;
@@ -49,10 +50,6 @@ public:
 	void Compile(CommandList& commandList) override;
 
 
-	vk::Instance& GetInstance();
-
-
-
 private:
 
 	std::shared_ptr<EntityRegistry> entityRegistry_;
@@ -76,7 +73,8 @@ private:
 	std::unordered_map<Entity, std::unique_ptr<VulkanRenderPass>> renderPasses_;
 	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
 	std::unordered_map<Entity, std::vector<VulkanFrameBuffer>> renderPassBuffers_;
-
+	
+	//TODO: put on stack and remove deferred construction
 	std::unique_ptr<VulkanInstance> instance_;
 
 

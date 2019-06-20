@@ -60,7 +60,6 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 
 		if (queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) {
 			addQueueInfo(i);
-			graphicsIndex_ = i;
 			break;
 		}
 

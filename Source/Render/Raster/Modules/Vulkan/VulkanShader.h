@@ -12,7 +12,7 @@ class VulkanShader {
 
 public:
 
-	VulkanShader(std::shared_ptr<VulkanDevice>&, const vk::ShaderStageFlagBits&, const Resource&);
+	VulkanShader(const vk::Device&, const vk::ShaderStageFlagBits&, const Resource&);
 	~VulkanShader();
 
 	VulkanShader(const VulkanShader&) = delete;
@@ -31,6 +31,6 @@ private:
 	vk::ShaderModule module_;
 	vk::PipelineShaderStageCreateInfo info_;
 
-	std::shared_ptr<VulkanDevice>& device_;
+	vk::Device device_;
 
 };

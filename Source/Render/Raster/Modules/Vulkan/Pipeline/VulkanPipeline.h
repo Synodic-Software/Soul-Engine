@@ -16,7 +16,7 @@ class VulkanPipeline {
 
 public:
 
-	VulkanPipeline(const vk::Device&, vk::Extent2D&, const Resource&, const Resource&, vk::Format);
+	VulkanPipeline(const vk::Device&, vk::Extent2D&);
 	~VulkanPipeline();
 
 	VulkanPipeline(const VulkanPipeline&) = delete;

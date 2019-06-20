@@ -12,7 +12,7 @@ class VulkanCommandPool final {
 
 public:
 
-	VulkanCommandPool(std::shared_ptr<SchedulerModule>&, const std::shared_ptr<VulkanDevice>&);
+	VulkanCommandPool(std::shared_ptr<SchedulerModule>&, const vk::Device&, uint queueFamilyIndex);
 	~VulkanCommandPool();
 
 	VulkanCommandPool(const VulkanCommandPool&) = delete;
@@ -27,7 +27,7 @@ public:
 private:
 
 	std::shared_ptr<SchedulerModule> scheduler_;
-	std::shared_ptr<VulkanDevice> device_;
+	vk::Device device_;
 
 	ThreadLocal<vk::CommandPool> commandPool_;
 

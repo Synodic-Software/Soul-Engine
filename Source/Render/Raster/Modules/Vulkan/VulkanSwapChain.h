@@ -5,7 +5,6 @@
 #include "Command/VulkanCommandBuffer.h"
 
 #include <vulkan/vulkan.hpp>
-#include <glm/vec2.hpp>
 
 class VulkanDevice;
 
@@ -30,8 +29,7 @@ public:
 	void AquireImage();
 	void Present(VulkanCommandBuffer&);
 
-	vk::Format GetFormat();
-	glm::uvec2 GetSize();
+	vk::Extent2D GetSize();
 
 private:
 
