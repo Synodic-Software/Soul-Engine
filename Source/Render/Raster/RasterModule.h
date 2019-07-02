@@ -31,7 +31,7 @@ public:
 	RasterModule& operator=(const RasterModule &) = delete;
 	RasterModule& operator=(RasterModule &&) noexcept = default;
 
-	virtual void Render() = 0;
+	virtual void Present() = 0;
 
 	virtual Entity CreatePass(Entity) = 0;
 	virtual Entity CreateSubPass(Entity) = 0;

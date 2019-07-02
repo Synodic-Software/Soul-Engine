@@ -6,23 +6,22 @@
 #include "Core/Geometry/Vertex.h"
 #include "Buffer/VulkanBuffer.h"
 #include "Transput/Resource/Resource.h"
+#include "Render/Raster/Modules/Vulkan/VulkanSurface.h"
 
-VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device,
-	vk::SurfaceKHR& surface,
-	vk::ColorSpaceKHR colorSpace,
-	const vk::Extent2D& size,
+
+VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
+	const VulkanSurface& surface,
 	bool vSync,
 	VulkanSwapChain* oldSwapChain):
-	vkDevice_(device),
-	size_(size), currentFrame_(0), frameMax_(2)
+	device_(device->GetLogical()),
+	currentFrame_(0), activeImageIndex_(0), frameMax_(2)
 {
-	const auto& logicalDevice = vkDevice_->GetLogical();
-	const auto& physicalDevice = vkDevice_->GetPhysical();
+	const auto& physicalDevice = device->GetPhysical();
 
 	const vk::SurfaceCapabilitiesKHR surfaceCapabilities =
-		physicalDevice.getSurfaceCapabilitiesKHR(surface);
+		physicalDevice.getSurfaceCapabilitiesKHR(surface.Handle());
 	std::vector<vk::PresentModeKHR> presentModes =
-		physicalDevice.getSurfacePresentModesKHR(surface);
+		physicalDevice.getSurfacePresentModesKHR(surface.Handle());
 
 	assert(!presentModes.empty());
 
@@ -72,7 +71,7 @@ VulkanSwapChain::VulkanSwapChain(std::shared_ptr<VulkanDevice>& device,
 	vk::SwapchainCreateInfoKHR swapchainCreateInfo;
 	swapchainCreateInfo.surface = surface;
 	swapchainCreateInfo.minImageCount = imageCount;
-	swapchainCreateInfo.imageFormat = format_;
+	swapchainCreateInfo.imageFormat = format;
 	swapchainCreateInfo.imageColorSpace = colorSpace;
 	swapchainCreateInfo.imageExtent = swapchainSize;
 	swapchainCreateInfo.imageUsage =
@@ -139,42 +138,42 @@ void VulkanSwapChain::AquireImage()
 }
 
 
-void VulkanSwapChain::Present(VulkanCommandBuffer& commandBuffer_)
-{
-
-	const auto& logicalDevice = vkDevice_->GetLogical();
-
-	logicalDevice.waitForFences(
-		frameFences_[currentFrame_], true, std::numeric_limits<uint64_t>::max());
-	logicalDevice.resetFences(frameFences_[currentFrame_]);
-
-	vk::SubmitInfo submitInfo;
-
-	vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
-	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = &presentSemaphores_[currentFrame_];
-	submitInfo.pWaitDstStageMask = waitStages;
-
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffer_.Get();
-
-	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = &renderSemaphores_[currentFrame_];
-
-	vkDevice_->GetGraphicsQueue().submit(submitInfo, frameFences_[currentFrame_]);
-
-	vk::PresentInfoKHR presentInfo;
-
-	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = &renderSemaphores_[currentFrame_];
-
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = &swapChain_;
-
-	presentInfo.pImageIndices = &activeImageIndex_;
-
-	vkDevice_->GetPresentQueue().presentKHR(presentInfo);
-}
+//void VulkanSwapChain::Present(VulkanCommandBuffer& commandBuffer_)
+//{
+//
+//	const auto& logicalDevice = vkDevice_->GetLogical();
+//
+//	logicalDevice.waitForFences(
+//		frameFences_[currentFrame_], true, std::numeric_limits<uint64_t>::max());
+//	logicalDevice.resetFences(frameFences_[currentFrame_]);
+//
+//	vk::SubmitInfo submitInfo;
+//
+//	vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
+//	submitInfo.waitSemaphoreCount = 1;
+//	submitInfo.pWaitSemaphores = &presentSemaphores_[currentFrame_];
+//	submitInfo.pWaitDstStageMask = waitStages;
+//
+//	submitInfo.commandBufferCount = 1;
+//	submitInfo.pCommandBuffers = &commandBuffer_.Handle();
+//
+//	submitInfo.signalSemaphoreCount = 1;
+//	submitInfo.pSignalSemaphores = &renderSemaphores_[currentFrame_];
+//
+//	vkDevice_->GetGraphicsQueue().submit(submitInfo, frameFences_[currentFrame_]);
+//
+//	vk::PresentInfoKHR presentInfo;
+//
+//	presentInfo.waitSemaphoreCount = 1;
+//	presentInfo.pWaitSemaphores = &renderSemaphores_[currentFrame_];
+//
+//	presentInfo.swapchainCount = 1;
+//	presentInfo.pSwapchains = &swapChain_;
+//
+//	presentInfo.pImageIndices = &activeImageIndex_;
+//
+//	vkDevice_->GetPresentQueue().presentKHR(presentInfo);
+//}
 
 vk::Extent2D VulkanSwapChain::GetSize()
 {

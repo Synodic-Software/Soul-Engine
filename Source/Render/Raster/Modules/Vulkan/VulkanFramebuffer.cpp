@@ -14,7 +14,7 @@ VulkanFrameBuffer::VulkanFrameBuffer(const vk::Device& device,
 	};
 
 	vk::FramebufferCreateInfo framebufferInfo;
-	framebufferInfo.renderPass = renderPass.Get();
+	framebufferInfo.renderPass = renderPass.Handle();
 	framebufferInfo.attachmentCount = 1;
 	framebufferInfo.pAttachments = attachments;
 	framebufferInfo.width = size.x;

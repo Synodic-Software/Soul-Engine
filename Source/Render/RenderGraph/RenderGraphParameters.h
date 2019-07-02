@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Composition/Entity/Entity.h"
+
 #include <string>
 
 struct RenderTaskParameters {
@@ -9,6 +11,7 @@ public:
 	~RenderTaskParameters() = default;
 
 	std::string name;
+	Entity surfaceID;
 };
 
 struct RenderGraphOutputParameters {

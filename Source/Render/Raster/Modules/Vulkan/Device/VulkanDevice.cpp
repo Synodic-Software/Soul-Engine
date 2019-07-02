@@ -110,33 +110,5 @@ const vk::PhysicalDevice& VulkanDevice::GetPhysical() const
 {
 
 	return physicalDevice_;
-}
 
-SurfaceFormat VulkanDevice::GetSurfaceFormat(const vk::SurfaceKHR& surface) const
-{
-
-	const auto formats = physicalDevice_.getSurfaceFormatsKHR(surface);
-
-	SurfaceFormat surfaceFormat = {
-		vk::ColorSpaceKHR::eSrgbNonlinear,
-		vk::Format::eB8G8R8A8Unorm,
-	};
-
-	// TODO: pick formats better
-	if (!formats.empty() && formats.front().format == vk::Format::eUndefined) {
-		return surfaceFormat;
-	}
-
-	for (const auto& format : formats) {
-
-		if (format.format == vk::Format::eB8G8R8A8Unorm &&
-			format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
-			return surfaceFormat;
-		}
-	}
-
-	surfaceFormat.colorFormat = formats.front().format;
-	surfaceFormat.colorSpace = formats.front().colorSpace;
-
-	return surfaceFormat;
 }

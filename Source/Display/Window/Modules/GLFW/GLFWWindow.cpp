@@ -70,7 +70,7 @@ GLFWWindow::GLFWWindow(const WindowParameters& params,
 		VkSurfaceKHR castSurface;
 
 		// guaranteed to use GLFW if using Vulkan
-		const VkResult error = glfwCreateWindowSurface(static_cast<VkInstance>(vulkanRasterModule->GetInstance()),
+		const VkResult error = glfwCreateWindowSurface(static_cast<VkInstance>(vulkanRasterModule->GetInstance().Handle()),
 				context_, nullptr, &castSurface);
 
 		assert(error == VK_SUCCESS);

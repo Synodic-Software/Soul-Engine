@@ -10,16 +10,6 @@
 class SchedulerModule;
 class VulkanQueue;
 
-//TODO: Refactor and move
-struct SurfaceFormat
-{
-	
-	vk::ColorSpaceKHR colorSpace;
-	vk::Format colorFormat;
-
-};
-
-
 enum class QueueFamilyType {
 	Compute, 
 	Graphics,	//Can't be Compute
@@ -46,7 +36,7 @@ public:
 
 	const vk::Device& GetLogical() const;
 	const vk::PhysicalDevice& GetPhysical() const;
-	SurfaceFormat GetSurfaceFormat(const vk::SurfaceKHR&) const;
+
 
 private:
 

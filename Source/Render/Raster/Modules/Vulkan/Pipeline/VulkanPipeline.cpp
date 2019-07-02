@@ -1,17 +1,17 @@
 #include "VulkanPipeline.h"
 
 #include "Core/Geometry/Vertex.h"
-
+#include "Render/Raster/Modules/Vulkan/VulkanRenderPass.h"
 
 VulkanPipeline::VulkanPipeline(const vk::Device& device,
+	VulkanRenderPass& renderPass,
 	vk::Extent2D& extent):
-	device_(device),
+	device_(device), 
 	pipelineCache_(device_),
 	pipelineLayout_(device_)
 {
 
-	vk::PipelineShaderStageCreateInfo shaderStages[] = {
-		vertexShader_.GetInfo(), fragmentShader_.GetInfo()};
+	vk::PipelineShaderStageCreateInfo shaderStages[2];
 
 
 	// TODO: Refactor and move vertex attribute and bindings.
@@ -109,10 +109,10 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
-	pipelineInfo.layout = pipelineLayout_.Get();
-	pipelineInfo.renderPass = renderPass_.GetRenderPass();
+	pipelineInfo.layout = pipelineLayout_.Handle();
+	pipelineInfo.renderPass = renderPass.Handle();
 
-	pipeline_ = device_.createGraphicsPipeline(pipelineCache_.Get(), pipelineInfo);
+	pipeline_ = device_.createGraphicsPipeline(pipelineCache_.Handle(), pipelineInfo);
 }
 
 VulkanPipeline::~VulkanPipeline()

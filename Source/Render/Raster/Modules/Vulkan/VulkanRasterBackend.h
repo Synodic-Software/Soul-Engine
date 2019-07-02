@@ -3,8 +3,10 @@
 #include "Render/Raster/RasterModule.h"
 
 #include "VulkanSwapChain.h"
+#include "VulkanSurface.h"
 #include "Command/VulkanCommandPool.h"
 #include "Command/VulkanCommandBuffer.h"
+#include "Device/VulkanPhysicalDevice.h"
 #include "VulkanInstance.h"
 
 #include <vulkan/vulkan.hpp>
@@ -32,7 +34,7 @@ public:
 	VulkanRasterBackend& operator=(const VulkanRasterBackend &) = delete;
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
 
-	void Render() override;
+	void Present() override;
 	Entity CreatePass(Entity) override;
 	Entity CreateSubPass(Entity) override;
 	void ExecutePass(Entity, CommandList&) override;
@@ -49,6 +51,7 @@ public:
 
 	void Compile(CommandList& commandList) override;
 
+	VulkanInstance& GetInstance();
 
 private:
 
@@ -61,18 +64,20 @@ private:
 	void CopyBuffer(CopyBufferCommand&, vk::CommandBuffer&);
 	void CopyTexture(CopyTextureCommand&, vk::CommandBuffer&);
 
+	std::vector<VulkanPhysicalDevice> physicalDevices_;
+	std::unique_ptr<VulkanDevice> device_;
+
+	std::unordered_map<Entity, VulkanSurface> surfaces_;
+	std::unordered_map<Entity, VulkanSwapChain> swapChains_;
+
 	std::vector<std::shared_ptr<VulkanCommandPool>> commandPools_;
 	std::vector<std::unique_ptr<VulkanCommandBuffer>> commandBuffers_;
 
-	std::unordered_map<Entity, vk::SurfaceKHR> surfaces_;
-	std::unordered_map<Entity, std::unique_ptr<VulkanSwapChain>> swapChains_;
-
-
 	std::unordered_map<Entity, Entity> renderPassSwapchainMap_;
-	std::unordered_map<Entity, std::unique_ptr<VulkanPipeline>> pipelines_;
-	std::unordered_map<Entity, std::unique_ptr<VulkanRenderPass>> renderPasses_;
+	std::unordered_map<Entity, VulkanPipeline> pipelines_;
+	std::unordered_map<Entity, VulkanRenderPass> renderPasses_;
 	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
-	std::unordered_map<Entity, std::vector<VulkanFrameBuffer>> renderPassBuffers_;
+	std::unordered_map<Entity, VulkanFrameBuffer> renderPassBuffers_;
 	
 	//TODO: put on stack and remove deferred construction
 	std::unique_ptr<VulkanInstance> instance_;

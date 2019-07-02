@@ -53,16 +53,6 @@ VulkanInstance::VulkanInstance(const vk::ApplicationInfo& appInfo,
 
 	}
 
-	auto physicalDevices = instance_.enumeratePhysicalDevices();
-
-	physicalDevices_.reserve(physicalDevices.size());
-	for (auto& physicalDevice : physicalDevices) {
-
-		physicalDevices_.emplace_back(instance_, physicalDevice);
-
-	}
-
-
 }
 
 VulkanInstance::~VulkanInstance()
@@ -81,6 +71,24 @@ const vk::Instance& VulkanInstance::Get()
 {
 
 	return instance_;
+
+}
+
+std::vector<VulkanPhysicalDevice> VulkanInstance::EnumeratePhysicalDevices()
+{
+
+	auto vkPhysicalDevices = instance_.enumeratePhysicalDevices();
+
+	std::vector<VulkanPhysicalDevice> physicalDevices;
+
+	for (auto& physicalDevice : vkPhysicalDevices) {
+
+		physicalDevices.emplace_back(instance_, physicalDevice);
+
+	}
+
+	return physicalDevices;
+
 }
 
 VkBool32 VulkanInstance::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

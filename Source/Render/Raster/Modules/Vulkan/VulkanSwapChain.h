@@ -7,15 +7,14 @@
 #include <vulkan/vulkan.hpp>
 
 class VulkanDevice;
+class VulkanSurface;
 
 class VulkanSwapChain {
 
 public:
 
-	VulkanSwapChain(std::shared_ptr<VulkanDevice>&,
-		vk::SurfaceKHR&,
-		vk::ColorSpaceKHR,
-		const vk::Extent2D&,
+	VulkanSwapChain(std::unique_ptr<VulkanDevice>&,
+		const VulkanSurface&, 
 		bool,
 		VulkanSwapChain* = nullptr);
 	~VulkanSwapChain();
@@ -27,15 +26,14 @@ public:
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
 	void AquireImage();
-	void Present(VulkanCommandBuffer&);
 
 	vk::Extent2D GetSize();
+
 
 private:
 
 
-	std::shared_ptr<VulkanDevice> vkDevice_;
-
+	vk::Device device_;
 
 	std::vector<vk::Image> renderBuffers_;
 	std::vector<vk::ImageView> renderBufferViews_;

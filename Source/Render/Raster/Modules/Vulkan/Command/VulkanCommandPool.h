@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Types.h"
 #include "Core/Utility/Thread/ThreadLocal.h"
 
 #include <memory>

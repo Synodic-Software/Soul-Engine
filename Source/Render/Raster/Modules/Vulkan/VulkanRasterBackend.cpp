@@ -67,75 +67,65 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 		instanceExtensions
 	));
 
+	physicalDevices_ = instance_->EnumeratePhysicalDevices();
 
-	/*devices_.reserve(physicalDevices.size());
-	commandPools_.reserve(physicalDevices.size());*/
-
-	// devices_.push_back(std::make_shared<VulkanDevice>(scheduler, physicalDevice));
-	// commandPools_.push_back(std::make_shared<VulkanCommandPool>(scheduler, devices_.back()));
 }
 
-void VulkanRasterBackend::Render()
+void VulkanRasterBackend::Present()
 {
-	auto& device = devices_[0];
 
-	for (const auto& [id, swapchain] : swapChains_) {
+	throw NotImplemented();
 
-		swapchain->Present(*commandBuffers_[0]);
-	}
 }
 
 Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 {
-	// TODO: multiple devices
-	auto& device = devices_[0];
 
 	Entity renderPassID = entityRegistry_->CreateEntity();
 
 	renderPassSwapchainMap_[renderPassID] = swapchainID;
 	auto& swapchain = swapChains_[swapchainID];
 
-	renderPasses_[renderPassID] =
-		std::make_unique<VulkanRenderPass>(device, swapchain->GetFormat());
+	renderPasses_[renderPassID] = VulkanRenderPass(device_->GetLogical());
 
 	// TODO: Better management if commandBuffers
 	renderPassCommands_[renderPassID] =
 		commandBuffers_
-			.emplace_back(std::make_unique<VulkanCommandBuffer>(commandPools_.back(),
-				devices_.back(), vk::CommandBufferUsageFlagBits::eSimultaneousUse,
+			.emplace_back(std::make_unique<VulkanCommandBuffer>(commandPools_.back(), device_,
+				vk::CommandBufferUsageFlagBits::eSimultaneousUse,
 				vk::CommandBufferLevel::ePrimary))
 			.get();
 
 	// TODO: Better management of pipelines
-	pipelines_[renderPassID] = std::make_unique<VulkanPipeline>(device, swapchain->GetSize(),
-		Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"),
-		swapchain->GetFormat());
+	//pipelines_[renderPassID] = std::make_unique<VulkanPipeline>(device_, swapchain->GetSize(),
+	//	Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"),
+	//	swapchain->GetFormat());
 
 
-	vk::ImageViewCreateInfo colorAttachmentCreateInfo;
-	colorAttachmentCreateInfo.format = format_;
-	colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-	colorAttachmentCreateInfo.subresourceRange.levelCount = 1;
-	colorAttachmentCreateInfo.subresourceRange.layerCount = 1;
-	colorAttachmentCreateInfo.viewType = vk::ImageViewType::e2D;
+	//vk::ImageViewCreateInfo colorAttachmentCreateInfo;
+	//colorAttachmentCreateInfo.format = format_;
+	//colorAttachmentCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//colorAttachmentCreateInfo.subresourceRange.levelCount = 1;
+	//colorAttachmentCreateInfo.subresourceRange.layerCount = 1;
+	//colorAttachmentCreateInfo.viewType = vk::ImageViewType::e2D;
 
-	images_.resize(swapChainImages.size());
-	for (uint32_t i = 0; i < swapChainImages.size(); ++i) {
-		images_[i].image = swapChainImages[i];
-		colorAttachmentCreateInfo.image = swapChainImages[i];
-		images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
-		images_[i].fence = vk::Fence();
-	}
+	//images_.resize(swapChainImages.size());
+	//for (uint32_t i = 0; i < swapChainImages.size(); ++i) {
+	//	images_[i].image = swapChainImages[i];
+	//	colorAttachmentCreateInfo.image = swapChainImages[i];
+	//	images_[i].view = logicalDevice.createImageView(colorAttachmentCreateInfo);
+	//	images_[i].fence = vk::Fence();
+	//}
 
-	auto& frameBuffers = renderPassBuffers_[renderPassID];
-	frameBuffers.reserve(frameBufferSize_);
-	for (SwapChainImage& image : images_) {
-		frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
-	}
+	//auto& frameBuffers = renderPassBuffers_[renderPassID];
+	//frameBuffers.reserve(frameBufferSize_);
+	//for (SwapChainImage& image : images_) {
+	//	frameBuffers_.emplace_back(vkDevice_, image.view, pipeline_->GetRenderPass(), size);
+	//}
 
-	for (const auto& image : images_) {
-		logicalDevice.destroyImageView(image.view);
-	}
+	//for (const auto& image : images_) {
+	//	logicalDevice.destroyImageView(image.view);
+	//}
 
 
 	return renderPassID;
@@ -166,10 +156,10 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 
 
 	vk::RenderPassBeginInfo renderPassInfo;
-	renderPassInfo.renderPass = renderPass->Get();
-	renderPassInfo.framebuffer = frameBuffers[i].Get();
+	renderPassInfo.renderPass = renderPass.Handle();
+	//renderPassInfo.framebuffer = frameBuffers[i].Handle();
 	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-	renderPassInfo.renderArea.extent = {swapchain->GetSize().x, swapchain->GetSize().y};
+	renderPassInfo.renderArea.extent = swapchain.GetSize();
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
@@ -186,65 +176,52 @@ Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size
 
 	auto surface = std::any_cast<vk::SurfaceKHR>(anySurface);
 
-	// TODO: multiple devices
-	auto& device = devices_[0];
-	const vk::PhysicalDevice& physicalDevice = device->GetPhysical();
-
-	if (!physicalDevice.getSurfaceSupportKHR(device->GetGraphicsIndex(), surface)) {
-
-		throw NotImplemented();
-	}
-
-	const auto format = device->GetSurfaceFormat(surface);
-
 	Entity surfaceID = entityRegistry_->CreateEntity();
 
-	surfaces_[surfaceID] = surface;
-	swapChains_[surfaceID] = std::make_unique<VulkanSwapChain>(
-		device, surface, format.colorFormat, format.colorSpace, size, false);
-
+	auto [surfaceIterator, didInsert] = surfaces_.emplace(surfaceID, instance_->Get(), surface);
+	swapChains_.emplace(surfaceID, device_, surfaceIterator->second, false);
 
 	return surfaceID;
+
 }
 
 void VulkanRasterBackend::UpdateSurface(Entity surfaceID, glm::uvec2 size)
 {
 
-	auto surface = surfaces_[surfaceID];
+	const vk::PhysicalDevice& physicalDevice = device_->GetPhysical();
 
-	auto& device = devices_[0];
-	const vk::PhysicalDevice& physicalDevice = device->GetPhysical();
+	auto& surface = surfaces_[surfaceID];
+	const auto format = surface.Format(physicalDevice);
 
-	if (!physicalDevice.getSurfaceSupportKHR(device->GetGraphicsIndex(), surface)) {
+	auto newSwapchain = VulkanSwapChain(device_, surface, false, &swapChains_[surfaceID]);
 
-		throw NotImplemented();
-	}
+	std::swap(swapChains_[surfaceID], newSwapchain);
 
-	const auto format = device->GetSurfaceFormat(surface);
-
-	auto newSwapchain = std::make_unique<VulkanSwapChain>(device, surface, format.colorFormat,
-		format.colorSpace, size, false, swapChains_[surfaceID].get());
-
-	swapChains_[surfaceID].swap(newSwapchain);
 }
 
 void VulkanRasterBackend::RemoveSurface(Entity surfaceID)
 {
 
 	swapChains_.erase(surfaceID);
-
-	instance_.destroySurfaceKHR(surfaces_[surfaceID]);
 	surfaces_.erase(surfaceID);
+
 }
 
 void VulkanRasterBackend::Compile(CommandList&)
 {
 }
 
+VulkanInstance& VulkanRasterBackend::GetInstance()
+{
+
+	return *instance_;
+
+}
+
 void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandBuffer)
 {
 
-	vk::Rect2D scissorRect;
+	/*vk::Rect2D scissorRect;
 
 	scissorRect.offset.x = command.scissorOffset.x;
 	scissorRect.offset.y = command.scissorOffset.y;
@@ -261,7 +238,8 @@ void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandB
 
 
 	commandBuffer.setScissor(0, 1, &scissorRect);
-	commandBuffer.drawIndexed(command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);
+	commandBuffer.drawIndexed(command.elementSize, 1, command.indexOffset, command.vertexOffset, 0);*/
+
 }
 
 void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&, vk::CommandBuffer& commandBuffer)

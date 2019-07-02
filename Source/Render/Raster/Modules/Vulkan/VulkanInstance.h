@@ -2,6 +2,7 @@
 
 #include "Types.h"
 #include "Core/Structure/Span.h"
+#include "Core/Composition/Entity/Entity.h"
 
 #include <string>
 #include <vulkan/vulkan.hpp>
@@ -26,10 +27,12 @@ public:
 
 	const vk::Instance& Get();
 
+	std::vector<VulkanPhysicalDevice> EnumeratePhysicalDevices();
+
 private:
 
 	vk::Instance instance_;
-	std::vector<VulkanPhysicalDevice> physicalDevices_;
+
 
 	// Dynamic dispatcher for extensions
 	vk::DispatchLoaderDynamic dispatcher_;

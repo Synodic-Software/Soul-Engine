@@ -11,10 +11,14 @@ VulkanQueue::VulkanQueue(const vk::Device& device, uint index, uint familyIndex)
 bool VulkanQueue::Submit()
 {
 
+	return false;
+
 }
 
 bool VulkanQueue::Present()
 {
+
+	return false;
 
 }
 
