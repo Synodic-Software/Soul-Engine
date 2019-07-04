@@ -84,18 +84,18 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 	Entity renderPassID = entityRegistry_->CreateEntity();
 
 	renderPassSwapchainMap_[renderPassID] = swapchainID;
-	auto& swapchain = swapChains_.at(swapchainID);
+	//auto& swapchain = swapChains_.at(swapchainID);
 
-	renderPasses_.try_emplace(renderPassID, device_->GetLogical());
+	//renderPasses_.try_emplace(renderPassID, device_->GetLogical());
 
 	// TODO: Better management if commandBuffers
-	renderPassCommands_[renderPassID] =
+	/*renderPassCommands_[renderPassID] =
 		commandBuffers_
 			.emplace_back(std::make_unique<VulkanCommandBuffer>(commandPools_.back(),
 				device_->GetLogical(),
 				vk::CommandBufferUsageFlagBits::eSimultaneousUse,
 				vk::CommandBufferLevel::ePrimary))
-			.get();
+			.get();*/
 
 	// TODO: Better management of pipelines
 	//pipelines_[renderPassID] = std::make_unique<VulkanPipeline>(device_, swapchain->GetSize(),

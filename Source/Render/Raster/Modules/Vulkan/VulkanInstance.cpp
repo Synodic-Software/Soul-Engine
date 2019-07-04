@@ -10,15 +10,17 @@ VulkanInstance::VulkanInstance(const vk::ApplicationInfo& appInfo,
 	nonstd::span<std::string> requiredInstanceExtensions)
 {
 
-	std::vector<const char*> cValidationLayers(validationLayers.size());
-	for (auto layer : validationLayers) {
+	std::vector<const char*> cValidationLayers;
+	cValidationLayers.reserve(validationLayers.size());
+	for (auto& layer : validationLayers) {
 
 		cValidationLayers.push_back(layer.c_str());
 
 	}
 
-	std::vector<const char*> cInstanceExtensions(requiredInstanceExtensions.size());
-	for (auto extension : requiredInstanceExtensions) {
+	std::vector<const char*> cInstanceExtensions;
+	cInstanceExtensions.reserve(requiredInstanceExtensions.size());
+	for (auto& extension : requiredInstanceExtensions) {
 
 		cInstanceExtensions.push_back(extension.c_str());
 

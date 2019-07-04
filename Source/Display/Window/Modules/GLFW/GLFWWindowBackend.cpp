@@ -136,7 +136,7 @@ nonstd::span<const char*> GLFWWindowBackend::GetRasterExtensions()
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
 	return {
-		glfwExtensions, glfwExtensions
+		glfwExtensions, glfwExtensionCount
 	};
 
 }
