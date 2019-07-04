@@ -14,7 +14,7 @@ class VulkanSwapChain {
 public:
 
 	VulkanSwapChain(std::unique_ptr<VulkanDevice>&,
-		const VulkanSurface&, 
+		VulkanSurface&, 
 		bool,
 		VulkanSwapChain* = nullptr);
 	~VulkanSwapChain();

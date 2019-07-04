@@ -18,7 +18,7 @@ VulkanPipelineLayout::~VulkanPipelineLayout()
 
 }
 
-const vk::PipelineLayout& VulkanPipelineLayout::Get()
+const vk::PipelineLayout& VulkanPipelineLayout::Handle()
 {
 
 	return pipelineLayout_;

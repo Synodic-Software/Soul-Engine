@@ -16,7 +16,7 @@ public:
 	VulkanPipelineLayout& operator=(const VulkanPipelineLayout&) = delete;
 	VulkanPipelineLayout& operator=(VulkanPipelineLayout&&) noexcept = default;
 
-	const vk::PipelineLayout& Get();
+	const vk::PipelineLayout& Handle();
 
 private:
 

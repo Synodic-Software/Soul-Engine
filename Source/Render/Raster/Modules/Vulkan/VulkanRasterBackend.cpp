@@ -84,14 +84,15 @@ Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
 	Entity renderPassID = entityRegistry_->CreateEntity();
 
 	renderPassSwapchainMap_[renderPassID] = swapchainID;
-	auto& swapchain = swapChains_[swapchainID];
+	auto& swapchain = swapChains_.at(swapchainID);
 
-	renderPasses_[renderPassID] = VulkanRenderPass(device_->GetLogical());
+	renderPasses_.try_emplace(renderPassID, device_->GetLogical());
 
 	// TODO: Better management if commandBuffers
 	renderPassCommands_[renderPassID] =
 		commandBuffers_
-			.emplace_back(std::make_unique<VulkanCommandBuffer>(commandPools_.back(), device_,
+			.emplace_back(std::make_unique<VulkanCommandBuffer>(commandPools_.back(),
+				device_->GetLogical(),
 				vk::CommandBufferUsageFlagBits::eSimultaneousUse,
 				vk::CommandBufferLevel::ePrimary))
 			.get();
@@ -149,10 +150,10 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 	beginInfo.pInheritanceInfo = nullptr;
 
 
-	auto& swapchain = swapChains_[renderPassSwapchainMap_[renderpassID]];
-	auto& frameBuffers = renderPassBuffers_[renderpassID];
-	auto& renderPass = renderPasses_[renderpassID];
-	auto& commandBuffer = renderPassCommands_[renderpassID]->Get();
+	auto& swapchain = swapChains_.at(renderPassSwapchainMap_.at(renderpassID));
+	auto& frameBuffers = renderPassBuffers_.at(renderpassID);
+	auto& renderPass = renderPasses_.at(renderpassID);
+	auto& commandBuffer = renderPassCommands_.at(renderpassID)->Get();
 
 
 	vk::RenderPassBeginInfo renderPassInfo;
@@ -178,8 +179,8 @@ Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size
 
 	Entity surfaceID = entityRegistry_->CreateEntity();
 
-	auto [surfaceIterator, didInsert] = surfaces_.emplace(surfaceID, instance_->Get(), surface);
-	swapChains_.emplace(surfaceID, device_, surfaceIterator->second, false);
+	auto& [surfaceIterator, didInsert] = surfaces_.try_emplace(surfaceID, instance_->Handle(), surface);
+	swapChains_.try_emplace(surfaceID, device_, surfaceIterator->second, false);
 
 	return surfaceID;
 
@@ -190,12 +191,13 @@ void VulkanRasterBackend::UpdateSurface(Entity surfaceID, glm::uvec2 size)
 
 	const vk::PhysicalDevice& physicalDevice = device_->GetPhysical();
 
-	auto& surface = surfaces_[surfaceID];
-	const auto format = surface.Format(physicalDevice);
+	auto& surface = surfaces_.at(surfaceID);
+	const auto format = surface.UpdateFormat(physicalDevice);
 
-	auto newSwapchain = VulkanSwapChain(device_, surface, false, &swapChains_[surfaceID]);
+	auto& oldSwapchain = swapChains_.at(surfaceID);
+	auto& newSwapchain = VulkanSwapChain(device_, surface, false, &oldSwapchain);
 
-	std::swap(swapChains_[surfaceID], newSwapchain);
+	std::swap(oldSwapchain, newSwapchain);
 
 }
 

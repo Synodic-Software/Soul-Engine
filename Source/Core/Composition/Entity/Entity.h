@@ -33,6 +33,8 @@ public:
 	Entity& operator=(const Entity &) = default;
 	Entity& operator=(Entity &&) noexcept = default;
 
+	bool operator==(const Entity&) const;
+
 	//public funcs
 	bool IsNull() const;
 

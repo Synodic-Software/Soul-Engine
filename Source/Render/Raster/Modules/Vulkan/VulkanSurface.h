@@ -24,12 +24,15 @@ public:
 
 	vk::SurfaceKHR Handle();
 
-	SurfaceFormat VulkanSurface::Format(const vk::PhysicalDevice&) const;
+	SurfaceFormat UpdateFormat(const vk::PhysicalDevice&);
+	SurfaceFormat Format() const;
 
 private:
 
 	vk::Instance instance_;
 	vk::SurfaceKHR surface_;
 	vk::Extent2D size_;
+
+	SurfaceFormat format_;
 
 };

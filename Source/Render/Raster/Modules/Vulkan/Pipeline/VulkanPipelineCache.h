@@ -16,7 +16,7 @@ public:
 	VulkanPipelineCache& operator=(const VulkanPipelineCache&) = delete;
 	VulkanPipelineCache& operator=(VulkanPipelineCache&&) noexcept = default;
 
-	const vk::PipelineCache& Get();
+	const vk::PipelineCache& Handle();
 
 
 private:

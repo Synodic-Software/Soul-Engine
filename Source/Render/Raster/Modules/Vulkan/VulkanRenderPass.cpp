@@ -46,7 +46,8 @@ VulkanRenderPass::~VulkanRenderPass() {
 
 }
 
-const vk::RenderPass& VulkanRenderPass::Get() const {
+const vk::RenderPass& VulkanRenderPass::Handle() const
+{
 
 	return renderPass_;
 

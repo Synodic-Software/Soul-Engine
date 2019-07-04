@@ -18,7 +18,7 @@ VulkanPipelineCache::~VulkanPipelineCache()
 
 }
 
-const vk::PipelineCache& VulkanPipelineCache::Get()
+const vk::PipelineCache& VulkanPipelineCache::Handle()
 {
 
 	return pipelineCache_;

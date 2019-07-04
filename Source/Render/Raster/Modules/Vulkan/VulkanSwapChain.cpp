@@ -10,7 +10,7 @@
 
 
 VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
-	const VulkanSurface& surface,
+	VulkanSurface& surface,
 	bool vSync,
 	VulkanSwapChain* oldSwapChain):
 	device_(device->GetLogical()),
@@ -68,11 +68,13 @@ VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
 		imageCount = surfaceCapabilities.maxImageCount;
 	}
 
+	SurfaceFormat format = surface.Format();
+
 	vk::SwapchainCreateInfoKHR swapchainCreateInfo;
-	swapchainCreateInfo.surface = surface;
+	swapchainCreateInfo.surface = surface.Handle();
 	swapchainCreateInfo.minImageCount = imageCount;
-	swapchainCreateInfo.imageFormat = format;
-	swapchainCreateInfo.imageColorSpace = colorSpace;
+	swapchainCreateInfo.imageFormat = format.colorFormat;
+	swapchainCreateInfo.imageColorSpace = format.colorSpace;
 	swapchainCreateInfo.imageExtent = swapchainSize;
 	swapchainCreateInfo.imageUsage =
 		vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst;
@@ -86,8 +88,8 @@ VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
 	swapchainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 	swapchainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
 
-	swapChain_ = logicalDevice.createSwapchainKHR(swapchainCreateInfo);
-	auto swapChainImages = logicalDevice.getSwapchainImagesKHR(swapChain_);
+	swapChain_ = device_.createSwapchainKHR(swapchainCreateInfo);
+	auto swapChainImages = device_.getSwapchainImagesKHR(swapChain_);
 
 	// set up synchronization primitives
 	presentSemaphores_.resize(frameMax_);
@@ -101,34 +103,31 @@ VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
 
 	for (size_t i = 0; i < frameMax_; i++) {
 
-		presentSemaphores_[i] = logicalDevice.createSemaphore(semaphoreInfo);
-		renderSemaphores_[i] = logicalDevice.createSemaphore(semaphoreInfo);
-		frameFences_[i] = logicalDevice.createFence(fenceInfo);
+		presentSemaphores_[i] = device_.createSemaphore(semaphoreInfo);
+		renderSemaphores_[i] = device_.createSemaphore(semaphoreInfo);
+		frameFences_[i] = device_.createFence(fenceInfo);
 	}
 }
 
 VulkanSwapChain::~VulkanSwapChain()
 {
 
-	const auto& logicalDevice = vkDevice_->GetLogical();
-
-	vkDevice_->Synchronize();
+	device_.waitIdle();
 
 	for (size_t i = 0; i < frameMax_; i++) {
 
-		logicalDevice.destroySemaphore(presentSemaphores_[i]);
-		logicalDevice.destroySemaphore(renderSemaphores_[i]);
-		logicalDevice.destroyFence(frameFences_[i]);
+		device_.destroySemaphore(presentSemaphores_[i]);
+		device_.destroySemaphore(renderSemaphores_[i]);
+		device_.destroyFence(frameFences_[i]);
 	}
 
-	logicalDevice.destroySwapchainKHR(swapChain_);
+	device_.destroySwapchainKHR(swapChain_);
+
 }
 
-void VulkanSwapChain::AquireImage()
-{
-	const auto& logicalDevice = vkDevice_->GetLogical();
+void VulkanSwapChain::AquireImage(){
 
-	auto [acquireResult, activeImageIndex_] = logicalDevice.acquireNextImageKHR(swapChain_,
+	auto [acquireResult, activeImageIndex_] = device_.acquireNextImageKHR(swapChain_,
 		std::numeric_limits<uint64_t>::max(), presentSemaphores_[currentFrame_], nullptr);
 
 	if (acquireResult != vk::Result::eSuccess) {

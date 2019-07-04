@@ -25,7 +25,7 @@ public:
 	VulkanInstance& operator=(const VulkanInstance&) = default;
 	VulkanInstance& operator=(VulkanInstance&&) noexcept = default;
 
-	const vk::Instance& Get();
+	const vk::Instance& Handle();
 
 	std::vector<VulkanPhysicalDevice> EnumeratePhysicalDevices();
 
