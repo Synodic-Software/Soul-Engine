@@ -7,7 +7,7 @@
 
 VulkanInstance::VulkanInstance(const vk::ApplicationInfo& appInfo,
 	nonstd::span<std::string> validationLayers,
-	nonstd::span<std::string> requiredInstanceExtensions)
+	nonstd::span<std::string> requiredExtensions)
 {
 
 	std::vector<const char*> cValidationLayers;
@@ -18,18 +18,18 @@ VulkanInstance::VulkanInstance(const vk::ApplicationInfo& appInfo,
 
 	}
 
-	std::vector<const char*> cInstanceExtensions;
-	cInstanceExtensions.reserve(requiredInstanceExtensions.size());
-	for (auto& extension : requiredInstanceExtensions) {
+	std::vector<const char*> cExtensions;
+	cExtensions.reserve(requiredExtensions.size());
+	for (auto& extension : requiredExtensions) {
 
-		cInstanceExtensions.push_back(extension.c_str());
+		cExtensions.push_back(extension.c_str());
 
 	}
 
 	vk::InstanceCreateInfo instanceCreationInfo;
 	instanceCreationInfo.pApplicationInfo = &appInfo;
-	instanceCreationInfo.enabledExtensionCount = static_cast<uint32>(cInstanceExtensions.size());
-	instanceCreationInfo.ppEnabledExtensionNames = cInstanceExtensions.data();
+	instanceCreationInfo.enabledExtensionCount = static_cast<uint32>(cExtensions.size());
+	instanceCreationInfo.ppEnabledExtensionNames = cExtensions.data();
 	instanceCreationInfo.enabledLayerCount = static_cast<uint32>(cValidationLayers.size());
 	instanceCreationInfo.ppEnabledLayerNames = cValidationLayers.data();
 

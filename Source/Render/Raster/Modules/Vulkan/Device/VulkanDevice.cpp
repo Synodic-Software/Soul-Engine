@@ -6,26 +6,29 @@
 #include "VulkanQueue.h"
 
 VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
-	vk::PhysicalDevice& physicalDevice,
-	nonstd::span<std::string> validationLayers):
+	const vk::PhysicalDevice& physicalDevice,
+	nonstd::span<std::string> validationLayers,
+	nonstd::span<std::string> requiredExtensions):
 	scheduler_(scheduler),
 	physicalDevice_(physicalDevice)
 {
 
 	//Prepare input data
-	// TODO: Expose extension configuration
-	const std::vector<const char*> requiredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-		VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME, VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME};
-
-	std::vector<const char*> cValidationLayers(validationLayers.size());
-	for (auto layer : validationLayers) {
+	std::vector<const char*> cValidationLayers;
+	cValidationLayers.reserve(validationLayers.size());
+	for (auto& layer : validationLayers) {
 
 		cValidationLayers.push_back(layer.c_str());
 	}
 
+	std::vector<const char*> cExtensions;
+	cExtensions.reserve(requiredExtensions.size());
+	for (auto& extension : requiredExtensions) {
+
+		cExtensions.push_back(extension.c_str());
+	}
 
 
-	//
 	deviceProperties_ = physicalDevice_.getProperties();
 	deviceFeatures_ = physicalDevice_.getFeatures();
 	memoryProperties_ = physicalDevice_.getMemoryProperties();
@@ -69,8 +72,8 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 	deviceCreateInfo.flags = vk::DeviceCreateFlags();
 	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
-	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredDeviceExtensions.size());
-	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();
+	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(cExtensions.size());
+	deviceCreateInfo.ppEnabledExtensionNames = cExtensions.data();
 	deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(cValidationLayers.size());
 	deviceCreateInfo.ppEnabledLayerNames = cValidationLayers.data();
 

@@ -18,7 +18,7 @@ public:
 	VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) = default;
 	VulkanPhysicalDevice& operator=(VulkanPhysicalDevice&&) noexcept = default;
 
-	const vk::PhysicalDevice& Get();
+	const vk::PhysicalDevice& Handle();
 
 private:
 

@@ -5,7 +5,7 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(vk::Instance instance, vk::PhysicalDe
 {
 }
 
-const vk::PhysicalDevice& VulkanPhysicalDevice::Get()
+const vk::PhysicalDevice& VulkanPhysicalDevice::Handle()
 {
 
 	return device_;

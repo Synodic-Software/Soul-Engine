@@ -23,7 +23,9 @@ class VulkanDevice final: public RasterDevice {
 public:
 
 	VulkanDevice(std::shared_ptr<SchedulerModule>&,
-		vk::PhysicalDevice&, nonstd::span<std::string>);
+		const vk::PhysicalDevice&,
+		nonstd::span<std::string>,
+		nonstd::span<std::string>);
 	~VulkanDevice() override;
 
 	VulkanDevice(const VulkanDevice &) = delete;
