@@ -3,7 +3,9 @@
 #include "Parallelism/Scheduler/TaskParameters.h"
 #include "Parallelism/Scheduler/SchedulerModule.h"
 #include "Core/System/Compiler.h"
-#include "VulkanQueue.h"
+
+#include <thread>
+#include <algorithm>
 
 VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 	const vk::PhysicalDevice& physicalDevice,
@@ -13,7 +15,7 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 	physicalDevice_(physicalDevice)
 {
 
-	//Prepare input data
+	// Convert strings to c-strings
 	std::vector<const char*> cValidationLayers;
 	cValidationLayers.reserve(validationLayers.size());
 	for (auto& layer : validationLayers) {
@@ -28,46 +30,100 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 		cExtensions.push_back(extension.c_str());
 	}
 
-
-	deviceProperties_ = physicalDevice_.getProperties();
-	deviceFeatures_ = physicalDevice_.getFeatures();
-	memoryProperties_ = physicalDevice_.getMemoryProperties();
-
-	std::vector<vk::QueueFamilyProperties> queueFamilyProperties =
-		physicalDevice.getQueueFamilyProperties();
+	// TODO: Validate extensions
 	std::vector<vk::ExtensionProperties> availableExtensions =
 		physicalDevice.enumerateDeviceExtensionProperties();
 
-	std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
+	// TODO: Query properties
+	vk::PhysicalDeviceProperties deviceProperties_ = physicalDevice_.getProperties();
+	vk::PhysicalDeviceFeatures deviceFeatures_ = physicalDevice_.getFeatures();
+	vk::PhysicalDeviceMemoryProperties memoryProperties_ = physicalDevice_.getMemoryProperties();
 
-	// TODO: use priorities
-	float queuePriority = 1.0f;
+	// Start queue selection
+	std::vector<vk::QueueFamilyProperties2> queueFamilyProperties =
+		physicalDevice.getQueueFamilyProperties2();
 
-	// Used to add a queue
-	const auto addQueueInfo = [&queueCreateInfos, &queuePriority](uint32_t queueFamily) {
-		vk::DeviceQueueCreateInfo deviceQueueCreateInfo;
-		deviceQueueCreateInfo.flags = vk::DeviceQueueCreateFlags();
-		deviceQueueCreateInfo.queueFamilyIndex = static_cast<uint>(queueFamily);
+	std::vector<std::pair<uint, uint>> transferIndices;
+	std::vector<std::pair<uint, uint>> computeIndices;
+	std::vector<std::pair<uint, uint>> graphicsIndices;
 
-		// TODO: Allow multiple queues i.e 'queueFamilyProperties[queueFamily].queueCount'
-		deviceQueueCreateInfo.queueCount = 1;
-		deviceQueueCreateInfo.pQueuePriorities = &queuePriority;
+	std::vector<uint> familyQueuesUsed(queueFamilyProperties.size(), 0);
 
-		queueCreateInfos.push_back(deviceQueueCreateInfo);
-	};
+	uint maxThreads = std::thread::hardware_concurrency();
 
-	// Iterate over all the queue families
+	// Iterate over all the queue families prioritizing dedicated hardware
 	for (uint i = 0; i < static_cast<uint>(queueFamilyProperties.size()); ++i) {
 
-		auto& queueFamily = queueFamilyProperties[i];
+		auto& queueFamily = queueFamilyProperties[i].queueFamilyProperties;
 
-		if (queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) {
-			addQueueInfo(i);
-			break;
+		uint count = (std::min)(queueFamily.queueCount, maxThreads);
+		familyQueuesUsed[i] += count;
+
+		// Transfer
+		if ((queueFamily.queueFlags & vk::QueueFlagBits::eTransfer) &&
+			!(queueFamily.queueFlags & vk::QueueFlagBits::eCompute) &&
+			!(queueFamily.queueFlags & vk::QueueFlagBits::eGraphics)) {
+
+			transferIndices.reserve(count);
+			for (uint t = 0; t < count; ++t) {
+
+				transferIndices.emplace_back(i,t);
+
+			}
+
 		}
 
+		// Compute
+		else if ((queueFamily.queueFlags & vk::QueueFlagBits::eCompute) &&
+				!(queueFamily.queueFlags & vk::QueueFlagBits::eGraphics))  {
+
+			computeIndices.reserve(count);
+			for (uint t = 0; t < count; ++t) {
+
+				computeIndices.emplace_back(i, t);
+			}
+
+		}
+
+		// Graphics
+		else if(queueFamily.queueFlags & vk::QueueFlagBits::eGraphics)
+		{
+
+			graphicsIndices.reserve(count);
+			for (uint t = 0; t < count; ++t) {
+
+				graphicsIndices.emplace_back(i, t);
+
+			}
+
+		}
 	}
 
+	//TODO: use remaining queues to supplement other queue types
+
+
+	//Create the info structures
+	std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
+	std::vector<std::vector<float>> priorities;
+	queueCreateInfos.resize(queueFamilyProperties.size());
+	priorities.resize(queueFamilyProperties.size());
+
+
+	for (uint i = 0; i < static_cast<uint>(queueFamilyProperties.size()); ++i) {
+
+		//TODO: calculate priorities alongside Queue selection
+		priorities[i].resize(familyQueuesUsed[i], 1.0f);
+
+		vk::DeviceQueueCreateInfo deviceQueueCreateInfo;
+		deviceQueueCreateInfo.flags = vk::DeviceQueueCreateFlags();
+		deviceQueueCreateInfo.queueFamilyIndex = static_cast<uint>(i);
+		deviceQueueCreateInfo.queueCount = familyQueuesUsed[i];
+		deviceQueueCreateInfo.pQueuePriorities = priorities[i].data();
+
+		queueCreateInfos[i] = (deviceQueueCreateInfo);
+	}
+
+	//Create the device
 	vk::DeviceCreateInfo deviceCreateInfo;
 	deviceCreateInfo.flags = vk::DeviceCreateFlags();
 	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
@@ -77,39 +133,44 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 	deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(cValidationLayers.size());
 	deviceCreateInfo.ppEnabledLayerNames = cValidationLayers.data();
 
-	auto& device = logicalDevices_.emplace_back(physicalDevice.createDevice(deviceCreateInfo));
+	device_ = physicalDevice.createDevice(deviceCreateInfo);
 
+	//Device is created, queues can be retrieved
+	for (auto& indices : transferIndices) {
+		transferQueues_.emplace_back(device_, indices.first, indices.second);
+	}
 
+	for (auto& indices : computeIndices) {
+		computeQueues_.emplace_back(device_, indices.first, indices.second);
+	}
 
+	for (auto& indices : graphicsIndices) {
+		graphicsQueues_.emplace_back(device_, indices.first, indices.second);
+	}
 }
 
 VulkanDevice::~VulkanDevice()
 {
 
-	for (auto& logicalDevice : logicalDevices_) {
+	device_.destroy();
 
-		logicalDevice.destroy();
-	}
 }
 
 void VulkanDevice::Synchronize()
 {
 
-	for (auto& logicalDevice : logicalDevices_) {
+	device_.waitIdle();
 
-		logicalDevice.waitIdle();
-	}
 }
 
-const vk::Device& VulkanDevice::GetLogical() const
+const vk::Device& VulkanDevice::Logical() const
 {
 
-	assert(!logicalDevices_.empty());
-	// TODO: multiple logical devices
-	return logicalDevices_[0];
+	return device_;
+
 }
 
-const vk::PhysicalDevice& VulkanDevice::GetPhysical() const
+const vk::PhysicalDevice& VulkanDevice::Physical() const
 {
 
 	return physicalDevice_;

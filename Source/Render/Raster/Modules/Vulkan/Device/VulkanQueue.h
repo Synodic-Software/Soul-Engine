@@ -9,7 +9,7 @@ class VulkanQueue {
 
 public:
 
-	VulkanQueue(const vk::Device& device, uint index, uint familyIndex);
+	VulkanQueue(const vk::Device& device, uint familyIndex, uint index);
 	~VulkanQueue() = default;
 
 	VulkanQueue(const VulkanQueue&) = default;
@@ -21,15 +21,16 @@ public:
 	bool Submit();
 	bool Present();
 
-	const vk::Queue& Get();
+	const vk::Queue& Handle();
+	const uint FamilyIndex();
 
 private:
 
 	vk::Device device_;
 	vk::Queue queue_;
 
-	const uint index_;
 	const uint familyIndex_;
+	const uint index_;
 
 
 };

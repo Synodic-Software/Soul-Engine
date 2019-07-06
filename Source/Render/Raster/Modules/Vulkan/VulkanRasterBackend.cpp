@@ -174,11 +174,11 @@ Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size
 {
 
 	auto surface = std::any_cast<vk::SurfaceKHR>(anySurface);
-
 	Entity surfaceID = entityRegistry_->CreateEntity();
 
 	auto& [surfaceIterator, didInsert] =
 		surfaces_.try_emplace(surfaceID, instance_->Handle(), surface);
+
 	swapChains_.try_emplace(surfaceID, device_, surfaceIterator->second, false);
 
 	return surfaceID;
@@ -187,7 +187,7 @@ Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size
 void VulkanRasterBackend::UpdateSurface(Entity surfaceID, glm::uvec2 size)
 {
 
-	const vk::PhysicalDevice& physicalDevice = device_->GetPhysical();
+	const vk::PhysicalDevice& physicalDevice = device_->Physical();
 
 	auto& surface = surfaces_.at(surfaceID);
 	const auto format = surface.UpdateFormat(physicalDevice);

@@ -13,10 +13,10 @@ VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
 	VulkanSurface& surface,
 	bool vSync,
 	VulkanSwapChain* oldSwapChain):
-	device_(device->GetLogical()),
+	device_(device->Logical()),
 	currentFrame_(0), activeImageIndex_(0), frameMax_(2)
 {
-	const auto& physicalDevice = device->GetPhysical();
+	const auto& physicalDevice = device->Physical();
 
 	const vk::SurfaceCapabilitiesKHR surfaceCapabilities =
 		physicalDevice.getSurfaceCapabilitiesKHR(surface.Handle());
@@ -87,6 +87,13 @@ VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
 	swapchainCreateInfo.clipped = VK_TRUE;
 	swapchainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 	swapchainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
+
+
+	/*assert(physicalDevice.getSurfaceSupportKHR(
+		device->PresentQueue().FamilyIndex(),
+		surface.Handle())
+	);*/
+
 
 	swapChain_ = device_.createSwapchainKHR(swapchainCreateInfo);
 	auto swapChainImages = device_.getSwapchainImagesKHR(swapChain_);

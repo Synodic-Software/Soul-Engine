@@ -3,20 +3,13 @@
 #include "Types.h"
 #include "Render/Raster/RasterDevice.h"
 #include "Core/Structure/Span.h"
+#include "VulkanQueue.h"
 
 #include <map>
 #include <vulkan/vulkan.hpp>
 
 class SchedulerModule;
 class VulkanQueue;
-
-enum class QueueFamilyType {
-	Compute, 
-	Graphics,	//Can't be Compute
-	Transfer	//Can't be Compute or Graphics
-};
-
-static constexpr uint queueFamilyTypeCount = 3;
 
 class VulkanDevice final: public RasterDevice {
 
@@ -36,44 +29,19 @@ public:
 
 	void Synchronize() override;
 
-	const vk::Device& GetLogical() const;
-	const vk::PhysicalDevice& GetPhysical() const;
+	const vk::Device& Logical() const;
+	const vk::PhysicalDevice& Physical() const;
 
 
 private:
 
-	typedef struct QueueMember {
-
-		uint familyIndex;
-		uint count;
-
-		QueueMember(uint familyIndexIn, uint countIn): familyIndex(familyIndexIn), count(countIn)
-		{
-		}
-
-		bool operator==(const uint32_t& familyIndexIn) const
-		{
-			return familyIndex == familyIndexIn;
-		}
-	};
-
-	typedef struct DeviceQueueFamilyInfo {
-
-		uint familyQueueCount[queueFamilyTypeCount];
-		std::map<QueueFamilyType, std::vector<QueueMember>> queueFamily;
-
-	};
-
 	std::shared_ptr<SchedulerModule> scheduler_;
 
-	std::vector<vk::Device> logicalDevices_;
+	vk::Device device_;
 	vk::PhysicalDevice physicalDevice_;
 
-	vk::PhysicalDeviceProperties deviceProperties_;
-	vk::PhysicalDeviceFeatures deviceFeatures_;
-	vk::PhysicalDeviceMemoryProperties memoryProperties_;
-
-	DeviceQueueFamilyInfo familyInfo_;
-	std::vector<VulkanQueue> queues_;
+	std::vector<VulkanQueue> graphicsQueues_;
+	std::vector<VulkanQueue> computeQueues_;
+	std::vector<VulkanQueue> transferQueues_;
 
 };

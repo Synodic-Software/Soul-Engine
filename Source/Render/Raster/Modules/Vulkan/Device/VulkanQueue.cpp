@@ -1,7 +1,7 @@
 #include "VulkanQueue.h"
 
-VulkanQueue::VulkanQueue(const vk::Device& device, uint index, uint familyIndex):
-	device_(device), index_(index), familyIndex_(familyIndex)
+VulkanQueue::VulkanQueue(const vk::Device& device, uint familyIndex, uint index):
+	device_(device), familyIndex_(familyIndex), index_(index)
 {
 
 	queue_ = device_.getQueue(familyIndex_, index_);
@@ -22,9 +22,16 @@ bool VulkanQueue::Present()
 
 }
 
-const vk::Queue& VulkanQueue::Get()
+const vk::Queue& VulkanQueue::Handle()
 {
 
 	return queue_;
+
+}
+
+const uint VulkanQueue::FamilyIndex()
+{
+
+	return familyIndex_;
 
 }
