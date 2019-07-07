@@ -68,12 +68,12 @@ VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
 		imageCount = surfaceCapabilities.maxImageCount;
 	}
 
-	SurfaceFormat format = surface.Format();
+	vk::SurfaceFormatKHR format = surface.Format();
 
 	vk::SwapchainCreateInfoKHR swapchainCreateInfo;
 	swapchainCreateInfo.surface = surface.Handle();
 	swapchainCreateInfo.minImageCount = imageCount;
-	swapchainCreateInfo.imageFormat = format.colorFormat;
+	swapchainCreateInfo.imageFormat = format.format;
 	swapchainCreateInfo.imageColorSpace = format.colorSpace;
 	swapchainCreateInfo.imageExtent = swapchainSize;
 	swapchainCreateInfo.imageUsage =
@@ -88,12 +88,7 @@ VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
 	swapchainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 	swapchainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
 
-
-	/*assert(physicalDevice.getSurfaceSupportKHR(
-		device->PresentQueue().FamilyIndex(),
-		surface.Handle())
-	);*/
-
+	assert(device->SurfaceSupported(surface.Handle()));
 
 	swapChain_ = device_.createSwapchainKHR(swapchainCreateInfo);
 	auto swapChainImages = device_.getSwapchainImagesKHR(swapChain_);

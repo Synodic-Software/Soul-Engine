@@ -1,13 +1,8 @@
 #pragma once
 
+#include "Device/VulkanDevice.h"
+
 #include <vulkan/vulkan.hpp>
-
-struct SurfaceFormat {
-
-	vk::ColorSpaceKHR colorSpace;
-	vk::Format colorFormat;
-
-};
 
 class VulkanSurface {
 
@@ -24,8 +19,8 @@ public:
 
 	vk::SurfaceKHR Handle();
 
-	SurfaceFormat UpdateFormat(const vk::PhysicalDevice&);
-	SurfaceFormat Format() const;
+	vk::SurfaceFormatKHR UpdateFormat(const VulkanDevice& device);
+	vk::SurfaceFormatKHR Format() const;
 
 private:
 
@@ -33,6 +28,6 @@ private:
 	vk::SurfaceKHR surface_;
 	vk::Extent2D size_;
 
-	SurfaceFormat format_;
+	vk::SurfaceFormatKHR format_;
 
 };

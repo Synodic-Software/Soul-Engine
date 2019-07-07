@@ -8,6 +8,7 @@
 #include <algorithm>
 
 VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
+	const vk::Instance& instance,
 	const vk::PhysicalDevice& physicalDevice,
 	nonstd::span<std::string> validationLayers,
 	nonstd::span<std::string> requiredExtensions):
@@ -135,6 +136,8 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 
 	device_ = physicalDevice.createDevice(deviceCreateInfo);
 
+	dispatcher_ = vk::DispatchLoaderDynamic(instance, device_);
+
 	//Device is created, queues can be retrieved
 	for (auto& indices : transferIndices) {
 		transferQueues_.emplace_back(device_, indices.first, indices.second);
@@ -174,5 +177,32 @@ const vk::PhysicalDevice& VulkanDevice::Physical() const
 {
 
 	return physicalDevice_;
+
+}
+
+const vk::DispatchLoaderDynamic& VulkanDevice::DispatchLoader() const
+{
+
+	return dispatcher_;
+
+}
+
+bool VulkanDevice::SurfaceSupported(vk::SurfaceKHR& surface)
+{
+
+	bool supported = true;
+	for (auto& graphicsQueue : graphicsQueues_) {
+	
+		if (!physicalDevice_.getSurfaceSupportKHR(
+		graphicsQueue.FamilyIndex(),
+		surface)) {
+
+			return false;
+
+		}
+
+	}
+
+	return supported;
 
 }

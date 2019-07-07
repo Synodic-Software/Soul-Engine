@@ -16,6 +16,7 @@ class VulkanDevice final: public RasterDevice {
 public:
 
 	VulkanDevice(std::shared_ptr<SchedulerModule>&,
+		const vk::Instance&,
 		const vk::PhysicalDevice&,
 		nonstd::span<std::string>,
 		nonstd::span<std::string>);
@@ -31,7 +32,9 @@ public:
 
 	const vk::Device& Logical() const;
 	const vk::PhysicalDevice& Physical() const;
+	const vk::DispatchLoaderDynamic& DispatchLoader() const;
 
+	bool SurfaceSupported(vk::SurfaceKHR&);
 
 private:
 
@@ -43,5 +46,9 @@ private:
 	std::vector<VulkanQueue> graphicsQueues_;
 	std::vector<VulkanQueue> computeQueues_;
 	std::vector<VulkanQueue> transferQueues_;
+
+	// Dynamic dispatcher for extensions
+	vk::DispatchLoaderDynamic dispatcher_;
+
 
 };

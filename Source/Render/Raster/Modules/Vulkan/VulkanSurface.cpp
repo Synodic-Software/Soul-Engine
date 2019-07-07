@@ -3,7 +3,7 @@
 VulkanSurface::VulkanSurface(const vk::Instance& instance, const vk::SurfaceKHR& surface): 
 	instance_(instance),
 	surface_(surface), 
-	format_ {vk::ColorSpaceKHR::eSrgbNonlinear, vk::Format::eB8G8R8A8Unorm}
+	format_ {vk::Format::eB8G8R8A8Unorm, vk::ColorSpaceKHR::eSrgbNonlinear}
 {
 }
 
@@ -21,31 +21,37 @@ vk::SurfaceKHR VulkanSurface::Handle()
 
 }
 
-SurfaceFormat VulkanSurface::UpdateFormat(const vk::PhysicalDevice& physicalDevice)
+vk::SurfaceFormatKHR VulkanSurface::UpdateFormat(const VulkanDevice& device)
 {
 
-	const auto formats = physicalDevice.getSurfaceFormatsKHR(surface_);
+	const auto& physicalDevice = device.Physical();
+
+	vk::PhysicalDeviceSurfaceInfo2KHR surfaceInfo;
+	surfaceInfo.surface = surface_;
+
+	const auto formats =
+		physicalDevice.getSurfaceFormats2KHR(surfaceInfo, device.DispatchLoader());
 
 	// TODO: pick formats better
-	if (!formats.empty() && formats.front().format == vk::Format::eUndefined) {
+	if (!formats.empty() && formats.front().surfaceFormat.format == vk::Format::eUndefined) {
 		return format_;
 	}
 
 	for (const auto& format : formats) {
 
-		if (format.format == vk::Format::eB8G8R8A8Unorm &&
-			format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
+		if (format.surfaceFormat.format == vk::Format::eB8G8R8A8Unorm &&
+			format.surfaceFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
 			return format_;
 		}
 	}
 
-	format_.colorFormat = formats.front().format;
-	format_.colorSpace = formats.front().colorSpace;
+	format_.format = formats.front().surfaceFormat.format;
+	format_.colorSpace = formats.front().surfaceFormat.colorSpace;
 
 	return format_;
 }
 
-SurfaceFormat VulkanSurface::Format() const
+vk::SurfaceFormatKHR VulkanSurface::Format() const
 {
 
 	return format_;

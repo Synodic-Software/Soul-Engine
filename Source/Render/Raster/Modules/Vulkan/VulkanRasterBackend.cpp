@@ -25,49 +25,36 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);  // TODO forward the engine version here
 	appInfo.pEngineName = "Soul Engine";  // TODO forward the engine name here
 
-	// The display will forward the extensions needed for Vulkan
-	const auto newExtensions = windowModule_->GetRasterExtensions();
 
 	std::vector<std::string> validationLayers;
-	std::vector<std::string> instanceExtensions;
+	std::vector<std::string> instanceExtensions {
+		VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
+		VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME
+	};
+
+	// The display will forward the extensions needed for Vulkan
+	const auto windowExtensions = windowModule_->GetRasterExtensions();
 
 	instanceExtensions.insert(
-		std::end(instanceExtensions), std::begin(newExtensions), std::end(newExtensions));
+		std::end(instanceExtensions), std::begin(windowExtensions), std::end(windowExtensions));
 
-
-	// TODO minimize memory/runtime impact
 	if constexpr (Compiler::Debug()) {
 
 		validationLayers.push_back("VK_LAYER_KHRONOS_validation");
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
-		std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
-
-		for (auto layer : validationLayers) {
-
-			bool found = false;
-			for (const auto& layerProperties : availableLayers) {
-
-				if (strcmp(layer.c_str(), layerProperties.layerName) == 0) {
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-
-				throw std::runtime_error("Specified Vulkan validation layer is not available.");
-			}
-		}
 	}
 
 	instance_.reset(new VulkanInstance(appInfo, validationLayers, instanceExtensions));
 
-	std::vector<std::string> deviceExtensions {VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-		VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME, VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME};
+	std::vector<std::string> deviceExtensions {
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+		VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME, 
+		VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME
+	};
 
 	physicalDevices_ = instance_->EnumeratePhysicalDevices();
-	device_ = std::make_unique<VulkanDevice>(scheduler, physicalDevices_[0].Handle(), validationLayers, deviceExtensions);
+	device_ = std::make_unique<VulkanDevice>(scheduler, instance_->Handle(), physicalDevices_[0].Handle(), validationLayers, deviceExtensions);
 }
 
 void VulkanRasterBackend::Present()
@@ -173,13 +160,15 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
 {
 
-	auto surface = std::any_cast<vk::SurfaceKHR>(anySurface);
+	auto surfaceHandle = std::any_cast<vk::SurfaceKHR>(anySurface);
 	Entity surfaceID = entityRegistry_->CreateEntity();
 
 	auto& [surfaceIterator, didInsert] =
-		surfaces_.try_emplace(surfaceID, instance_->Handle(), surface);
+		surfaces_.try_emplace(surfaceID, instance_->Handle(), surfaceHandle);
 
-	swapChains_.try_emplace(surfaceID, device_, surfaceIterator->second, false);
+	VulkanSurface& surface = surfaceIterator->second;
+	const auto format = surface.UpdateFormat(*device_);
+	swapChains_.try_emplace(surfaceID, device_, surface, false);
 
 	return surfaceID;
 }
@@ -187,10 +176,8 @@ Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size
 void VulkanRasterBackend::UpdateSurface(Entity surfaceID, glm::uvec2 size)
 {
 
-	const vk::PhysicalDevice& physicalDevice = device_->Physical();
-
 	auto& surface = surfaces_.at(surfaceID);
-	const auto format = surface.UpdateFormat(physicalDevice);
+	const auto format = surface.UpdateFormat(*device_);
 
 	auto& oldSwapchain = swapChains_.at(surfaceID);
 	auto& newSwapchain = VulkanSwapChain(device_, surface, false, &oldSwapchain);

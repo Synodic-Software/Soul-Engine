@@ -26,6 +26,16 @@ VulkanInstance::VulkanInstance(const vk::ApplicationInfo& appInfo,
 
 	}
 
+	// TODO: Validate layers
+	if constexpr (Compiler::Debug()) {
+
+		std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
+
+	}
+
+	// TODO: Validate extensions
+	std::vector<vk::ExtensionProperties> t = vk::enumerateInstanceExtensionProperties();
+
 	vk::InstanceCreateInfo instanceCreationInfo;
 	instanceCreationInfo.pApplicationInfo = &appInfo;
 	instanceCreationInfo.enabledExtensionCount = static_cast<uint32>(cExtensions.size());
@@ -34,7 +44,6 @@ VulkanInstance::VulkanInstance(const vk::ApplicationInfo& appInfo,
 	instanceCreationInfo.ppEnabledLayerNames = cValidationLayers.data();
 
 	instance_ = createInstance(instanceCreationInfo);
-
 	dispatcher_ = vk::DispatchLoaderDynamic(instance_);
 
 	if constexpr (Compiler::Debug()) {
