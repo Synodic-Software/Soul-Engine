@@ -50,7 +50,8 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 	std::vector<std::string> deviceExtensions {
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 		VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME, 
-		VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME
+		VK_KHR_EXTERNAL_SEMAPHORE_EXTENSION_NAME,
+		VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME
 	};
 
 	physicalDevices_ = instance_->EnumeratePhysicalDevices();
@@ -71,7 +72,7 @@ Entity VulkanRasterBackend::CreatePass()
 	//renderPassSwapchainMap_[renderPassID] = swapchainID;
 	//auto& swapchain = swapChains_.at(swapchainID);
 
-	renderPasses_.try_emplace(renderPassID, device_->Logical());
+	renderPasses_.try_emplace(renderPassID, *device_);
 
 	// TODO: Better management if commandBuffers
 	/*renderPassCommands_[renderPassID] =

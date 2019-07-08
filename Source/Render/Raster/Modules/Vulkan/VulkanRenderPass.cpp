@@ -1,5 +1,4 @@
 #include "VulkanRenderPass.h"
-#include "Device/VulkanDevice.h"
 
 VulkanSubPass::VulkanSubPass(uint bindingIndex, std::vector<uint> attachmentIndices):
 	bindingIndex_(bindingIndex), 
@@ -7,11 +6,11 @@ VulkanSubPass::VulkanSubPass(uint bindingIndex, std::vector<uint> attachmentIndi
 {
 }
 
-VulkanRenderPass::VulkanRenderPass(const vk::Device& device):
-	device_(device)
+VulkanRenderPass::VulkanRenderPass(const VulkanDevice& device):
+	device_(device.Logical())
 {
 
-	//vk::AttachmentDescription colorAttachment;
+	//vk::AttachmentDescription2KHR colorAttachment;
 	//colorAttachment.format = swapChainImageFormat;
 	//colorAttachment.samples = vk::SampleCountFlagBits::e1;
 	//colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
@@ -30,13 +29,21 @@ VulkanRenderPass::VulkanRenderPass(const vk::Device& device):
 	//subpass.colorAttachmentCount = 1;
 	//subpass.pColorAttachments = &colorAttachmentRef;
 
-	vk::RenderPassCreateInfo renderPassInfo;
+	std::vector<vk::SubpassDescription2KHR> subpassDescriptions(subpasses_.size());
+	std::vector<vk::SubpassDependency> subpassDependencies(subpasses_.size());
+
+	vk::RenderPassCreateInfo2KHR renderPassInfo;
+	renderPassInfo.flags = vk::RenderPassCreateFlags();
 	renderPassInfo.attachmentCount = 0;
 	renderPassInfo.pAttachments = nullptr;
-	renderPassInfo.subpassCount = 0;
-	renderPassInfo.pSubpasses = nullptr;
+	renderPassInfo.subpassCount = subpassDescriptions.size();
+	renderPassInfo.pSubpasses = subpassDescriptions.data();
+	renderPassInfo.dependencyCount = 0;
+	renderPassInfo.pDependencies = nullptr;
+	renderPassInfo.correlatedViewMaskCount = 0;
+	renderPassInfo.pCorrelatedViewMasks = nullptr;
 
-	renderPass_ = device_.createRenderPass(renderPassInfo, nullptr);
+	renderPass_ = device_.createRenderPass2KHR(renderPassInfo, nullptr, device.DispatchLoader());
 
 }
 

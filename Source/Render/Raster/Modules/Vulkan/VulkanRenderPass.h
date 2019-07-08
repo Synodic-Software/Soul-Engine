@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+#include "Device/VulkanDevice.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -30,7 +31,7 @@ class VulkanRenderPass
 
 public:
 
-	VulkanRenderPass(const vk::Device&);
+	VulkanRenderPass(const VulkanDevice&);
 	~VulkanRenderPass();
 
 	VulkanRenderPass(const VulkanRenderPass&) = delete;
@@ -45,6 +46,6 @@ private:
 
 	vk::Device device_;
 	vk::RenderPass renderPass_;
-	std::vector<vk::SubpassDescription> subpasses_;
+	std::vector<VulkanSubPass> subpasses_;
 
 };
