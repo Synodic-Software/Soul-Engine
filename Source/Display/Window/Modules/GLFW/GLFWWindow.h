@@ -40,6 +40,4 @@ private:
 
 	bool master_;
 
-	Entity surface_;
-
 };

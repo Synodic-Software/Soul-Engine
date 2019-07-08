@@ -33,7 +33,7 @@ public:
 
 	virtual void Present() = 0;
 
-	virtual Entity CreatePass(Entity) = 0;
+	virtual Entity CreatePass() = 0;
 	virtual Entity CreateSubPass(Entity) = 0;
 	virtual void ExecutePass(Entity, CommandList&) = 0;
 

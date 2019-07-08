@@ -194,7 +194,7 @@ void ImguiBackend::Update(std::chrono::nanoseconds frameTime)
 	// TODO: use the GUI associated window
 	// TODO: via callback
 	// Update Display
-	WindowParameters& windowParams = windowModule_->GetWindow().Parameters();
+	WindowParameters& windowParams = windowModule_->MasterWindow().Parameters();
 	inputInfo.DisplaySize = ImVec2(
 		static_cast<float>(windowParams.pixelSize.x), static_cast<float>(windowParams.pixelSize.y));
 	inputInfo.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);

@@ -30,8 +30,7 @@ public:
 
 	nonstd::span<const char*> GetRasterExtensions() override;
 
-	Window& GetWindow() override;
-
+	Window& MasterWindow() override;
 
 	void Refresh();
 	void Resize(int, int);

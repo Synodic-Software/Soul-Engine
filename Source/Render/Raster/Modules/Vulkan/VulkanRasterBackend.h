@@ -35,7 +35,7 @@ public:
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
 
 	void Present() override;
-	Entity CreatePass(Entity) override;
+	Entity CreatePass() override;
 	Entity CreateSubPass(Entity) override;
 	void ExecutePass(Entity, CommandList&) override;
 

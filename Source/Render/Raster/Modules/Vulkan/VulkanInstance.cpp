@@ -34,7 +34,7 @@ VulkanInstance::VulkanInstance(const vk::ApplicationInfo& appInfo,
 	}
 
 	// TODO: Validate extensions
-	std::vector<vk::ExtensionProperties> t = vk::enumerateInstanceExtensionProperties();
+	std::vector<vk::ExtensionProperties> availableExtensions = vk::enumerateInstanceExtensionProperties();
 
 	vk::InstanceCreateInfo instanceCreationInfo;
 	instanceCreationInfo.pApplicationInfo = &appInfo;

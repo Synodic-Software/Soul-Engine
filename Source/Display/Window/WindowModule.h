@@ -33,8 +33,7 @@ public:
 
 	virtual nonstd::span<const char*> GetRasterExtensions() = 0;
 
-	virtual Window& GetWindow() = 0;
-
+	virtual Window& MasterWindow() = 0;
 
 	//Factory
 	static std::unique_ptr<WindowModule> CreateModule(std::shared_ptr<InputModule>&);

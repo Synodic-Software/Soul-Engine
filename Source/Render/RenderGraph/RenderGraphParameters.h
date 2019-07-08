@@ -11,7 +11,7 @@ public:
 	~RenderTaskParameters() = default;
 
 	std::string name;
-	Entity surfaceID;
+
 };
 
 struct RenderGraphOutputParameters {

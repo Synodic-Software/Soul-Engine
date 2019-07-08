@@ -31,6 +31,13 @@ VulkanDevice::VulkanDevice(std::shared_ptr<SchedulerModule>& scheduler,
 		cExtensions.push_back(extension.c_str());
 	}
 
+	// TODO: Validate validation layers
+	if constexpr (Compiler::Debug()) {
+
+		std::vector<vk::LayerProperties> availableLayers =
+			physicalDevice.enumerateDeviceLayerProperties();
+	}
+
 	// TODO: Validate extensions
 	std::vector<vk::ExtensionProperties> availableExtensions =
 		physicalDevice.enumerateDeviceExtensionProperties();

@@ -178,7 +178,7 @@ GLFWWindow& GLFWWindowBackend::GetWindow(GLFWwindow* context)
 	return *windows_[context];
 }
 
-Window& GLFWWindowBackend::GetWindow()
+Window& GLFWWindowBackend::MasterWindow()
 {
 
 	return *windows_.begin()->second;

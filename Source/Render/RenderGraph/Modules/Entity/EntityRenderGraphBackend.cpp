@@ -38,7 +38,7 @@ void EntityRenderGraphBackend::CreateRenderPass(RenderTaskParameters& parameters
 	//GraphTask& task = renderGraph_.CreateTask();
 
 	//Create the renderpass;
-	Entity pass = rasterModule_->CreatePass(parameters.surfaceID);
+	Entity pass = rasterModule_->CreatePass();
 
 	//Call the pass construction
 	auto callback = passCallback(builder_);

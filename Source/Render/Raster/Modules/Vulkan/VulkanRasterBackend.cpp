@@ -63,15 +63,15 @@ void VulkanRasterBackend::Present()
 	throw NotImplemented();
 }
 
-Entity VulkanRasterBackend::CreatePass(Entity swapchainID)
+Entity VulkanRasterBackend::CreatePass()
 {
 
 	Entity renderPassID = entityRegistry_->CreateEntity();
 
-	renderPassSwapchainMap_[renderPassID] = swapchainID;
-	// auto& swapchain = swapChains_.at(swapchainID);
+	//renderPassSwapchainMap_[renderPassID] = swapchainID;
+	//auto& swapchain = swapChains_.at(swapchainID);
 
-	// renderPasses_.try_emplace(renderPassID, device_->GetLogical());
+	renderPasses_.try_emplace(renderPassID, device_->Logical());
 
 	// TODO: Better management if commandBuffers
 	/*renderPassCommands_[renderPassID] =
@@ -135,8 +135,9 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 	beginInfo.pInheritanceInfo = nullptr;
 
 
-	auto& swapchain = swapChains_.at(renderPassSwapchainMap_.at(renderpassID));
-	auto& frameBuffers = renderPassBuffers_.at(renderpassID);
+	//auto& swapchainID = renderPassSwapchainMap_.at(renderpassID);
+	//auto& swapchain = swapChains_.at(swapchainID);
+	//auto& frameBuffers = renderPassBuffers_.at(renderpassID);
 	auto& renderPass = renderPasses_.at(renderpassID);
 	auto& commandBuffer = renderPassCommands_.at(renderpassID)->Get();
 
@@ -145,7 +146,7 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 	renderPassInfo.renderPass = renderPass.Handle();
 	// renderPassInfo.framebuffer = frameBuffers[i].Handle();
 	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-	renderPassInfo.renderArea.extent = swapchain.GetSize();
+	//renderPassInfo.renderArea.extent = swapchain.GetSize();
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
