@@ -5,6 +5,7 @@
 #include "Types.h"
 #include "RenderCommands.h"
 #include "RenderResource.h"
+#include "RenderTypes.h"
 
 #include <memory>
 #include <any>
@@ -33,9 +34,13 @@ public:
 
 	virtual void Present() = 0;
 
-	virtual Entity CreatePass() = 0;
-	virtual Entity CreateSubPass(Entity) = 0;
+	virtual Entity RegisterPass() = 0;
+	virtual Entity RegisterSubPass(Entity) = 0;
+	virtual void CreatePass(Entity) = 0;
 	virtual void ExecutePass(Entity, CommandList&) = 0;
+
+	virtual void CreatePassInput(Entity, Format) = 0;
+	virtual void CreatePassOutput(Entity, Format) = 0;
 
 	virtual Entity RegisterSurface(std::any, glm::uvec2) = 0;
 	virtual void UpdateSurface(Entity, glm::uvec2) = 0;

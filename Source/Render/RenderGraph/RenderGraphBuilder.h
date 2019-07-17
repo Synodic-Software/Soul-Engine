@@ -9,7 +9,7 @@ class RenderGraphBuilder{
 
 public:
 
-	RenderGraphBuilder(std::shared_ptr<RasterModule>&, std::shared_ptr<EntityRegistry>&);
+	RenderGraphBuilder(std::shared_ptr<RasterModule>&, std::shared_ptr<EntityRegistry>&, Entity, bool);
 	virtual ~RenderGraphBuilder() = default;
 
 	RenderGraphBuilder(const RenderGraphBuilder &) = delete;
@@ -32,6 +32,9 @@ private:
 
 	std::shared_ptr<EntityRegistry> entityRegistry_;
 	std::shared_ptr<RasterModule> rasterModule_;
+
+	Entity renderPass_;
+	bool subPass_;
 
 };
 

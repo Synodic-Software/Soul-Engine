@@ -54,6 +54,7 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 		VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME
 	};
 
+	//TODO: Device groups and multiple devices
 	physicalDevices_ = instance_->EnumeratePhysicalDevices();
 	device_ = std::make_unique<VulkanDevice>(scheduler, instance_->Handle(), physicalDevices_[0].Handle(), validationLayers, deviceExtensions);
 }
@@ -64,15 +65,44 @@ void VulkanRasterBackend::Present()
 	throw NotImplemented();
 }
 
-Entity VulkanRasterBackend::CreatePass()
+Entity VulkanRasterBackend::RegisterPass()
 {
 
 	Entity renderPassID = entityRegistry_->CreateEntity();
 
-	//renderPassSwapchainMap_[renderPassID] = swapchainID;
-	//auto& swapchain = swapChains_.at(swapchainID);
+	CreatePassOutput(renderPassID, Format::RGBA);
+	RegisterSubPass(renderPassID);
 
-	renderPasses_.try_emplace(renderPassID, *device_);
+	return renderPassID;
+}
+
+Entity VulkanRasterBackend::RegisterSubPass(Entity renderPassID)
+{
+
+	Entity subPassID = entityRegistry_->CreateEntity();
+
+	std::vector<vk::AttachmentReference2KHR> subPassAttachmentReferences;
+
+	subPasses_.try_emplace(renderPassID, subPassAttachmentReferences);
+
+	return subPassID;
+}
+
+void VulkanRasterBackend::CreatePass(Entity renderPassID)
+{
+
+	// renderPassSwapchainMap_[renderPassID] = swapchainID;
+	// auto& swapchain = swapChains_.at(swapchainID);
+
+	std::vector<vk::AttachmentDescription2KHR>& subPassAttachments =
+		renderPassAttachments_.at(renderPassID);
+	std::vector<vk::SubpassDescription2KHR>& subPassDescriptions =
+		renderPassSubPasses_.at(renderPassID);
+	std::vector<vk::SubpassDependency2KHR>& subPassDependencies =
+		renderPassDependencies_.at(renderPassID);
+
+	renderPasses_.try_emplace(
+		renderPassID, *device_, subPassAttachments, subPassDescriptions, subPassDependencies);
 
 	// TODO: Better management if commandBuffers
 	/*renderPassCommands_[renderPassID] =
@@ -114,16 +144,6 @@ Entity VulkanRasterBackend::CreatePass()
 	//	logicalDevice.destroyImageView(image.view);
 	//}
 
-
-	return renderPassID;
-}
-
-Entity VulkanRasterBackend::CreateSubPass(Entity parentPass)
-{
-
-	Entity subPassID = entityRegistry_->CreateEntity();
-
-	return subPassID;
 }
 
 void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandList)
@@ -157,6 +177,32 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 
 	commandBuffer.endRenderPass();
 	commandBuffer.end();
+}
+
+void VulkanRasterBackend::CreatePassInput(Entity renderPassID, Format format)
+{
+
+}
+
+void VulkanRasterBackend::CreatePassOutput(Entity renderPassID, Format format)
+{
+
+	vk::AttachmentDescription2KHR colorAttachment;
+	colorAttachment.flags = vk::AttachmentDescriptionFlags();
+	colorAttachment.format = ConvertFormat(format);
+	colorAttachment.samples = vk::SampleCountFlagBits::e1;
+	colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
+	colorAttachment.storeOp = vk::AttachmentStoreOp::eStore;
+	colorAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+	colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+	colorAttachment.initialLayout = vk::ImageLayout::eUndefined;
+	colorAttachment.finalLayout = vk::ImageLayout::ePresentSrcKHR;
+
+	vk::AttachmentReference2KHR colorAttachmentRef;
+	colorAttachmentRef.attachment = 0;
+	colorAttachmentRef.layout = vk::ImageLayout::eColorAttachmentOptimal;
+	colorAttachmentRef.aspectMask = vk::ImageAspectFlags();
+
 }
 
 Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
@@ -250,4 +296,16 @@ void VulkanRasterBackend::CopyTexture(CopyTextureCommand&, vk::CommandBuffer& co
 {
 
 	throw NotImplemented();
+}
+
+
+vk::Format VulkanRasterBackend::ConvertFormat(Format format)
+{
+	switch (format) {
+		case Format::RGBA:
+			return vk::Format::eR8G8B8A8Srgb;
+		default:
+			throw NotImplemented();
+			return vk::Format::eUndefined;
+	}
 }

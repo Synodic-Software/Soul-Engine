@@ -1,45 +1,20 @@
 #include "VulkanRenderPass.h"
 
-VulkanSubPass::VulkanSubPass(uint bindingIndex, std::vector<uint> attachmentIndices):
-	bindingIndex_(bindingIndex), 
-	attachmentIndices_(std::move(attachmentIndices))
-{
-}
-
-VulkanRenderPass::VulkanRenderPass(const VulkanDevice& device):
+VulkanRenderPass::VulkanRenderPass(const VulkanDevice& device,
+	std::vector<vk::AttachmentDescription2KHR> subpassAttachments,
+	std::vector<vk::SubpassDescription2KHR> subpassDescriptions,
+	std::vector<vk::SubpassDependency2KHR> subpassDependencies):
 	device_(device.Logical())
 {
 
-	//vk::AttachmentDescription2KHR colorAttachment;
-	//colorAttachment.format = swapChainImageFormat;
-	//colorAttachment.samples = vk::SampleCountFlagBits::e1;
-	//colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
-	//colorAttachment.storeOp = vk::AttachmentStoreOp::eStore;
-	//colorAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
-	//colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
-	//colorAttachment.initialLayout = vk::ImageLayout::eUndefined;
-	//colorAttachment.finalLayout = vk::ImageLayout::ePresentSrcKHR;
-
-	//vk::AttachmentReference colorAttachmentRef;
-	//colorAttachmentRef.attachment = 0;
-	//colorAttachmentRef.layout = vk::ImageLayout::eColorAttachmentOptimal;
-
-	//vk::SubpassDescription subpass;
-	//subpass.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
-	//subpass.colorAttachmentCount = 1;
-	//subpass.pColorAttachments = &colorAttachmentRef;
-
-	std::vector<vk::SubpassDescription2KHR> subpassDescriptions(subpasses_.size());
-	std::vector<vk::SubpassDependency> subpassDependencies(subpasses_.size());
-
 	vk::RenderPassCreateInfo2KHR renderPassInfo;
 	renderPassInfo.flags = vk::RenderPassCreateFlags();
-	renderPassInfo.attachmentCount = 0;
-	renderPassInfo.pAttachments = nullptr;
-	renderPassInfo.subpassCount = subpassDescriptions.size();
+	renderPassInfo.attachmentCount = static_cast<uint>(subpassAttachments.size());
+	renderPassInfo.pAttachments = subpassAttachments.data();
+	renderPassInfo.subpassCount = static_cast<uint>(subpassDescriptions.size());
 	renderPassInfo.pSubpasses = subpassDescriptions.data();
-	renderPassInfo.dependencyCount = 0;
-	renderPassInfo.pDependencies = nullptr;
+	renderPassInfo.dependencyCount = static_cast<uint>(subpassDependencies.size());
+	renderPassInfo.pDependencies = subpassDependencies.data();
 	renderPassInfo.correlatedViewMaskCount = 0;
 	renderPassInfo.pCorrelatedViewMasks = nullptr;
 

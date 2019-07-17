@@ -35,9 +35,16 @@ public:
 	VulkanRasterBackend& operator=(VulkanRasterBackend &&) noexcept = default;
 
 	void Present() override;
-	Entity CreatePass() override;
-	Entity CreateSubPass(Entity) override;
+
+	//RenderPass Management
+	Entity RegisterPass() override;
+	Entity RegisterSubPass(Entity) override;
+	void CreatePass(Entity) override;
 	void ExecutePass(Entity, CommandList&) override;
+
+	//RenderPass Modification
+	void CreatePassInput(Entity, Format) override;
+	void CreatePassOutput(Entity, Format) override;
 
 	Entity RegisterSurface(std::any, glm::uvec2) override;
 	void UpdateSurface(Entity, glm::uvec2) override;
@@ -54,6 +61,8 @@ public:
 	VulkanInstance& GetInstance();
 
 private:
+
+	vk::Format ConvertFormat(Format);
 
 	std::shared_ptr<EntityRegistry> entityRegistry_;
 
@@ -74,8 +83,14 @@ private:
 	std::vector<std::unique_ptr<VulkanCommandBuffer>> commandBuffers_;
 
 	std::unordered_map<Entity, Entity> renderPassSwapchainMap_;
+
+	std::unordered_map<Entity, std::vector<vk::AttachmentDescription2KHR>> renderPassAttachments_;
+	std::unordered_map<Entity, std::vector<vk::SubpassDescription2KHR>> renderPassSubPasses_;
+	std::unordered_map<Entity, std::vector<vk::SubpassDependency2KHR>> renderPassDependencies_;
+
 	std::unordered_map<Entity, VulkanPipeline> pipelines_;
 	std::unordered_map<Entity, VulkanRenderPass> renderPasses_;
+	std::unordered_map<Entity, VulkanSubPass> subPasses_;
 	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
 	std::unordered_map<Entity, VulkanFrameBuffer> renderPassBuffers_;
 	

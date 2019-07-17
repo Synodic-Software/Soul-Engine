@@ -2,36 +2,19 @@
 
 #include "Types.h"
 #include "Device/VulkanDevice.h"
+#include "VulkanSubPass.h"
 
 #include <vulkan/vulkan.hpp>
-
-class VulkanSubPass {
-
-public:
-
-	VulkanSubPass(uint, std::vector<uint>);
-	~VulkanSubPass() = default;
-
-	VulkanSubPass(const VulkanSubPass&) = delete;
-	VulkanSubPass(VulkanSubPass&&) noexcept = default;
-
-	VulkanSubPass& operator=(const VulkanSubPass&) = delete;
-	VulkanSubPass& operator=(VulkanSubPass&&) noexcept = default;
-
-private:
-
-	uint bindingIndex_;
-	std::vector<uint> attachmentIndices_;
-
-};
-
 
 class VulkanRenderPass
 {
 
 public:
 
-	VulkanRenderPass(const VulkanDevice&);
+	VulkanRenderPass(const VulkanDevice&,
+		std::vector<vk::AttachmentDescription2KHR> subpassAttachments,
+		std::vector<vk::SubpassDescription2KHR> subpassDescriptions,
+		std::vector<vk::SubpassDependency2KHR> subpassDependencies);
 	~VulkanRenderPass();
 
 	VulkanRenderPass(const VulkanRenderPass&) = delete;

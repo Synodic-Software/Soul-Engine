@@ -24,10 +24,13 @@ public:
 		std::function<std::function<void(const EntityRegistry&, CommandList&)>(
 			RenderGraphBuilder&)>) override;
 
+
 private:
+
 	std::shared_ptr<RasterModule> rasterModule_;
 	std::shared_ptr<EntityRegistry> entityRegistry_;
-	RenderGraphBuilder builder_;
+	
 	std::vector<std::pair<Entity, std::function<void(const EntityRegistry&, CommandList&)>>>
 		graphTasks_;
+
 };

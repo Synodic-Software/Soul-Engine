@@ -9,8 +9,7 @@ EntityRenderGraphBackend::EntityRenderGraphBackend(
 	std::shared_ptr<SchedulerModule>& scheduler):
 	RenderGraphModule(rasterModule, scheduler),
 	rasterModule_(rasterModule), 
-	entityRegistry_(new EntityRegistry),
-	builder_(rasterModule_, entityRegistry_)
+	entityRegistry_(new EntityRegistry)
 {
 }
 
@@ -38,10 +37,11 @@ void EntityRenderGraphBackend::CreateRenderPass(RenderTaskParameters& parameters
 	//GraphTask& task = renderGraph_.CreateTask();
 
 	//Create the renderpass;
-	Entity pass = rasterModule_->CreatePass();
+	Entity pass = rasterModule_->RegisterPass();
+	RenderGraphBuilder builder(rasterModule_, entityRegistry_, pass, false);
 
 	//Call the pass construction
-	auto callback = passCallback(builder_);
+	auto callback = passCallback(builder);
 
 	//Store the execution step for later
 	graphTasks_.push_back({pass, callback});
