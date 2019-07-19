@@ -35,7 +35,7 @@ public:
 	virtual void Present() = 0;
 
 	virtual Entity CreatePass(std::function<void(Entity)>) = 0;
-	virtual Entity CreateSubPass(std::function<void(Entity)>) = 0;
+	virtual Entity CreateSubPass(Entity, std::function<void(Entity)>) = 0;
 	virtual void ExecutePass(Entity, CommandList&) = 0;
 
 	virtual void CreatePassInput(Entity, Entity, Format) = 0;

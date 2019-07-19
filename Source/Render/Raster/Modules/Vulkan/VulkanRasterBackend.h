@@ -38,7 +38,7 @@ public:
 
 	//RenderPass Management
 	Entity CreatePass(std::function<void(Entity)>) override;
-	Entity CreateSubPass(std::function<void(Entity)>) override;
+	Entity CreateSubPass(Entity, std::function<void(Entity)>) override;
 	void ExecutePass(Entity, CommandList&) override;
 
 	//RenderPass Modification
@@ -87,12 +87,11 @@ private:
 	std::unordered_map<Entity, std::vector<vk::SubpassDescription2KHR>> renderPassSubPasses_;
 	std::unordered_map<Entity, std::vector<vk::SubpassDependency2KHR>> renderPassDependencies_;
 	//map of subpasses to list of attachment IDs
-	std::unordered_map<Entity, std::vector<uint>> subPassAttachmentUses_;
+	std::unordered_map<Entity, std::vector<vk::AttachmentReference2KHR>> subPassAttachmentReferences_;
 
 
 	std::unordered_map<Entity, VulkanPipeline> pipelines_;
 	std::unordered_map<Entity, VulkanRenderPass> renderPasses_;
-	std::unordered_map<Entity, VulkanSubPass> subPasses_;
 	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
 	std::unordered_map<Entity, VulkanFrameBuffer> renderPassBuffers_;
 	

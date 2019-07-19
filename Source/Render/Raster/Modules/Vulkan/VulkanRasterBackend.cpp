@@ -82,7 +82,7 @@ Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
 	// Default subpass and default output
 	CreatePassOutput(renderPassID, resource, Format::RGBA);
 
-	CreateSubPass([&](Entity subPassID) {
+	CreateSubPass(renderPassID, [&](Entity subPassID) {
 
 		function(subPassID);
 
@@ -145,19 +145,34 @@ Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
 	return renderPassID;
 }
 
-Entity VulkanRasterBackend::CreateSubPass(std::function<void(Entity)> function)
+Entity VulkanRasterBackend::CreateSubPass(Entity renderPassID, std::function<void(Entity)> function)
 {
 
 	Entity subPassID = entityRegistry_->CreateEntity();
 
-	subPassAttachmentUses_.try_emplace(subPassID);
+	subPassAttachmentReferences_.try_emplace(subPassID);
 
 	function(subPassID);
 
-	subPassAttachmentUses_.at(subPassID);
+	auto& outputAttachmentReferences = subPassAttachmentReferences_.at(subPassID);
 
-	std::vector<vk::AttachmentReference2KHR> subPassAttachmentReferences;
-	subPasses_.try_emplace(subPassID, subPassAttachmentReferences);
+	//Create the subpass object
+	vk::SubpassDescription2KHR subPass;
+	subPass.flags = vk::SubpassDescriptionFlags();
+	subPass.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
+	subPass.viewMask = 0;
+	subPass.inputAttachmentCount = 0;
+	subPass.pInputAttachments = nullptr;
+	subPass.colorAttachmentCount = outputAttachmentReferences.size();
+	subPass.pColorAttachments = outputAttachmentReferences.data();
+	subPass.pResolveAttachments = nullptr;
+	subPass.pDepthStencilAttachment = nullptr;
+	subPass.preserveAttachmentCount = 0;
+	subPass.pPreserveAttachments = nullptr;
+
+	//push the subpass object to the parent renderPass
+	renderPassSubPasses_.try_emplace(renderPassID);
+	renderPassSubPasses_.at(renderPassID).push_back(subPass);
 
 	return subPassID;
 
