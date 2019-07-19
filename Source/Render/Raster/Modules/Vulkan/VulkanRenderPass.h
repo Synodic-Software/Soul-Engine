@@ -2,7 +2,6 @@
 
 #include "Types.h"
 #include "Device/VulkanDevice.h"
-#include "VulkanSubPass.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -29,6 +28,5 @@ private:
 
 	vk::Device device_;
 	vk::RenderPass renderPass_;
-	std::vector<VulkanSubPass> subpasses_;
 
 };
