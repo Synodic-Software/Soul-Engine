@@ -79,7 +79,7 @@ GLFWWindow::GLFWWindow(const WindowParameters& params,
 	}
 
 	
-	surface_ = rasterModule_->RegisterSurface(surface, windowParams_.pixelSize);
+	surface_ = rasterModule_->CreateSurface(surface, windowParams_.pixelSize);
 }
 
 GLFWWindow::~GLFWWindow()

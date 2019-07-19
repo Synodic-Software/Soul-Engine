@@ -62,11 +62,6 @@ ImguiBackend::ImguiBackend(std::shared_ptr<InputModule>& inputModule,
 		Entity pushBufferResource = builder.Request<PushBuffer>();
 		Entity renderViewResource = builder.View();
 
-		RenderGraphOutputParameters outputParams;
-		outputParams.name = "Final";
-
-		builder.CreateOutput(outputParams);
-
 		return [=](const EntityRegistry& registry, CommandList& commandList) {
 			auto& renderView = registry.GetComponent<RenderView>(renderViewResource);
 			auto& pushBuffer = registry.GetComponent<PushBuffer>(pushBufferResource);

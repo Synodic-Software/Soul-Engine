@@ -21,6 +21,8 @@ public:
 	~RenderGraphOutputParameters() = default;
 
 	std::string name;
+	Entity resource;
+
 };
 
 struct RenderGraphInputParameters {
@@ -30,4 +32,6 @@ public:
 	~RenderGraphInputParameters() = default;
 
 	std::string name;
+	Entity resource;
+
 };

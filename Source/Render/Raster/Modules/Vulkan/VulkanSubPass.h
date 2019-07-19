@@ -9,7 +9,7 @@ class VulkanSubPass {
 
 public:
 
-	VulkanSubPass(std::vector<vk::AttachmentReference2KHR> subpassAttachments);
+	VulkanSubPass(std::vector<vk::AttachmentReference2KHR> outputAttachmentReferences);
 	~VulkanSubPass() = default;
 
 	VulkanSubPass(const VulkanSubPass&) = delete;
@@ -18,8 +18,5 @@ public:
 	VulkanSubPass& operator=(const VulkanSubPass&) = delete;
 	VulkanSubPass& operator=(VulkanSubPass&&) noexcept = default;
 
-private:
-
-	uint bindingIndex_;
 
 };

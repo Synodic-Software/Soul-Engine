@@ -34,14 +34,15 @@ void EntityRenderGraphBackend::CreateRenderPass(RenderTaskParameters& parameters
 		passCallback)
 {
 
-	//GraphTask& task = renderGraph_.CreateTask();
+	std::function<void(const EntityRegistry&, CommandList&)> callback;
 
-	//Create the renderpass;
-	Entity pass = rasterModule_->RegisterPass();
-	RenderGraphBuilder builder(rasterModule_, entityRegistry_, pass, false);
+	//Create the renderpass
+	Entity pass = rasterModule_->CreatePass([&](Entity pass) {
+		RenderGraphBuilder builder(rasterModule_, entityRegistry_, pass, false);
 
-	//Call the pass construction
-	auto callback = passCallback(builder);
+		// Call the pass construction
+		callback = passCallback(builder);
+	});
 
 	//Store the execution step for later
 	graphTasks_.push_back({pass, callback});

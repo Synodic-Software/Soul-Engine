@@ -34,15 +34,14 @@ public:
 
 	virtual void Present() = 0;
 
-	virtual Entity RegisterPass() = 0;
-	virtual Entity RegisterSubPass(Entity) = 0;
-	virtual void CreatePass(Entity) = 0;
+	virtual Entity CreatePass(std::function<void(Entity)>) = 0;
+	virtual Entity CreateSubPass(std::function<void(Entity)>) = 0;
 	virtual void ExecutePass(Entity, CommandList&) = 0;
 
-	virtual void CreatePassInput(Entity, Format) = 0;
-	virtual void CreatePassOutput(Entity, Format) = 0;
+	virtual void CreatePassInput(Entity, Entity, Format) = 0;
+	virtual void CreatePassOutput(Entity, Entity, Format) = 0;
 
-	virtual Entity RegisterSurface(std::any, glm::uvec2) = 0;
+	virtual Entity CreateSurface(std::any, glm::uvec2) = 0;
 	virtual void UpdateSurface(Entity, glm::uvec2) = 0;
 	virtual void RemoveSurface(Entity) = 0;
 

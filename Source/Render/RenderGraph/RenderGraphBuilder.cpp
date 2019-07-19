@@ -11,17 +11,17 @@ RenderGraphBuilder::RenderGraphBuilder(std::shared_ptr<RasterModule>& rasterModu
 {
 }
 
-void RenderGraphBuilder::CreateOutput(RenderGraphOutputParameters&)
+void RenderGraphBuilder::CreateOutput(RenderGraphOutputParameters& parameters)
 {
 
-	rasterModule_->CreatePassOutput(renderPass_, Format::RGBA);
+	rasterModule_->CreatePassOutput(renderPass_, parameters.resource, Format::RGBA);
 
 }
 
-void RenderGraphBuilder::CreateInput(RenderGraphInputParameters&)
+void RenderGraphBuilder::CreateInput(RenderGraphInputParameters& parameters)
 {
 
-	rasterModule_->CreatePassInput(renderPass_, Format::RGBA);
+	rasterModule_->CreatePassInput(renderPass_, parameters.resource, Format::RGBA);
 
 }
 

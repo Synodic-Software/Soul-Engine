@@ -65,31 +65,29 @@ void VulkanRasterBackend::Present()
 	throw NotImplemented();
 }
 
-Entity VulkanRasterBackend::RegisterPass()
+Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
 {
 
+	// Create new entity
 	Entity renderPassID = entityRegistry_->CreateEntity();
 
-	CreatePassOutput(renderPassID, Format::RGBA);
-	RegisterSubPass(renderPassID);
+	// TODO: real resource
+	Entity resource = entityRegistry_->CreateEntity();
 
-	return renderPassID;
-}
+	// Create empty pass data
+	renderPassAttachments_.try_emplace(renderPassID);
+	renderPassSubPasses_.try_emplace(renderPassID);
+	renderPassDependencies_.try_emplace(renderPassID);
 
-Entity VulkanRasterBackend::RegisterSubPass(Entity renderPassID)
-{
+	// Default subpass and default output
+	CreatePassOutput(renderPassID, resource, Format::RGBA);
 
-	Entity subPassID = entityRegistry_->CreateEntity();
+	CreateSubPass([&](Entity subPassID) {
 
-	std::vector<vk::AttachmentReference2KHR> subPassAttachmentReferences;
+		function(subPassID);
 
-	subPasses_.try_emplace(renderPassID, subPassAttachmentReferences);
+	});
 
-	return subPassID;
-}
-
-void VulkanRasterBackend::CreatePass(Entity renderPassID)
-{
 
 	// renderPassSwapchainMap_[renderPassID] = swapchainID;
 	// auto& swapchain = swapChains_.at(swapchainID);
@@ -144,9 +142,28 @@ void VulkanRasterBackend::CreatePass(Entity renderPassID)
 	//	logicalDevice.destroyImageView(image.view);
 	//}
 
+	return renderPassID;
 }
 
-void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandList)
+Entity VulkanRasterBackend::CreateSubPass(std::function<void(Entity)> function)
+{
+
+	Entity subPassID = entityRegistry_->CreateEntity();
+
+	subPassAttachmentUses_.try_emplace(subPassID);
+
+	function(subPassID);
+
+	subPassAttachmentUses_.at(subPassID);
+
+	std::vector<vk::AttachmentReference2KHR> subPassAttachmentReferences;
+	subPasses_.try_emplace(subPassID, subPassAttachmentReferences);
+
+	return subPassID;
+
+}
+
+void VulkanRasterBackend::ExecutePass(Entity renderPassID, CommandList& commandList)
 {
 
 	vk::ClearValue clearColor(vk::ClearColorValue(std::array<float, 4> {0.0f, 0.0f, 0.0f, 1.0f}));
@@ -156,11 +173,11 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 	beginInfo.pInheritanceInfo = nullptr;
 
 
-	//auto& swapchainID = renderPassSwapchainMap_.at(renderpassID);
+	//auto& swapchainID = renderPassSwapchainMap_.at(renderPassID);
 	//auto& swapchain = swapChains_.at(swapchainID);
-	//auto& frameBuffers = renderPassBuffers_.at(renderpassID);
-	auto& renderPass = renderPasses_.at(renderpassID);
-	auto& commandBuffer = renderPassCommands_.at(renderpassID)->Get();
+	//auto& frameBuffers = renderPassBuffers_.at(renderPassID);
+	auto& renderPass = renderPasses_.at(renderPassID);
+	auto& commandBuffer = renderPassCommands_.at(renderPassID)->Get();
 
 
 	vk::RenderPassBeginInfo renderPassInfo;
@@ -179,33 +196,40 @@ void VulkanRasterBackend::ExecutePass(Entity renderpassID, CommandList& commandL
 	commandBuffer.end();
 }
 
-void VulkanRasterBackend::CreatePassInput(Entity renderPassID, Format format)
+void VulkanRasterBackend::CreatePassInput(Entity passID, Entity resource, Format format)
 {
+
+	throw NotImplemented();
 
 }
 
-void VulkanRasterBackend::CreatePassOutput(Entity renderPassID, Format format)
+void VulkanRasterBackend::CreatePassOutput(Entity passID, Entity resource, Format format)
 {
 
-	vk::AttachmentDescription2KHR colorAttachment;
-	colorAttachment.flags = vk::AttachmentDescriptionFlags();
-	colorAttachment.format = ConvertFormat(format);
-	colorAttachment.samples = vk::SampleCountFlagBits::e1;
-	colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
-	colorAttachment.storeOp = vk::AttachmentStoreOp::eStore;
-	colorAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
-	colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
-	colorAttachment.initialLayout = vk::ImageLayout::eUndefined;
-	colorAttachment.finalLayout = vk::ImageLayout::ePresentSrcKHR;
+	std::vector<vk::AttachmentDescription2KHR>& renderPassAttachments =
+		renderPassAttachments_.at(passID);
+
+	uint attachmentIndex = renderPassAttachments.size();
+
+	vk::AttachmentDescription2KHR& attachment = renderPassAttachments.emplace_back();
+	attachment.flags = vk::AttachmentDescriptionFlags();
+	attachment.format = ConvertFormat(format);
+	attachment.samples = vk::SampleCountFlagBits::e1;
+	attachment.loadOp = vk::AttachmentLoadOp::eClear;
+	attachment.storeOp = vk::AttachmentStoreOp::eStore;
+	attachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+	attachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+	attachment.initialLayout = vk::ImageLayout::eUndefined;
+	attachment.finalLayout = vk::ImageLayout::ePresentSrcKHR;
 
 	vk::AttachmentReference2KHR colorAttachmentRef;
-	colorAttachmentRef.attachment = 0;
+	colorAttachmentRef.attachment = attachmentIndex;
 	colorAttachmentRef.layout = vk::ImageLayout::eColorAttachmentOptimal;
 	colorAttachmentRef.aspectMask = vk::ImageAspectFlags();
 
 }
 
-Entity VulkanRasterBackend::RegisterSurface(std::any anySurface, glm::uvec2 size)
+Entity VulkanRasterBackend::CreateSurface(std::any anySurface, glm::uvec2 size)
 {
 
 	auto surfaceHandle = std::any_cast<vk::SurfaceKHR>(anySurface);
@@ -242,6 +266,7 @@ void VulkanRasterBackend::RemoveSurface(Entity surfaceID)
 
 void VulkanRasterBackend::Compile(CommandList&)
 {
+
 }
 
 VulkanInstance& VulkanRasterBackend::GetInstance()

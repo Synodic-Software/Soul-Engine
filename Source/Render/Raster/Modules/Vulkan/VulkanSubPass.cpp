@@ -1,7 +1,6 @@
 #include "VulkanSubPass.h"
 
-VulkanSubPass::VulkanSubPass(
-	std::vector<vk::AttachmentReference2KHR> subpassAttachments)
+VulkanSubPass::VulkanSubPass(std::vector<vk::AttachmentReference2KHR> outputAttachmentReferences)
 {
 
 	vk::SubpassDescription2KHR subPass;
@@ -10,8 +9,8 @@ VulkanSubPass::VulkanSubPass(
 	subPass.viewMask = 0;
 	subPass.inputAttachmentCount = 0;
 	subPass.pInputAttachments = nullptr;
-	subPass.colorAttachmentCount = subpassAttachments.size();
-	subPass.pColorAttachments = subpassAttachments.data();
+	subPass.colorAttachmentCount = outputAttachmentReferences.size();
+	subPass.pColorAttachments = outputAttachmentReferences.data();
 	subPass.pResolveAttachments = nullptr;
 	subPass.pDepthStencilAttachment = nullptr;
 	subPass.preserveAttachmentCount = 0;

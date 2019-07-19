@@ -37,16 +37,15 @@ public:
 	void Present() override;
 
 	//RenderPass Management
-	Entity RegisterPass() override;
-	Entity RegisterSubPass(Entity) override;
-	void CreatePass(Entity) override;
+	Entity CreatePass(std::function<void(Entity)>) override;
+	Entity CreateSubPass(std::function<void(Entity)>) override;
 	void ExecutePass(Entity, CommandList&) override;
 
 	//RenderPass Modification
-	void CreatePassInput(Entity, Format) override;
-	void CreatePassOutput(Entity, Format) override;
+	void CreatePassInput(Entity, Entity, Format) override;
+	void CreatePassOutput(Entity, Entity, Format) override;
 
-	Entity RegisterSurface(std::any, glm::uvec2) override;
+	Entity CreateSurface(std::any, glm::uvec2) override;
 	void UpdateSurface(Entity, glm::uvec2) override;
 	void RemoveSurface(Entity) override;
 
@@ -87,6 +86,9 @@ private:
 	std::unordered_map<Entity, std::vector<vk::AttachmentDescription2KHR>> renderPassAttachments_;
 	std::unordered_map<Entity, std::vector<vk::SubpassDescription2KHR>> renderPassSubPasses_;
 	std::unordered_map<Entity, std::vector<vk::SubpassDependency2KHR>> renderPassDependencies_;
+	//map of subpasses to list of attachment IDs
+	std::unordered_map<Entity, std::vector<uint>> subPassAttachmentUses_;
+
 
 	std::unordered_map<Entity, VulkanPipeline> pipelines_;
 	std::unordered_map<Entity, VulkanRenderPass> renderPasses_;
