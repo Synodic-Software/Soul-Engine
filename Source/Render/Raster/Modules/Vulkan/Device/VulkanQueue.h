@@ -22,7 +22,7 @@ public:
 	bool Present();
 
 	const vk::Queue& Handle();
-	const uint FamilyIndex();
+	uint FamilyIndex() const;
 
 private:
 

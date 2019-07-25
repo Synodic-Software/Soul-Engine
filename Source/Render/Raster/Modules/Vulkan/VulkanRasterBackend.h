@@ -26,7 +26,7 @@ public:
 	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&,
 		std::shared_ptr<EntityRegistry>&,
 		std::shared_ptr<WindowModule>&);
-	~VulkanRasterBackend() override = default;
+	~VulkanRasterBackend() override;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
 	VulkanRasterBackend(VulkanRasterBackend &&) noexcept = default;
@@ -61,6 +61,9 @@ public:
 
 private:
 
+	static constexpr uint frameMax_ = 3;
+	uint currentFrame_;
+
 	vk::Format ConvertFormat(Format);
 
 	std::shared_ptr<EntityRegistry> entityRegistry_;
@@ -73,13 +76,13 @@ private:
 	void CopyTexture(CopyTextureCommand&, vk::CommandBuffer&);
 
 	std::vector<VulkanPhysicalDevice> physicalDevices_;
-	std::unique_ptr<VulkanDevice> device_;
+	std::vector<VulkanDevice> devices_;
 
 	std::unordered_map<Entity, VulkanSurface> surfaces_;
 	std::unordered_map<Entity, VulkanSwapChain> swapChains_;
+	std::unordered_map<Entity, std::array<VulkanFrameBuffer, frameMax_>> frameBuffers_;
 
-	std::vector<std::shared_ptr<VulkanCommandPool>> commandPools_;
-	std::vector<std::unique_ptr<VulkanCommandBuffer>> commandBuffers_;
+	std::vector<VulkanCommandPool> commandPools_;
 
 	std::unordered_map<Entity, Entity> renderPassSwapchainMap_;
 
@@ -89,11 +92,13 @@ private:
 	//map of subpasses to list of attachment IDs
 	std::unordered_map<Entity, std::vector<vk::AttachmentReference2KHR>> subPassAttachmentReferences_;
 
+	std::array<vk::Fence, frameMax_> frameFences_;
+	std::array<vk::Semaphore, frameMax_> presentSemaphores_;
+	std::array<vk::Semaphore, frameMax_> renderSemaphores_;
 
 	std::unordered_map<Entity, VulkanPipeline> pipelines_;
 	std::unordered_map<Entity, VulkanRenderPass> renderPasses_;
-	std::unordered_map<Entity, VulkanCommandBuffer* > renderPassCommands_;
-	std::unordered_map<Entity, VulkanFrameBuffer> renderPassBuffers_;
+	std::unordered_map<Entity, VulkanCommandBuffer> renderPassCommandBuffers_;
 	
 	//TODO: put on stack and remove deferred construction
 	std::unique_ptr<VulkanInstance> instance_;

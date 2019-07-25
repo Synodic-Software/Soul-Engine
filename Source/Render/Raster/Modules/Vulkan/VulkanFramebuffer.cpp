@@ -32,7 +32,8 @@ VulkanFrameBuffer::~VulkanFrameBuffer() {
 
 }
 
-const vk::Framebuffer& VulkanFrameBuffer::Get() const {
+const vk::Framebuffer& VulkanFrameBuffer::Handle() const
+{
 
 	return frameBuffer_;
 

@@ -22,7 +22,7 @@ public:
 	VulkanFrameBuffer& operator=(VulkanFrameBuffer&& other) noexcept = default;
 
 
-	const vk::Framebuffer& Get() const;
+	const vk::Framebuffer& Handle() const;
 
 private:
 

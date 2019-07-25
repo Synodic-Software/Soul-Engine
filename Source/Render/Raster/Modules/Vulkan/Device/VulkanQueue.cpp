@@ -29,7 +29,7 @@ const vk::Queue& VulkanQueue::Handle()
 
 }
 
-const uint VulkanQueue::FamilyIndex()
+uint VulkanQueue::FamilyIndex() const
 {
 
 	return familyIndex_;

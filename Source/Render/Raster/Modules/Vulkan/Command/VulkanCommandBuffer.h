@@ -10,7 +10,7 @@ class VulkanCommandBuffer final {
 
 public:
 
-	VulkanCommandBuffer(std::shared_ptr<VulkanCommandPool>&,
+	VulkanCommandBuffer(const vk::CommandPool&,
 		const vk::Device&,
 		vk::CommandBufferUsageFlagBits,
 		vk::CommandBufferLevel);
@@ -25,12 +25,12 @@ public:
 	void Begin();
 	void End();
 
-	const vk::CommandBuffer& Get() const;
+	const vk::CommandBuffer& Handle() const;
 
 
 private:
 
-	std::shared_ptr<VulkanCommandPool> commandPool_;
+	vk::CommandPool commandPool_;
 
 	vk::Device device_;
 

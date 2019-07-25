@@ -4,20 +4,17 @@
 #include "Render/Raster/Modules/Vulkan/Device/VulkanDevice.h"
 
 VulkanCommandPool::VulkanCommandPool(std::shared_ptr<SchedulerModule>& scheduler,
-	const vk::Device& vulkanDevice,
-	uint queueFamilyIndex) :
+	const VulkanDevice& device) :
 	scheduler_(scheduler),
-	device_(vulkanDevice)
+	device_(device.Logical())
 {
 
 	vk::CommandPoolCreateInfo poolInfo;
 	poolInfo.flags = vk::CommandPoolCreateFlagBits::eTransient |
 					 vk::CommandPoolCreateFlagBits::eResetCommandBuffer;
-	poolInfo.queueFamilyIndex = queueFamilyIndex;
+	poolInfo.queueFamilyIndex = device.HighFamilyIndex();
 
-	// TODO: move to 3 commandpools per thread as suggested by NVIDIA
 	scheduler_->ForEachThread(TaskPriority::UX, [&]() {
-		// TODO: multiple logical devices
 		commandPool_ = device_.createCommandPool(poolInfo);
 	});
 
@@ -27,14 +24,13 @@ VulkanCommandPool::~VulkanCommandPool()
 {
 
 	scheduler_->ForEachThread(TaskPriority::UX, [&]() noexcept {
-		// TODO: multiple logical devices
 		device_.destroyCommandPool(commandPool_);
 	});
 
 }
 
 
-const vk::CommandPool& VulkanCommandPool::GetCommandPool() const
+const vk::CommandPool& VulkanCommandPool::Handle() const
 {
 
 	return commandPool_;

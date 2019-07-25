@@ -13,7 +13,7 @@ class VulkanCommandPool final {
 
 public:
 
-	VulkanCommandPool(std::shared_ptr<SchedulerModule>&, const vk::Device&, uint queueFamilyIndex);
+	VulkanCommandPool(std::shared_ptr<SchedulerModule>&, const VulkanDevice&);
 	~VulkanCommandPool();
 
 	VulkanCommandPool(const VulkanCommandPool&) = delete;
@@ -22,7 +22,7 @@ public:
 	VulkanCommandPool& operator=(const VulkanCommandPool&) = delete;
 	VulkanCommandPool& operator=(VulkanCommandPool&&) noexcept = default;
 
-	const vk::CommandPool& GetCommandPool() const;
+	const vk::CommandPool& Handle() const;
 
 
 private:

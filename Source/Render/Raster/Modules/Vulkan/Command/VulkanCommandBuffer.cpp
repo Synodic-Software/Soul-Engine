@@ -4,7 +4,7 @@
 
 #include "Render/Raster/Modules/Vulkan/Device/VulkanDevice.h"
 
-VulkanCommandBuffer::VulkanCommandBuffer(std::shared_ptr<VulkanCommandPool>& commandPool,
+VulkanCommandBuffer::VulkanCommandBuffer(const vk::CommandPool& commandPool,
 	const vk::Device& vulkanDevice,
 	vk::CommandBufferUsageFlagBits usage,
 	vk::CommandBufferLevel bufferLevel):
@@ -14,7 +14,7 @@ VulkanCommandBuffer::VulkanCommandBuffer(std::shared_ptr<VulkanCommandPool>& com
 
 	vk::CommandBufferAllocateInfo allocInfo;
 	allocInfo.level = bufferLevel;
-	allocInfo.commandPool = commandPool_->GetCommandPool();
+	allocInfo.commandPool = commandPool_;
 	allocInfo.commandBufferCount = 1;
 
 	commandBuffer_ = device_.allocateCommandBuffers(allocInfo).front();
@@ -24,7 +24,7 @@ VulkanCommandBuffer::VulkanCommandBuffer(std::shared_ptr<VulkanCommandPool>& com
 VulkanCommandBuffer::~VulkanCommandBuffer()
 {
 
-	device_.freeCommandBuffers(commandPool_->GetCommandPool(), commandBuffer_);
+	device_.freeCommandBuffers(commandPool_, commandBuffer_);
 
 }
 
@@ -34,6 +34,7 @@ void VulkanCommandBuffer::Begin()
 
 	vk::CommandBufferBeginInfo beginInfo;
 	beginInfo.flags = usage_;
+	beginInfo.pInheritanceInfo = nullptr;
 
 	commandBuffer_.begin(beginInfo);
 
@@ -46,7 +47,7 @@ void VulkanCommandBuffer::End()
 
 }
 
-const vk::CommandBuffer& VulkanCommandBuffer::Get() const
+const vk::CommandBuffer& VulkanCommandBuffer::Handle() const
 {
 
 	return commandBuffer_;

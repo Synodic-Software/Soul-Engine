@@ -3,6 +3,7 @@
 #include "Parallelism/Scheduler/TaskParameters.h"
 #include "Parallelism/Scheduler/SchedulerModule.h"
 #include "Core/System/Compiler.h"
+#include "Core/Utility/Exception/Exception.h"
 
 #include <thread>
 #include <algorithm>
@@ -211,5 +212,24 @@ bool VulkanDevice::SurfaceSupported(vk::SurfaceKHR& surface)
 	}
 
 	return supported;
+
+}
+
+uint VulkanDevice::HighFamilyIndex() const
+{
+
+	if (!graphicsQueues_.empty()) {
+		return graphicsQueues_[0].FamilyIndex();
+	}
+
+	if (!computeQueues_.empty()) {
+		return computeQueues_[0].FamilyIndex();
+	}
+
+	if (!transferQueues_.empty()) {
+		return transferQueues_[0].FamilyIndex();
+	}
+
+	throw NotImplemented();
 
 }

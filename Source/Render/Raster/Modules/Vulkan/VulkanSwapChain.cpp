@@ -9,14 +9,14 @@
 #include "Render/Raster/Modules/Vulkan/VulkanSurface.h"
 
 
-VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
+VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 	VulkanSurface& surface,
 	bool vSync,
 	VulkanSwapChain* oldSwapChain):
-	device_(device->Logical()),
-	currentFrame_(0), activeImageIndex_(0), frameMax_(2)
+	device_(device.Logical()),
+	activeImageIndex_(0)
 {
-	const auto& physicalDevice = device->Physical();
+	const auto& physicalDevice = device.Physical();
 
 	const vk::SurfaceCapabilitiesKHR surfaceCapabilities =
 		physicalDevice.getSurfaceCapabilitiesKHR(surface.Handle());
@@ -88,49 +88,26 @@ VulkanSwapChain::VulkanSwapChain(std::unique_ptr<VulkanDevice>& device,
 	swapchainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 	swapchainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
 
-	assert(device->SurfaceSupported(surface.Handle()));
+	assert(device.SurfaceSupported(surface.Handle()));
 
 	swapChain_ = device_.createSwapchainKHR(swapchainCreateInfo);
 	auto swapChainImages = device_.getSwapchainImagesKHR(swapChain_);
 
-	// set up synchronization primitives
-	presentSemaphores_.resize(frameMax_);
-	renderSemaphores_.resize(frameMax_);
-	frameFences_.resize(frameMax_);
 
-	vk::SemaphoreCreateInfo semaphoreInfo;
-
-	vk::FenceCreateInfo fenceInfo;
-	fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
-
-	for (size_t i = 0; i < frameMax_; i++) {
-
-		presentSemaphores_[i] = device_.createSemaphore(semaphoreInfo);
-		renderSemaphores_[i] = device_.createSemaphore(semaphoreInfo);
-		frameFences_[i] = device_.createFence(fenceInfo);
-	}
 }
 
 VulkanSwapChain::~VulkanSwapChain()
 {
 
 	device_.waitIdle();
-
-	for (size_t i = 0; i < frameMax_; i++) {
-
-		device_.destroySemaphore(presentSemaphores_[i]);
-		device_.destroySemaphore(renderSemaphores_[i]);
-		device_.destroyFence(frameFences_[i]);
-	}
-
 	device_.destroySwapchainKHR(swapChain_);
 
 }
 
-void VulkanSwapChain::AquireImage(){
+void VulkanSwapChain::AquireImage(const vk::Semaphore& presentSemaphore)
+{
 
-	auto [acquireResult, activeImageIndex_] = device_.acquireNextImageKHR(swapChain_,
-		std::numeric_limits<uint64_t>::max(), presentSemaphores_[currentFrame_], nullptr);
+	auto [acquireResult, activeImageIndex_] = device_.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), presentSemaphore, nullptr);
 
 	if (acquireResult != vk::Result::eSuccess) {
 

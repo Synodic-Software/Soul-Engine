@@ -35,6 +35,7 @@ public:
 	const vk::DispatchLoaderDynamic& DispatchLoader() const;
 
 	bool SurfaceSupported(vk::SurfaceKHR&);
+	uint HighFamilyIndex() const;
 
 private:
 

@@ -13,7 +13,7 @@ class VulkanSwapChain {
 
 public:
 
-	VulkanSwapChain(std::unique_ptr<VulkanDevice>&,
+	VulkanSwapChain(VulkanDevice&,
 		VulkanSurface&, 
 		bool,
 		VulkanSwapChain* = nullptr);
@@ -25,29 +25,22 @@ public:
 	VulkanSwapChain& operator=(const VulkanSwapChain&) = delete;
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
-	void AquireImage();
+	void AquireImage(const vk::Semaphore&);
 
 	vk::Extent2D GetSize();
 
 
 private:
 
-
 	vk::Device device_;
 
 	std::vector<vk::Image> renderBuffers_;
 	std::vector<vk::ImageView> renderBufferViews_;
 
-	uint currentFrame_;
 	uint activeImageIndex_;
-	uint frameMax_;
 
 	vk::Extent2D size_;
 	vk::SwapchainKHR swapChain_;
-
-	std::vector<vk::Fence> frameFences_;
-	std::vector<vk::Semaphore> presentSemaphores_;
-	std::vector<vk::Semaphore> renderSemaphores_;
 
 
 };
