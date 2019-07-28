@@ -34,4 +34,6 @@ private:
 	std::vector<CopyBufferCommand> copyBufferCommands_;
 	std::vector<CopyTextureCommand> copyTextureCommands_;
 
+
+
 };

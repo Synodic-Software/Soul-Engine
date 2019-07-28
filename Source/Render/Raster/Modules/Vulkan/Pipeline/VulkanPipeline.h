@@ -25,7 +25,7 @@ public:
 	VulkanPipeline& operator=(const VulkanPipeline&) = delete;
 	VulkanPipeline& operator=(VulkanPipeline&&) noexcept = delete;
 
-	const vk::Pipeline& GetPipeline() const;
+	const vk::Pipeline& Handle() const;
 
 
 private:

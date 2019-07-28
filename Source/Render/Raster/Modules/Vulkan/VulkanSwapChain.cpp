@@ -16,6 +16,7 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 	device_(device.Logical()),
 	activeImageIndex_(0)
 {
+	auto& logicalDevice = device.Logical();
 	const auto& physicalDevice = device.Physical();
 
 	const vk::SurfaceCapabilitiesKHR surfaceCapabilities =
@@ -91,16 +92,54 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 	assert(device.SurfaceSupported(surface.Handle()));
 
 	swapChain_ = device_.createSwapchainKHR(swapchainCreateInfo);
-	auto swapChainImages = device_.getSwapchainImagesKHR(swapChain_);
+	renderImages_ = device_.getSwapchainImagesKHR(swapChain_);
+	renderImageViews_.resize(renderImages_.size());
 
+	for (auto i = 0; i < renderImages_.size(); ++i) {
+
+		vk::ImageViewCreateInfo imageViewCreateInfo;
+		imageViewCreateInfo.format = format.format;
+		imageViewCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		imageViewCreateInfo.subresourceRange.levelCount = 1;
+		imageViewCreateInfo.subresourceRange.layerCount = 1;
+		imageViewCreateInfo.viewType = vk::ImageViewType::e2D;
+
+		renderImageViews_[i] = logicalDevice.createImageView(imageViewCreateInfo);
+
+	}
 
 }
 
 VulkanSwapChain::~VulkanSwapChain()
 {
 
+	for (const auto& imageView : renderImageViews_) {
+		device_.destroyImageView(imageView);
+	}
+
 	device_.waitIdle();
 	device_.destroySwapchainKHR(swapChain_);
+
+}
+
+nonstd::span<vk::Image> VulkanSwapChain::Images()
+{
+
+	return {renderImages_.data(), renderImages_.size()};
+
+}
+
+nonstd::span<vk::ImageView> VulkanSwapChain::ImageViews()
+{
+
+	return {renderImageViews_.data(), renderImageViews_.size()};
+
+}
+
+uint VulkanSwapChain::ActiveImageIndex() const
+{
+
+	return activeImageIndex_;
 
 }
 
@@ -112,7 +151,9 @@ void VulkanSwapChain::AquireImage(const vk::Semaphore& presentSemaphore)
 	if (acquireResult != vk::Result::eSuccess) {
 
 		throw NotImplemented();
+
 	}
+
 }
 
 
@@ -153,7 +194,7 @@ void VulkanSwapChain::AquireImage(const vk::Semaphore& presentSemaphore)
 //	vkDevice_->GetPresentQueue().presentKHR(presentInfo);
 //}
 
-vk::Extent2D VulkanSwapChain::GetSize()
+vk::Extent2D VulkanSwapChain::Size()
 {
 	return size_;
 }

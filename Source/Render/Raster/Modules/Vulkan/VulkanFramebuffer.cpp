@@ -3,20 +3,17 @@
 #include "VulkanRenderPass.h"
 
 VulkanFrameBuffer::VulkanFrameBuffer(const vk::Device& device,
-	vk::ImageView& swapChainImageView,
+	const std::vector<vk::ImageView>& attachments,
 	VulkanRenderPass& renderPass,
 	glm::uvec2& size):
 	device_(device)
 {
 
-	vk::ImageView attachments[] = {
-		swapChainImageView
-	};
-
 	vk::FramebufferCreateInfo framebufferInfo;
+	framebufferInfo.flags = vk::FramebufferCreateFlags();
 	framebufferInfo.renderPass = renderPass.Handle();
-	framebufferInfo.attachmentCount = 1;
-	framebufferInfo.pAttachments = attachments;
+	framebufferInfo.attachmentCount = attachments.size();
+	framebufferInfo.pAttachments = attachments.data();
 	framebufferInfo.width = size.x;
 	framebufferInfo.height = size.y;
 	framebufferInfo.layers = 1;

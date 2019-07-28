@@ -25,17 +25,21 @@ public:
 	VulkanSwapChain& operator=(const VulkanSwapChain&) = delete;
 	VulkanSwapChain& operator=(VulkanSwapChain&& other) noexcept = default;
 
+	nonstd::span<vk::Image> Images();
+	nonstd::span<vk::ImageView> ImageViews();
+	uint ActiveImageIndex() const;
+
 	void AquireImage(const vk::Semaphore&);
 
-	vk::Extent2D GetSize();
+	vk::Extent2D Size();
 
 
 private:
 
 	vk::Device device_;
 
-	std::vector<vk::Image> renderBuffers_;
-	std::vector<vk::ImageView> renderBufferViews_;
+	std::vector<vk::Image> renderImages_;
+	std::vector<vk::ImageView> renderImageViews_;
 
 	uint activeImageIndex_;
 

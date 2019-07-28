@@ -11,6 +11,15 @@ RenderGraphBuilder::RenderGraphBuilder(std::shared_ptr<RasterModule>& rasterModu
 {
 }
 
+RenderGraphBuilder::~RenderGraphBuilder()
+{
+
+	//When the builder falls out of scope it is done constructing a render pass.
+	//Provides a great opportunity to validate!
+	assert(!surfaces_.empty());
+
+}
+
 void RenderGraphBuilder::CreateOutput(RenderGraphOutputParameters& parameters)
 {
 
@@ -39,4 +48,11 @@ Entity RenderGraphBuilder::View()
 	entityRegistry_->AttachComponent<RenderView>(returnedEntity);
 
 	return returnedEntity;
+}
+
+void RenderGraphBuilder::AddSurface(Entity surface)
+{
+
+	surfaces_.push_back(surface);
+
 }

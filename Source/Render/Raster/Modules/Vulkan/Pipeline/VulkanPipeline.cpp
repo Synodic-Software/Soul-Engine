@@ -122,7 +122,7 @@ VulkanPipeline::~VulkanPipeline()
 
 }
 
-const vk::Pipeline& VulkanPipeline::GetPipeline() const
+const vk::Pipeline& VulkanPipeline::Handle() const
 {
 	return pipeline_;
 }

@@ -39,7 +39,7 @@ public:
 	//RenderPass Management
 	Entity CreatePass(std::function<void(Entity)>) override;
 	Entity CreateSubPass(Entity, std::function<void(Entity)>) override;
-	void ExecutePass(Entity, CommandList&) override;
+	void ExecutePass(Entity, Entity, CommandList&) override;
 
 	//RenderPass Modification
 	void CreatePassInput(Entity, Entity, Format) override;

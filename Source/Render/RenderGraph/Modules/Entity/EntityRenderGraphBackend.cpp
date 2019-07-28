@@ -22,7 +22,10 @@ void EntityRenderGraphBackend::Execute()
 		callback(*entityRegistry_, commandList);
 
 		rasterModule_->Compile(commandList);
-		rasterModule_->ExecutePass(pass, commandList);
+
+		for (const auto& surface : surfaces_) {
+			rasterModule_->ExecutePass(pass, surface, commandList);
+		}
 
 	}
 
@@ -42,6 +45,7 @@ void EntityRenderGraphBackend::CreateRenderPass(RenderTaskParameters& parameters
 
 		// Call the pass construction
 		callback = passCallback(builder);
+
 	});
 
 	//Store the execution step for later

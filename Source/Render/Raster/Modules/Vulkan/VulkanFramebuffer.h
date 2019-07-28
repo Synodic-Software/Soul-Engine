@@ -10,7 +10,7 @@ class VulkanFrameBuffer{
 public:
 
 	VulkanFrameBuffer(const vk::Device& device,
-		vk::ImageView& swapChainImageView,
+		const std::vector<vk::ImageView>&,
 		VulkanRenderPass&,
 		glm::uvec2&);
 	~VulkanFrameBuffer();

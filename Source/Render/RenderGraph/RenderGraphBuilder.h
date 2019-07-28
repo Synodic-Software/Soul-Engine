@@ -5,12 +5,14 @@
 #include "Core/Composition/Entity/EntityRegistry.h"
 #include "Render/Raster/RasterModule.h"
 
-class RenderGraphBuilder{
+#include <vector>
+
+class RenderGraphBuilder final{
 
 public:
 
 	RenderGraphBuilder(std::shared_ptr<RasterModule>&, std::shared_ptr<EntityRegistry>&, Entity, bool);
-	virtual ~RenderGraphBuilder() = default;
+	~RenderGraphBuilder();
 
 	RenderGraphBuilder(const RenderGraphBuilder &) = delete;
 	RenderGraphBuilder(RenderGraphBuilder &&) noexcept = default;
@@ -28,6 +30,8 @@ public:
 
 	Entity View();
 
+	void AddSurface(Entity);
+
 private:
 
 	std::shared_ptr<EntityRegistry> entityRegistry_;
@@ -35,6 +39,9 @@ private:
 
 	Entity renderPass_;
 	bool subPass_;
+
+	//Entity
+	std::vector<Entity> surfaces_;
 
 };
 
