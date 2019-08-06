@@ -184,7 +184,8 @@ void VulkanRasterBackend::ExecutePass(Entity renderPassID,
 	auto& commandBuffer = renderPassCommandBuffers_.at(renderPassID);
 	auto& commandBufferHandle = commandBuffer.Handle();
 
-
+	//TODO: Cleanup this mess
+	// Generate the framebuffer attachments
 	if (!frameBuffers_.at(surfaceID).has_value()) {
 
 		std::array<VulkanFrameBuffer, frameMax_> frameBuffers = {
@@ -200,7 +201,6 @@ void VulkanRasterBackend::ExecutePass(Entity renderPassID,
 	}
 	else {
 
-		// Generate the framebuffer attachments
 		for (auto& frameBuffer : frameBuffers_.at(surfaceID).value()) {
 			frameBuffer = VulkanFrameBuffer(
 				devices_[0].Logical(), swapchain.ImageViews(), renderPass, swapchain.Size());
