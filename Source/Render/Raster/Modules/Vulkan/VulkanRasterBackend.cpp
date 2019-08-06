@@ -171,23 +171,44 @@ Entity VulkanRasterBackend::CreateSubPass(Entity renderPassID, std::function<voi
 	return subPassID;
 }
 
-void VulkanRasterBackend::ExecutePass(Entity renderPassID, Entity surfaceID, CommandList& commandList)
+void VulkanRasterBackend::ExecutePass(Entity renderPassID,
+	Entity surfaceID,
+	CommandList& commandList)
 {
 
 	vk::ClearValue clearColor(vk::ClearColorValue(std::array<float, 4> {0.0f, 0.0f, 0.0f, 1.0f}));
 
 	auto& swapchain = swapChains_.at(surfaceID);
-	auto& frameBuffers = frameBuffers_.at(surfaceID);
 
 	auto& renderPass = renderPasses_.at(renderPassID);
 	auto& commandBuffer = renderPassCommandBuffers_.at(renderPassID);
 	auto& commandBufferHandle = commandBuffer.Handle();
 
-	// Generate the framebuffer attachments
-	for (auto& frameBuffer : frameBuffers) {
-		frameBuffer = VulkanFrameBuffer(
-			devices_[0].Logical(), swapchain.ImageViews(), renderPass, swapchain.Size());
+
+	if (!frameBuffers_.at(surfaceID).has_value()) {
+
+		std::array<VulkanFrameBuffer, frameMax_> frameBuffers = {
+			VulkanFrameBuffer {
+				devices_[0].Logical(), swapchain.ImageViews(), renderPass, swapchain.Size()},
+			VulkanFrameBuffer {
+				devices_[0].Logical(), swapchain.ImageViews(), renderPass, swapchain.Size()},
+			VulkanFrameBuffer {
+				devices_[0].Logical(), swapchain.ImageViews(), renderPass, swapchain.Size()}};
+
+		frameBuffers_.at(surfaceID).emplace(std::move(frameBuffers));
+
 	}
+	else {
+
+		// Generate the framebuffer attachments
+		for (auto& frameBuffer : frameBuffers_.at(surfaceID).value()) {
+			frameBuffer = VulkanFrameBuffer(
+				devices_[0].Logical(), swapchain.ImageViews(), renderPass, swapchain.Size());
+		}
+
+	}
+
+	auto& frameBuffers = frameBuffers_.at(surfaceID).value();
 
 	vk::RenderPassBeginInfo renderPassInfo;
 	renderPassInfo.renderPass = renderPass.Handle();
@@ -201,7 +222,8 @@ void VulkanRasterBackend::ExecutePass(Entity renderPassID, Entity surfaceID, Com
 	subPassInfo.contents = vk::SubpassContents::eInline;
 
 	commandBuffer.Begin();
-	commandBufferHandle.beginRenderPass2KHR(renderPassInfo, subPassInfo);
+	commandBufferHandle.beginRenderPass2KHR(
+		renderPassInfo, subPassInfo, devices_[0].DispatchLoader());
 
 
 	commandBufferHandle.endRenderPass();
@@ -254,8 +276,8 @@ Entity VulkanRasterBackend::CreateSurface(std::any anySurface, glm::uvec2 size)
 	swapChains_.try_emplace(surfaceID, devices_[0], surface, false);
 	auto& swapChain = swapChains_.at(surfaceID);
 
-	// create the framebuffers for the surface
-	auto& frameBuffers = frameBuffers_[surfaceID];
+	// create the framebuffer storage for the surface
+	frameBuffers_.try_emplace(surfaceID);
 
 	return surfaceID;
 }
@@ -277,6 +299,14 @@ void VulkanRasterBackend::RemoveSurface(Entity surfaceID)
 
 	swapChains_.erase(surfaceID);
 	surfaces_.erase(surfaceID);
+}
+
+void VulkanRasterBackend::AttachSurface(Entity renderPassID)
+{
+}
+
+void VulkanRasterBackend::DetatchSurface(Entity renderPassID)
+{
 }
 
 void VulkanRasterBackend::Compile(CommandList&)

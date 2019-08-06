@@ -125,14 +125,14 @@ VulkanSwapChain::~VulkanSwapChain()
 nonstd::span<vk::Image> VulkanSwapChain::Images()
 {
 
-	return {renderImages_.data(), renderImages_.size()};
+	return {renderImages_};
 
 }
 
 nonstd::span<vk::ImageView> VulkanSwapChain::ImageViews()
 {
 
-	return {renderImageViews_.data(), renderImageViews_.size()};
+	return {renderImageViews_};
 
 }
 

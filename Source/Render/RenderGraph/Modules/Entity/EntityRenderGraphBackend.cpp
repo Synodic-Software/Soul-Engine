@@ -16,14 +16,14 @@ EntityRenderGraphBackend::EntityRenderGraphBackend(
 void EntityRenderGraphBackend::Execute()
 {
 
-	for (const auto& [pass, callback] : graphTasks_) {
+	for (const auto& [pass, surfaces, callback] : graphTasks_) {
 
 		CommandList commandList;
 		callback(*entityRegistry_, commandList);
 
 		rasterModule_->Compile(commandList);
 
-		for (const auto& surface : surfaces_) {
+		for (const auto& surface : surfaces) {
 			rasterModule_->ExecutePass(pass, surface, commandList);
 		}
 
@@ -49,6 +49,6 @@ void EntityRenderGraphBackend::CreateRenderPass(RenderTaskParameters& parameters
 	});
 
 	//Store the execution step for later
-	graphTasks_.push_back({pass, callback});
+	graphTasks_.push_back({pass, {}, callback});
 
 }

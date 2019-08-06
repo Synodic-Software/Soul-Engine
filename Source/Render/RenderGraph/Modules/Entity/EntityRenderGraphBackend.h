@@ -30,7 +30,10 @@ private:
 	std::shared_ptr<RasterModule> rasterModule_;
 	std::shared_ptr<EntityRegistry> entityRegistry_;
 	
-	std::vector<std::pair<Entity, std::function<void(const EntityRegistry&, CommandList&)>>>
+	std::vector<std::tuple<Entity,
+		std::vector<Entity>,
+		std::function<void(const EntityRegistry&, CommandList&)>>>
 		graphTasks_;
+
 
 };

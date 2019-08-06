@@ -3,9 +3,9 @@
 #include "VulkanRenderPass.h"
 
 VulkanFrameBuffer::VulkanFrameBuffer(const vk::Device& device,
-	const std::vector<vk::ImageView>& attachments,
+	nonstd::span<vk::ImageView> attachments,
 	VulkanRenderPass& renderPass,
-	glm::uvec2& size):
+	vk::Extent2D& size):
 	device_(device)
 {
 
@@ -14,8 +14,8 @@ VulkanFrameBuffer::VulkanFrameBuffer(const vk::Device& device,
 	framebufferInfo.renderPass = renderPass.Handle();
 	framebufferInfo.attachmentCount = attachments.size();
 	framebufferInfo.pAttachments = attachments.data();
-	framebufferInfo.width = size.x;
-	framebufferInfo.height = size.y;
+	framebufferInfo.width = size.width;
+	framebufferInfo.height = size.height;
 	framebufferInfo.layers = 1;
 
 

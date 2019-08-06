@@ -16,7 +16,6 @@ RenderGraphBuilder::~RenderGraphBuilder()
 
 	//When the builder falls out of scope it is done constructing a render pass.
 	//Provides a great opportunity to validate!
-	assert(!surfaces_.empty());
 
 }
 
@@ -48,11 +47,4 @@ Entity RenderGraphBuilder::View()
 	entityRegistry_->AttachComponent<RenderView>(returnedEntity);
 
 	return returnedEntity;
-}
-
-void RenderGraphBuilder::AddSurface(Entity surface)
-{
-
-	surfaces_.push_back(surface);
-
 }

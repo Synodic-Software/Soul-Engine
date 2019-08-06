@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
+#include "Core/Structure/Span.h"
 
 class VulkanRenderPass;
 
@@ -10,9 +11,9 @@ class VulkanFrameBuffer{
 public:
 
 	VulkanFrameBuffer(const vk::Device& device,
-		const std::vector<vk::ImageView>&,
+		nonstd::span<vk::ImageView>,
 		VulkanRenderPass&,
-		glm::uvec2&);
+		vk::Extent2D&);
 	~VulkanFrameBuffer();
 
 	VulkanFrameBuffer(const VulkanFrameBuffer&) = delete;
@@ -20,7 +21,6 @@ public:
 
 	VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) = delete;
 	VulkanFrameBuffer& operator=(VulkanFrameBuffer&& other) noexcept = default;
-
 
 	const vk::Framebuffer& Handle() const;
 

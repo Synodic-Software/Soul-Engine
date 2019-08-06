@@ -30,7 +30,6 @@ public:
 
 	Entity View();
 
-	void AddSurface(Entity);
 
 private:
 
@@ -40,8 +39,6 @@ private:
 	Entity renderPass_;
 	bool subPass_;
 
-	//Entity
-	std::vector<Entity> surfaces_;
 
 };
 
