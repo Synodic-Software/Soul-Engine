@@ -50,7 +50,7 @@ public:
 	void UpdateSurface(Entity, glm::uvec2) override;
 	void RemoveSurface(Entity) override;
 	void AttachSurface(Entity, Entity) override;
-	void DetatchSurface(Entity, Entity) override;
+	void DetachSurface(Entity, Entity) override;
 
 	/*
 	 * Simplifies a commandlist into a ready-to-execute format. Creates the opportunity for commandList reuse
