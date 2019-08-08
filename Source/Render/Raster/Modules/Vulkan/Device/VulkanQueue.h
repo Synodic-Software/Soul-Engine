@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+#include "Core/Structure/Span.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -19,7 +20,9 @@ public:
 	VulkanQueue& operator=(VulkanQueue&&) noexcept = default;
 
 	bool Submit();
-	bool Present();
+	bool Present(nonstd::span<vk::Semaphore> semaphores,
+		nonstd::span<vk::SwapchainKHR> swapchains,
+		nonstd::span<uint> imageIndices);
 
 	const vk::Queue& Handle();
 	uint FamilyIndex() const;

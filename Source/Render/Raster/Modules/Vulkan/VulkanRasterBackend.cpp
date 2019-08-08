@@ -94,6 +94,7 @@ void VulkanRasterBackend::Present()
 {
 
 	throw NotImplemented();
+
 }
 
 Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)

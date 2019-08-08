@@ -85,7 +85,7 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 	swapchainCreateInfo.queueFamilyIndexCount = 0;
 	swapchainCreateInfo.pQueueFamilyIndices = nullptr;
 	swapchainCreateInfo.presentMode = swapchainPresentMode;
-	swapchainCreateInfo.clipped = VK_TRUE;
+	swapchainCreateInfo.clipped = true;
 	swapchainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 	swapchainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
 
@@ -98,11 +98,15 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 	for (auto i = 0; i < renderImages_.size(); ++i) {
 
 		vk::ImageViewCreateInfo imageViewCreateInfo;
+		imageViewCreateInfo.flags = vk::ImageViewCreateFlags();
+		imageViewCreateInfo.image = renderImages_[i];
+		imageViewCreateInfo.viewType = vk::ImageViewType::e2D;
 		imageViewCreateInfo.format = format.format;
 		imageViewCreateInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
 		imageViewCreateInfo.subresourceRange.levelCount = 1;
+		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
 		imageViewCreateInfo.subresourceRange.layerCount = 1;
-		imageViewCreateInfo.viewType = vk::ImageViewType::e2D;
 
 		renderImageViews_[i] = logicalDevice.createImageView(imageViewCreateInfo);
 
