@@ -45,8 +45,8 @@ public:
 	virtual Entity CreateSurface(std::any, glm::uvec2) = 0;
 	virtual void UpdateSurface(Entity, glm::uvec2) = 0;
 	virtual void RemoveSurface(Entity) = 0;
-	virtual void AttachSurface(Entity) = 0;
-	virtual void DetatchSurface(Entity) = 0;
+	virtual void AttachSurface(Entity, Entity) = 0;
+	virtual void DetachSurface(Entity, Entity) = 0;
 
 	// Agnostic raster API interface
 	virtual void Compile(CommandList&) = 0;

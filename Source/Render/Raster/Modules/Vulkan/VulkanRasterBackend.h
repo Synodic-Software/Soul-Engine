@@ -49,8 +49,8 @@ public:
 	Entity CreateSurface(std::any, glm::uvec2) override;
 	void UpdateSurface(Entity, glm::uvec2) override;
 	void RemoveSurface(Entity) override;
-	void AttachSurface(Entity) override;
-	void DetatchSurface(Entity) override;
+	void AttachSurface(Entity, Entity) override;
+	void DetatchSurface(Entity, Entity) override;
 
 	/*
 	 * Simplifies a commandlist into a ready-to-execute format. Creates the opportunity for commandList reuse
@@ -82,6 +82,7 @@ private:
 	std::vector<VulkanDevice> devices_;
 
 	std::unordered_map<Entity, VulkanSurface> surfaces_;
+	std::unordered_map<Entity, std::vector<Entity>> renderPassSurfaces_;
 	std::unordered_map<Entity, VulkanSwapChain> swapChains_;
 	std::unordered_map<Entity, std::optional<std::array<VulkanFrameBuffer, frameMax_>>> frameBuffers_;
 

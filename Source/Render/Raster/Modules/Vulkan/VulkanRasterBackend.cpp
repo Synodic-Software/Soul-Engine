@@ -94,7 +94,6 @@ void VulkanRasterBackend::Present()
 {
 
 	throw NotImplemented();
-
 }
 
 Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
@@ -302,12 +301,19 @@ void VulkanRasterBackend::RemoveSurface(Entity surfaceID)
 	surfaces_.erase(surfaceID);
 }
 
-void VulkanRasterBackend::AttachSurface(Entity renderPassID)
+void VulkanRasterBackend::AttachSurface(Entity renderPassID, Entity surfaceID)
 {
+
+	renderPassSurfaces_[renderPassID].push_back(surfaceID);
+
 }
 
-void VulkanRasterBackend::DetatchSurface(Entity renderPassID)
+void VulkanRasterBackend::DetachSurface(Entity renderPassID, Entity surfaceID)
 {
+
+	auto& vector = renderPassSurfaces_[renderPassID];
+	vector.erase(std::remove(vector.begin(), vector.end(), surfaceID), vector.end());
+
 }
 
 void VulkanRasterBackend::Compile(CommandList&)
@@ -348,24 +354,29 @@ void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&, vk::CommandBuffer& 
 {
 
 	throw NotImplemented();
+
 }
 void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
+
 }
 void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
+
 }
 void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
+
 }
 void VulkanRasterBackend::CopyTexture(CopyTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
+
 }
 
 
