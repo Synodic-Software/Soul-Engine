@@ -4,7 +4,7 @@
 
 #include "Types.h"
 #include "Core/Structure/SparseStructure.h"
-#include "SparseTable.h"
+#include "SparseVector.h"
 #include "Core/Utility/Exception/Exception.h"
 
 #include <vector>
@@ -12,47 +12,123 @@
 
 
 template<class Key, class Value, class Hash = std::hash<Key>>
-class SparseHashMap final : public SparseTable<Key, Hash> {
+class SparseHashMap final : public SparseStructure {
 
-	using size_type = size_t;
+	template<bool Const = false>
+	class SparseHashMapIterator {
 
-	static constexpr uint8 blockSize_ = 8;
+		using KeyIteratorType = typename std::vector<Key>::iterator;
+		using ValueIteratorType = typename std::vector<Value>::iterator;
 
+	public:
+		
+		using iterator_category = std::bidirectional_iterator_tag;
+		using value_type = Value;
+		using difference_type = std::ptrdiff_t;
+		using pointer = Value*;
+		using reference = Value&;
+
+
+		SparseHashMapIterator(KeyIteratorType = nullptr, ValueIteratorType = nullptr);
+
+		Value& operator*();
+		Value* operator->() const;
+
+	private:
+		
+		KeyIteratorType keyIterator_;
+		ValueIteratorType valueIterator_;
+
+		
+	};
+	
 public:
 
-	SparseHashMap() = default;
+	using size_type = size_t;
+	using iterator = typename SparseHashMapIterator<false>;
+	using const_iterator = typename SparseHashMapIterator<true>;
+
+	SparseHashMap();
 	~SparseHashMap() override = default;
 
+	Value& At(const Key&);
 	Value& operator[](const Key&);
 
 	template<typename... Args>
-	std::pair<Value&, bool> Emplace(const Key&, Args&&...);
+	std::pair<iterator, bool> Emplace(const Key&, Args&&...);
 
 	void Clear();
-	void Erase(const Key& key) override;
+	void Erase(const Key& key);
 
 private:
 
-	/*
-	 * Inserts a hash into the the vector of blocks. A precondition is that there is room for the insertion
-	 *
-	 * @param	key	   	The key.
-	 * @param	indirection	The indirection value pointing to the insert.
-	 *
-	 * @returns	A pair;
-	 */
+	static constexpr Hash hasher_ = {};
+	static constexpr uint8 blockSize_ = 8;
 
 	std::pair<size_t&, bool> Insert(const Key& key, size_t indirection);
 
 	bool Full() const;
-	size_t ReduceHash(size_t hash) const;
 	void Rehash(size_t);
+	size_t ReduceHash(size_t hash) const;
 
+	float minLoadFactor_;
+	float maxLoadFactor_;
+	
+	SparseVector<size_type, blockSize_> indirectionTable_;
 	std::vector<Key> keys_;
 	std::vector<Value> values_;
 
 
 };
+
+template<class Key, class Value, class Hash>
+template<bool Const>
+SparseHashMap<Key, Value, Hash>::SparseHashMapIterator<Const>::SparseHashMapIterator(
+	KeyIteratorType keyIterator,
+	ValueIteratorType valueIterator):
+	keyIterator_(keyIterator),
+	valueIterator_(valueIterator)
+{
+}
+
+template<class Key, class Value, class Hash>
+template<bool Const>
+Value& SparseHashMap<Key, Value, Hash>::SparseHashMapIterator<Const>::operator*()
+{
+
+	return *valueIterator_;
+	
+}
+
+template<class Key, class Value, class Hash>
+template<bool Const>
+Value* SparseHashMap<Key, Value, Hash>::SparseHashMapIterator<Const>::operator->()
+	const
+{
+
+	return &*valueIterator_;
+	
+}
+
+template<class Key, class Value, class Hash>
+SparseHashMap<Key, Value, Hash>::SparseHashMap() :
+	minLoadFactor_(0.20f), 
+	maxLoadFactor_(0.80f)
+{
+}
+	
+
+template<class Key, class Value, class Hash>
+Value& SparseHashMap<Key, Value, Hash>::At(const Key& key)
+{
+
+	const size_t hash = hasher_(key);
+	const size_t index = ReduceHash(hash);
+	
+	auto indirection = indirectionTable_.Find(index);
+	return values_.at(*indirection);
+
+}
 
 template<class Key, class Value, class Hash>
 Value& SparseHashMap<Key, Value, Hash>::operator[](const Key& key)
@@ -64,7 +140,7 @@ Value& SparseHashMap<Key, Value, Hash>::operator[](const Key& key)
 		Rehash(blocks_.size() * 2);
 	}
 
-	auto& [indirection, inserted] = Insert(key, values_.size());
+	auto [indirection, inserted] = Insert(key, values_.size());
 
 	if (inserted) {
 
@@ -74,7 +150,7 @@ Value& SparseHashMap<Key, Value, Hash>::operator[](const Key& key)
 	}
 	else {
 
-		return values_[indirection];
+		return values_.at(indirection);
 
 	}
 
@@ -82,12 +158,13 @@ Value& SparseHashMap<Key, Value, Hash>::operator[](const Key& key)
 
 template<class Key, class Value, class Hash>
 template<typename... Args>
-std::pair<Value&, bool> SparseHashMap<Key, Value, Hash>::Emplace(const Key& key, Args&&... args)
+std::pair<typename SparseHashMap<Key, Value, Hash>::iterator, bool>
+SparseHashMap<Key, Value, Hash>::Emplace(const Key& key, Args&&... args)
 {
 
 	if (Full()) {
 
-		Rehash(blocks_.size() * 2);
+		Rehash(indirectionTable_.Size() * 2);
 
 	}
 
@@ -95,26 +172,21 @@ std::pair<Value&, bool> SparseHashMap<Key, Value, Hash>::Emplace(const Key& key,
  	size_t index = ReduceHash(hash);
 
 	for (size_t i=0; true; ++i) {
+		
+		auto [itr, inserted] = indirectionTable_.Insert(index, values_.size());
+		
+		if (inserted) {
 
-		size_t blockIndex = index / blockSize_;
-		uint8 innerIndex = index % blockSize_;
-
-		auto& block = blocks_[blockIndex];
-
-		if (!block.Test(innerIndex)) {
-
-			size_t indirection = values_.size();
+			auto& returnKey = keys_.emplace_back(key);
 			auto& returnValue = values_.emplace_back(std::forward<Args>(args)...);
-			keys_.push_back(key);
 
-			block.Insert(innerIndex, indirection);
-			return {returnValue, true};
+			return{iterator(--keys_.end(), --values_.end()), true};
 
 		}
 
-		if (size_t indirection = block[innerIndex]; hasher_(keys_[indirection]) == hash) {
+		if (size_type indirection = *itr; hasher_(keys_[indirection]) == hash) {
 
-			return {values_[indirection], false};
+			return {iterator(keys_.begin() + indirection, values_.begin() + indirection), false};
 
 		}
 
@@ -122,7 +194,7 @@ std::pair<Value&, bool> SparseHashMap<Key, Value, Hash>::Emplace(const Key& key,
 		index += ( hash + i * i ) % values_.size();
 
 		//Wrap to the blocksize
-		index &= blocks_.size() - 1;
+		index &= indirectionTable_.BucketCount() * blockSize_ - 1;
 
 	}
 
@@ -141,6 +213,16 @@ void SparseHashMap<Key, Value, Hash>::Clear()
 
 }
 
+/*
+ * Inserts a hash into the the vector of blocks. A precondition is that there is room for the
+ * insertion
+ *
+ * @param	key	   	The key.
+ * @param	indirection	The indirection value pointing to the insert.
+ *
+ * @returns	A pair;
+ */
+
 template<class Key, class Value, class Hash>
 std::pair<size_t&, bool> SparseHashMap<Key, Value, Hash>::Insert(const Key& key, size_t indirection) {
 
@@ -149,18 +231,15 @@ std::pair<size_t&, bool> SparseHashMap<Key, Value, Hash>::Insert(const Key& key,
 
 	for (size_t i=0; true; ++i) {
 
-		size_t blockIndex = index / blockSize_;
-		uint8 innerIndex = index % blockSize_;
+		auto [iterator, inserted] = indirectionTable_.Insert(index, indirection);
 
-		auto& block = blocks_[blockIndex];
+		if (inserted) {
 
-		if (!block.Test(innerIndex)) {
-
-			block.Insert(innerIndex, indirection);
 			return {indirection, true};
+			
 		}
 
-		if (size_t storedIndirection = block[innerIndex]; hasher_(keys_[indirection]) == hash) {
+		if (size_t storedIndirection = *iterator; hasher_(keys_[indirection]) == hash) {
 
 			return {storedIndirection, false};
 		}
@@ -169,7 +248,7 @@ std::pair<size_t&, bool> SparseHashMap<Key, Value, Hash>::Insert(const Key& key,
 		index += ( hash + i * i ) % values_.size();
 
 		// Wrap to the blocksize
-		index &= blocks_.size() * blockSize_ - 1;
+		index &= indirectionTable_.BucketCount() * blockSize_ - 1;
 	}
 
 	//TODO: should never reach here. Error handling? Dummy return?
@@ -180,30 +259,15 @@ std::pair<size_t&, bool> SparseHashMap<Key, Value, Hash>::Insert(const Key& key,
 template<class Key, class Value, class Hash>
 bool SparseHashMap<Key, Value, Hash>::Full() const {
 
-	return values_.size() + 1 > blocks_.size() * blockSize_ * maxLoadFactor_;
-
-}
-
-template<class Key, class Value, class Hash>
-size_t SparseHashMap<Key, Value, Hash>::ReduceHash(size_t hash) const
-{
-
-	hash ^= hash >> 7;
-	hash *= 11400714819323198485llu >> 7;
-    return hash & (blocks_.size() * blockSize_ - 1);
+	return values_.size() + 1 > indirectionTable_.BucketCount() * blockSize_ * maxLoadFactor_;
 
 }
 
 template<class Key, class Value, class Hash>
 void SparseHashMap<Key, Value, Hash>::Rehash(size_t newBlockSize) {
 
-	for (auto& block : blocks_) {
-
-		block.Clear();
-
-	}
-
-	blocks_.resize(std::max(newBlockSize, static_cast<size_t>(4)));
+	indirectionTable_.Clear();
+	indirectionTable_.Reserve(std::max(newBlockSize, static_cast<size_t>(4)));
 
 	for (int i = 0; i < keys_.size(); ++i) {
 
@@ -248,5 +312,16 @@ void SparseHashMap<Key, Value, Hash>::Erase(const Key& key) {
 	//}
 
 	throw NotImplemented();
+
+}
+
+//TODO: this should be a part of a hash library.
+template<class Key, class Value, class Hash>
+size_t SparseHashMap<Key, Value, Hash>::ReduceHash(size_t hash) const
+{
+
+	hash ^= hash >> 7;
+	hash *= 11400714819323198485llu >> 7;
+	return hash & (indirectionTable_.BucketCount() * blockSize_ - 1);
 
 }

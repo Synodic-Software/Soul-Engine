@@ -51,7 +51,6 @@ target_sources(${PROJECT_NAME}
         Structure/Sparse/SparseBitMap.h
         Structure/Sparse/SparseHashMap.h
         Structure/Sparse/SparseHashSet.h
-        Structure/Sparse/SparseTable.h
         Structure/Sparse/SparseVector.h
         Structure/ExternalStructure.h
         Structure/RingBuffer.h

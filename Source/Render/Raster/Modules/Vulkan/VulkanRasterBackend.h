@@ -60,7 +60,7 @@ public:
 
 	void Compile(CommandList& commandList) override;
 
-	VulkanInstance& GetInstance();
+	VulkanInstance& GetInstance() const;
 
 private:
 
@@ -83,7 +83,6 @@ private:
 
 	std::unordered_map<Entity, VulkanSurface> surfaces_;
 	std::unordered_map<Entity, std::vector<Entity>> renderPassSurfaces_;
-	std::unordered_map<Entity, VulkanSwapChain> swapChains_;
 	std::unordered_map<Entity, std::optional<std::array<VulkanFrameBuffer, frameMax_>>> frameBuffers_;
 
 	std::vector<VulkanCommandPool> commandPools_;

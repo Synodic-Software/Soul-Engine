@@ -2,7 +2,7 @@
 
 #include "Types.h"
 #include "Core/Structure/SparseStructure.h"
-#include "SparseTable.h"
+#include "SparseVector.h"
 #include "Core/Utility/Exception/Exception.h"
 
 #include <vector>
@@ -10,7 +10,7 @@
 
 
 template<class Key, class Hash = std::hash<Key>>
-class SparseHashSet final : public SparseTable<Key, Hash> {
+class SparseHashSet final : public SparseStructure {
 
 	using size_type = size_t;
 
@@ -24,7 +24,7 @@ public:
 
 private:
 
-	std::vector<SparseBitMap<size_t, blockSize_>> sparseMapping_;
+	SparseVector<Key, Hash> indirectionTable_;
 	std::vector<Key> keys_;
 
 

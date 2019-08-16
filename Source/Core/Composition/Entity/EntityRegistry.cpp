@@ -38,22 +38,23 @@ Entity EntityRegistry::CreateEntity()
 	return entityID;
 }
 
-void EntityRegistry::RemoveEntity(Entity entity)
-{
-
-	assert(IsValid(entity));
-
-	for (auto& pool : componentPools_) {
-		pool->Erase(entity);
-	}
-
-	// grab entity data
-	const auto id = availableEntities_ ? nextAvailable_ : entity.GetId() + 1;
-	const auto version = entity.GetVersion() + 1;
-
-	// set the incremented version
-	entities_[id] = Entity(id, version);
-	nextAvailable_ = id;
-	++availableEntities_;
-
-}
+//TODO: Reimplement without type info?
+//void EntityRegistry::RemoveEntity(Entity entity)
+//{
+//
+//	assert(IsValid(entity));
+//
+//	for (auto& pool : componentPools_) {
+//		pool->Erase(entity);
+//	}
+//
+//	// grab entity data
+//	const auto id = availableEntities_ ? nextAvailable_ : entity.GetId() + 1;
+//	const auto version = entity.GetVersion() + 1;
+//
+//	// set the incremented version
+//	entities_[id] = Entity(id, version);
+//	nextAvailable_ = id;
+//	++availableEntities_;
+//
+//}

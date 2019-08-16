@@ -26,7 +26,8 @@ Soul::Soul(SoulParameters& params) :
 	inputModule_(InputModule::CreateModule()), 
 	windowModule_(WindowModule::CreateModule(inputModule_)), 
 	rasterModule_(RasterModule::CreateModule(schedulerModule_, entityRegistry_, windowModule_)),
-	renderGraphModule_(RenderGraphModule::CreateModule(rasterModule_, schedulerModule_)),
+	renderGraphModule_(
+		RenderGraphModule::CreateModule(rasterModule_, schedulerModule_, entityRegistry_)),
 	guiModule_(GUIModule::CreateModule(inputModule_, windowModule_, renderGraphModule_))
 {
 	parameters_.engineRefreshRate.AddCallback([this](const int value)

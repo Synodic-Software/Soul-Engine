@@ -8,7 +8,9 @@ class RasterModule;
 class EntityRenderGraphBackend final : public RenderGraphModule {
 
 public:
-	EntityRenderGraphBackend(std::shared_ptr<RasterModule>&, std::shared_ptr<SchedulerModule>&);
+	EntityRenderGraphBackend(std::shared_ptr<RasterModule>&,
+		std::shared_ptr<SchedulerModule>&,
+		std::shared_ptr<EntityRegistry>&);
 	~EntityRenderGraphBackend() override = default;
 
 	EntityRenderGraphBackend(const EntityRenderGraphBackend&) = delete;

@@ -3,13 +3,14 @@
 #include "Pipeline/VulkanPipeline.h"
 #include "VulkanFrameBuffer.h"
 #include "Command/VulkanCommandBuffer.h"
+#include "Core/Composition/Component/Component.h"
 
 #include <vulkan/vulkan.hpp>
 
 class VulkanDevice;
 class VulkanSurface;
 
-class VulkanSwapChain {
+class VulkanSwapChain : Component {
 
 public:
 
@@ -31,7 +32,7 @@ public:
 
 	void AquireImage(const vk::Semaphore&);
 
-	vk::Extent2D Size();
+	vk::Extent2D Size() const;
 
 
 private:

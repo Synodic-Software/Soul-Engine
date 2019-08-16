@@ -38,7 +38,8 @@ public:
 	// Factory
 	static std::shared_ptr<RenderGraphModule> CreateModule(
 		std::shared_ptr<RasterModule>&,
-		std::shared_ptr<SchedulerModule>&);
+		std::shared_ptr<SchedulerModule>&,
+		std::shared_ptr<EntityRegistry>&);
 
 protected:
 

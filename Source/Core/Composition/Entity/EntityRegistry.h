@@ -8,7 +8,7 @@
 #include <vector>
 #include <memory>
 #include <cassert>
-
+#include <unordered_map>
 
 class EntityRegistry{
 
@@ -30,7 +30,7 @@ public:
 	bool IsValid(Entity) const noexcept;
 
 	Entity CreateEntity();
-	void RemoveEntity(Entity);
+	//void RemoveEntity(Entity);
 
 
 	template<typename Comp, typename... Args>
@@ -53,7 +53,7 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<SparseTable<Entity>>> componentPools_;
+	std::vector<std::unique_ptr<SparseStructure>> componentPools_;
 	std::vector<Entity> entities_;
 
 	Entity::id_type availableEntities_;
@@ -72,10 +72,10 @@ Comp& EntityRegistry::GetComponent(Entity entity) const noexcept
 
 	assert(IsValid(entity));
 
-	const auto componentId = ClassID::Id<Comp>();
-	auto& pool = *static_cast<storage_type<Comp>*> (componentPools_[componentId].get());
+	const auto componentId = ClassID::ID<Comp>();
+	auto& pool = *static_cast<storage_type<Comp>*>(componentPools_.at(componentId).get());
 
-	return pool[entity];
+	return pool.At(entity);
 
 }
 
@@ -100,7 +100,7 @@ void EntityRegistry::AttachComponent(
 
 	assert(IsValid(entity));
 
-	const auto componentId = ClassID::Id<Comp>();
+	const auto componentId = ClassID::ID<Comp>();
 
 	// componentId is always incrementing.
 	if (componentId >= componentPools_.size()) {

@@ -36,18 +36,18 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 
 	size_ = swapchainSize;
 
-	vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eFifo;
+	vk::PresentModeKHR swapChainPresentMode = vk::PresentModeKHR::eFifo;
 
 	if (!vSync) {
 
 		for (const auto& presentMode : presentModes) {
 			if (presentMode == vk::PresentModeKHR::eMailbox) {
-				swapchainPresentMode = vk::PresentModeKHR::eMailbox;
+				swapChainPresentMode = vk::PresentModeKHR::eMailbox;
 				break;
 			}
-			if (swapchainPresentMode != vk::PresentModeKHR::eMailbox &&
+			if (swapChainPresentMode != vk::PresentModeKHR::eMailbox &&
 				presentMode == vk::PresentModeKHR::eImmediate) {
-				swapchainPresentMode = vk::PresentModeKHR::eImmediate;
+				swapChainPresentMode = vk::PresentModeKHR::eImmediate;
 			}
 		}
 	}
@@ -71,27 +71,27 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 
 	vk::SurfaceFormatKHR format = surface.Format();
 
-	vk::SwapchainCreateInfoKHR swapchainCreateInfo;
-	swapchainCreateInfo.surface = surface.Handle();
-	swapchainCreateInfo.minImageCount = imageCount;
-	swapchainCreateInfo.imageFormat = format.format;
-	swapchainCreateInfo.imageColorSpace = format.colorSpace;
-	swapchainCreateInfo.imageExtent = swapchainSize;
-	swapchainCreateInfo.imageUsage =
+	vk::SwapchainCreateInfoKHR swapChainCreateInfo;
+	swapChainCreateInfo.surface = surface.Handle();
+	swapChainCreateInfo.minImageCount = imageCount;
+	swapChainCreateInfo.imageFormat = format.format;
+	swapChainCreateInfo.imageColorSpace = format.colorSpace;
+	swapChainCreateInfo.imageExtent = swapchainSize;
+	swapChainCreateInfo.imageUsage =
 		vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst;
-	swapchainCreateInfo.preTransform = preTransform;
-	swapchainCreateInfo.imageArrayLayers = 1;
-	swapchainCreateInfo.imageSharingMode = vk::SharingMode::eExclusive;
-	swapchainCreateInfo.queueFamilyIndexCount = 0;
-	swapchainCreateInfo.pQueueFamilyIndices = nullptr;
-	swapchainCreateInfo.presentMode = swapchainPresentMode;
-	swapchainCreateInfo.clipped = true;
-	swapchainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
-	swapchainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
+	swapChainCreateInfo.preTransform = preTransform;
+	swapChainCreateInfo.imageArrayLayers = 1;
+	swapChainCreateInfo.imageSharingMode = vk::SharingMode::eExclusive;
+	swapChainCreateInfo.queueFamilyIndexCount = 0;
+	swapChainCreateInfo.pQueueFamilyIndices = nullptr;
+	swapChainCreateInfo.presentMode = swapChainPresentMode;
+	swapChainCreateInfo.clipped = true;
+	swapChainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
+	swapChainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
 
 	assert(device.SurfaceSupported(surface.Handle()));
 
-	swapChain_ = device_.createSwapchainKHR(swapchainCreateInfo);
+	swapChain_ = device_.createSwapchainKHR(swapChainCreateInfo);
 	renderImages_ = device_.getSwapchainImagesKHR(swapChain_);
 	renderImageViews_.resize(renderImages_.size());
 
@@ -160,45 +160,7 @@ void VulkanSwapChain::AquireImage(const vk::Semaphore& presentSemaphore)
 
 }
 
-
-//void VulkanSwapChain::Present(VulkanCommandBuffer& commandBuffer_)
-//{
-//
-//	const auto& logicalDevice = vkDevice_->GetLogical();
-//
-//	logicalDevice.waitForFences(
-//		frameFences_[currentFrame_], true, std::numeric_limits<uint64_t>::max());
-//	logicalDevice.resetFences(frameFences_[currentFrame_]);
-//
-//	vk::SubmitInfo submitInfo;
-//
-//	vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
-//	submitInfo.waitSemaphoreCount = 1;
-//	submitInfo.pWaitSemaphores = &presentSemaphores_[currentFrame_];
-//	submitInfo.pWaitDstStageMask = waitStages;
-//
-//	submitInfo.commandBufferCount = 1;
-//	submitInfo.pCommandBuffers = &commandBuffer_.Handle();
-//
-//	submitInfo.signalSemaphoreCount = 1;
-//	submitInfo.pSignalSemaphores = &renderSemaphores_[currentFrame_];
-//
-//	vkDevice_->GetGraphicsQueue().submit(submitInfo, frameFences_[currentFrame_]);
-//
-//	vk::PresentInfoKHR presentInfo;
-//
-//	presentInfo.waitSemaphoreCount = 1;
-//	presentInfo.pWaitSemaphores = &renderSemaphores_[currentFrame_];
-//
-//	presentInfo.swapchainCount = 1;
-//	presentInfo.pSwapchains = &swapChain_;
-//
-//	presentInfo.pImageIndices = &activeImageIndex_;
-//
-//	vkDevice_->GetPresentQueue().presentKHR(presentInfo);
-//}
-
-vk::Extent2D VulkanSwapChain::Size()
+vk::Extent2D VulkanSwapChain::Size() const
 {
 	return size_;
 }
