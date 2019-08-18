@@ -21,19 +21,19 @@ public:
 
 	bool Submit();
 	bool Present(nonstd::span<vk::Semaphore> semaphores,
-		nonstd::span<vk::SwapchainKHR> swapchains,
-		nonstd::span<uint> imageIndices);
+		nonstd::span<vk::SwapchainKHR> swapChains,
+		nonstd::span<uint> imageIndices) const;
 
-	const vk::Queue& Handle();
-	uint FamilyIndex() const;
+	const vk::Queue& Handle() const;
+	[[nodiscard]] uint FamilyIndex() const;
 
 private:
 
 	vk::Device device_;
 	vk::Queue queue_;
 
-	const uint familyIndex_;
-	const uint index_;
+	uint familyIndex_;
+	uint index_;
 
 
 };

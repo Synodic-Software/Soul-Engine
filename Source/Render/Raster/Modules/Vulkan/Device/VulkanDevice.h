@@ -4,8 +4,8 @@
 #include "Render/Raster/RasterDevice.h"
 #include "Core/Structure/Span.h"
 #include "VulkanQueue.h"
+#include "Core/Structure/Span.h"
 
-#include <map>
 #include <vulkan/vulkan.hpp>
 
 class SchedulerModule;
@@ -36,6 +36,9 @@ public:
 
 	bool SurfaceSupported(vk::SurfaceKHR&);
 	uint HighFamilyIndex() const;
+	nonstd::span<VulkanQueue> GraphicsQueues();
+	nonstd::span<VulkanQueue> ComputeQueues();
+	nonstd::span<VulkanQueue> TransferQueues();
 
 private:
 

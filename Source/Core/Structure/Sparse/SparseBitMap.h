@@ -82,7 +82,7 @@ std::pair<typename SparseBitMap<T, N>::iterator, bool> SparseBitMap<T, N>::Empla
 	}
 
 	uint8 pos = CountPosition(position);
-	mapping_.flip(position);
+	mapping_.set(position);
 	
 	auto iter = data_.emplace(data_.begin() + pos, std::forward<Args>(args)...);
 
@@ -108,7 +108,7 @@ std::pair<typename SparseBitMap<T, N>::iterator, bool> SparseBitMap<T, N>::Inser
 	}
 
 	uint8 pos = CountPosition(position);
-	mapping_.flip(position);
+	mapping_.set(position);
 	
 	auto iter = data_.insert(data_.begin() + pos, value);
 

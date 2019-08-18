@@ -17,10 +17,10 @@ public:
 	VulkanSurface& operator=(const VulkanSurface&) = delete;
 	VulkanSurface& operator=(VulkanSurface&&) noexcept = default;
 
-	vk::SurfaceKHR Handle();
+	[[nodiscard]] vk::SurfaceKHR Handle() const;
 
-	vk::SurfaceFormatKHR UpdateFormat(const VulkanDevice& device);
-	vk::SurfaceFormatKHR Format() const;
+	[[nodiscard]] vk::SurfaceFormatKHR UpdateFormat(const VulkanDevice& device);
+	[[nodiscard]] vk::SurfaceFormatKHR Format() const;
 
 private:
 

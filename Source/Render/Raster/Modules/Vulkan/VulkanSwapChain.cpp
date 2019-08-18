@@ -26,15 +26,15 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 
 	assert(!presentModes.empty());
 
-	vk::Extent2D swapchainSize;
+	vk::Extent2D swapChainSize;
 	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max()) {
-		swapchainSize = size_;
+		swapChainSize = size_;
 	}
 	else {
-		swapchainSize = surfaceCapabilities.currentExtent;
+		swapChainSize = surfaceCapabilities.currentExtent;
 	}
 
-	size_ = swapchainSize;
+	size_ = swapChainSize;
 
 	vk::PresentModeKHR swapChainPresentMode = vk::PresentModeKHR::eFifo;
 
@@ -52,7 +52,9 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 		}
 	}
 	else {
+		
 		throw NotImplemented();
+		
 	}
 
 	vk::SurfaceTransformFlagBitsKHR preTransform;
@@ -63,7 +65,6 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 		preTransform = surfaceCapabilities.currentTransform;
 	}
 
-	// add one more image for buffering
 	uint32_t imageCount = surfaceCapabilities.minImageCount + 1;
 	if (surfaceCapabilities.maxImageCount > 0 && imageCount > surfaceCapabilities.maxImageCount) {
 		imageCount = surfaceCapabilities.maxImageCount;
@@ -76,7 +77,7 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 	swapChainCreateInfo.minImageCount = imageCount;
 	swapChainCreateInfo.imageFormat = format.format;
 	swapChainCreateInfo.imageColorSpace = format.colorSpace;
-	swapChainCreateInfo.imageExtent = swapchainSize;
+	swapChainCreateInfo.imageExtent = swapChainSize;
 	swapChainCreateInfo.imageUsage =
 		vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst;
 	swapChainCreateInfo.preTransform = preTransform;
@@ -89,12 +90,19 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 	swapChainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 	swapChainCreateInfo.oldSwapchain = oldSwapChain ? oldSwapChain->swapChain_ : nullptr;
 
-	assert(device.SurfaceSupported(surface.Handle()));
+	auto surfaceHandle = surface.Handle();
+	assert(device.SurfaceSupported(surfaceHandle));
 
 	swapChain_ = device_.createSwapchainKHR(swapChainCreateInfo);
 	renderImages_ = device_.getSwapchainImagesKHR(swapChain_);
 	renderImageViews_.resize(renderImages_.size());
 
+	// Set up synchronization primitives
+	vk::SemaphoreCreateInfo semaphoreInfo;
+
+	vk::FenceCreateInfo fenceInfo;
+	fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
+	
 	for (auto i = 0; i < renderImages_.size(); ++i) {
 
 		vk::ImageViewCreateInfo imageViewCreateInfo;
@@ -109,7 +117,7 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 		imageViewCreateInfo.subresourceRange.layerCount = 1;
 
 		renderImageViews_[i] = logicalDevice.createImageView(imageViewCreateInfo);
-
+		
 	}
 
 }
@@ -117,8 +125,10 @@ VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,
 VulkanSwapChain::~VulkanSwapChain()
 {
 
-	for (const auto& imageView : renderImageViews_) {
-		device_.destroyImageView(imageView);
+	for (auto i = 0; i < renderImageViews_.size(); ++i) {
+		
+		device_.destroyImageView(renderImageViews_[i]);
+		
 	}
 
 	device_.waitIdle();
@@ -147,7 +157,7 @@ uint VulkanSwapChain::ActiveImageIndex() const
 
 }
 
-void VulkanSwapChain::AquireImage(const vk::Semaphore& presentSemaphore)
+void VulkanSwapChain::AcquireImage(const vk::Semaphore& presentSemaphore)
 {
 
 	auto [acquireResult, activeImageIndex_] = device_.acquireNextImageKHR(swapChain_, std::numeric_limits<uint64_t>::max(), presentSemaphore, nullptr);
@@ -160,7 +170,28 @@ void VulkanSwapChain::AquireImage(const vk::Semaphore& presentSemaphore)
 
 }
 
+const vk::Device& VulkanSwapChain::Device() const
+{
+	
+	return device_;
+	
+}
+
 vk::Extent2D VulkanSwapChain::Size() const
 {
 	return size_;
+}
+
+vk::SwapchainKHR VulkanSwapChain::Handle() const
+{
+	
+	return swapChain_;
+	
+}
+
+vk::Semaphore VulkanSwapChain::RenderSemaphore() const
+{
+	
+	return renderSemaphores_[activeImageIndex_];
+	
 }

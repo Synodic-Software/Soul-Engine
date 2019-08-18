@@ -33,7 +33,7 @@
 #endif
 
 #ifndef span_CONFIG_INDEX_TYPE
-#	define span_CONFIG_INDEX_TYPE std::ptrdiff_t
+#	define span_CONFIG_INDEX_TYPE std::size_t
 #endif
 
 // span configuration (features):

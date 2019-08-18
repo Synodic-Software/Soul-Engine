@@ -8,6 +8,8 @@
 #include "Command/VulkanCommandBuffer.h"
 #include "Device/VulkanPhysicalDevice.h"
 #include "VulkanInstance.h"
+#include "VulkanSemaphore.h"
+#include "VulkanFence.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
@@ -27,7 +29,7 @@ public:
 	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&,
 		std::shared_ptr<EntityRegistry>&,
 		std::shared_ptr<WindowModule>&);
-	~VulkanRasterBackend() override;
+	~VulkanRasterBackend() override = default;
 
 	VulkanRasterBackend(const VulkanRasterBackend &) = delete;
 	VulkanRasterBackend(VulkanRasterBackend &&) noexcept = default;
@@ -53,20 +55,22 @@ public:
 	void DetachSurface(Entity, Entity) override;
 
 	/*
-	 * Simplifies a commandlist into a ready-to-execute format. Creates the opportunity for commandList reuse
+	 * Simplifies a commandList into a ready-to-execute format. Creates the opportunity for commandList reuse
 	 *
 	 * @param [in,out]	commandList	The commandList to simplify.
 	 */
 
 	void Compile(CommandList& commandList) override;
 
-	VulkanInstance& GetInstance() const;
+	[[nodiscard]] const VulkanInstance& Instance() const;
 
+	
 private:
-
+	
 	static constexpr uint frameMax_ = 3;
-	uint currentFrame_;
 
+	uint8 currentFrame_;
+	
 	vk::Format ConvertFormat(Format);
 
 	std::shared_ptr<EntityRegistry> entityRegistry_;
@@ -85,19 +89,21 @@ private:
 	std::unordered_map<Entity, std::vector<Entity>> renderPassSurfaces_;
 	std::unordered_map<Entity, std::optional<std::array<VulkanFrameBuffer, frameMax_>>> frameBuffers_;
 
+	//Surface maps
+	std::unordered_map<Entity, std::optional<std::array<VulkanFence, frameMax_>>> imageFences_;
+	std::unordered_map<Entity, std::optional<std::array<VulkanSemaphore, frameMax_>>> presentSemaphores_;
+	std::unordered_map<Entity, std::optional<std::array<VulkanSemaphore, frameMax_>>>
+		renderSemaphores_;
+	
 	std::vector<VulkanCommandPool> commandPools_;
 
-	std::unordered_map<Entity, Entity> renderPassSwapchainMap_;
+	std::unordered_map<Entity, Entity> renderPassSwapChainMap_;
 
 	std::unordered_map<Entity, std::vector<vk::AttachmentDescription2KHR>> renderPassAttachments_;
 	std::unordered_map<Entity, std::vector<vk::SubpassDescription2KHR>> renderPassSubPasses_;
 	std::unordered_map<Entity, std::vector<vk::SubpassDependency2KHR>> renderPassDependencies_;
-	//map of subpasses to list of attachment IDs
+	//map of subPasses to list of attachment IDs
 	std::unordered_map<Entity, std::vector<vk::AttachmentReference2KHR>> subPassAttachmentReferences_;
-
-	std::array<vk::Fence, frameMax_> frameFences_;
-	std::array<vk::Semaphore, frameMax_> presentSemaphores_;
-	std::array<vk::Semaphore, frameMax_> renderSemaphores_;
 
 	std::unordered_map<Entity, VulkanPipeline> pipelines_;
 	std::unordered_map<Entity, VulkanRenderPass> renderPasses_;

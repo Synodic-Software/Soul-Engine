@@ -78,7 +78,7 @@ VulkanInstance::~VulkanInstance()
 	instance_.destroy();
 }
 
-const vk::Instance& VulkanInstance::Handle()
+const vk::Instance& VulkanInstance::Handle() const
 {
 
 	return instance_;

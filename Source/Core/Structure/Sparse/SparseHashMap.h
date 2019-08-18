@@ -44,9 +44,9 @@ class SparseHashMap final : public SparseStructure {
 	
 public:
 
-	using size_type = size_t;
-	using iterator = typename SparseHashMapIterator<false>;
-	using const_iterator = typename SparseHashMapIterator<true>;
+	using size_type = std::size_t;
+	using iterator = SparseHashMapIterator<false>;
+	using const_iterator = SparseHashMapIterator<true>;
 
 	SparseHashMap();
 	~SparseHashMap() override = default;
@@ -54,6 +54,10 @@ public:
 	Value& At(const Key&);
 	Value& operator[](const Key&);
 
+	Value* Data() noexcept;
+
+	[[nodiscard]] size_type Size() const noexcept;
+	
 	template<typename... Args>
 	std::pair<iterator, bool> Emplace(const Key&, Args&&...);
 
@@ -67,9 +71,9 @@ private:
 
 	std::pair<size_t&, bool> Insert(const Key& key, size_t indirection);
 
-	bool Full() const;
+	[[nodiscard]] bool Full() const;
 	void Rehash(size_t);
-	size_t ReduceHash(size_t hash) const;
+	[[nodiscard]] size_t ReduceHash(size_t hash) const;
 
 	float minLoadFactor_;
 	float maxLoadFactor_;
@@ -137,7 +141,7 @@ Value& SparseHashMap<Key, Value, Hash>::operator[](const Key& key)
 	//TODO: should not be a part of []
 	if (Full()) {
 
-		Rehash(blocks_.size() * 2);
+		Rehash(indirectionTable_.Size() * 2);
 	}
 
 	auto [indirection, inserted] = Insert(key, values_.size());
@@ -154,6 +158,22 @@ Value& SparseHashMap<Key, Value, Hash>::operator[](const Key& key)
 
 	}
 
+}
+
+template<class Key, class Value, class Hash>
+Value* SparseHashMap<Key, Value, Hash>::Data() noexcept
+{
+	
+	return values_.data();
+	
+}
+
+template<class Key, class Value, class Hash>
+typename SparseHashMap<Key, Value, Hash>::size_type SparseHashMap<Key, Value, Hash>::Size() const noexcept
+{
+	
+	return values_.size();
+	
 }
 
 template<class Key, class Value, class Hash>
@@ -207,7 +227,7 @@ template<class Key, class Value, class Hash>
 void SparseHashMap<Key, Value, Hash>::Clear()
 {
 
-	blocks_.clear();
+	indirectionTable_.Clear();
 	keys_.clear();
 	values_.clear();
 

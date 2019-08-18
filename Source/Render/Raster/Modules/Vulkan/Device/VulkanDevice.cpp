@@ -233,3 +233,18 @@ uint VulkanDevice::HighFamilyIndex() const
 	throw NotImplemented();
 
 }
+
+nonstd::span<VulkanQueue> VulkanDevice::GraphicsQueues()
+{
+	return {graphicsQueues_};
+}
+
+nonstd::span<VulkanQueue> VulkanDevice::ComputeQueues()
+{
+	return {computeQueues_};
+}
+
+nonstd::span<VulkanQueue> VulkanDevice::TransferQueues()
+{
+	return {transferQueues_};
+}

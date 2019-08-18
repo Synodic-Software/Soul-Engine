@@ -2,7 +2,6 @@
 
 #include "Pipeline/VulkanPipeline.h"
 #include "VulkanFrameBuffer.h"
-#include "Command/VulkanCommandBuffer.h"
 #include "Core/Composition/Component/Component.h"
 
 #include <vulkan/vulkan.hpp>
@@ -28,12 +27,14 @@ public:
 
 	nonstd::span<vk::Image> Images();
 	nonstd::span<vk::ImageView> ImageViews();
-	uint ActiveImageIndex() const;
+	[[nodiscard]] uint ActiveImageIndex() const;
 
-	void AquireImage(const vk::Semaphore&);
+	void AcquireImage(const vk::Semaphore&);
 
-	vk::Extent2D Size() const;
-
+	[[nodiscard]] const vk::Device& Device() const;
+	[[nodiscard]] vk::Extent2D Size() const;
+	[[nodiscard]] vk::SwapchainKHR Handle() const;
+	[[nodiscard]] vk::Semaphore RenderSemaphore() const;
 
 private:
 
@@ -42,6 +43,9 @@ private:
 	std::vector<vk::Image> renderImages_;
 	std::vector<vk::ImageView> renderImageViews_;
 
+	std::vector<vk::Fence> imageFences_;
+	std::vector<vk::Semaphore> presentSemaphores_;
+	std::vector<vk::Semaphore> renderSemaphores_;
 	uint activeImageIndex_;
 
 	vk::Extent2D size_;

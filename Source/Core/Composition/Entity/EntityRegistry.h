@@ -4,6 +4,7 @@
 #include "Core/Composition/Component/Component.h"
 #include "Core/Utility/ID/ClassID.h"
 #include "Core/Structure/Sparse/SparseHashMap.h"
+#include "Core/Structure/Span.h"
 
 #include <vector>
 #include <memory>
@@ -49,7 +50,10 @@ public:
 	template<typename... Comp>
 	std::enable_if_t<bool(sizeof...(Comp) > 1), std::tuple<Comp&...>> GetComponent(Entity) const
 		noexcept;
-
+	
+	template<typename Comp>
+	nonstd::span<Comp> View();
+	
 
 private:
 
@@ -133,4 +137,15 @@ void EntityRegistry::RemoveComponent(Entity entity)
 
 	throw NotImplemented();
 
+}
+
+template<typename Comp>
+nonstd::span<Comp> EntityRegistry::View()
+{
+	
+	const auto componentId = ClassID::ID<Comp>();
+	auto& pool = *static_cast<storage_type<Comp>*>(componentPools_.at(componentId).get());
+	
+	return {pool.Data(), pool.Size()};
+	
 }

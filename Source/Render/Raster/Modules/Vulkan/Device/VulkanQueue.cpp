@@ -11,35 +11,35 @@ bool VulkanQueue::Submit()
 {
 
 	return false;
+	
 }
 
 bool VulkanQueue::Present(
 	nonstd::span<vk::Semaphore> semaphores,
-	nonstd::span<vk::SwapchainKHR> swapchains,
-	nonstd::span<uint> imageIndices
-)
+	nonstd::span<vk::SwapchainKHR> swapChains,
+	nonstd::span<uint> imageIndices) const
 {
 
-	assert(swapchains.size() == imageIndices.size());
+	assert(swapChains.size() == imageIndices.size());
 
 	//TODO: Reduce allocation calls
-	std::vector<vk::Result> swapchainResults(swapchains.size());
+	std::vector<vk::Result> swapChainResults(swapChains.size());
 
 	vk::PresentInfoKHR presentInfo;
 	presentInfo.waitSemaphoreCount = semaphores.size();
 	presentInfo.pWaitSemaphores = semaphores.data();
-	presentInfo.swapchainCount = swapchains.size();
-	presentInfo.pSwapchains = swapchains.data();
+	presentInfo.swapchainCount = swapChains.size();
+	presentInfo.pSwapchains = swapChains.data();
 	presentInfo.pImageIndices = imageIndices.data();
-	presentInfo.pResults = swapchainResults.data();
+	presentInfo.pResults = swapChainResults.data();
 
-	auto result = queue_.presentKHR(presentInfo);
+	const auto result = queue_.presentKHR(presentInfo);
 
 	bool success = result == vk::Result::eSuccess;
 
-	for (const auto& swapchainResult : swapchainResults) {
+	for (const auto& swapChainResult : swapChainResults) {
 
-		success &= swapchainResult == vk::Result::eSuccess;
+		success &= swapChainResult == vk::Result::eSuccess;
 
 	}
 
@@ -47,7 +47,7 @@ bool VulkanQueue::Present(
 
 }
 
-const vk::Queue& VulkanQueue::Handle()
+const vk::Queue& VulkanQueue::Handle() const
 {
 
 	return queue_;

@@ -14,7 +14,7 @@ VulkanSurface::~VulkanSurface()
 
 }
 
-vk::SurfaceKHR VulkanSurface::Handle()
+vk::SurfaceKHR VulkanSurface::Handle() const
 {
 
 	return surface_;
