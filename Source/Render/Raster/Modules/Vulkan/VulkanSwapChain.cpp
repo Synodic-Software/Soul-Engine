@@ -188,10 +188,3 @@ vk::SwapchainKHR VulkanSwapChain::Handle() const
 	return swapChain_;
 	
 }
-
-vk::Semaphore VulkanSwapChain::RenderSemaphore() const
-{
-	
-	return renderSemaphores_[activeImageIndex_];
-	
-}

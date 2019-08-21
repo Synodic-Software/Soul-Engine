@@ -2,7 +2,6 @@
 
 #include "Render/Raster/Modules/Vulkan/VulkanRenderPass.h"
 #include "Render/Raster/Modules/Vulkan/VulkanShader.h"
-#include "Render/Raster/Modules/Vulkan/Buffer/VulkanBuffer.h"
 #include "VulkanPipelineCache.h"
 #include "VulkanPipelineLayout.h"
 
@@ -16,7 +15,7 @@ class VulkanPipeline {
 
 public:
 
-	VulkanPipeline(const vk::Device&, VulkanRenderPass&, vk::Extent2D&);
+	VulkanPipeline(const vk::Device&, const vk::RenderPass&);
 	~VulkanPipeline();
 
 	VulkanPipeline(const VulkanPipeline&) = delete;
@@ -25,7 +24,7 @@ public:
 	VulkanPipeline& operator=(const VulkanPipeline&) = delete;
 	VulkanPipeline& operator=(VulkanPipeline&&) noexcept = delete;
 
-	const vk::Pipeline& Handle() const;
+	[[nodiscard]] const vk::Pipeline& Handle() const;
 
 
 private:

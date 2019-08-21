@@ -10,12 +10,12 @@
 #include "VulkanInstance.h"
 #include "VulkanSemaphore.h"
 #include "VulkanFence.h"
+#include "VulkanFramebuffer.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
 #include <unordered_map>
 #include <memory>
-#include <optional>
 
 class SchedulerModule;
 class WindowModule;
@@ -87,12 +87,12 @@ private:
 
 	std::unordered_map<Entity, VulkanSurface> surfaces_;
 	std::unordered_map<Entity, std::vector<Entity>> renderPassSurfaces_;
-	std::unordered_map<Entity, std::optional<std::array<VulkanFrameBuffer, frameMax_>>> frameBuffers_;
+	std::unordered_map<Entity, std::vector<VulkanFrameBuffer>> frameBuffers_;
 
 	//Surface maps
-	std::unordered_map<Entity, std::optional<std::array<VulkanFence, frameMax_>>> imageFences_;
-	std::unordered_map<Entity, std::optional<std::array<VulkanSemaphore, frameMax_>>> presentSemaphores_;
-	std::unordered_map<Entity, std::optional<std::array<VulkanSemaphore, frameMax_>>>
+	std::unordered_map<Entity, std::vector<VulkanFence>> imageFences_;
+	std::unordered_map<Entity, std::vector<VulkanSemaphore>> presentSemaphores_;
+	std::unordered_map<Entity, std::vector<VulkanSemaphore>>
 		renderSemaphores_;
 	
 	std::vector<VulkanCommandPool> commandPools_;

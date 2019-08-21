@@ -71,6 +71,9 @@ void VulkanRasterBackend::Present()
 
 	auto swapChainView = entityRegistry_->View<VulkanSwapChain>();
 
+	auto renderSemaphoresView = entityRegistry_->View<VulkanSwapChain>();
+	auto renderSemaphoresView = renderSemaphores_.at(surfaceID);
+	
 	for (auto& vkDevice : devices_) {
 		
 		std::vector<vk::Semaphore> semaphores;
@@ -81,9 +84,10 @@ void VulkanRasterBackend::Present()
 
 			if (swapChain.Device() == vkDevice.Logical()) {
 
-				auto index = swapChain.ActiveImageIndex();
-				semaphores.push_back(swapChain.RenderSemaphore());
-				imageIndices.push_back(index);
+				auto& renderSemaphores = renderSemaphores_.at(surfaceID);
+				
+				semaphores.push_back(renderSemaphores[currentFrame_]);
+				imageIndices.push_back(swapChain.ActiveImageIndex());
 				swapChains.push_back(swapChain.Handle());
 				
 			}
@@ -126,19 +130,17 @@ Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
 	std::vector<vk::SubpassDependency2KHR>& subPassDependencies =
 		renderPassDependencies_.at(renderPassID);
 
-	renderPasses_.try_emplace(
+	auto [passIterator, passInsert] = renderPasses_.try_emplace(
 		renderPassID, devices_[0], subPassAttachments, subPassDescriptions, subPassDependencies);
 
 	// TODO: command buffer per thread per ID
 	renderPassCommandBuffers_.try_emplace(renderPassID, commandPools_.back().Handle(),
 		devices_[0].Logical(), vk::CommandBufferUsageFlagBits::eSimultaneousUse,
 		vk::CommandBufferLevel::ePrimary);
-
-
+	
 	// TODO: Better management of pipelines
-	// pipelines_[renderPassID] = std::make_unique<VulkanPipeline>(device_, swapchain->GetSize(),
-	//	Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv"),
-	//	swapchain->GetFormat());
+	pipelines_.try_emplace(renderPassID, devices_[0].Logical(), passIterator->second.Handle());
+	//Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv")
 
 	return renderPassID;
 }
@@ -188,33 +190,13 @@ void VulkanRasterBackend::ExecutePass(Entity renderPassID,
 	auto& commandBuffer = renderPassCommandBuffers_.at(renderPassID);
 	auto& commandBufferHandle = commandBuffer.Handle();
 
-	//TODO: Cleanup this mess
-	// Generate the framebuffer attachments
-	if (!frameBuffers_.at(surfaceID).has_value()) {
-		
-		auto swapChainSize = swapChain.Size();
+	auto swapChainSize = swapChain.Size();
 
-		std::array<VulkanFrameBuffer, frameMax_> frameBuffers = {
-			VulkanFrameBuffer {
-				devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChainSize},
-			VulkanFrameBuffer {
-				devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChainSize},
-			VulkanFrameBuffer {
-				devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChainSize}};
 
-		frameBuffers_.at(surfaceID).emplace(std::move(frameBuffers));
+	frameBuffers_.at(surfaceID).resize(
+		frameMax_, {devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChainSize});
 
-	}
-	else {
-
-		for (auto& frameBuffer : frameBuffers_.at(surfaceID).value()) {
-			frameBuffer = VulkanFrameBuffer(
-				devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChain.Size());
-		}
-
-	}
-
-	auto& frameBuffers = frameBuffers_.at(surfaceID).value();
+	auto& frameBuffers = frameBuffers_.at(surfaceID);
 
 	vk::RenderPassBeginInfo renderPassInfo;
 	renderPassInfo.renderPass = renderPass.Handle();
@@ -307,11 +289,12 @@ Entity VulkanRasterBackend::CreateSurface(std::any anySurface, glm::uvec2 size)
 
 	entityRegistry_->AttachComponent<VulkanSwapChain>(surfaceID, devices_[0], surface, false);
 
-	auto& swapChain = entityRegistry_->GetComponent<VulkanSwapChain>(surfaceID);
-
 	// create the frameBuffer storage for the surface
 	frameBuffers_.try_emplace(surfaceID);
-
+	imageFences_.try_emplace(surfaceID, frameMax_);
+	presentSemaphores_.try_emplace(surfaceID, frameMax_);
+	renderSemaphores_.try_emplace(surfaceID, frameMax_);
+	
 	return surfaceID;
 }
 

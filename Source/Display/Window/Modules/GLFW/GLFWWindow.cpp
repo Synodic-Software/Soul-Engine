@@ -88,6 +88,7 @@ GLFWWindow::~GLFWWindow()
 	rasterModule_->RemoveSurface(surface_);
 
 	glfwDestroyWindow(context_);
+	
 }
 
 void GLFWWindow::FrameBufferResize(int x, int y)

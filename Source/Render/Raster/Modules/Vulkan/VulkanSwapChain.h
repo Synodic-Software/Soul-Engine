@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Pipeline/VulkanPipeline.h"
-#include "VulkanFrameBuffer.h"
 #include "Core/Composition/Component/Component.h"
 
 #include <vulkan/vulkan.hpp>
@@ -34,8 +33,8 @@ public:
 	[[nodiscard]] const vk::Device& Device() const;
 	[[nodiscard]] vk::Extent2D Size() const;
 	[[nodiscard]] vk::SwapchainKHR Handle() const;
-	[[nodiscard]] vk::Semaphore RenderSemaphore() const;
 
+	
 private:
 
 	vk::Device device_;
@@ -43,9 +42,6 @@ private:
 	std::vector<vk::Image> renderImages_;
 	std::vector<vk::ImageView> renderImageViews_;
 
-	std::vector<vk::Fence> imageFences_;
-	std::vector<vk::Semaphore> presentSemaphores_;
-	std::vector<vk::Semaphore> renderSemaphores_;
 	uint activeImageIndex_;
 
 	vk::Extent2D size_;

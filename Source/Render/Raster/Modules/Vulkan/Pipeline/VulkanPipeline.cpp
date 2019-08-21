@@ -4,8 +4,7 @@
 #include "Render/Raster/Modules/Vulkan/VulkanRenderPass.h"
 
 VulkanPipeline::VulkanPipeline(const vk::Device& device,
-	VulkanRenderPass& renderPass,
-	vk::Extent2D& extent):
+	const vk::RenderPass& renderPass):
 	device_(device), 
 	pipelineCache_(device_),
 	pipelineLayout_(device_)
@@ -27,37 +26,15 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	attributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
 	attributeDescriptions[0].offset = offsetof(Vertex, position);  // TODO: C++23 Reflection
 
-
-
-	//TODO: fill with meaningful data
 	vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
 	vertexInputInfo.vertexBindingDescriptionCount = 1;
 	vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
 	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
 	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
-
 	vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
 	inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
-
-	vk::Viewport viewport;
-	viewport.x = 0.0f;
-	viewport.y = 0.0f;
-	viewport.width = static_cast<float>(extent.width);
-	viewport.height = static_cast<float>(extent.height);
-	viewport.minDepth = 0.0f;
-	viewport.maxDepth = 1.0f;
-
-	vk::Rect2D scissor;
-	scissor.offset = vk::Offset2D(0, 0);
-	scissor.extent = extent;
-
-	vk::PipelineViewportStateCreateInfo viewportState;
-	viewportState.viewportCount = 1;
-	viewportState.pViewports = &viewport;
-	viewportState.scissorCount = 1;
-	viewportState.pScissors = &scissor;
 
 	vk::PipelineRasterizationStateCreateInfo rasterizer;
 	rasterizer.polygonMode = vk::PolygonMode::eFill;
@@ -68,9 +45,9 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 
-	vk::PipelineMultisampleStateCreateInfo multisampling;
-	multisampling.sampleShadingEnable = VK_FALSE;
-	multisampling.rasterizationSamples = vk::SampleCountFlagBits::e1;
+	vk::PipelineMultisampleStateCreateInfo multiSampling;
+	multiSampling.sampleShadingEnable = VK_FALSE;
+	multiSampling.rasterizationSamples = vk::SampleCountFlagBits::e1;
 
 	vk::PipelineColorBlendAttachmentState colorBlendAttachment;
 	colorBlendAttachment.colorWriteMask =
@@ -88,8 +65,17 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	colorBlending.blendConstants[2] = 0.0f;
 	colorBlending.blendConstants[3] = 0.0f;
 
+	std::vector<vk::DynamicState> dynamicStates = {
+		vk::DynamicState::eViewport
+	};
+
+	vk::PipelineDynamicStateCreateInfo dynamicState;
+	dynamicState.flags = vk::PipelineDynamicStateCreateFlags();    
+	dynamicState.dynamicStateCount = dynamicStates.size();
+	dynamicState.pDynamicStates = dynamicStates.data();
+	
 	vk::PipelineDepthStencilStateCreateInfo depthStencil;
-	depthStencil.depthTestEnable = VK_TRUE;
+	depthStencil.depthTestEnable = VK_TRUE; 
 	depthStencil.depthWriteEnable = VK_TRUE;
 	depthStencil.depthCompareOp = vk::CompareOp::eLessOrEqual;
 	depthStencil.depthBoundsTestEnable = VK_FALSE;
@@ -100,18 +86,24 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	depthStencil.front = depthStencil.back;
 
 	vk::GraphicsPipelineCreateInfo pipelineInfo;
+	pipelineInfo.flags = vk::PipelineCreateFlags();                          
 	pipelineInfo.stageCount = 2;
 	pipelineInfo.pStages = shaderStages;
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
-	pipelineInfo.pViewportState = &viewportState;
+	pipelineInfo.pTessellationState = nullptr;
+	pipelineInfo.pViewportState = nullptr;
 	pipelineInfo.pRasterizationState = &rasterizer;
-	pipelineInfo.pMultisampleState = &multisampling;
+	pipelineInfo.pMultisampleState = &multiSampling;
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
+	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout_.Handle();
-	pipelineInfo.renderPass = renderPass.Handle();
-
+	pipelineInfo.renderPass = renderPass;
+	pipelineInfo.subpass = 0;
+	pipelineInfo.basePipelineHandle = nullptr;
+	pipelineInfo.basePipelineIndex = 0;
+	
 	pipeline_ = device_.createGraphicsPipeline(pipelineCache_.Handle(), pipelineInfo);
 }
 
