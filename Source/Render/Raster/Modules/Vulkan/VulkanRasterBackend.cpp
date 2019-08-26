@@ -12,7 +12,7 @@
 
 VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
 	std::shared_ptr<EntityRegistry>& entityRegistry,
-	std::shared_ptr<WindowModule>& windowModule_) :
+	std::shared_ptr<WindowModule>& windowModule_):
 	currentFrame_(0),
 	entityRegistry_(entityRegistry)
 {
@@ -55,53 +55,48 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 	devices_.emplace_back(scheduler, instance_->Handle(), physicalDevices_[0].Handle(),
 		validationLayers, deviceExtensions);
 
-	//TODO: One pool per device per render image set
+	// TODO: One pool per device per render image set
 	commandPools_.reserve(devices_.size());
 
 	for (auto& vkDevice : devices_) {
 
 		commandPools_.emplace_back(scheduler, vkDevice);
-		
 	}
-	
 }
 
 void VulkanRasterBackend::Present()
 {
 
-	auto swapChainView = entityRegistry_->View<VulkanSwapChain>();
+	const auto swapChainSpan = entityRegistry_->View<VulkanSwapChain>();
+	// const auto renderSemaphoresView = entityRegistry_->View<VulkanSemaphore>();
 
-	auto renderSemaphoresView = entityRegistry_->View<VulkanSwapChain>();
-	auto renderSemaphoresView = renderSemaphores_.at(surfaceID);
-	
+	// assert(swapChainView.size() == renderSemaphoresView.size());
+
 	for (auto& vkDevice : devices_) {
-		
+
 		std::vector<vk::Semaphore> semaphores;
 		std::vector<vk::SwapchainKHR> swapChains;
 		std::vector<uint> imageIndices;
-		
-		for (const auto& swapChain : swapChainView) {
+
+		for (auto i = 0; i < swapChainSpan.size(); ++i) {
+
+			auto& swapChain = swapChainSpan[i];
 
 			if (swapChain.Device() == vkDevice.Logical()) {
 
-				auto& renderSemaphores = renderSemaphores_.at(surfaceID);
-				
-				semaphores.push_back(renderSemaphores[currentFrame_]);
+				// auto& renderSemaphores = renderSemaphoresView[i];
+
+				// semaphores.push_back(renderSemaphores[currentFrame_]);
 				imageIndices.push_back(swapChain.ActiveImageIndex());
 				swapChains.push_back(swapChain.Handle());
-				
 			}
-			
 		}
 
 		auto graphicsQueues = vkDevice.GraphicsQueues();
-		
-		//TODO: Multiple present queues
-		bool result = graphicsQueues[0].Present(semaphores, swapChains, imageIndices);
-		
-	}
-	
 
+		// TODO: Multiple present queues
+		bool result = graphicsQueues[0].Present(semaphores, swapChains, imageIndices);
+	}
 }
 
 Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
@@ -137,10 +132,10 @@ Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
 	renderPassCommandBuffers_.try_emplace(renderPassID, commandPools_.back().Handle(),
 		devices_[0].Logical(), vk::CommandBufferUsageFlagBits::eSimultaneousUse,
 		vk::CommandBufferLevel::ePrimary);
-	
+
 	// TODO: Better management of pipelines
 	pipelines_.try_emplace(renderPassID, devices_[0].Logical(), passIterator->second.Handle());
-	//Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv")
+	// Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv")
 
 	return renderPassID;
 }
@@ -192,15 +187,15 @@ void VulkanRasterBackend::ExecutePass(Entity renderPassID,
 
 	auto swapChainSize = swapChain.Size();
 
-
-	frameBuffers_.at(surfaceID).resize(
-		frameMax_, {devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChainSize});
-
-	auto& frameBuffers = frameBuffers_.at(surfaceID);
+	for (auto i = 0; i < frames_.at(surfaceID).Size(); ++i) {
+		
+		frames_.at(surfaceID)[i].Framebuffer() = VulkanFrameBuffer(devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChainSize);
+		
+	}
 
 	vk::RenderPassBeginInfo renderPassInfo;
 	renderPassInfo.renderPass = renderPass.Handle();
-	renderPassInfo.framebuffer = frameBuffers[currentFrame_].Handle();
+	renderPassInfo.framebuffer = frames_.at(surfaceID)[currentFrame_].Framebuffer().Handle();
 	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
 	renderPassInfo.renderArea.extent = swapChain.Size();
 	renderPassInfo.clearValueCount = 1;
@@ -216,7 +211,6 @@ void VulkanRasterBackend::ExecutePass(Entity renderPassID,
 
 	commandBufferHandle.endRenderPass();
 	commandBuffer.End();
-
 
 
 	//	const auto& logicalDevice = vkDevice_->GetLogical();
@@ -239,14 +233,12 @@ void VulkanRasterBackend::ExecutePass(Entity renderPassID,
 	//	submitInfo.pSignalSemaphores = &renderSemaphores_[currentFrame_];
 	//
 	//	vkDevice_->GetGraphicsQueue().submit(submitInfo, frameFences_[currentFrame_]);
-
 }
 
 void VulkanRasterBackend::CreatePassInput(Entity passID, Entity resource, Format format)
 {
 
 	throw NotImplemented();
-
 }
 
 void VulkanRasterBackend::CreatePassOutput(Entity passID, Entity resource, Format format)
@@ -290,11 +282,11 @@ Entity VulkanRasterBackend::CreateSurface(std::any anySurface, glm::uvec2 size)
 	entityRegistry_->AttachComponent<VulkanSwapChain>(surfaceID, devices_[0], surface, false);
 
 	// create the frameBuffer storage for the surface
-	frameBuffers_.try_emplace(surfaceID);
-	imageFences_.try_emplace(surfaceID, frameMax_);
-	presentSemaphores_.try_emplace(surfaceID, frameMax_);
-	renderSemaphores_.try_emplace(surfaceID, frameMax_);
-	
+	frames_.try_emplace(surfaceID);
+	//imageFences_.try_emplace(surfaceID, frameMax_);
+	//presentSemaphores_.try_emplace(surfaceID, frameMax_);
+	//renderSemaphores_.try_emplace(surfaceID, frameMax_);
+
 	return surfaceID;
 }
 
@@ -315,14 +307,12 @@ void VulkanRasterBackend::RemoveSurface(Entity surfaceID)
 
 	entityRegistry_->RemoveComponent<VulkanSwapChain>(surfaceID);
 	surfaces_.erase(surfaceID);
-
 }
 
 void VulkanRasterBackend::AttachSurface(Entity renderPassID, Entity surfaceID)
 {
 
 	renderPassSurfaces_[renderPassID].push_back(surfaceID);
-
 }
 
 void VulkanRasterBackend::DetachSurface(Entity renderPassID, Entity surfaceID)
@@ -330,7 +320,6 @@ void VulkanRasterBackend::DetachSurface(Entity renderPassID, Entity surfaceID)
 
 	auto& vector = renderPassSurfaces_[renderPassID];
 	vector.erase(std::remove(vector.begin(), vector.end(), surfaceID), vector.end());
-
 }
 
 void VulkanRasterBackend::Compile(CommandList&)
@@ -341,7 +330,6 @@ const VulkanInstance& VulkanRasterBackend::Instance() const
 {
 
 	return *instance_;
-	
 }
 
 void VulkanRasterBackend::Draw(DrawCommand& command, vk::CommandBuffer& commandBuffer)
@@ -372,29 +360,24 @@ void VulkanRasterBackend::DrawIndirect(DrawIndirectCommand&, vk::CommandBuffer& 
 {
 
 	throw NotImplemented();
-
 }
 void VulkanRasterBackend::UpdateBuffer(UpdateBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
-
 }
 void VulkanRasterBackend::UpdateTexture(UpdateTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
-
 }
 void VulkanRasterBackend::CopyBuffer(CopyBufferCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
-
 }
 void VulkanRasterBackend::CopyTexture(CopyTextureCommand&, vk::CommandBuffer& commandBuffer)
 {
 
 	throw NotImplemented();
-
 }
 
 

@@ -10,7 +10,8 @@
 #include "VulkanInstance.h"
 #include "VulkanSemaphore.h"
 #include "VulkanFence.h"
-#include "VulkanFramebuffer.h"
+#include "VulkanFrame.h"
+#include "Core/Structure/RingBuffer.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
@@ -87,13 +88,7 @@ private:
 
 	std::unordered_map<Entity, VulkanSurface> surfaces_;
 	std::unordered_map<Entity, std::vector<Entity>> renderPassSurfaces_;
-	std::unordered_map<Entity, std::vector<VulkanFrameBuffer>> frameBuffers_;
-
-	//Surface maps
-	std::unordered_map<Entity, std::vector<VulkanFence>> imageFences_;
-	std::unordered_map<Entity, std::vector<VulkanSemaphore>> presentSemaphores_;
-	std::unordered_map<Entity, std::vector<VulkanSemaphore>>
-		renderSemaphores_;
+	std::unordered_map<Entity, RingBuffer<VulkanFrame, frameMax_>> frames_;
 	
 	std::vector<VulkanCommandPool> commandPools_;
 

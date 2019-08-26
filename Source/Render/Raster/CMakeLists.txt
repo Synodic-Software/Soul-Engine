@@ -33,6 +33,8 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/VulkanSemaphore.h
         Modules/Vulkan/VulkanFence.cpp
         Modules/Vulkan/VulkanFence.h
+        Modules/Vulkan/VulkanFrame.cpp
+        Modules/Vulkan/VulkanFrame.h
         Modules/Vulkan/VulkanShader.cpp
         Modules/Vulkan/VulkanShader.h
         Modules/Vulkan/VulkanSurface.cpp
