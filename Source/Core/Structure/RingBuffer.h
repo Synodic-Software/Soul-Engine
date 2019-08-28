@@ -13,10 +13,10 @@ public:
 	~RingBuffer() = default;
 
 	RingBuffer(const RingBuffer&) = delete;
-	RingBuffer(RingBuffer&& o) noexcept = delete;
+	RingBuffer(RingBuffer&&) noexcept = default;
 
-	RingBuffer& operator=(const RingBuffer& other) = delete;
-	RingBuffer& operator=(RingBuffer&&) noexcept = delete;
+	RingBuffer& operator=(const RingBuffer&) = delete;
+	RingBuffer& operator=(RingBuffer&&) noexcept = default;
 
 	bool operator==(const RingBuffer& other);
 	bool operator==(RingBuffer& other);
@@ -30,7 +30,7 @@ public:
 	void Push(const T&);
 	void Push(T&&);
 
-	size_type Size();
+	[[nodiscard]] size_type Size() const;
 
 	
 private:
@@ -126,7 +126,7 @@ void RingBuffer<T, Capacity>::Push_()
 }
 
 template<typename T, std::size_t Capacity>
-typename RingBuffer<T, Capacity>::size_type RingBuffer<T, Capacity>::Size()
+typename RingBuffer<T, Capacity>::size_type RingBuffer<T, Capacity>::Size() const
 {
 	return size_;
 }

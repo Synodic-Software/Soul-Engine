@@ -6,9 +6,10 @@
 #include "Core/Composition/Entity/EntityRegistry.h"
 #include "Types.h"
 #include "Display/Window/WindowModule.h"
-#include "VulkanSwapChain.h"
+#include "Surface/VulkanSwapChain.h"
 #include "Render/Raster/CommandList.h"
 #include "Transput/Resource/Resource.h"
+#include "VulkanFramebuffer.h"
 
 VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& scheduler,
 	std::shared_ptr<EntityRegistry>& entityRegistry,
@@ -67,20 +68,20 @@ VulkanRasterBackend::VulkanRasterBackend(std::shared_ptr<SchedulerModule>& sched
 void VulkanRasterBackend::Present()
 {
 
-	const auto swapChainSpan = entityRegistry_->View<VulkanSwapChain>();
-	// const auto renderSemaphoresView = entityRegistry_->View<VulkanSemaphore>();
+	const auto swapChains = entityRegistry_->View<VulkanSwapChain>();
+	const auto frames = entityRegistry_->View<VulkanSurfaceResource>();
 
-	// assert(swapChainView.size() == renderSemaphoresView.size());
+	assert(swapChains.size() == frames.size());
 
 	for (auto& vkDevice : devices_) {
 
-		std::vector<vk::Semaphore> semaphores;
-		std::vector<vk::SwapchainKHR> swapChains;
+		std::vector<vk::Semaphore> presentSemaphores;
+		std::vector<vk::SwapchainKHR> presentSwapChains;
 		std::vector<uint> imageIndices;
 
-		for (auto i = 0; i < swapChainSpan.size(); ++i) {
+		for (auto i = 0; i < swapChains.size(); ++i) {
 
-			auto& swapChain = swapChainSpan[i];
+			auto& swapChain = swapChains[i];
 
 			if (swapChain.Device() == vkDevice.Logical()) {
 
@@ -88,14 +89,14 @@ void VulkanRasterBackend::Present()
 
 				// semaphores.push_back(renderSemaphores[currentFrame_]);
 				imageIndices.push_back(swapChain.ActiveImageIndex());
-				swapChains.push_back(swapChain.Handle());
+				presentSwapChains.push_back(swapChain.Handle());
 			}
 		}
 
 		auto graphicsQueues = vkDevice.GraphicsQueues();
 
 		// TODO: Multiple present queues
-		bool result = graphicsQueues[0].Present(semaphores, swapChains, imageIndices);
+		bool result = graphicsQueues[0].Present(presentSemaphores, presentSwapChains, imageIndices);
 	}
 }
 
@@ -187,15 +188,18 @@ void VulkanRasterBackend::ExecutePass(Entity renderPassID,
 
 	auto swapChainSize = swapChain.Size();
 
-	for (auto i = 0; i < frames_.at(surfaceID).Size(); ++i) {
+	auto& surfaceResources = entityRegistry_->GetComponent<VulkanSurfaceResource>(surfaceID);
+	
+	for (auto i = 0; i < surfaceResources.frames.Size(); ++i) {
 		
-		frames_.at(surfaceID)[i].Framebuffer() = VulkanFrameBuffer(devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChainSize);
+		surfaceResources.frames[i].Framebuffer() = VulkanFrameBuffer(
+			devices_[0].Logical(), swapChain.ImageViews(), renderPass, swapChainSize);
 		
 	}
 
 	vk::RenderPassBeginInfo renderPassInfo;
 	renderPassInfo.renderPass = renderPass.Handle();
-	renderPassInfo.framebuffer = frames_.at(surfaceID)[currentFrame_].Framebuffer().Handle();
+	renderPassInfo.framebuffer = surfaceResources.frames[currentFrame_].Framebuffer().Handle();
 	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
 	renderPassInfo.renderArea.extent = swapChain.Size();
 	renderPassInfo.clearValueCount = 1;
@@ -281,11 +285,9 @@ Entity VulkanRasterBackend::CreateSurface(std::any anySurface, glm::uvec2 size)
 
 	entityRegistry_->AttachComponent<VulkanSwapChain>(surfaceID, devices_[0], surface, false);
 
-	// create the frameBuffer storage for the surface
-	frames_.try_emplace(surfaceID);
-	//imageFences_.try_emplace(surfaceID, frameMax_);
-	//presentSemaphores_.try_emplace(surfaceID, frameMax_);
-	//renderSemaphores_.try_emplace(surfaceID, frameMax_);
+	// create the frame storage for the surface
+	entityRegistry_->AttachComponent<VulkanSurfaceResource>(surfaceID);
+
 
 	return surfaceID;
 }

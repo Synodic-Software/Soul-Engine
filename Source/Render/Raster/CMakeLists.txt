@@ -33,14 +33,14 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/VulkanSemaphore.h
         Modules/Vulkan/VulkanFence.cpp
         Modules/Vulkan/VulkanFence.h
-        Modules/Vulkan/VulkanFrame.cpp
-        Modules/Vulkan/VulkanFrame.h
+        Modules/Vulkan/Surface/VulkanFrame.cpp
+        Modules/Vulkan/Surface/VulkanFrame.h
         Modules/Vulkan/VulkanShader.cpp
         Modules/Vulkan/VulkanShader.h
-        Modules/Vulkan/VulkanSurface.cpp
-        Modules/Vulkan/VulkanSurface.h
-        Modules/Vulkan/VulkanSwapChain.cpp
-        Modules/Vulkan/VulkanSwapChain.h
+        Modules/Vulkan/Surface/VulkanSurface.cpp
+        Modules/Vulkan/Surface/VulkanSurface.h
+        Modules/Vulkan/Surface/VulkanSwapChain.cpp
+        Modules/Vulkan/Surface/VulkanSwapChain.h
         CommandList.cpp
         CommandList.h
         RenderResource.h

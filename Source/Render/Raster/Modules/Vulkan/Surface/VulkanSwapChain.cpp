@@ -1,12 +1,11 @@
 #include "VulkanSwapChain.h"
 
-#include "Device/VulkanDevice.h"
+#include "Render/Raster/Modules/Vulkan/Device/VulkanDevice.h"
 #include "Core/Utility/Exception/Exception.h"
 
 #include "Core/Geometry/Vertex.h"
-#include "Buffer/VulkanBuffer.h"
 #include "Transput/Resource/Resource.h"
-#include "Render/Raster/Modules/Vulkan/VulkanSurface.h"
+#include "Render/Raster/Modules/Vulkan/Surface/VulkanSurface.h"
 
 
 VulkanSwapChain::VulkanSwapChain(VulkanDevice& device,

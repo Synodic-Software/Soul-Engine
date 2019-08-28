@@ -2,15 +2,13 @@
 
 #include "Render/Raster/RasterModule.h"
 
-#include "VulkanSwapChain.h"
-#include "VulkanSurface.h"
+#include "Surface/VulkanSwapChain.h"
+#include "Surface/VulkanSurface.h"
 #include "Command/VulkanCommandPool.h"
 #include "Command/VulkanCommandBuffer.h"
 #include "Device/VulkanPhysicalDevice.h"
 #include "VulkanInstance.h"
-#include "VulkanSemaphore.h"
-#include "VulkanFence.h"
-#include "VulkanFrame.h"
+#include "Surface/VulkanFrame.h"
 #include "Core/Structure/RingBuffer.h"
 
 #include <vulkan/vulkan.hpp>
@@ -26,6 +24,8 @@ class VulkanSwapChain;
 class VulkanRasterBackend final : public RasterModule {
 
 public:
+	
+	static constexpr uint frameCount = 3;
 
 	VulkanRasterBackend(std::shared_ptr<SchedulerModule>&,
 		std::shared_ptr<EntityRegistry>&,
@@ -68,7 +68,6 @@ public:
 	
 private:
 	
-	static constexpr uint frameMax_ = 3;
 
 	uint8 currentFrame_;
 	
@@ -88,7 +87,6 @@ private:
 
 	std::unordered_map<Entity, VulkanSurface> surfaces_;
 	std::unordered_map<Entity, std::vector<Entity>> renderPassSurfaces_;
-	std::unordered_map<Entity, RingBuffer<VulkanFrame, frameMax_>> frames_;
 	
 	std::vector<VulkanCommandPool> commandPools_;
 
@@ -108,4 +106,21 @@ private:
 	std::unique_ptr<VulkanInstance> instance_;
 
 
+};
+
+class VulkanSurfaceResource : public Component
+{
+
+public:
+	VulkanSurfaceResource() = default;
+	~VulkanSurfaceResource() = default;
+	
+	VulkanSurfaceResource(const VulkanSurfaceResource&) = delete;
+	VulkanSurfaceResource(VulkanSurfaceResource&&) noexcept = default;
+
+	VulkanSurfaceResource& operator=(const VulkanSurfaceResource&) = delete;
+	VulkanSurfaceResource& operator=(VulkanSurfaceResource&&) noexcept = default;
+	
+	RingBuffer<VulkanFrame, VulkanRasterBackend::frameCount> frames;
+	
 };

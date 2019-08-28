@@ -24,7 +24,7 @@ public:
 		nonstd::span<vk::SwapchainKHR> swapChains,
 		nonstd::span<uint> imageIndices) const;
 
-	const vk::Queue& Handle() const;
+	[[nodiscard]]  const vk::Queue& Handle() const;
 	[[nodiscard]] uint FamilyIndex() const;
 
 private:

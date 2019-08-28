@@ -11,10 +11,10 @@ public:
 	~VulkanFence() = default;
 
 	VulkanFence(const VulkanFence&) = delete;
-	VulkanFence(VulkanFence&&) noexcept = delete;
+	VulkanFence(VulkanFence&&) noexcept = default;
 
 	VulkanFence& operator=(const VulkanFence&) = delete;
-	VulkanFence& operator=(VulkanFence&&) noexcept = delete;
+	VulkanFence& operator=(VulkanFence&&) noexcept = default;
 
 
 private:

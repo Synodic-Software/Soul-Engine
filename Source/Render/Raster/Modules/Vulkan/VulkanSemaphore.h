@@ -11,10 +11,10 @@ public:
 	~VulkanSemaphore() = default;
 
 	VulkanSemaphore(const VulkanSemaphore&) = delete;
-	VulkanSemaphore(VulkanSemaphore&&) noexcept = delete;
+	VulkanSemaphore(VulkanSemaphore&&) noexcept = default;
 
 	VulkanSemaphore& operator=(const VulkanSemaphore&) = delete;
-	VulkanSemaphore& operator=(VulkanSemaphore&&) noexcept = delete;
+	VulkanSemaphore& operator=(VulkanSemaphore&&) noexcept = default;
 
 
 private:

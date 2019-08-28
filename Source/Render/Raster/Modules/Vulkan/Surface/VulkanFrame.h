@@ -1,8 +1,8 @@
 #pragma once
 
-#include "VulkanFramebuffer.h"
-#include "VulkanSemaphore.h"
-#include "VulkanFence.h"
+#include "Render/Raster/Modules/Vulkan/VulkanFramebuffer.h"
+#include "Render/Raster/Modules/Vulkan/VulkanSemaphore.h"
+#include "Render/Raster/Modules/Vulkan/VulkanFence.h"
 
 #include <optional>
 
@@ -14,10 +14,10 @@ public:
 	~VulkanFrame() = default;
 
 	VulkanFrame(const VulkanFrame&) = delete;
-	VulkanFrame(VulkanFrame&& o) noexcept = default;
+	VulkanFrame(VulkanFrame&&) noexcept = default;
 
 	VulkanFrame& operator=(const VulkanFrame&) = delete;
-	VulkanFrame& operator=(VulkanFrame&& other) noexcept = default;
+	VulkanFrame& operator=(VulkanFrame&&) noexcept = default;
 
 	VulkanFrameBuffer& Framebuffer();
 	

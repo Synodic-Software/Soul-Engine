@@ -17,10 +17,10 @@ public:
 	~VulkanFrameBuffer();
 
 	VulkanFrameBuffer(const VulkanFrameBuffer&) = delete;
-	VulkanFrameBuffer(VulkanFrameBuffer&& o) noexcept = default;
+	VulkanFrameBuffer(VulkanFrameBuffer&&) noexcept = default;
 
 	VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) = delete;
-	VulkanFrameBuffer& operator=(VulkanFrameBuffer&& other) noexcept = default;
+	VulkanFrameBuffer& operator=(VulkanFrameBuffer&&) noexcept = default;
 
 	const vk::Framebuffer& Handle() const;
 
