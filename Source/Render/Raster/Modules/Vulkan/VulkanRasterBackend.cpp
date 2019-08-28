@@ -69,9 +69,9 @@ void VulkanRasterBackend::Present()
 {
 
 	const auto swapChains = entityRegistry_->View<VulkanSwapChain>();
-	const auto frames = entityRegistry_->View<VulkanSurfaceResource>();
+	const auto surfaceResources = entityRegistry_->View<VulkanSurfaceResource>();
 
-	assert(swapChains.size() == frames.size());
+	assert(swapChains.size() == surfaceResources.size());
 
 	for (auto& vkDevice : devices_) {
 
@@ -85,11 +85,11 @@ void VulkanRasterBackend::Present()
 
 			if (swapChain.Device() == vkDevice.Logical()) {
 
-				// auto& renderSemaphores = renderSemaphoresView[i];
-
-				// semaphores.push_back(renderSemaphores[currentFrame_]);
+				presentSemaphores.push_back(
+					surfaceResources[i].frames[currentFrame_].RenderSemaphore().Handle());
 				imageIndices.push_back(swapChain.ActiveImageIndex());
 				presentSwapChains.push_back(swapChain.Handle());
+				
 			}
 		}
 

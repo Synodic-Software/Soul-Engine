@@ -16,7 +16,8 @@ public:
 	VulkanSemaphore& operator=(const VulkanSemaphore&) = delete;
 	VulkanSemaphore& operator=(VulkanSemaphore&&) noexcept = default;
 
-
+	[[nodiscard]] vk::Semaphore Handle() const;
+	
 private:
 	
 	vk::Device device_;

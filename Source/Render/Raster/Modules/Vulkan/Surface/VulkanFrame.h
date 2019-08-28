@@ -20,7 +20,8 @@ public:
 	VulkanFrame& operator=(VulkanFrame&&) noexcept = default;
 
 	VulkanFrameBuffer& Framebuffer();
-	
+	VulkanSemaphore& RenderSemaphore();
+
 private:
 	
 	std::optional<VulkanFrameBuffer> framebuffer_;

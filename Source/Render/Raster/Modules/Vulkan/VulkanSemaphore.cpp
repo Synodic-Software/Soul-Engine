@@ -9,3 +9,10 @@ VulkanSemaphore::VulkanSemaphore(vk::Device device) :
 	semaphore_ = device.createSemaphore(semaphoreInfo);
 	
 }
+
+vk::Semaphore VulkanSemaphore::Handle() const
+{
+
+	return semaphore_;
+	
+}
