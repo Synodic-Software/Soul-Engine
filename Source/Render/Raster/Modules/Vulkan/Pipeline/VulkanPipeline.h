@@ -15,7 +15,9 @@ class VulkanPipeline {
 
 public:
 
-	VulkanPipeline(const vk::Device&, const vk::RenderPass&, uint);
+	VulkanPipeline(const vk::Device&, nonstd::span<VulkanShader>,
+		const vk::RenderPass&,
+		uint);
 	~VulkanPipeline();
 
 	VulkanPipeline(const VulkanPipeline&) = delete;

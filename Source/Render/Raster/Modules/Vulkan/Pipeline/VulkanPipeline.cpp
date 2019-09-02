@@ -3,15 +3,13 @@
 #include "Core/Geometry/Vertex.h"
 
 VulkanPipeline::VulkanPipeline(const vk::Device& device,
+	const nonstd::span<VulkanShader> shaders,
 	const vk::RenderPass& renderPass,
 	const uint subPassIndex):
 	device_(device), 
 	pipelineCache_(device_),
 	pipelineLayout_(device_)
 {
-
-	vk::PipelineShaderStageCreateInfo shaderStages[2];
-
 
 	// TODO: Refactor and move vertex attribute and bindings.
 	vk::VertexInputBindingDescription bindingDescription;
@@ -85,10 +83,20 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	depthStencil.stencilTestEnable = VK_FALSE;
 	depthStencil.front = depthStencil.back;
 
+
+	std::vector<vk::PipelineShaderStageCreateInfo> shaderStages(shaders.size());
+
+	for (auto i = 0; i < shaderStages.size(); ++i) {
+		
+		shaderStages[i] = shaders[i].PipelineInfo();
+
+	}
+	
+	
 	vk::GraphicsPipelineCreateInfo pipelineInfo;
 	pipelineInfo.flags = vk::PipelineCreateFlags();                          
-	pipelineInfo.stageCount = 2;
-	pipelineInfo.pStages = shaderStages;
+	pipelineInfo.stageCount = shaderStages.size();
+	pipelineInfo.pStages = shaderStages.data();
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pTessellationState = nullptr;

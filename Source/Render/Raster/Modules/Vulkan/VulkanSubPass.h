@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Structure/Span.h"
+#include "VulkanShader.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -23,6 +24,5 @@ public:
 private:
 
 	vk::SubpassDescription2KHR description_;
-
 	
 };

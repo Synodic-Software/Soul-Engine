@@ -12,27 +12,13 @@ VulkanShader::VulkanShader(const vk::Device& device,
 	device_(device)
 {
 
-	module_ = CreateModule(device_, resource.Path());
-
-    info_.stage = shaderType;
-	info_.module = module_;
-	info_.pName = "main";
-
-}
-
-VulkanShader::~VulkanShader() {
-
-	device_.destroyShaderModule(module_, nullptr);
-
-}
-
-vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std::filesystem::path& path) const {
-
+	const auto& path = resource.Path();
+	
 	if (!std::filesystem::exists(path)) {
 		throw NotImplemented();
 	}
 
-	//TODO: abstract into some sort of loader
+	// TODO: abstract into some sort of loader
 	std::ifstream file(path.c_str(), std::ifstream::ate | std::ios::binary);
 
 	const size_t fileSize = static_cast<size_t>(file.tellg());
@@ -46,11 +32,22 @@ vk::ShaderModule VulkanShader::CreateModule(const vk::Device& device, const std:
 	createInfo.codeSize = buffer.size();
 	createInfo.pCode = reinterpret_cast<const uint32_t*>(buffer.data());
 
-	return device.createShaderModule(createInfo, nullptr);
+	module_ = device.createShaderModule(createInfo, nullptr);
+
+    info_.stage = shaderType;
+	info_.module = module_;
+	info_.pName = "main";
 
 }
 
-vk::PipelineShaderStageCreateInfo VulkanShader::GetInfo() const {
+VulkanShader::~VulkanShader() {
+
+	device_.destroyShaderModule(module_, nullptr);
+
+}
+
+const vk::PipelineShaderStageCreateInfo& VulkanShader::PipelineInfo() const
+{
 
 	return info_;
 

@@ -2,9 +2,6 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include <filesystem>
-
-
 class Resource;
 class VulkanDevice;
 
@@ -16,14 +13,12 @@ public:
 	~VulkanShader();
 
 	VulkanShader(const VulkanShader&) = delete;
-	VulkanShader(VulkanShader&& o) noexcept = delete;
+	VulkanShader(VulkanShader&& o) noexcept = default;
 
 	VulkanShader& operator=(const VulkanShader&) = delete;
-	VulkanShader& operator=(VulkanShader&& other) noexcept = delete;
+	VulkanShader& operator=(VulkanShader&& other) noexcept = default;
 
-	vk::ShaderModule CreateModule(const vk::Device&, const std::filesystem::path&) const;
-
-	vk::PipelineShaderStageCreateInfo GetInfo() const;
+	[[nodiscard]] const vk::PipelineShaderStageCreateInfo& PipelineInfo() const;
 
 
 private:

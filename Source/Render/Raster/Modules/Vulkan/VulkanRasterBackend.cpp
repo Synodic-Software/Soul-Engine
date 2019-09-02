@@ -113,6 +113,8 @@ Entity VulkanRasterBackend::CreatePass(const ShaderSet& ShaderSet, std::function
 	renderPassAttachments_.try_emplace(renderPassID);
 	auto [subPassIterator, subPassInserted] = renderPassSubPasses_.try_emplace(renderPassID);
 	renderPassDependencies_.try_emplace(renderPassID);
+
+	auto& subPassArray = subPassIterator->second;
 	
 	// Default subPass and default output
 	CreatePassOutput(renderPassID, resource, Format::RGBA);
@@ -124,7 +126,7 @@ Entity VulkanRasterBackend::CreatePass(const ShaderSet& ShaderSet, std::function
 	
 	std::vector<vk::SubpassDescription2KHR> subPassDescriptions;
 	
-	for (const auto& subPass : subPassIterator->second) {
+	for (const auto& subPass : subPassArray) {
 		
 		subPassDescriptions.push_back(subPass.Description());
 		
@@ -146,14 +148,14 @@ Entity VulkanRasterBackend::CreatePass(const ShaderSet& ShaderSet, std::function
 	auto& renderPass = renderPasses_.at(renderPassID);
 
 	auto [pipelineArrayIterator, pipelineArrayInserted] = pipelines_.try_emplace(renderPassID);
-	pipelineArrayIterator->second.reserve(subPassIterator->second.size());
+	pipelineArrayIterator->second.reserve(subPassArray.size());
 
 	
-	for (auto i = 0; i < subPassIterator->second.size(); ++i)
+	for (auto i = 0; i < subPassArray.size(); ++i)
 	{
 
 		pipelineArrayIterator->second.emplace_back(
-			devices_[0].Logical(), renderPass.Handle(), i);
+			devices_[0].Logical(), subPassArray[i].Shaders(), renderPass.Handle(), i);
 		
 	}
 		
