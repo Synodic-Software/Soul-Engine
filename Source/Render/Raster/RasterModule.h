@@ -34,8 +34,8 @@ public:
 
 	virtual void Present() = 0;
 
-	virtual Entity CreatePass(std::function<void(Entity)>) = 0;
-	virtual Entity CreateSubPass(Entity, std::function<void(Entity)>) = 0;
+	virtual Entity CreatePass(const ShaderSet&, std::function<void(Entity)>) = 0;
+	virtual Entity CreateSubPass(Entity, const ShaderSet&, std::function<void(Entity)>) = 0;
 	virtual void ExecutePass(Entity, Entity, CommandList&) = 0;
 
 

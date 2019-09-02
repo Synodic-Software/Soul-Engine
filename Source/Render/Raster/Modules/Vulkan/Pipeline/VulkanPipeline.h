@@ -15,14 +15,14 @@ class VulkanPipeline {
 
 public:
 
-	VulkanPipeline(const vk::Device&, const vk::RenderPass&);
+	VulkanPipeline(const vk::Device&, const vk::RenderPass&, uint);
 	~VulkanPipeline();
 
 	VulkanPipeline(const VulkanPipeline&) = delete;
-	VulkanPipeline(VulkanPipeline&&) noexcept = delete;
+	VulkanPipeline(VulkanPipeline&&) noexcept = default;
 
 	VulkanPipeline& operator=(const VulkanPipeline&) = delete;
-	VulkanPipeline& operator=(VulkanPipeline&&) noexcept = delete;
+	VulkanPipeline& operator=(VulkanPipeline&&) noexcept = default;
 
 	[[nodiscard]] const vk::Pipeline& Handle() const;
 

@@ -10,6 +10,7 @@
 #include "VulkanInstance.h"
 #include "Surface/VulkanFrame.h"
 #include "Core/Structure/RingBuffer.h"
+#include "VulkanSubPass.h"
 
 #include <vulkan/vulkan.hpp>
 #include <glm/vec2.hpp>
@@ -41,8 +42,8 @@ public:
 	void Present() override;
 
 	//RenderPass Management
-	Entity CreatePass(std::function<void(Entity)>) override;
-	Entity CreateSubPass(Entity, std::function<void(Entity)>) override;
+	Entity CreatePass(const ShaderSet&, std::function<void(Entity)>) override;
+	Entity CreateSubPass(Entity, const ShaderSet&, std::function<void(Entity)>) override;
 	void ExecutePass(Entity, Entity, CommandList&) override;
 
 	//RenderPass Modification
@@ -93,12 +94,12 @@ private:
 	std::unordered_map<Entity, Entity> renderPassSwapChainMap_;
 
 	std::unordered_map<Entity, std::vector<vk::AttachmentDescription2KHR>> renderPassAttachments_;
-	std::unordered_map<Entity, std::vector<vk::SubpassDescription2KHR>> renderPassSubPasses_;
+	std::unordered_map<Entity, std::vector<VulkanSubPass>> renderPassSubPasses_;
 	std::unordered_map<Entity, std::vector<vk::SubpassDependency2KHR>> renderPassDependencies_;
 	//map of subPasses to list of attachment IDs
 	std::unordered_map<Entity, std::vector<vk::AttachmentReference2KHR>> subPassAttachmentReferences_;
 
-	std::unordered_map<Entity, VulkanPipeline> pipelines_;
+	std::unordered_map < Entity, std::vector<VulkanPipeline>> pipelines_;
 	std::unordered_map<Entity, VulkanRenderPass> renderPasses_;
 	std::unordered_map<Entity, VulkanCommandBuffer> renderPassCommandBuffers_;
 	

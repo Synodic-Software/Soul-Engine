@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Composition/Entity/Entity.h"
+#include "Render/Raster/RenderTypes.h"
 
 #include <string>
 
@@ -12,6 +13,8 @@ public:
 
 	std::string name;
 
+	ShaderSet shaders;
+	
 };
 
 struct RenderGraphOutputParameters {

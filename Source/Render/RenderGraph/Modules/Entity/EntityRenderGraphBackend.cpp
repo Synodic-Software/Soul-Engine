@@ -41,7 +41,7 @@ void EntityRenderGraphBackend::CreateRenderPass(RenderTaskParameters& parameters
 	std::function<void(const EntityRegistry&, CommandList&)> callback;
 
 	//Create the renderpass
-	Entity pass = rasterModule_->CreatePass([&](Entity passID) {
+	Entity pass = rasterModule_->CreatePass(parameters.shaders, [&](Entity passID) {
 		RenderGraphBuilder builder(rasterModule_, entityRegistry_, passID, false);
 
 		// Call the pass construction

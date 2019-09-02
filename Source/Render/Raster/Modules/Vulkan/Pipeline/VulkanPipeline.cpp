@@ -1,10 +1,10 @@
 #include "VulkanPipeline.h"
 
 #include "Core/Geometry/Vertex.h"
-#include "Render/Raster/Modules/Vulkan/VulkanRenderPass.h"
 
 VulkanPipeline::VulkanPipeline(const vk::Device& device,
-	const vk::RenderPass& renderPass):
+	const vk::RenderPass& renderPass,
+	const uint subPassIndex):
 	device_(device), 
 	pipelineCache_(device_),
 	pipelineLayout_(device_)
@@ -100,7 +100,7 @@ VulkanPipeline::VulkanPipeline(const vk::Device& device,
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout_.Handle();
 	pipelineInfo.renderPass = renderPass;
-	pipelineInfo.subpass = 0;
+	pipelineInfo.subpass = subPassIndex;
 	pipelineInfo.basePipelineHandle = nullptr;
 	pipelineInfo.basePipelineIndex = 0;
 	

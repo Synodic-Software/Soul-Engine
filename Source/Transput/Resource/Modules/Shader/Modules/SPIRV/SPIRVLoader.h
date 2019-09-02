@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Transput/Resource/ResourceLoader.h"
+#include "Transput/Resource/Modules/Shader/ShaderLoader.h"
 
-
-class SPIRVLoader : public ResourceLoader<SPIRVLoader> {
+class SPIRVLoader : public ShaderLoader {
 	
 public:
 

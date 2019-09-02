@@ -100,7 +100,7 @@ void VulkanRasterBackend::Present()
 	}
 }
 
-Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
+Entity VulkanRasterBackend::CreatePass(const ShaderSet& ShaderSet, std::function<void(Entity)> function)
 {
 
 	// Create new entity
@@ -111,22 +111,30 @@ Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
 
 	// Create empty pass data
 	renderPassAttachments_.try_emplace(renderPassID);
-	renderPassSubPasses_.try_emplace(renderPassID);
+	auto [subPassIterator, subPassInserted] = renderPassSubPasses_.try_emplace(renderPassID);
 	renderPassDependencies_.try_emplace(renderPassID);
-
+	
 	// Default subPass and default output
 	CreatePassOutput(renderPassID, resource, Format::RGBA);
 
-	CreateSubPass(renderPassID, [&](Entity subPassID) { function(subPassID); });
+	CreateSubPass(renderPassID, ShaderSet, [&](Entity subPassID) { function(subPassID); });
 
 	std::vector<vk::AttachmentDescription2KHR>& subPassAttachments =
 		renderPassAttachments_.at(renderPassID);
-	std::vector<vk::SubpassDescription2KHR>& subPassDescriptions =
-		renderPassSubPasses_.at(renderPassID);
+	
+	std::vector<vk::SubpassDescription2KHR> subPassDescriptions;
+	
+	for (const auto& subPass : subPassIterator->second) {
+		
+		subPassDescriptions.push_back(subPass.Description());
+		
+	}
+	
 	std::vector<vk::SubpassDependency2KHR>& subPassDependencies =
 		renderPassDependencies_.at(renderPassID);
 
-	auto [passIterator, passInsert] = renderPasses_.try_emplace(
+	//Create the renderPass object
+	auto [passIterator, passInserted] = renderPasses_.try_emplace(
 		renderPassID, devices_[0], subPassAttachments, subPassDescriptions, subPassDependencies);
 
 	// TODO: command buffer per thread per ID
@@ -134,14 +142,27 @@ Entity VulkanRasterBackend::CreatePass(std::function<void(Entity)> function)
 		devices_[0].Logical(), vk::CommandBufferUsageFlagBits::eSimultaneousUse,
 		vk::CommandBufferLevel::ePrimary);
 
-	// TODO: Better management of pipelines
-	pipelines_.try_emplace(renderPassID, devices_[0].Logical(), passIterator->second.Handle());
-	// Resource("../Resources/Shaders/vert.spv"), Resource("../Resources/Shaders/frag.spv")
+	//Create the pipeline for each subPass
+	auto& renderPass = renderPasses_.at(renderPassID);
 
+	auto [pipelineArrayIterator, pipelineArrayInserted] = pipelines_.try_emplace(renderPassID);
+	pipelineArrayIterator->second.reserve(subPassIterator->second.size());
+
+	
+	for (auto i = 0; i < subPassIterator->second.size(); ++i)
+	{
+
+		pipelineArrayIterator->second.emplace_back(
+			devices_[0].Logical(), renderPass.Handle(), i);
+		
+	}
+		
 	return renderPassID;
 }
 
-Entity VulkanRasterBackend::CreateSubPass(Entity renderPassID, std::function<void(Entity)> function)
+Entity VulkanRasterBackend::CreateSubPass(Entity renderPassID,
+	const ShaderSet& ShaderSet,
+	std::function<void(Entity)> function)
 {
 
 	const Entity subPassID = entityRegistry_->CreateEntity();
@@ -153,23 +174,10 @@ Entity VulkanRasterBackend::CreateSubPass(Entity renderPassID, std::function<voi
 	auto& outputAttachmentReferences = subPassAttachmentReferences_.at(subPassID);
 
 	// Create the subPass object
-	vk::SubpassDescription2KHR subPass;
-	subPass.flags = vk::SubpassDescriptionFlags();
-	subPass.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
-	subPass.viewMask = 0;
-	subPass.inputAttachmentCount = 0;
-	subPass.pInputAttachments = nullptr;
-	subPass.colorAttachmentCount = outputAttachmentReferences.size();
-	subPass.pColorAttachments = outputAttachmentReferences.data();
-	subPass.pResolveAttachments = nullptr;
-	subPass.pDepthStencilAttachment = nullptr;
-	subPass.preserveAttachmentCount = 0;
-	subPass.pPreserveAttachments = nullptr;
 
-	// push the subPass object to the parent renderPass
-	renderPassSubPasses_.try_emplace(renderPassID);
-	renderPassSubPasses_.at(renderPassID).push_back(subPass);
-
+	std::vector<VulkanSubPass>& subPassArray = renderPassSubPasses_.at(renderPassID);
+	subPassArray.emplace_back(outputAttachmentReferences);
+	
 	return subPassID;
 }
 

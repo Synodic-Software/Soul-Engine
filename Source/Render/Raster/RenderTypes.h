@@ -1,10 +1,24 @@
 #pragma once
 
-#include "Types.h"
-#include "Core/Composition/Component/Component.h"
-#include "Core/Geometry/Vertex.h"
 
-enum class Format { 
+struct ShaderSet
+{
+	
+	Entity vertex;
+
+	Entity tessellationControl;
+
+	Entity tessellationEvaluation;
+
+	Entity geometry;
+
+	Entity fragment;
+	
+};
+
+enum class Format {
+	
 	RGBA,
 	Unknown
+	
 };

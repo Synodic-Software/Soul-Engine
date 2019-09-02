@@ -29,6 +29,8 @@ target_sources(${PROJECT_NAME}
         Modules/Vulkan/VulkanRasterBackend.h
         Modules/Vulkan/VulkanRenderPass.cpp
         Modules/Vulkan/VulkanRenderPass.h
+        Modules/Vulkan/VulkanSubPass.cpp
+        Modules/Vulkan/VulkanSubPass.h
         Modules/Vulkan/VulkanSemaphore.cpp
         Modules/Vulkan/VulkanSemaphore.h
         Modules/Vulkan/VulkanFence.cpp

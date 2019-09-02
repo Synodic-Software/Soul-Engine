@@ -11,9 +11,9 @@ class VulkanRenderPass
 public:
 
 	VulkanRenderPass(const VulkanDevice&,
-		std::vector<vk::AttachmentDescription2KHR> subpassAttachments,
-		std::vector<vk::SubpassDescription2KHR> subpassDescriptions,
-		std::vector<vk::SubpassDependency2KHR> subpassDependencies);
+		nonstd::span<vk::AttachmentDescription2KHR> subPassAttachments,
+		nonstd::span<vk::SubpassDescription2KHR> subPassDescriptions,
+		nonstd::span<vk::SubpassDependency2KHR> subPassDependencies);
 	~VulkanRenderPass();
 
 	VulkanRenderPass(const VulkanRenderPass&) = delete;

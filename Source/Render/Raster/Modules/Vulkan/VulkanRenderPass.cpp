@@ -1,20 +1,20 @@
 #include "VulkanRenderPass.h"
 
 VulkanRenderPass::VulkanRenderPass(const VulkanDevice& device,
-	std::vector<vk::AttachmentDescription2KHR> subpassAttachments,
-	std::vector<vk::SubpassDescription2KHR> subpassDescriptions,
-	std::vector<vk::SubpassDependency2KHR> subpassDependencies):
+	nonstd::span<vk::AttachmentDescription2KHR> subPassAttachments,
+	nonstd::span<vk::SubpassDescription2KHR> subPassDescriptions,
+	nonstd::span<vk::SubpassDependency2KHR> subPassDependencies):
 	device_(device.Logical())
 {
 
 	vk::RenderPassCreateInfo2KHR renderPassInfo;
 	renderPassInfo.flags = vk::RenderPassCreateFlags();
-	renderPassInfo.attachmentCount = static_cast<uint>(subpassAttachments.size());
-	renderPassInfo.pAttachments = subpassAttachments.data();
-	renderPassInfo.subpassCount = static_cast<uint>(subpassDescriptions.size());
-	renderPassInfo.pSubpasses = subpassDescriptions.data();
-	renderPassInfo.dependencyCount = static_cast<uint>(subpassDependencies.size());
-	renderPassInfo.pDependencies = subpassDependencies.data();
+	renderPassInfo.attachmentCount = static_cast<uint>(subPassAttachments.size());
+	renderPassInfo.pAttachments = subPassAttachments.data();
+	renderPassInfo.subpassCount = static_cast<uint>(subPassDescriptions.size());
+	renderPassInfo.pSubpasses = subPassDescriptions.data();
+	renderPassInfo.dependencyCount = static_cast<uint>(subPassDependencies.size());
+	renderPassInfo.pDependencies = subPassDependencies.data();
 	renderPassInfo.correlatedViewMaskCount = 0;
 	renderPassInfo.pCorrelatedViewMasks = nullptr;
 
