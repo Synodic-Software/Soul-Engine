@@ -37,29 +37,9 @@ endif()
 
 #Externally managed dependancies
 find_package(OpenCL 1.2)
-find_package(Vulkan)
 
 #TODO: Remove reliance on pre-installed VulkanSDK. Via Conan instead.
-#For Vulkan, we need to pull in some extra CMake dependancies
-if(${Vulkan_FOUND})
-
-    set(GLSLANG_ROOT $ENV{VULKAN_SDK}/glslang)
-
-    set(BUILD_TESTING OFF CACHE INTERNAL "")
-    set(ENABLE_GLSLANG_BINARIES OFF CACHE INTERNAL "")
-    set(ENABLE_SPVREMAPPER OFF CACHE INTERNAL "")
-    set(ENABLE_HLSL OFF CACHE INTERNAL "")
-    set(ENABLE_AMD_EXTENSIONS OFF CACHE INTERNAL "")
-    set(ENABLE_NV_EXTENSIONS OFF CACHE INTERNAL "")
-
-    set(SKIP_GLSLANG_INSTALL ON CACHE INTERNAL "")
-    set(ENABLE_OPT ON CACHE INTERNAL "")
-
-    #TODO: Get rid of this dependancy
-    add_subdirectory(${GLSLANG_ROOT} ${GLSLANG_ROOT}/build)
-
-endif()
-
+find_package(Vulkan)
 
 check_language(CUDA)
 
@@ -89,7 +69,7 @@ option(BUILD_VULKAN_RASTER "Build the Vulkan Raster backend" ${Vulkan_FOUND})#TO
 option(BUILD_GLFW_DISPLAY "Build the GLFW Display backend" ON)#TODO: Implement use of this option
 option(BUILD_IMGUI_GUI "Build the Imgui GUI backend" ON)#TODO: Implement use of this option
 option(BUILD_FIBER_SCHEDULER "Build the Fiber Scheduler backend" ON)
-
+option(BUILD_ENTITY_GRAPH "Build the Entity Graph backend" ON)
 
 ##############################################
 #Project Target
@@ -102,15 +82,9 @@ set_target_properties(${PROJECT_NAME}
         LINKER_LANGUAGE CXX
 	   	CXX_EXTENSIONS OFF	
 		CUDA_SEPARABLE_COMPILATION ON
-        CXX_STANDARD 17
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED ON
 		USE_FOLDERS ON
-)
-
-target_compile_definitions(${PROJECT_NAME} 
-    PRIVATE
-        CUDA=BUILD_CUDA_COMPUTE
-        OPENCL=BUILD_OPENCL_COMPUTE
-        FIBER=BUILD_FIBER_SCHEDULER
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -119,7 +93,6 @@ target_include_directories(${PROJECT_NAME}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Includes>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/Source
-        $<$<BOOL:${BUILD_VULKAN_RASTER}>:${GLSLANG_ROOT}>
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -132,9 +105,6 @@ target_link_libraries(${PROJECT_NAME}
         CONAN_PKG::stb
         CONAN_PKG::imgui
         $<$<BOOL:${BUILD_VULKAN_RASTER}>:Vulkan::Vulkan>
-        $<$<BOOL:${BUILD_VULKAN_RASTER}>:glslang>
-        $<$<BOOL:${BUILD_VULKAN_RASTER}>:SPIRV>
-
 )
 
 
@@ -160,9 +130,11 @@ add_subdirectory(Source/Display/Input)
 add_subdirectory(Source/Display/GUI)
 add_subdirectory(Source/Memory)
 add_subdirectory(Source/Network)
-add_subdirectory(Source/Parallelism)
+add_subdirectory(Source/Parallelism/Graph)
+add_subdirectory(Source/Parallelism/Scheduler)
 add_subdirectory(Source/Physics)
-add_subdirectory(Source/Rasterer)
+add_subdirectory(Source/Render/Raster)
+add_subdirectory(Source/Render/RenderGraph)
 add_subdirectory(Source/Tracer)
 add_subdirectory(Source/Transput/Resource)
 
